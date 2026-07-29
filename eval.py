@@ -38,13 +38,11 @@ def load_config(path: str) -> Dict[str, Any]:
 # ═══════════════════════════════════════════════════════════════════════════
 
 
-def compute_wer(reference: str, hypothesis: str) -> float:
-    """Word-level WER between two space-joined piece strings."""
-    ref_words = reference.split()
-    hyp_words = hypothesis.split()
-    if len(ref_words) == 0:
-        return 0.0 if len(hyp_words) == 0 else 1.0
-    return torchaudio.functional.edit_distance(ref_words, hyp_words) / len(ref_words)
+def compute_per(reference: str, hypothesis: str) -> float:
+    """Phoneme Error Rate — character-level edit distance on raw text."""
+    if len(reference) == 0:
+        return 0.0 if len(hypothesis) == 0 else 1.0
+    return torchaudio.functional.edit_distance(reference, hypothesis) / len(reference)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -58,7 +56,7 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
     sp = model.sp_model
     dataloader = model.test_dataloader()
 
-    total_wer = 0.0
+    total_per = 0.0
     total_rtf = 0.0
     n = 0
     per_sample = []
@@ -73,47 +71,43 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
             t1 = time.time()
 
             # RTF: processing_time / audio_duration
-            # each mel frame = hop_length / sample_rate seconds
             frame_dur = model._mel_kwargs["hop_length"] / model._mel_kwargs["sample_rate"]
             audio_dur = batch.feature_lengths[0].item() * frame_dur
 
-            # Piece-level encoding for WER
-            ref_pieces = " ".join(sp.encode_as_pieces(actual))
-            hyp_pieces = " ".join(sp.encode_as_pieces(predicted))
-
-            wer = compute_wer(ref_pieces, hyp_pieces)
+            # PER: character-level edit distance on raw text
+            per = compute_per(actual, predicted)
             rtf = (t1 - t0) / audio_dur if audio_dur > 0 else 0
 
-            total_wer += wer
+            total_per += per
             total_rtf += rtf
             n += 1
-            per_sample.append({"idx": idx, "WER": wer, "RTF": rtf, "ref": actual, "hyp": predicted})
+            per_sample.append({"idx": idx, "PER": per, "RTF": rtf, "ref": actual, "hyp": predicted})
 
             if idx % 100 == 0:
                 logging.info(
-                    "[%4d] WER: %.3f  RTF: %.4f  |  ref: %s  |  hyp: %s",
-                    idx, wer, rtf,
-                    ref_pieces[:60], hyp_pieces[:60],
+                    "[%4d] PER: %.3f  RTF: %.4f  |  ref: %s  |  hyp: %s",
+                    idx, per, rtf,
+                    actual[:40], predicted[:40],
                 )
 
-    avg_wer = total_wer / n if n > 0 else 0
+    avg_per = total_per / n if n > 0 else 0
     avg_rtf = total_rtf / n if n > 0 else 0
 
     logging.info("=" * 60)
     logging.info("Evaluation complete — %d samples", n)
-    logging.info("WER: %.4f", avg_wer)
+    logging.info("PER: %.4f", avg_per)
     logging.info("RTF: %.4f", avg_rtf)
     logging.info("=" * 60)
 
     # Save per-sample CSV
     import csv
     with open(per_sample_file, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["idx", "WER", "RTF", "ref", "hyp"])
+        writer = csv.DictWriter(f, fieldnames=["idx", "PER", "RTF", "ref", "hyp"])
         writer.writeheader()
         writer.writerows(per_sample)
     logging.info("Per-sample results saved to: %s", per_sample_file)
 
-    return {"wer": avg_wer, "rtf": avg_rtf, "num_samples": n}
+    return {"per": avg_per, "rtf": avg_rtf, "num_samples": n}
 
 
 # ═══════════════════════════════════════════════════════════════════════════
