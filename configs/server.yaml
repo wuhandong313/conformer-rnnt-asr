@@ -180,10 +180,13 @@ data:
 
   # === 批处理 ===
   # 每 batch 最大 token 数 (按 target token 数累积分组, 控制显存)
-  max_token_limit: 12000
+  max_token_limit: 16000
 
-  # DataLoader 子进程数
-  num_workers: 10
+  # DataLoader 子进程数 (A100 建议 16-24, 消除数据加载瓶颈)
+  num_workers: 20
+
+  # DataLoader 预取因子 (每个 worker 预加载 batch 数)
+  prefetch_factor: 2
 
   # === 数据子集 ===
   # 训练集 (LibriSpeech 子集名)
@@ -216,7 +219,7 @@ trainer:
   log_every_n_steps: 10
 
   # 每隔多少训练步跑一次验证 (必须 ≤ 总 batch 数, 否则报错)
-  val_check_interval: 400
+  val_check_interval: 200
 
   # 训练开始前的 sanity check 批次数 (0 = 跳过)
   num_sanity_val_steps: 0

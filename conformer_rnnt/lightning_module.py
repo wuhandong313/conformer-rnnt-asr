@@ -346,6 +346,7 @@ class LibriSpeechRNNTModule(LightningModule):
         # Data — loading
         max_token_limit: int = 1000,
         num_workers: int = 32,
+        prefetch_factor: int = 2,
         train_subset: str = "train-clean-100",
         val_subset: str = "dev-clean",
         test_subset: str = "test-clean",
@@ -432,6 +433,7 @@ class LibriSpeechRNNTModule(LightningModule):
         self.librispeech_path = librispeech_path
         self.max_token_limit = max_token_limit
         self.num_workers = num_workers
+        self.prefetch_factor = prefetch_factor
         self.train_subset = train_subset
         self.val_subset = val_subset
         self.test_subset = test_subset
@@ -508,6 +510,7 @@ class LibriSpeechRNNTModule(LightningModule):
             # Data — loading
             max_token_limit=data_cfg.get("max_token_limit", 1000),
             num_workers=data_cfg.get("num_workers", 32),
+            prefetch_factor=data_cfg.get("prefetch_factor", 2),
             train_subset=data_cfg.get("train_subset", "train-clean-100"),
             val_subset=data_cfg.get("val_subset", "dev-clean"),
             test_subset=data_cfg.get("test_subset", "test-clean"),
@@ -661,6 +664,7 @@ class LibriSpeechRNNTModule(LightningModule):
             num_workers=self.num_workers,
             shuffle=True,
             pin_memory=True,
+            prefetch_factor=self.prefetch_factor if self.num_workers > 0 else None,
             persistent_workers=True if self.num_workers > 0 else False,
         )
 
@@ -679,6 +683,7 @@ class LibriSpeechRNNTModule(LightningModule):
             collate_fn=self._valid_collate_fn,
             num_workers=self.num_workers,
             pin_memory=True,
+            prefetch_factor=self.prefetch_factor if self.num_workers > 0 else None,
             persistent_workers=True if self.num_workers > 0 else False,
         )
 
