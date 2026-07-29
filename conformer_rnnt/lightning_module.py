@@ -223,7 +223,7 @@ class CustomDataset(torch.utils.data.Dataset):
         if fileid not in fileid_to_target_length:
             speaker_id, chapter_id, _ = fileid.split("-")
             file_text = (
-                speaker_id + "-" + chapter_id + self.base_dataset._ext_txt
+                speaker_id + "-" + chapter_id + "-ph" + self.base_dataset._ext_txt
             )
             file_text = os.path.join(
                 self.base_dataset._path, speaker_id, chapter_id, file_text
