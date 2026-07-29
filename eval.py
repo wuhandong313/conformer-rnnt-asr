@@ -85,9 +85,11 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
             per_sample.append({"idx": idx, "PER": per, "RTF": rtf, "ref": actual, "hyp": predicted})
 
             if idx % 5 == 0:
+                cum_per = total_per / n if n > 0 else 0
+                cum_rtf = total_rtf / n if n > 0 else 0
                 logging.info(
-                    "[%4d] PER: %.3f  RTF: %.4f  |  ref: %s  |  hyp: %s",
-                    idx, per, rtf,
+                    "[%4d] PER: %.3f (cum: %.3f)  RTF: %.4f (cum: %.4f)  |  ref: %s  |  hyp: %s",
+                    idx, per, cum_per, rtf, cum_rtf,
                     actual[:60], predicted[:60],
                 )
 
