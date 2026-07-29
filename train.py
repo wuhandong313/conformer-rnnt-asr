@@ -52,6 +52,7 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
 
     val_ckpt = ModelCheckpoint(
         dirpath=checkpoint_dir,
+        filename="val-{epoch:02d}-{step}",
         monitor="Losses/val_loss",
         mode="min",
         save_top_k=ckpt.get("save_top_k", 2),
@@ -61,6 +62,7 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
     )
     train_ckpt = ModelCheckpoint(
         dirpath=checkpoint_dir,
+        filename="train-{epoch:02d}-{step}",
         monitor="Losses/train_loss",
         mode="min",
         save_top_k=ckpt.get("save_top_k", 2),
