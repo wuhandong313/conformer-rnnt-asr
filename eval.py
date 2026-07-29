@@ -53,7 +53,6 @@ def compute_per(reference: str, hypothesis: str) -> float:
 def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file: str = "eval_per_sample.csv") -> Dict[str, Any]:
     model = model.to(device)
     model.eval()
-    sp = model.sp_model
     dataloader = model.test_dataloader()
 
     total_per = 0.0
