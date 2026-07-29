@@ -113,8 +113,10 @@ def main(config_path: str) -> None:
     trainer = build_trainer(config)
     logging.info(
         "Trainer: accelerator=%s  devices=%s  nodes=%s  epochs=%s",
-        trainer.accelerator, trainer.devices,
-        trainer.num_nodes, trainer.max_epochs,
+        config["trainer"].get("accelerator", "cuda"),
+        config["trainer"].get("devices", 1),
+        config["trainer"].get("num_nodes", 1),
+        config["training"].get("epochs", 120),
     )
 
     # 6. Train
