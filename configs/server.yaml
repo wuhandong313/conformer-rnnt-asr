@@ -239,7 +239,7 @@ trainer:
     save_weights_only: true
 
     # 验证 checkpoint 保存间隔 (每 N 个训练步保存一次)
-    val_checkpoint_interval: 500
+    val_checkpoint_interval: 100
 
     # 训练 checkpoint 保存间隔 (每 N 个训练步保存一次)
     train_checkpoint_interval: 100
