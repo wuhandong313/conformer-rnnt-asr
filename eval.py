@@ -121,18 +121,17 @@ def main():
         "--checkpoint", "-c", required=True,
         help="Path to the .ckpt checkpoint to evaluate.",
     )
-    parser.add_argument("--device", default="cuda", help="Device: cuda | cpu.")
-    parser.add_argument("--debug", action="store_true")
     args = parser.parse_args()
-
-    # Logging
-    fmt = "%(asctime)s %(message)s" if args.debug else "%(message)s"
-    logging.basicConfig(format=fmt, level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S")
 
     # Config
     config = load_config(args.config)
 
-    # Build model from config
+    # Logging
+    debug = config.get("debug", False)
+    fmt = "%(asctime)s %(message)s" if debug else "%(message)s"
+    logging.basicConfig(format=fmt, level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S")
+
+    # Build model from config (architecture, paths — all from YAML)
     logging.info("Building model from config …")
     model = LibriSpeechRNNTModule.from_config(config)
 
@@ -143,7 +142,7 @@ def main():
     model.load_state_dict(state_dict, strict=False)
 
     # Eval
-    device = torch.device(args.device)
+    device = torch.device(config.get("trainer", {}).get("accelerator", "cuda"))
     run_eval(model, device)
 
 
