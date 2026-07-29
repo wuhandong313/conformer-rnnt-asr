@@ -137,8 +137,8 @@ training:
   warmup_steps: 10000
 
   # === RNN-T 损失 ===
-  # Loss 归约方式: "sum" | "mean" | "none"
-  rnnt_loss_reduction: "sum"
+  # Loss 归约方式: "mean" | "sum" | "none"
+  rnnt_loss_reduction: "mean"
 
   # Logit 截断值 (防止 log-softmax 数值溢出)
   rnnt_loss_clamp: 1.0
