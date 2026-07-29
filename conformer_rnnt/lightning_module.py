@@ -378,13 +378,12 @@ class LibriSpeechRNNTModule(LightningModule):
             lstm_dropout=lstm_dropout,
         )
 
-        # ---- Mel spectrogram transform (config-driven) ----
-        self.mel_transform = torchaudio.transforms.MelSpectrogram(
-            sample_rate=sample_rate,
-            n_fft=n_fft,
-            n_mels=n_mels,
-            hop_length=hop_length,
+        # ---- Mel spectrogram params (not a submodule — stays on CPU) ----
+        self._mel_kwargs = dict(
+            sample_rate=sample_rate, n_fft=n_fft,
+            n_mels=n_mels, hop_length=hop_length,
         )
+        self._mel_transform = None  # lazy init on CPU
 
         # ---- Loss ----
         self.loss = torchaudio.transforms.RNNTLoss(
@@ -515,6 +514,14 @@ class LibriSpeechRNNTModule(LightningModule):
         )
 
     # ------------------------------------------------------------------
+    # Mel spectrogram (lazy init on CPU — not registered as submodule)
+    # ------------------------------------------------------------------
+    def _get_mel_transform(self):
+        if self._mel_transform is None:
+            self._mel_transform = torchaudio.transforms.MelSpectrogram(**self._mel_kwargs)
+        return self._mel_transform
+
+    # ------------------------------------------------------------------
     # Label extraction
     # ------------------------------------------------------------------
     def _extract_labels(self, samples: List):
@@ -537,8 +544,9 @@ class LibriSpeechRNNTModule(LightningModule):
     # Feature extraction
     # ------------------------------------------------------------------
     def _train_extract_features(self, samples: List):
+        mel = self._get_mel_transform()
         mel_features = [
-            self.mel_transform(sample[0].squeeze()).transpose(1, 0)
+            mel(sample[0].squeeze()).transpose(1, 0)
             for sample in samples
         ]
         features = torch.nn.utils.rnn.pad_sequence(mel_features, batch_first=True)
@@ -549,8 +557,9 @@ class LibriSpeechRNNTModule(LightningModule):
         return features, lengths
 
     def _valid_extract_features(self, samples: List):
+        mel = self._get_mel_transform()
         mel_features = [
-            self.mel_transform(sample[0].squeeze()).transpose(1, 0)
+            mel(sample[0].squeeze()).transpose(1, 0)
             for sample in samples
         ]
         features = torch.nn.utils.rnn.pad_sequence(mel_features, batch_first=True)
