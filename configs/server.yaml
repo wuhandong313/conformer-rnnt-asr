@@ -215,8 +215,8 @@ trainer:
   # 每隔多少步打印一条日志
   log_every_n_steps: 10
 
-  # 每隔多少训练步跑一次验证
-  val_check_interval: 500
+  # 每隔多少训练步跑一次验证 (必须 ≤ 总 batch 数, 否则报错)
+  val_check_interval: 400
 
   # 训练开始前的 sanity check 批次数 (0 = 跳过)
   num_sanity_val_steps: 0
