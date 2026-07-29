@@ -7,7 +7,9 @@ Usage:
 
 from __future__ import annotations
 
+import glob
 import logging
+import os
 import sys
 import time
 from argparse import ArgumentParser
@@ -114,12 +116,21 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
 # ═══════════════════════════════════════════════════════════════════════════
 
 
+def _find_latest_val_ckpt(checkpoint_dir: str) -> str | None:
+    """Find the latest val-*.ckpt in the checkpoint directory."""
+    pattern = os.path.join(checkpoint_dir, "val-*.ckpt")
+    files = glob.glob(pattern)
+    if not files:
+        return None
+    return max(files, key=os.path.getmtime)
+
+
 def main():
     parser = ArgumentParser(description="Evaluate a Conformer-RNNT checkpoint.")
     parser.add_argument("config", help="Path to YAML config file.")
     parser.add_argument(
-        "--checkpoint", "-c", required=True,
-        help="Path to the .ckpt checkpoint to evaluate.",
+        "--checkpoint", "-c", default=None,
+        help="Path to .ckpt checkpoint. If not given, auto-loads latest val-*.ckpt.",
     )
     args = parser.parse_args()
 
@@ -135,9 +146,20 @@ def main():
     logging.info("Building model from config …")
     model = LibriSpeechRNNTModule.from_config(config)
 
+    # Resolve checkpoint path
+    ckpt_path = args.checkpoint
+    if ckpt_path is None:
+        exp_dir = config.get("paths", {}).get("exp_dir", "./exp")
+        checkpoint_dir = os.path.join(exp_dir, "checkpoints")
+        ckpt_path = _find_latest_val_ckpt(checkpoint_dir)
+        if ckpt_path is None:
+            logging.error("No val-*.ckpt found in %s. Specify --checkpoint.", checkpoint_dir)
+            sys.exit(1)
+        logging.info("Auto-selected checkpoint: %s", ckpt_path)
+
     # Load checkpoint
-    logging.info("Loading checkpoint: %s", args.checkpoint)
-    ckpt = torch.load(args.checkpoint, map_location="cpu")
+    logging.info("Loading checkpoint: %s", ckpt_path)
+    ckpt = torch.load(ckpt_path, map_location="cpu")
     state_dict = ckpt.get("state_dict", ckpt)
     model.load_state_dict(state_dict, strict=False)
 
