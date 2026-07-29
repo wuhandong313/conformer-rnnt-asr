@@ -132,6 +132,7 @@ def main():
         "--checkpoint", "-c", default=None,
         help="Path to .ckpt checkpoint. If not given, auto-loads latest val-*.ckpt.",
     )
+    parser.add_argument("--cpu", action="store_true", help="Force CPU even if config says cuda.")
     args = parser.parse_args()
 
     # Config
@@ -164,7 +165,7 @@ def main():
     model.load_state_dict(state_dict, strict=False)
 
     # Eval
-    device = torch.device(config.get("trainer", {}).get("accelerator", "cuda"))
+    device = torch.device("cpu" if args.cpu else config.get("trainer", {}).get("accelerator", "cuda"))
     run_eval(model, device)
 
 
