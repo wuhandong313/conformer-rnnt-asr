@@ -224,8 +224,8 @@ trainer:
   # 是否开启 fast_dev_run (调试用, 只跑 1 batch)
   fast_dev_run: false
 
-  # Float32 矩阵乘法精度 (A100/H100 Tensor Core 优化): "high" | "medium"
-  matmul_precision: "medium"
+  # Float32 矩阵乘法精度 (A100 Tensor Core): "high" = TF32, "medium" = bf16 TF32
+  matmul_precision: "high"
 
   # === Checkpoint 保存 ===
   checkpoint:
