@@ -180,7 +180,7 @@ data:
 
   # === 批处理 ===
   # 每 batch 最大 token 数 (按 target token 数累积分组, 控制显存)
-  max_token_limit: 8000
+  max_token_limit: 12000
 
   # DataLoader 子进程数
   num_workers: 10
