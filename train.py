@@ -104,11 +104,16 @@ def main(config_path: str) -> None:
     seed_everything(seed, workers=True)
     logging.info(f"Config: {config_path}  |  seed: {seed}")
 
-    # 4. Build model
+    # 4. Tensor Core optimization (A100 / H100)
+    precision = config.get("trainer", {}).get("matmul_precision", "medium")
+    torch.set_float32_matmul_precision(precision)
+    logging.info(f"Float32 matmul precision: {precision}")
+
+    # 5. Build model
     logging.info("Building model …")
     model = LibriSpeechRNNTModule.from_config(config)
 
-    # 5. Build trainer
+    # 6. Build trainer
     logging.info("Building trainer …")
     trainer = build_trainer(config)
     logging.info(
@@ -119,7 +124,7 @@ def main(config_path: str) -> None:
         config["training"].get("epochs", 120),
     )
 
-    # 6. Train
+    # 7. Train
     ckpt_path = config.get("paths", {}).get("from_checkpoint", None)
     logging.info("Starting training …")
     trainer.fit(model, ckpt_path=ckpt_path)
