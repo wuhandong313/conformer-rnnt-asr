@@ -81,7 +81,7 @@ model:
     #   fir             — FIR 低通滤波 → 粗定位 → 在原信号上精确定位
     #   savgol          — Savitzky-Golay 平滑 → find_peaks
     #   savgol_hanning  — Savitzky-Golay 平滑 + Hanning 加权
-    filter: "hanning"
+    filter: "naive"
 
     # Hanning 窗大小 (仅 hanning / savgol_hanning 模式生效)
     # 控制每个峰/谷周围做加权平滑的帧数
@@ -226,6 +226,9 @@ trainer:
 
   # Float32 矩阵乘法精度 (A100 Tensor Core): "high" = TF32, "medium" = bf16 TF32
   matmul_precision: "high"
+
+  # 梯度累积步数 (模拟更大 batch, 不增显存. 1=不累积)
+  accumulate_grad_batches: 1
 
   # === Checkpoint 保存 ===
   checkpoint:

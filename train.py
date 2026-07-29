@@ -78,6 +78,7 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
         accelerator=trainer_cfg.get("accelerator", "cuda"),
         strategy=trainer_cfg.get("strategy", "auto"),
         gradient_clip_val=training_cfg.get("gradient_clip_val", 10.0),
+        accumulate_grad_batches=trainer_cfg.get("accumulate_grad_batches", 1),
         callbacks=[val_ckpt, train_ckpt],
         num_sanity_val_steps=trainer_cfg.get("num_sanity_val_steps", 0),
         val_check_interval=trainer_cfg.get("val_check_interval", 500),
