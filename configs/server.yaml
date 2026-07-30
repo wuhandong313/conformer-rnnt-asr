@@ -81,7 +81,7 @@ model:
     #   fir             — FIR 低通滤波 → 粗定位 → 在原信号上精确定位
     #   savgol          — Savitzky-Golay 平滑 → find_peaks
     #   savgol_hanning  — Savitzky-Golay 平滑 + Hanning 加权
-    filter: "naive"
+    filter: "savgol_hanning"
 
     # Hanning 窗大小 (仅 hanning / savgol_hanning 模式生效)
     # 控制每个峰/谷周围做加权平滑的帧数
