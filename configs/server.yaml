@@ -164,8 +164,8 @@ data:
   # Mel 滤波器组数量
   n_mels: 80
 
-  # 帧移 (hop length), 单位采样点. 16000/80 = 200fps
-  hop_length: 80
+  # 帧移 (hop length), 单位采样点. 16000/160 = 100fps
+  hop_length: 160
 
   # === SpecAugment (仅训练时生效, 在线数据增强) ===
   spec_augment:
