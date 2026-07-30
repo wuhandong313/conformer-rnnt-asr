@@ -148,6 +148,11 @@ def main():
     # Build model from config (architecture, paths — all from YAML)
     logging.info("Building model from config …")
     model = LibriSpeechRNNTModule.from_config(config)
+    logging.info(
+        "Decoding: beam_width=%s (%s)",
+        model.beam_width,
+        "greedy" if model.beam_width == 0 else f"beam={model.beam_width}",
+    )
 
     # Resolve checkpoint path
     ckpt_path = args.checkpoint

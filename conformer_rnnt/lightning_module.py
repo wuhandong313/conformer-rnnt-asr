@@ -350,6 +350,8 @@ class LibriSpeechRNNTModule(LightningModule):
         train_subset: str = "train-clean-100",
         val_subset: str = "dev-clean",
         test_subset: str = "test-clean",
+        # Decoding
+        beam_width: int = 20,
     ):
         super().__init__()
         self.save_hyperparameters()
@@ -438,6 +440,11 @@ class LibriSpeechRNNTModule(LightningModule):
         self.val_subset = val_subset
         self.test_subset = test_subset
 
+        # ---- Decoding ----
+        # beam_width=0 → greedy (RNNTBeamSearch width=1); used as the
+        # lossless oracle baseline for future speculative decoding.
+        self.beam_width = beam_width
+
         # ---- Tokenizer ----
         self.sp_model = spm.SentencePieceProcessor(model_file=sp_model_path)
         self.blank_idx = self.sp_model.get_piece_size()
@@ -459,6 +466,7 @@ class LibriSpeechRNNTModule(LightningModule):
         training_cfg = config.get("training", {})
         data_cfg = config.get("data", {})
         aug_cfg = data_cfg.get("spec_augment", {})
+        decoding_cfg = config.get("decoding", {})
 
         return cls(
             # Paths
@@ -514,6 +522,8 @@ class LibriSpeechRNNTModule(LightningModule):
             train_subset=data_cfg.get("train_subset", "train-clean-100"),
             val_subset=data_cfg.get("val_subset", "dev-clean"),
             test_subset=data_cfg.get("test_subset", "test-clean"),
+            # Decoding
+            beam_width=decoding_cfg.get("beam_width", 20),
         )
 
     # ------------------------------------------------------------------
@@ -628,11 +638,15 @@ class LibriSpeechRNNTModule(LightningModule):
         )
 
     def forward(self, batch: Batch):
+        # beam_width=0 → greedy: RNNTBeamSearch with width=1 is the greedy
+        # path and serves as the lossless oracle for speculative decoding.
+        # beam_width>0 → standard beam search at the given width.
+        width = 1 if self.beam_width == 0 else self.beam_width
         decoder = RNNTBeamSearch(self.model, self.blank_idx)
         hypotheses = decoder(
             batch.features.to(self.device),
             batch.feature_lengths.to(self.device),
-            20,
+            width,
         )
         return post_process_hypos(hypotheses, self.sp_model)[0][0]
 
