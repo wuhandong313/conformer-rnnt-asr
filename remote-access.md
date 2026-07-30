@@ -1,5 +1,37 @@
 # 内网服务器远程访问指南
 
+## Gitee 仓库
+
+| 项目 | 详情 |
+|------|------|
+| **仓库链接** | https://gitee.com/wu3134/conformer-rnnt-asr |
+| **用户名** | `wu3134` |
+| **私人令牌 (token)** | `f9f331a369d34a8ecaa0abd4dd35acca` |
+
+带凭证的 clone / pull 地址:
+
+```
+https://wu3134:f9f331a369d34a8ecaa0abd4dd35acca@gitee.com/wu3134/conformer-rnnt-asr.git
+```
+
+### 配置凭证免重复输入
+
+```bash
+cd conformer-rnnt-asr
+git config credential.helper store   # 明文保存到 ~/.git-credentials
+```
+
+之后第一次 pull/push 输入用户名和 token, 之后自动读取。
+
+### 服务器上首次 clone
+
+```bash
+cd /test21
+git clone https://wu3134:f9f331a369d34a8ecaa0abd4dd35acca@gitee.com/wu3134/conformer-rnnt-asr.git
+cd conformer-rnnt-asr
+git config credential.helper store
+```
+
 ## 网络拓扑
 
 ```
