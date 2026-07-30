@@ -388,9 +388,18 @@ class LibriSpeechRNNTModule(LightningModule):
         )
         self._mel_transform = None  # lazy init on CPU
 
+        # ---- Tokenizer (needed before loss — blank_idx derives from it) ----
+        self.sp_model = spm.SentencePieceProcessor(model_file=sp_model_path)
+        self.blank_idx = self.sp_model.get_piece_size()
+
         # ---- Loss ----
+        # blank_idx (= SP vocab size) is the blank label appended past the
+        # real symbol ids (0..blank_idx-1). torchaudio RNNTLoss defaults
+        # blank=-1 which is wrong here — pass it explicitly.
         self.loss = torchaudio.transforms.RNNTLoss(
-            reduction=rnnt_loss_reduction, clamp=rnnt_loss_clamp
+            blank=self.blank_idx,
+            reduction=rnnt_loss_reduction,
+            clamp=rnnt_loss_clamp,
         )
 
         # ---- Optimizer & scheduler ----
@@ -444,10 +453,6 @@ class LibriSpeechRNNTModule(LightningModule):
         # beam_width=0 → greedy (RNNTBeamSearch width=1); used as the
         # lossless oracle baseline for future speculative decoding.
         self.beam_width = beam_width
-
-        # ---- Tokenizer ----
-        self.sp_model = spm.SentencePieceProcessor(model_file=sp_model_path)
-        self.blank_idx = self.sp_model.get_piece_size()
 
     # ------------------------------------------------------------------
     # Factory: build from a config dictionary (e.g. loaded from YAML)
