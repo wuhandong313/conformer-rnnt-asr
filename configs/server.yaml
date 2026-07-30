@@ -81,7 +81,7 @@ model:
     #   fir             — FIR 低通滤波 → 粗定位 → 在原信号上精确定位
     #   savgol          — Savitzky-Golay 平滑 → find_peaks
     #   savgol_hanning  — Savitzky-Golay 平滑 + Hanning 加权
-    filter: "none"
+    filter: "naive"
 
     # Hanning 窗大小 (仅 hanning / savgol_hanning 模式生效)
     # 控制每个峰/谷周围做加权平滑的帧数
@@ -165,7 +165,7 @@ data:
   n_mels: 80
 
   # 帧移 (hop length), 单位采样点. 16000/80 = 200fps
-  hop_length: 160
+  hop_length: 80
 
   # === SpecAugment (仅训练时生效, 在线数据增强) ===
   spec_augment:
