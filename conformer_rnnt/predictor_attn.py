@@ -235,13 +235,14 @@ class PredictorAttn(torch.nn.Module):
         emb = self.embedding(input)  # (B,1,emb)
         x = self.input_layer_norm(self.input_proj(emb))  # (B,1,d_model)
         new_state: List[List[Tensor]] = []
-        num_layers = len(self.layers)
-        for layer_idx in range(num_layers):
+        layer_idx = 0
+        for layer in self.layers:
             st = state[layer_idx]
             k_cache = st[0]
             v_cache = st[1]
-            x, new_k, new_v = self.layers[layer_idx].forward_inc(x, k_cache, v_cache)
+            x, new_k, new_v = layer.forward_inc(x, k_cache, v_cache)
             new_state.append([new_k, new_v])
+            layer_idx += 1
         x = self.dropout(x)
         out = self.output_layer_norm(self.linear(x))  # (B,1,output_dim)
         return out, lengths, new_state
