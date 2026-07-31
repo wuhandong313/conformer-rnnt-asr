@@ -191,7 +191,7 @@ class PredictorAttn(torch.nn.Module):
     def _empty_cache(self, batch: int, device, dtype) -> List[List[Tensor]]:
         """空 KV cache：每层 [K(0 dim), V(0 dim)]。"""
         zero = torch.zeros(
-            batch, self.num_heads, 0, self.head_dim, device=device, dtype=dtype
+            [batch, self.num_heads, 0, self.head_dim], device=device, dtype=dtype
         )
         return [[zero, zero] for _ in self.layers]
 
