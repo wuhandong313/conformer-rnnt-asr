@@ -131,10 +131,11 @@ def speculative_greedy_decode(
 
         # ---- 逐个验证 d_j ----
         # 状态推进与 oracle 完全一致：每个 d_j 允许 ≤per_token_blank 次 blank
-        # (t 前进) 后 emit，emit 必须 == d_j；否则停止投机。
+        # (t 前进) 后 emit。若 emit == d_j：接受、推进 predictor。若 emit != d_j：
+        # 失配但仍须 emit 该 label（与 oracle 一致），然后停止投机。若 frame 耗尽
+        # 未 emit：停止投机（状态停留，下轮外层从同 t 继续，等价 oracle 走 blank）。
         for j in range(K):
             d_j = drafts[j]
-            # 允许 blank 步
             blanks = 0
             emitted = None
             while blanks < per_token_blank and t < T - 1:
@@ -146,16 +147,20 @@ def speculative_greedy_decode(
                 else:
                     emitted = p
                     break
-            if emitted is None or emitted != d_j:
-                # 失配：本步投机结束，状态停留在 (t, 当前 g_last)。
-                # 与 oracle 此刻状态一致 (oracle 也会在下一个 emit 处决定)。
+            if emitted is None:
+                # 帧窗耗尽未 emit：停止投机，t 已前进若干 blank（与 oracle 的 blank 前进一致）
                 break
-            # 命中 d_j：提交，推进 predictor (吃 d_j)
+            if emitted != d_j:
+                # 失配：但 head-0 在此处确实 emit `emitted`，必须提交以与 oracle 一致
+                out.append(emitted)
+                tok = torch.tensor([[emitted]], device=dev, dtype=torch.long)
+                g_last, _, state = model.predict(tok, one, state)
+                break
+            # 命中 d_j：提交，推进 predictor (吃 d_j)；emit 后 t 不变
             out.append(d_j)
             tok = torch.tensor([[d_j]], device=dev, dtype=torch.long)
             g_last, _, state = model.predict(tok, one, state)
-            # emit 后 t 不变 (同帧可连续 emit)，与 oracle 一致
-        # 本轮投机结束，回到外层 while (下步重新 head-0 判定)
+        # 本轮投机结束，回到外层 while
 
     return out
 
