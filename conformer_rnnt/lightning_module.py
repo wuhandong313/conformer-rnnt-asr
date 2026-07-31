@@ -365,8 +365,6 @@ class LibriSpeechRNNTModule(LightningModule):
         train_subset: str = "train-clean-100",
         val_subset: str = "dev-clean",
         test_subset: str = "test-clean",
-        # Decoding
-        beam_width: int = 20,
     ):
         super().__init__()
         self.save_hyperparameters()
