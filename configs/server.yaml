@@ -255,7 +255,7 @@ decoding:
   #   0  → greedy 推理 (RNNTBeamSearch width=1)，逐 token 贪心
   #        作为未来投机解码 (speculative decoding) 的无损 oracle 基线
   #   >0 → 标准 beam search (原仓库默认 20)
-  beam_width: 0
+  beam_width: 20
 
 # ---------------------------------------------------------------------------
 # 其他

@@ -108,6 +108,26 @@ class _CausalAttnLayer(torch.nn.Module):
         out = out.transpose(1, 2).contiguous().view(B, 1, self.d_model)
         return self.out_proj(out), new_k, new_v
 
+    # ------------------------------------------------------------------
+    def forward_full(self, x: Tensor) -> Tensor:
+        """完整序列残差前向。x: (B, U, D) → (B, U, D)。"""
+        x = x + self.dropout(self._mha_full(x))
+        x = self.norm1(x)
+        x = x + self.ffn(x)
+        x = self.norm2(x)
+        return x
+
+    def forward_inc(
+        self, x_new: Tensor, k_cache: Tensor, v_cache: Tensor
+    ) -> Tuple[Tensor, Tensor, Tensor]:
+        """单步增量残差前向。x_new: (B,1,D) → (out, new_k, new_v)。"""
+        attn_out, new_k, new_v = self._mha_increment(x_new, k_cache, v_cache)
+        x = x_new + self.dropout(attn_out)
+        x = self.norm1(x)
+        x = x + self.ffn(x)
+        x = self.norm2(x)
+        return x, new_k, new_v
+
 
 # ═══════════════════════════════════════════════════════════════════════════
 # 受限因果自注意力 Predictor
@@ -192,8 +212,7 @@ class PredictorAttn(torch.nn.Module):
         emb = self.embedding(input)  # (B, U, emb_dim)
         x = self.input_layer_norm(self.input_proj(emb))  # (B, U, d_model)
         for layer in self.layers:
-            attn_out = layer._mha_full(x)
-            x = self.norm2(self.ffn(self.norm1(x + self.dropout(attn_out))))
+            x = layer.forward_full(x)
         x = self.dropout(x)
         out = self.output_layer_norm(self.linear(x))  # (B, U, output_dim)
         return out, lengths, self._empty_cache(input.size(0), input.device, x.dtype)
@@ -220,8 +239,7 @@ class PredictorAttn(torch.nn.Module):
         new_state: List[List[Tensor]] = []
         for layer, st in zip(self.layers, state):
             k_cache, v_cache = st[0], st[1]
-            attn_out, new_k, new_v = layer._mha_increment(x, k_cache, v_cache)
-            x = self.norm2(self.ffn(self.norm1(x + self.dropout(attn_out))))
+            x, new_k, new_v = layer.forward_inc(x, k_cache, v_cache)
             new_state.append([new_k, new_v])
         x = self.dropout(x)
         out = self.output_layer_norm(self.linear(x))  # (B,1,output_dim)
