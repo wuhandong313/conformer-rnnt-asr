@@ -94,23 +94,33 @@ model:
 
   # === Predictor (RNN-T 语言模型组件) ===
   predictor:
+    # Predictor trunk 类型: "lstm"(原基线) | "attn"(受限因果自注意力, Medusa backbone)
+    type: "lstm"
+
     # Token embedding 维度
     symbol_embedding_dim: 128
 
-    # LSTM 层数
+    # === LSTM 参数 (仅 type=lstm 生效) ===
     num_lstm_layers: 2
-
-    # LSTM 隐藏状态维度 (通常与 symbol_embedding_dim 相同)
     lstm_hidden_dim: 128
-
-    # 是否对 LSTM 的 gate / cell 做 LayerNorm
     lstm_layer_norm: true
-
-    # LSTM LayerNorm 的 epsilon
     lstm_layer_norm_epsilon: 0.001
-
-    # LSTM 层间 Dropout 概率
     lstm_dropout: 0.3
+
+    # === 自注意力 trunk 参数 (仅 type=attn 生效) ===
+    attn:
+      d_model: 256
+      num_layers: 4
+      num_heads: 4
+      ffn_dim: 1024
+      left_context: 1024
+      dropout: 0.1
+
+  # === Medusa 多头未来标签预测 (plan §3.3) ===
+  medusa:
+    num_heads: 0               # 0 = 关闭 (单头); >0 = K 个未来预测头
+    ce_loss_weights: [0.8, 0.64, 0.512, 0.4096]
+    kl_weight: 0.05
 
   # === Joiner (联合网络, 融合声学+语言编码) ===
   joiner:
@@ -248,7 +258,17 @@ decoding:
   #   0  → greedy 推理 (RNNTBeamSearch width=1)，逐 token 贪心
   #        作为未来投机解码 (speculative decoding) 的无损 oracle 基线
   #   >0 → 标准 beam search (原仓库默认 20)
-  beam_width: 0
+  beam_width: 20
+
+  # 解码模式: "beam"(标准) | "spec_greedy"(自投机贪心, 无损, 需 medusa heads)
+  mode: "beam"
+
+  # spec_greedy 参数 (仅 mode=spec_greedy 生效)
+  spec:
+    max_draft: 4
+    frame_window: 16
+    per_token_blank: 4
+    tree: false            # false=链式 | true=树式候选
 
 # ---------------------------------------------------------------------------
 # 其他
