@@ -44,3 +44,6 @@ env/
 
 # Claude
 .claude/
+
+# temp probe scripts
+_probe*.py
