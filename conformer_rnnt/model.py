@@ -21,17 +21,28 @@ class ConformerRNNT(torch.nn.Module):
     ----------
     transcriber : ConformerEncoder
         Acoustic encoder — two-stage Conformer with optional compression.
-    predictor : Predictor
-        Autoregressive language model — stacked layer-norm LSTM.
+    predictor : Predictor | PredictorAttn
+        Autoregressive language model — LSTM (default) or restricted causal
+        self-attention trunk (``predictor.type="attn"``).
     joiner : Joiner
         Joint network — additive fusion → activation → linear → logits.
+    medusa_heads : MedusaHeads | None
+        Optional Medusa-style future-label heads over the predictor trunk;
+        ``None`` for single-head / ablation.
     """
 
-    def __init__(self, transcriber: ConformerEncoder, predictor: Predictor, joiner: Joiner) -> None:
+    def __init__(
+        self,
+        transcriber: ConformerEncoder,
+        predictor,
+        joiner: Joiner,
+        medusa_heads=None,
+    ) -> None:
         super().__init__()
         self.transcriber = transcriber
         self.predictor = predictor
         self.joiner = joiner
+        self.medusa_heads = medusa_heads
 
     # ── Training forward ────────────────────────────────────────────────
     def forward(
@@ -52,6 +63,29 @@ class ConformerRNNT(torch.nn.Module):
         tgt_enc, tgt_len, pred_state = self.predictor(targets, target_lengths, predictor_state)
         logits, src_len, tgt_len = self.joiner(src_enc, src_len, tgt_enc, tgt_len)
         return logits, src_len, tgt_len, pred_state
+
+    # ── Training forward with Medusa aux outputs ────────────────────────
+    def forward_train_aux(
+        self,
+        sources: Tensor,
+        source_lengths: Tensor,
+        targets: Tensor,
+        target_lengths: Tensor,
+    ) -> Tuple[Tensor, Tensor, Tensor, List[List[Tensor]], Optional[Tensor], Optional[List[Tensor]]]:
+        """Forward producing RNNT logits + Medusa head logits for aux loss.
+
+        Returns:
+            (logits, src_len, tgt_len, pred_state, logits_base, logits_future)
+            logits_base/future are None when medusa_heads is None.
+        """
+        src_enc, src_len = self.transcriber(sources, source_lengths)
+        tgt_enc, tgt_len, pred_state = self.predictor(targets, target_lengths, None)
+        logits, src_len, tgt_len = self.joiner(src_enc, src_len, tgt_enc, tgt_len)
+        if self.medusa_heads is not None:
+            logits_base, logits_future = self.medusa_heads(tgt_enc)
+        else:
+            logits_base, logits_future = None, None
+        return logits, src_len, tgt_len, pred_state, logits_base, logits_future
 
     # ── Component-level APIs (for beam search) ──────────────────────────
     @torch.jit.export
@@ -81,6 +115,23 @@ class ConformerRNNT(torch.nn.Module):
     ) -> Tuple[Tensor, Tensor, Tensor]:
         """Fuse acoustic and language encodings."""
         return self.joiner(source_encodings, source_lengths, target_encodings, target_lengths)
+
+    @torch.jit.export
+    def predict_heads(
+        self, target_encodings: Tensor
+    ) -> Tuple[Optional[Tensor], List[Tensor]]:
+        """Apply Medusa heads to predictor trunk encodings (for spec decode).
+
+        Args:
+            target_encodings: (B, L, D) from ``predict`` (trunk output).
+
+        Returns:
+            (logits_base, logits_future) — both empty/None when no heads.
+        """
+        if self.medusa_heads is not None:
+            return self.medusa_heads(target_encodings)
+        empty: List[Tensor] = []
+        return None, empty
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -114,13 +165,55 @@ def conformer_rnnt_model(
     lstm_layer_norm: bool = True,
     lstm_layer_norm_epsilon: float = 1e-3,
     lstm_dropout: float = 0.3,
+    # Predictor — attention trunk (predictor_type="attn")
+    predictor_type: str = "lstm",
+    attn_d_model: int = 256,
+    attn_num_layers: int = 4,
+    attn_num_heads: int = 4,
+    attn_ffn_dim: int = 1024,
+    attn_left_context: int = 1024,
+    attn_dropout: float = 0.1,
     # Joiner
     joiner_activation: str = "relu",
+    # Medusa
+    medusa_num_heads: int = 0,
 ) -> ConformerRNNT:
     """Build a Conformer-RNNT model from explicit keyword arguments.
 
     All parameters are keyword-only to prevent positional confusion.
     """
+    if predictor_type == "attn":
+        from conformer_rnnt.predictor_attn import PredictorAttn
+        predictor = PredictorAttn(
+            num_symbols=num_symbols,
+            output_dim=encoding_dim,
+            symbol_embedding_dim=symbol_embedding_dim,
+            d_model=attn_d_model,
+            num_layers=attn_num_layers,
+            num_heads=attn_num_heads,
+            ffn_dim=attn_ffn_dim,
+            left_context=attn_left_context,
+            dropout=attn_dropout,
+        )
+    else:
+        predictor = Predictor(
+            num_symbols=num_symbols,
+            output_dim=encoding_dim,
+            symbol_embedding_dim=symbol_embedding_dim,
+            num_lstm_layers=num_lstm_layers,
+            lstm_hidden_dim=lstm_hidden_dim,
+            lstm_layer_norm=lstm_layer_norm,
+            lstm_layer_norm_epsilon=lstm_layer_norm_epsilon,
+            lstm_dropout=lstm_dropout,
+        )
+
+    medusa_heads = None
+    if medusa_num_heads > 0:
+        from conformer_rnnt.medusa import MedusaHeads
+        medusa_heads = MedusaHeads(
+            input_dim=encoding_dim, num_vocab=num_symbols, num_heads=medusa_num_heads
+        )
+
     return ConformerRNNT(
         transcriber=ConformerEncoder(
             input_dim=input_dim,
@@ -138,17 +231,9 @@ def conformer_rnnt_model(
             hanning_window_size=hanning_window_size,
             weight_predictor_mode=weight_predictor_mode,
         ),
-        predictor=Predictor(
-            num_symbols=num_symbols,
-            output_dim=encoding_dim,
-            symbol_embedding_dim=symbol_embedding_dim,
-            num_lstm_layers=num_lstm_layers,
-            lstm_hidden_dim=lstm_hidden_dim,
-            lstm_layer_norm=lstm_layer_norm,
-            lstm_layer_norm_epsilon=lstm_layer_norm_epsilon,
-            lstm_dropout=lstm_dropout,
-        ),
+        predictor=predictor,
         joiner=Joiner(input_dim=encoding_dim, output_dim=num_symbols, activation=joiner_activation),
+        medusa_heads=medusa_heads,
     )
 
 
@@ -160,7 +245,9 @@ def conformer_rnnt_model_from_config(config: Dict[str, Any]) -> ConformerRNNT:
     m = config.get("model", config)
     c = m.get("compression", {})
     p = m.get("predictor", {})
+    a = p.get("attn", {})
     j = m.get("joiner", {})
+    med = m.get("medusa", {})
 
     return conformer_rnnt_model(
         input_dim=m.get("input_dim", 80),
@@ -184,7 +271,15 @@ def conformer_rnnt_model_from_config(config: Dict[str, Any]) -> ConformerRNNT:
         lstm_layer_norm=p.get("lstm_layer_norm", True),
         lstm_layer_norm_epsilon=p.get("lstm_layer_norm_epsilon", 1e-3),
         lstm_dropout=p.get("lstm_dropout", 0.3),
+        predictor_type=p.get("type", "lstm"),
+        attn_d_model=a.get("d_model", 256),
+        attn_num_layers=a.get("num_layers", 4),
+        attn_num_heads=a.get("num_heads", 4),
+        attn_ffn_dim=a.get("ffn_dim", 1024),
+        attn_left_context=a.get("left_context", 1024),
+        attn_dropout=a.get("dropout", 0.1),
         joiner_activation=j.get("activation", "relu"),
+        medusa_num_heads=med.get("num_heads", 0),
     )
 
 
