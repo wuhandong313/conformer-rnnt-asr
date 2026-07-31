@@ -31,6 +31,7 @@ from common import (
     WarmupLR,
 )
 from conformer_rnnt.model import conformer_rnnt_model
+from conformer_rnnt.medusa import shifted_ce_loss, kl_to_base_loss
 
 
 # ---------------------------------------------------------------------------
@@ -327,6 +328,20 @@ class LibriSpeechRNNTModule(LightningModule):
         lstm_dropout: float = 0.3,
         # Model — joiner
         joiner_activation: str = "relu",
+        # Predictor — attention trunk
+        predictor_type: str = "lstm",
+        attn_d_model: int = 256,
+        attn_num_layers: int = 4,
+        attn_num_heads: int = 4,
+        attn_ffn_dim: int = 1024,
+        attn_left_context: int = 1024,
+        attn_dropout: float = 0.1,
+        # Medusa
+        medusa_num_heads: int = 0,
+        medusa_ce_weights: tuple = (0.8, 0.64, 0.512, 0.4096),
+        medusa_kl_weight: float = 0.05,
+        # Decoding
+        beam_width: int = 20,
         # Training
         learning_rate: float = 5e-4,
         adam_betas: tuple = (0.9, 0.999),
@@ -379,6 +394,15 @@ class LibriSpeechRNNTModule(LightningModule):
             lstm_layer_norm=lstm_layer_norm,
             lstm_layer_norm_epsilon=lstm_layer_norm_epsilon,
             lstm_dropout=lstm_dropout,
+            predictor_type=predictor_type,
+            attn_d_model=attn_d_model,
+            attn_num_layers=attn_num_layers,
+            attn_num_heads=attn_num_heads,
+            attn_ffn_dim=attn_ffn_dim,
+            attn_left_context=attn_left_context,
+            attn_dropout=attn_dropout,
+            joiner_activation=joiner_activation,
+            medusa_num_heads=medusa_num_heads,
         )
 
         # ---- Mel spectrogram params (not a submodule — stays on CPU) ----
@@ -454,6 +478,10 @@ class LibriSpeechRNNTModule(LightningModule):
         # lossless oracle baseline for future speculative decoding.
         self.beam_width = beam_width
 
+        # ---- Medusa aux loss config ----
+        self.medusa_ce_weights = list(medusa_ce_weights)
+        self.medusa_kl_weight = medusa_kl_weight
+
     # ------------------------------------------------------------------
     # Factory: build from a config dictionary (e.g. loaded from YAML)
     # ------------------------------------------------------------------
@@ -467,7 +495,9 @@ class LibriSpeechRNNTModule(LightningModule):
         model_cfg = config.get("model", {})
         comp_cfg = model_cfg.get("compression", {})
         pred_cfg = model_cfg.get("predictor", {})
+        attn_cfg = pred_cfg.get("attn", {})
         joiner_cfg = model_cfg.get("joiner", {})
+        medusa_cfg = model_cfg.get("medusa", {})
         training_cfg = config.get("training", {})
         data_cfg = config.get("data", {})
         aug_cfg = data_cfg.get("spec_augment", {})
@@ -502,8 +532,20 @@ class LibriSpeechRNNTModule(LightningModule):
             lstm_layer_norm=pred_cfg.get("lstm_layer_norm", True),
             lstm_layer_norm_epsilon=pred_cfg.get("lstm_layer_norm_epsilon", 1e-3),
             lstm_dropout=pred_cfg.get("lstm_dropout", 0.3),
+            # Predictor — attention trunk
+            predictor_type=pred_cfg.get("type", "lstm"),
+            attn_d_model=attn_cfg.get("d_model", 256),
+            attn_num_layers=attn_cfg.get("num_layers", 4),
+            attn_num_heads=attn_cfg.get("num_heads", 4),
+            attn_ffn_dim=attn_cfg.get("ffn_dim", 1024),
+            attn_left_context=attn_cfg.get("left_context", 1024),
+            attn_dropout=attn_cfg.get("dropout", 0.1),
             # Joiner
             joiner_activation=joiner_cfg.get("activation", "relu"),
+            # Medusa
+            medusa_num_heads=medusa_cfg.get("num_heads", 0),
+            medusa_ce_weights=tuple(medusa_cfg.get("ce_loss_weights", [0.8, 0.64, 0.512, 0.4096])),
+            medusa_kl_weight=medusa_cfg.get("kl_weight", 0.05),
             # Training
             learning_rate=training_cfg.get("learning_rate", 5e-4),
             adam_betas=tuple(training_cfg.get("adam_betas", [0.9, 0.999])),
@@ -617,7 +659,7 @@ class LibriSpeechRNNTModule(LightningModule):
         prepended_targets[:, 0] = self.blank_idx
         prepended_target_lengths = batch.target_lengths + 1
 
-        output, src_lengths, _, _ = self.model(
+        output, src_lengths, _, _, logits_base, logits_future = self.model.forward_train_aux(
             batch.features,
             batch.feature_lengths,
             prepended_targets,
@@ -630,6 +672,20 @@ class LibriSpeechRNNTModule(LightningModule):
         target_lengths = batch.target_lengths.to(torch.int32)
 
         loss = self.loss(output, batch.targets, src_lengths, target_lengths)
+
+        # Medusa aux loss (only when heads present; targets = batch.targets, len U)
+        if logits_future is not None and len(logits_future) > 0:
+            K = len(logits_future)
+            weights = self.medusa_ce_weights[:K]
+            # pad weights if config provided fewer than K
+            if len(weights) < K:
+                weights = weights + [0.8 ** (i + 1) for i in range(len(weights), K)]
+            ce_aux = shifted_ce_loss(logits_future, batch.targets, weights)
+            kl_aux = kl_to_base_loss(logits_future, logits_base, self.medusa_kl_weight)
+            loss = loss + ce_aux + kl_aux
+            self.log(f"Losses/{step_type}_medusa_ce", ce_aux, on_step=True, on_epoch=True)
+            self.log(f"Losses/{step_type}_medusa_kl", kl_aux, on_step=True, on_epoch=True)
+
         self.log(f"Losses/{step_type}_loss", loss, on_step=True, on_epoch=True)
         return loss
 
