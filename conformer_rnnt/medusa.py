@@ -115,7 +115,7 @@ def shifted_ce_loss(
         if U - k <= 0:
             continue  # 序列太短，该 head 无有效位置
         pred = logits_k[:, : U - k, :].reshape(-1, V)   # (B*(U-k), V)
-        label = targets[:, k: U].reshape(-1)            # (B*(U-k),)
+        label = targets[:, k: U].reshape(-1).long()     # (B*(U-k),) CE 需 Long
         ce = F.cross_entropy(pred, label, reduction="mean", ignore_index=-1)
         total = total + weights[k_idx] * ce
     return total
