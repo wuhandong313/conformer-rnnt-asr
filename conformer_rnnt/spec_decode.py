@@ -82,15 +82,13 @@ def speculative_greedy_decode(
     tree: bool = False,
     max_steps: int = 100000,
 ) -> List[int]:
-    """自投机贪心解码 (链式 draft)。
+    """自投机贪心解码 (链式 draft) — 无损。
 
-    每轮：
-      1. 在当前末位置用 heads 草拟 d_1..d_K (head k argmax)。
-      2. 在帧窗 [t, t+W] 上用 head-0 joiner argmax 重放贪心验证：
-         每个 emitted label 必须依次 == d_j；接受最长前缀 m。
-      3. 提交 [d_1..d_m]，状态落在接受末端；失配 m=0 → 走一步标准贪心。
-
-    无损性：验证器 == head-0 argmax == greedy_decode 的 argmax ⇒ 逐 token 一致。
+    状态推进严格复刻 greedy_decode：emit 后 g_last 推进、t 不变；blank 后
+    t 推进、g_last 不变。投机只在"连续 emit"处省 predictor 往返：草拟
+    d_1..d_K，逐个用 head-0 joiner argmax 验证(允许 ≤per_token_blank 个
+    blank 步到下一次 emit)，命中即连续提交；失配或遇 blank 则本步用标准
+    贪心推进。因验证器 == head-0 argmax == oracle argmax ⇒ 逐 token 一致。
     """
     dev = features.device
     enc, enc_len = model.transcribe(features, feature_lengths)
@@ -101,10 +99,10 @@ def speculative_greedy_decode(
     K = min(max_draft, model.medusa_heads.num_heads)
     one = torch.tensor([1], device=dev, dtype=torch.int32)
 
-    # 初始：predictor 吃 blank，得 g_last (1,1,512)，state 累积
+    # 初始：predictor 吃 blank 得首位置编码 g_last (1,1,512)，state 累积
     cur_token = torch.tensor([[blank_idx]], device=dev, dtype=torch.long)
-    g, _, state = model.predict(cur_token, one, None)
-    g_last = g  # (1,1,512)
+    g0, _, state = model.predict(cur_token, one, None)
+    g_last = g0
 
     out: List[int] = []
     t = 0
@@ -112,103 +110,52 @@ def speculative_greedy_decode(
 
     while t < T and steps < max_steps:
         steps += 1
-        # ---- head-0 当前 argmax (作为本步 emit 候选 y*) ----
-        # joiner(enc[t], g_last) 的 argmax 决定走 blank 还是 emit
+        # ---- 本步 head-0 argmax (决定 blank/emit) ----
         logits_t, _, _ = model.join(enc[:, t:t+1], one, g_last, one)  # (1,1,1,V)
         pred0 = int(logits_t.argmax(dim=-1).item())
 
         if pred0 == blank_idx:
-            # 当前帧发 blank，前进一帧，label 位不变
+            # blank：t 前进，g_last/state 不变
             t += 1
             continue
 
-        # ---- emit y*=pred0；先草拟 draft ----
-        # heads 在当前 g_last 输出 base + future
-        base_logits, future_logits = model.predict_heads(g_last)  # 各 (1,1,V)
-        # head k (future[k-1]) 预测 targets[u+k] ⇒ 草拟 d_k
-        drafts: List[int] = []
-        for k in range(K):
-            d = int(future_logits[k].argmax(dim=-1).item())
-            drafts.append(d)
-
-        # ---- 验证：在帧窗 [t, t+W] 内重放贪心，接受与 drafts 一致的最长前缀 ----
-        # 先提交 y*=pred0（已确认 emit）。然后逐个验证 d_1, d_2, ...
-        # 验证每个 d_j：需要从当前 (t, u) 出发，允许 ≤ per_token_blank 个 blank 步
-        # 后必须 emit 一个 label；该 label 必须 == d_j。
-        accepted: List[int] = []
-        # 临时推进状态（用副本，失配要回滚）。注意 predictor state 是 append-only
-        # KV cache，回滚 = 用保存的旧 state 切片。
-        t_cur = t
-        # 我们需要逐个 emit 的 predictor 编码；先算 y* 的 g
-        # 注：head-0 argmax 在 g_last 已是 pred0；下面逐步推进。
-        # 为安全正确，验证阶段我们用"标准贪心一步"向前模拟：
-        cur_g = g_last
-        cur_state = state
-        rollback_state = state
-        rollback_g = g_last
-        rollback_t = t
-        rollback_out_len = len(out)
-
-        # 提交 y*
+        # ---- emit y*=pred0 ----
         out.append(pred0)
-        # predictor 吃 pred0 → 新 g
+        # predictor 吃 pred0 → 新 g_last (label 位 +1，t 不变)
         tok = torch.tensor([[pred0]], device=dev, dtype=torch.long)
-        cur_g, _, cur_state = model.predict(tok, one, cur_state)
-        # 现在验证 d_1..: 从 cur_g / cur_state 出发，帧窗内找下一个 emit
-        # 帧窗预算：剩余可用帧 = frame_window（从 t 起）。但我们已 emit 0 个 blank 步。
-        # 简化：对每个 d_j，允许最多 per_token_blank 次 blank 前进，然后 emit 必须 == d_j。
-        ok = True
+        g_last, _, state = model.predict(tok, one, state)
+
+        # ---- 草拟 d_1..d_K (head k argmax over 当前 g_last) ----
+        base_logits, future_logits = model.predict_heads(g_last)
+        drafts = [int(future_logits[k].argmax(dim=-1).item()) for k in range(K)]
+
+        # ---- 逐个验证 d_j ----
+        # 状态推进与 oracle 完全一致：每个 d_j 允许 ≤per_token_blank 次 blank
+        # (t 前进) 后 emit，emit 必须 == d_j；否则停止投机。
         for j in range(K):
             d_j = drafts[j]
-            # 在帧窗内前进 blank 直到 emit 或超限
-            blanks_used = 0
+            # 允许 blank 步
+            blanks = 0
             emitted = None
-            while blanks_used < per_token_blank and t_cur < T:
-                # 当前 (t_cur, 末 u) 的 argmax
-                lg, _, _ = model.join(enc[:, t_cur:t_cur+1], one, cur_g, one)
+            while blanks < per_token_blank and t < T - 1:
+                lg, _, _ = model.join(enc[:, t:t+1], one, g_last, one)
                 p = int(lg.argmax(dim=-1).item())
                 if p == blank_idx:
-                    t_cur += 1
-                    blanks_used += 1
+                    t += 1
+                    blanks += 1
                 else:
                     emitted = p
                     break
-            if emitted is None:
-                # 帧窗耗尽仍未 emit → 不能接受 d_j (及之后)
-                ok = False
+            if emitted is None or emitted != d_j:
+                # 失配：本步投机结束，状态停留在 (t, 当前 g_last)。
+                # 与 oracle 此刻状态一致 (oracle 也会在下一个 emit 处决定)。
                 break
-            if emitted != d_j:
-                ok = False
-                break
-            # 接受 d_j
-            accepted.append(d_j)
+            # 命中 d_j：提交，推进 predictor (吃 d_j)
             out.append(d_j)
-            rollback_state = cur_state
-            rollback_g = cur_g
-            rollback_t = t_cur
-            # 推进 predictor：吃 d_j
             tok = torch.tensor([[d_j]], device=dev, dtype=torch.long)
-            cur_g, _, cur_state = model.predict(tok, one, cur_state)
-
-        if ok and len(accepted) == K:
-            # 全部接受，t_cur 是末 emit 的帧；下一步从 t_cur+1? 不——
-            # 我们已 emit，下一步应在新 label 位继续。把 t 指针留 t_cur，
-            # 下轮 head-0 会决定 blank/emit。
-            t = t_cur
-            state = cur_state
-            g_last = cur_g
-        elif len(accepted) > 0:
-            # 部分接受：提交 accepted，状态回滚到最后一个接受处
-            t = rollback_t
-            state = rollback_state
-            g_last = rollback_g
-        else:
-            # m=0：只提交 y*=pred0（已 append），状态用 pred0 后的 cur_g/state
-            # 但要回滚 out 里多加的（accepted 为空，没多加）
-            t = t  # t 停在 emit 帧本步；下轮 head-0 在新 g 位继续
-            state = cur_state  # pred0 后的状态（已推进一格 label）
-            g_last = cur_g
-        # 继续下轮
+            g_last, _, state = model.predict(tok, one, state)
+            # emit 后 t 不变 (同帧可连续 emit)，与 oracle 一致
+        # 本轮投机结束，回到外层 while (下步重新 head-0 判定)
 
     return out
 
