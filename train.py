@@ -49,10 +49,11 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
 
     exp_dir = paths.get("exp_dir", "./exp")
     checkpoint_dir = os.path.join(exp_dir, "checkpoints")
+    filt = config.get("model", {}).get("compression", {}).get("filter", "none")
 
     val_ckpt = ModelCheckpoint(
         dirpath=checkpoint_dir,
-        filename="val-{epoch:02d}-{step}",
+        filename=f"val-{filt}-{{epoch:02d}}-{{step}}",
         monitor="Losses/val_loss",
         mode="min",
         save_top_k=ckpt.get("save_top_k", 2),
@@ -62,7 +63,7 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
     )
     train_ckpt = ModelCheckpoint(
         dirpath=checkpoint_dir,
-        filename="train-{epoch:02d}-{step}",
+        filename=f"train-{filt}-{{epoch:02d}}-{{step}}",
         monitor="Losses/train_loss",
         mode="min",
         save_top_k=ckpt.get("save_top_k", 2),
