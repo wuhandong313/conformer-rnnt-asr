@@ -81,7 +81,7 @@ model:
     #   fir             — FIR 低通滤波 → 粗定位 → 在原信号上精确定位
     #   savgol          — Savitzky-Golay 平滑 → find_peaks
     #   savgol_hanning  — Savitzky-Golay 平滑 + Hanning 加权
-    filter: "savgol"
+    filter: "none"
 
     # Hanning 窗大小 (仅 hanning / savgol_hanning 模式生效)
     # 控制每个峰/谷周围做加权平滑的帧数
@@ -120,10 +120,10 @@ model:
   # === Medusa 多头未来标签预测 (plan §3.3) ===
   medusa:
     # 头数 K (head 1..K 做 aux CE); 0 = 关闭 (单头消融, 仅验 trunk)
-    num_heads: 0
+    num_heads: 2
 
     # 冻结 base model (encoder + predictor + joiner)，仅训练 Medusa heads
-    freeze_base: false
+    freeze_base: true
 
     # 各 head 的 shifted-CE 权重 λ_k=0.8^k (K 个; 不足自动补 0.8^(k+1))
     ce_loss_weights: [0.8, 0.64, 0.512, 0.4096]
