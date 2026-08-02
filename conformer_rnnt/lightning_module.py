@@ -475,6 +475,20 @@ class LibriSpeechRNNTModule(LightningModule):
         self.medusa_kl_weight = medusa_kl_weight
 
     # ------------------------------------------------------------------
+    # Checkpoint loading — allow missing medusa_heads keys
+    # ------------------------------------------------------------------
+    def load_state_dict(self, state_dict, strict=True):
+        """Load state dict, auto-relaxing strict when Medusa heads are present.
+
+        Old base checkpoints don't contain ``model.medusa_heads.*`` keys.
+        When ``medusa_num_heads > 0``, we use ``strict=False`` so the
+        missing head weights stay at their random (zero) initialization.
+        """
+        if self.model.medusa_heads is not None:
+            return super().load_state_dict(state_dict, strict=False)
+        return super().load_state_dict(state_dict, strict=strict)
+
+    # ------------------------------------------------------------------
     # Factory: build from a config dictionary (e.g. loaded from YAML)
     # ------------------------------------------------------------------
     @classmethod

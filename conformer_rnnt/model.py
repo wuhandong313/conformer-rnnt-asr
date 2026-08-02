@@ -81,7 +81,7 @@ class ConformerRNNT(torch.nn.Module):
         tgt_enc, tgt_len, pred_state = self.predictor(targets, target_lengths, None)
         logits, src_len, tgt_len = self.joiner(src_enc, src_len, tgt_enc, tgt_len)
         if self.medusa_heads is not None:
-            logits_base, logits_future = self.medusa_heads(tgt_enc)
+            logits_base, logits_future = self.medusa_heads(src_enc, tgt_enc)
         else:
             logits_base, logits_future = None, None
         return logits, src_len, tgt_len, pred_state, logits_base, logits_future
@@ -117,18 +117,21 @@ class ConformerRNNT(torch.nn.Module):
 
     @torch.jit.export
     def predict_heads(
-        self, target_encodings: Tensor
+        self,
+        source_encodings: Tensor,
+        target_encodings: Tensor,
     ) -> Tuple[Optional[Tensor], List[Tensor]]:
-        """Apply Medusa heads to predictor trunk encodings (for spec decode).
+        """Apply Medusa heads to joiner-fused features (for spec decode).
 
         Args:
-            target_encodings: (B, L, D) from ``predict`` (trunk output).
+            source_encodings: (B, T, D) encoder output (T=1 at inference).
+            target_encodings: (B, L, D) from ``predict`` (L=1 at inference).
 
         Returns:
             (logits_base, logits_future) — both empty/None when no heads.
         """
         if self.medusa_heads is not None:
-            return self.medusa_heads(target_encodings)
+            return self.medusa_heads(source_encodings, target_encodings)
         empty: List[Tensor] = []
         return None, empty
 
@@ -188,7 +191,10 @@ def conformer_rnnt_model(
     if medusa_num_heads > 0:
         from conformer_rnnt.medusa import MedusaHeads
         medusa_heads = MedusaHeads(
-            input_dim=encoding_dim, num_vocab=num_symbols, num_heads=medusa_num_heads
+            input_dim=encoding_dim,
+            num_vocab=num_symbols,
+            num_heads=medusa_num_heads,
+            activation=joiner_activation,
         )
 
     return ConformerRNNT(

@@ -121,13 +121,16 @@ def speculative_greedy_decode(
 
         # ---- emit y*=pred0 ----
         out.append(pred0)
+
+        # ---- 草拟 d_1..d_K (在吃 token 之前: g_last = tgt_enc[u], head k → y_{u+k}) ----
+        # 必须吃之前草拟: training时 head k at (t,u) → label = targets[u+k]
+        # draft[0] = head_1 → y_{u+1}, 跟 joiner 在 (u+1) 的 emit 对齐
+        base_logits, future_logits = model.predict_heads(enc[:, t:t+1], g_last)
+        drafts = [int(future_logits[k].argmax(dim=-1).item()) for k in range(K)]
+
         # predictor 吃 pred0 → 新 g_last (label 位 +1，t 不变)
         tok = torch.tensor([[pred0]], device=dev, dtype=torch.long)
         g_last, _, state = model.predict(tok, one, state)
-
-        # ---- 草拟 d_1..d_K (head k argmax over 当前 g_last) ----
-        base_logits, future_logits = model.predict_heads(g_last)
-        drafts = [int(future_logits[k].argmax(dim=-1).item()) for k in range(K)]
 
         # ---- 逐个验证 d_j ----
         # 状态推进与 oracle 完全一致：每个 d_j 允许 ≤per_token_blank 次 blank
