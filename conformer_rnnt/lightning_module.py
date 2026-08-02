@@ -746,7 +746,10 @@ class LibriSpeechRNNTModule(LightningModule):
             width = 1 if self.beam_width == 0 else self.beam_width
             decoder = RNNTBeamSearch(self.model, self.blank_idx)
             hypotheses = decoder(features, feature_lengths, width)
+            # beam 假设 tokens 首位是初始 blank(即 blank_idx),跳过
             token_ids = hypotheses[0][0]
+            if token_ids and token_ids[0] == self.blank_idx:
+                token_ids = token_ids[1:]
 
             # 2) Medusa accept 统计(贪心回放,不改解码结果)
             stats = medusa_accept_stats(
