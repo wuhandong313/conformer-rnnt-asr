@@ -33,7 +33,7 @@ from common import (
 )
 from conformer_rnnt.model import conformer_rnnt_model
 from conformer_rnnt.medusa import shifted_ce_loss, kl_to_base_loss
-from conformer_rnnt.spec_decode import speculative_greedy_decode
+from conformer_rnnt.spec_decode import medusa_accept_stats
 
 
 # ---------------------------------------------------------------------------
@@ -731,40 +731,44 @@ class LibriSpeechRNNTModule(LightningModule):
         return self._forward_beam(batch)
 
     def _forward_spec_greedy(self, batch: Batch):
-        """Speculative greedy decode — lossless, uses Medusa heads to draft.
+        """Medusa 模式:beam 解码 + draft 接受率统计。
+
+        解码与 beam 模式相同(用 torchaudio RNNTBeamSearch 的长度归一化,
+        未收敛模型的 blank 先验弱时不会陷入贪心的单帧连续 emit 环)。
+        Medusa heads 的草拟质量用 medusa_accept_stats 在解码轨迹的贪心
+        回放上统计(draft 预测 == beam 实际输出 → accept)。
         """
         features = batch.features.to(self.device)
         feature_lengths = batch.feature_lengths.to(self.device)
 
-        # Spec greedy
         try:
-            result = speculative_greedy_decode(
-                self.model, features, feature_lengths, self.blank_idx,
+            # 1) 解码:与 beam 模式一致的行为
+            width = 1 if self.beam_width == 0 else self.beam_width
+            decoder = RNNTBeamSearch(self.model, self.blank_idx)
+            hypotheses = decoder(features, feature_lengths, width)
+            token_ids = hypotheses[0][0]
+
+            # 2) Medusa accept 统计(贪心回放,不改解码结果)
+            stats = medusa_accept_stats(
+                self.model, features, feature_lengths,
+                token_ids, self.blank_idx,
                 max_draft=self.spec_max_draft,
-                per_token_blank=self.spec_per_token_blank,
-                tree=self.spec_tree,
-                return_stats=True,
             )
         except Exception as e:
-            logging.error("spec_decode failed: %s; falling back to beam", e)
+            logging.error("spec decode path failed: %s; falling back to beam", e)
             return self._forward_beam(batch)
 
-        if isinstance(result, tuple):
-            token_ids, stats = result
-        else:
-            token_ids, stats = result, None
-
-        # Filter special tokens
         remove_ids = {self.sp_model.unk_id(), self.sp_model.eos_id(), self.sp_model.pad_id()}
         clean_ids = [t for t in token_ids if t not in remove_ids]
         spec_text = self.sp_model.decode(clean_ids).lower().replace(" ", "")
 
         # Log Medusa head acceptance stats
-        if stats is not None and stats["total_drafts"] > 0:
+        if stats["total_drafts"] > 0:
             logging.info(
-                "Medusa accept: %d/%d (%.1f%%) | per-head: %s",
+                "Medusa accept: %d/%d (%.1f%%) | covered %d/%d emits | per-head: %s",
                 stats["total_accepted"], stats["total_drafts"],
                 100 * stats["accept_rate"],
+                stats["covered_emits"], len(token_ids),
                 " ".join(f"h{i+1}={ph['rate']:.2f}" for i, ph in enumerate(stats["per_head"])),
             )
 

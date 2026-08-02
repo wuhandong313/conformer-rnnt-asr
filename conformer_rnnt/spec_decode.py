@@ -81,6 +81,7 @@ def speculative_greedy_decode(
     per_token_blank: int = 4,
     tree: bool = False,
     max_steps: int = 100000,
+    max_tokens: Optional[int] = None,
     return_stats: bool = False,
 ):
     """自投机贪心解码 (链式 draft) — 无损。
@@ -116,9 +117,15 @@ def speculative_greedy_decode(
     out: List[int] = []
     t = 0
     steps = 0
+    truncated = False
 
     while t < T and steps < max_steps:
         steps += 1
+        if max_tokens is not None and len(out) >= max_tokens:
+            # 幻觉防御:单样本 token 数超限(不收敛模型会在低置信帧疯狂 emit,
+            # 单帧可 emit 上百个 token)。截断后停止,标记 truncated 供调用方报告。
+            truncated = True
+            break
         # ---- 本步 head-0 argmax (决定 blank/emit) ----
         logits_t, _, _ = model.join(enc[:, t:t+1], one, g_last, one)  # (1,1,1,V)
         pred0 = int(logits_t.argmax(dim=-1).item())
@@ -182,6 +189,7 @@ def speculative_greedy_decode(
             "total_drafts": sum(total_drafts),
             "total_accepted": sum(accepted),
             "accept_rate": sum(accepted) / max(sum(total_drafts), 1),
+            "truncated": truncated,
             "per_head": [
                 {"drafts": total_drafts[i], "accepted": accepted[i],
                  "rate": accepted[i] / max(total_drafts[i], 1)}
@@ -190,6 +198,76 @@ def speculative_greedy_decode(
         }
         return out, stats
     return out
+
+
+def medusa_accept_stats(
+    model,
+    features: Tensor,
+    feature_lengths: Tensor,
+    beam_tokens: List[int],
+    blank_idx: int,
+    max_draft: int = 4,
+) -> Dict:
+    """统计 Medusa heads 在解码轨迹上的 draft 接受率(不改变解码结果)。
+
+    解码本身交给 beam search(长度归一化,不会陷入未收敛模型的单帧
+    连续 emit 环)。这里对 beam 输出的 token 序列做一次贪心回放,在
+    每个 emit 位置 (t, u) 用 heads 草拟 d_1..d_K,与 beam 后续输出
+    tokens[u+1+k] 比较:draft 命中 beam 实际输出 → accept。
+
+    注意:回放是"argmax 受 beam 输出约束"的模拟 —— argmax 与
+    beam[u] 分歧即停止(覆盖前缀)。draft 语义与训练一致:
+    head k at (t, u) → y_{u+k}。
+
+    Returns:
+        Dict with total_drafts / total_accepted / per-head rates.
+    """
+    dev = features.device
+    enc, _ = model.transcribe(features, feature_lengths)
+    T = enc.size(1)
+    K = min(max_draft, model.medusa_heads.num_heads)
+    one = torch.tensor([1], device=dev, dtype=torch.int32)
+
+    total_drafts: List[int] = [0] * K
+    accepted: List[int] = [0] * K
+
+    # 初始: predictor 吃 blank 得首位置编码
+    cur_token = torch.tensor([[blank_idx]], device=dev, dtype=torch.long)
+    g_last, _, state = model.predict(cur_token, one, None)
+
+    t = 0
+    u = 0
+    while t < T and u < len(beam_tokens):
+        logits_t, _, _ = model.join(enc[:, t:t+1], one, g_last, one)
+        pred = int(logits_t.argmax(dim=-1).item())
+        if pred == blank_idx:
+            t += 1
+            continue
+        if pred != beam_tokens[u]:
+            break  # 回放与 beam 路径分歧,停止统计
+        # 在 (t, u) emit 位置草拟,与 beam 后续输出比较
+        base_logits, future_logits = model.predict_heads(enc[:, t:t+1], g_last)
+        for k in range(K):
+            d = int(future_logits[k].argmax(dim=-1).item())
+            total_drafts[k] += 1
+            if u + 1 + k < len(beam_tokens) and d == beam_tokens[u + 1 + k]:
+                accepted[k] += 1
+        # 吃 beam[u],推进语言位置
+        u += 1
+        tok = torch.tensor([[beam_tokens[u - 1]]], device=dev, dtype=torch.long)
+        g_last, _, state = model.predict(tok, one, state)
+
+    return {
+        "total_drafts": sum(total_drafts),
+        "total_accepted": sum(accepted),
+        "accept_rate": sum(accepted) / max(sum(total_drafts), 1),
+        "covered_emits": u,
+        "per_head": [
+            {"drafts": total_drafts[i], "accepted": accepted[i],
+             "rate": accepted[i] / max(total_drafts[i], 1)}
+            for i in range(K)
+        ],
+    }
 
 
 def assert_lossless(
