@@ -33,7 +33,7 @@ from common import (
 )
 from conformer_rnnt.model import conformer_rnnt_model
 from conformer_rnnt.medusa import shifted_ce_loss, kl_to_base_loss
-from conformer_rnnt.spec_decode import speculative_greedy_decode, greedy_decode
+from conformer_rnnt.spec_decode import speculative_greedy_decode
 
 
 # ---------------------------------------------------------------------------
@@ -728,33 +728,15 @@ class LibriSpeechRNNTModule(LightningModule):
         # Auto-detect: use spec_greedy only when Medusa heads exist
         if self.decoding_mode == "spec_greedy" and self.model.medusa_heads is not None:
             return self._forward_spec_greedy(batch)
-        # beam_width=0 → greedy: RNNTBeamSearch with width=1 is the greedy
-        # path and serves as the lossless oracle for speculative decoding.
-        # beam_width>0 → standard beam search at the given width.
-        width = 1 if self.beam_width == 0 else self.beam_width
-        decoder = RNNTBeamSearch(self.model, self.blank_idx)
-        hypotheses = decoder(
-            batch.features.to(self.device),
-            batch.feature_lengths.to(self.device),
-            width,
-        )
-        return post_process_hypos(hypotheses, self.sp_model)[0][0]
+        return self._forward_beam(batch)
 
     def _forward_spec_greedy(self, batch: Batch):
         """Speculative greedy decode — lossless, uses Medusa heads to draft.
-
-        Also runs oracle greedy (pure eager) for lossless verification.
         """
         features = batch.features.to(self.device)
         feature_lengths = batch.feature_lengths.to(self.device)
 
-        # Oracle greedy (pure eager, avoids JIT issues)
-        oracle_ids = greedy_decode(
-            self.model, features, feature_lengths, self.blank_idx,
-        )
-        oracle_text = self.sp_model.decode(oracle_ids).lower().replace(" ", "")
-
-        # Spec greedy (with error guard)
+        # Spec greedy
         try:
             result = speculative_greedy_decode(
                 self.model, features, feature_lengths, self.blank_idx,
@@ -764,34 +746,18 @@ class LibriSpeechRNNTModule(LightningModule):
                 return_stats=True,
             )
         except Exception as e:
-            logging.error("spec_decode failed: %s; falling back to oracle", e)
-            return oracle_text
+            logging.error("spec_decode failed: %s; falling back to beam", e)
+            return self._forward_beam(batch)
 
         if isinstance(result, tuple):
             token_ids, stats = result
         else:
             token_ids, stats = result, None
 
-        # Filter special tokens (belt-and-suspenders)
+        # Filter special tokens
         remove_ids = {self.sp_model.unk_id(), self.sp_model.eos_id(), self.sp_model.pad_id()}
         clean_ids = [t for t in token_ids if t not in remove_ids]
         spec_text = self.sp_model.decode(clean_ids).lower().replace(" ", "")
-
-        # Lossless check (strip invisible chars)
-        if oracle_text.strip() != spec_text.strip():
-            # Find first diff position
-            for i, (a, b) in enumerate(zip(oracle_text, spec_text)):
-                if a != b:
-                    logging.warning(
-                        "SPEC MISMATCH @pos %d: oracle=%r spec=%r",
-                        i, oracle_text[max(0,i-5):i+5], spec_text[max(0,i-5):i+5],
-                    )
-                    break
-            else:
-                logging.warning(
-                    "SPEC MISMATCH (len diff): oracle=%d spec=%d",
-                    len(oracle_text), len(spec_text),
-                )
 
         # Log Medusa head acceptance stats
         if stats is not None and stats["total_drafts"] > 0:
@@ -803,6 +769,17 @@ class LibriSpeechRNNTModule(LightningModule):
             )
 
         return spec_text
+
+    def _forward_beam(self, batch: Batch):
+        """Fallback: standard beam search."""
+        width = 1 if self.beam_width == 0 else self.beam_width
+        decoder = RNNTBeamSearch(self.model, self.blank_idx)
+        hypotheses = decoder(
+            batch.features.to(self.device),
+            batch.feature_lengths.to(self.device),
+            width,
+        )
+        return post_process_hypos(hypotheses, self.sp_model)[0][0]
 
     def training_step(self, batch: Batch, batch_idx: int):
         return self._step(batch, batch_idx, "train")
