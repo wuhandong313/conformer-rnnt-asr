@@ -115,7 +115,6 @@ class ConformerRNNT(torch.nn.Module):
         """Fuse acoustic and language encodings."""
         return self.joiner(source_encodings, source_lengths, target_encodings, target_lengths)
 
-    @torch.jit.export
     def predict_heads(
         self,
         source_encodings: Tensor,
