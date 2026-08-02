@@ -81,7 +81,10 @@ model:
     #   fir             — FIR 低通滤波 → 粗定位 → 在原信号上精确定位
     #   savgol          — Savitzky-Golay 平滑 → find_peaks
     #   savgol_hanning  — Savitzky-Golay 平滑 + Hanning 加权
-    filter: "none"
+    # 注意: 必须与 from_checkpoint 的 base 训练模式一致!
+    # val-none-epoch=34-step=21600.ckpt 实际是 naive 训练的(文件名误导):
+    # naive 推理 PER 0.077 vs none 0.377, 错位输入还会导致解码幻觉。
+    filter: "naive"
 
     # Hanning 窗大小 (仅 hanning / savgol_hanning 模式生效)
     # 控制每个峰/谷周围做加权平滑的帧数
