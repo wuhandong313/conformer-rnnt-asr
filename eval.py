@@ -149,9 +149,8 @@ def main():
     logging.info("Building model from config …")
     model = LibriSpeechRNNTModule.from_config(config)
     logging.info(
-        "Decoding: beam_width=%s (%s)",
-        model.beam_width,
-        "greedy" if model.beam_width == 0 else f"beam={model.beam_width}",
+        "Decoding: mode=%s beam_width=%s",
+        model.decoding_mode, model.beam_width,
     )
 
     # Resolve checkpoint path
