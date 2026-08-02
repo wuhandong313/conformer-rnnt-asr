@@ -128,10 +128,17 @@ def main(config_path: str) -> None:
         config["training"].get("epochs", 120),
     )
 
-    # 7. Train
+    # 7. Load weights if resuming from checkpoint
     ckpt_path = config.get("paths", {}).get("from_checkpoint", None)
+    if ckpt_path:
+        logging.info("Loading weights from: %s", ckpt_path)
+        ckpt = torch.load(ckpt_path, map_location="cpu")
+        state_dict = ckpt.get("state_dict", ckpt)
+        model.load_state_dict(state_dict)
+
+    # 8. Train
     logging.info("Starting training …")
-    trainer.fit(model, ckpt_path=ckpt_path)
+    trainer.fit(model)
 
 
 if __name__ == "__main__":
