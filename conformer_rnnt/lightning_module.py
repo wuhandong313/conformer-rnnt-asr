@@ -475,18 +475,32 @@ class LibriSpeechRNNTModule(LightningModule):
         self.medusa_kl_weight = medusa_kl_weight
 
     # ------------------------------------------------------------------
-    # Checkpoint loading — allow missing medusa_heads keys
+    # Checkpoint loading — allow missing medusa_heads keys + prefix fix
     # ------------------------------------------------------------------
     def load_state_dict(self, state_dict, strict=True):
-        """Load state dict, auto-relaxing strict when Medusa heads are present.
+        """Load state dict, handling prefix mismatch and missing Medusa keys.
 
-        Old base checkpoints don't contain ``model.medusa_heads.*`` keys.
-        When ``medusa_num_heads > 0``, we use ``strict=False`` so the
-        missing head weights stay at their random (zero) initialization.
+        Lightning checkpoints may store keys with or without ``model.``
+        prefix depending on the save/load version.  We auto-detect and fix.
+        Additionally, old base checkpoints don't contain
+        ``model.medusa_heads.*`` keys, so we relax strict when heads exist.
         """
-        if self.model.medusa_heads is not None:
-            return super().load_state_dict(state_dict, strict=False)
-        return super().load_state_dict(state_dict, strict=strict)
+        _strict = False if self.model.medusa_heads is not None else strict
+
+        # Fix prefix mismatch: Lightning ckpts often have 'model.' prefix,
+        # but some loading paths strip it.  Auto-detect and realign.
+        ckpt_keys = set(state_dict.keys())
+        model_keys = set(self.state_dict().keys())
+        if ckpt_keys and model_keys and not (ckpt_keys & model_keys):
+            # No overlap — prefix mismatch
+            if all(k.startswith("model.") for k in ckpt_keys):
+                # ckpt has prefix, strip it
+                state_dict = {k[6:]: v for k, v in state_dict.items()}
+            elif not any(k.startswith("model.") for k in ckpt_keys):
+                # ckpt missing prefix, add it
+                state_dict = {"model." + k: v for k, v in state_dict.items()}
+
+        return super().load_state_dict(state_dict, strict=_strict)
 
     # ------------------------------------------------------------------
     # Factory: build from a config dictionary (e.g. loaded from YAML)
