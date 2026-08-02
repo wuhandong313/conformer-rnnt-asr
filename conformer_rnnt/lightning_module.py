@@ -724,7 +724,8 @@ class LibriSpeechRNNTModule(LightningModule):
         )
 
     def forward(self, batch: Batch):
-        if self.decoding_mode == "spec_greedy":
+        # Auto-detect: use spec_greedy only when Medusa heads exist
+        if self.decoding_mode == "spec_greedy" and self.model.medusa_heads is not None:
             return self._forward_spec_greedy(batch)
         # beam_width=0 → greedy: RNNTBeamSearch with width=1 is the greedy
         # path and serves as the lossless oracle for speculative decoding.
