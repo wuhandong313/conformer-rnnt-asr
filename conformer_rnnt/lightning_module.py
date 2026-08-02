@@ -32,6 +32,7 @@ from common import (
 )
 from conformer_rnnt.model import conformer_rnnt_model
 from conformer_rnnt.medusa import shifted_ce_loss, kl_to_base_loss
+from conformer_rnnt.spec_decode import speculative_greedy_decode, greedy_decode
 
 
 # ---------------------------------------------------------------------------
@@ -335,6 +336,10 @@ class LibriSpeechRNNTModule(LightningModule):
         medusa_freeze_base: bool = False,
         # Decoding
         beam_width: int = 20,
+        decoding_mode: str = "beam",
+        spec_max_draft: int = 4,
+        spec_per_token_blank: int = 4,
+        spec_tree: bool = False,
         # Training
         learning_rate: float = 5e-4,
         adam_betas: tuple = (0.9, 0.999),
@@ -469,6 +474,10 @@ class LibriSpeechRNNTModule(LightningModule):
         # beam_width=0 → greedy (RNNTBeamSearch width=1); used as the
         # lossless oracle baseline for future speculative decoding.
         self.beam_width = beam_width
+        self.decoding_mode = decoding_mode
+        self.spec_max_draft = spec_max_draft
+        self.spec_per_token_blank = spec_per_token_blank
+        self.spec_tree = spec_tree
 
         # ---- Medusa aux loss config ----
         self.medusa_ce_weights = list(medusa_ce_weights)
@@ -583,6 +592,10 @@ class LibriSpeechRNNTModule(LightningModule):
             test_subset=data_cfg.get("test_subset", "test-clean"),
             # Decoding
             beam_width=decoding_cfg.get("beam_width", 20),
+            decoding_mode=decoding_cfg.get("mode", "beam"),
+            spec_max_draft=decoding_cfg.get("spec", {}).get("max_draft", 4),
+            spec_per_token_blank=decoding_cfg.get("spec", {}).get("per_token_blank", 4),
+            spec_tree=decoding_cfg.get("spec", {}).get("tree", False),
         )
 
     # ------------------------------------------------------------------
@@ -711,6 +724,8 @@ class LibriSpeechRNNTModule(LightningModule):
         )
 
     def forward(self, batch: Batch):
+        if self.decoding_mode == "spec_greedy":
+            return self._forward_spec_greedy(batch)
         # beam_width=0 → greedy: RNNTBeamSearch with width=1 is the greedy
         # path and serves as the lossless oracle for speculative decoding.
         # beam_width>0 → standard beam search at the given width.
@@ -722,6 +737,39 @@ class LibriSpeechRNNTModule(LightningModule):
             width,
         )
         return post_process_hypos(hypotheses, self.sp_model)[0][0]
+
+    def _forward_spec_greedy(self, batch: Batch):
+        """Speculative greedy decode — lossless, uses Medusa heads to draft.
+
+        Also runs oracle greedy for lossless verification.
+        """
+        features = batch.features.to(self.device)
+        feature_lengths = batch.feature_lengths.to(self.device)
+
+        # Oracle greedy (RNNTBeamSearch width=1)
+        decoder = RNNTBeamSearch(self.model, self.blank_idx)
+        oracle_hypos = decoder(features, feature_lengths, width=1)
+        oracle_text = post_process_hypos(oracle_hypos, self.sp_model)[0][0]
+
+        # Spec greedy
+        token_ids = speculative_greedy_decode(
+            self.model, features, feature_lengths, self.blank_idx,
+            max_draft=self.spec_max_draft,
+            per_token_blank=self.spec_per_token_blank,
+            tree=self.spec_tree,
+        )
+        # Filter special tokens (belt-and-suspenders)
+        remove_ids = {self.sp_model.unk_id(), self.sp_model.eos_id(), self.sp_model.pad_id()}
+        clean_ids = [t for t in token_ids if t not in remove_ids]
+        spec_text = self.sp_model.decode(clean_ids).lower().replace(" ", "")
+
+        # Lossless check
+        if oracle_text != spec_text:
+            logging.warning(
+                "SPEC MISMATCH! oracle=%s spec=%s", oracle_text[:60], spec_text[:60]
+            )
+
+        return spec_text
 
     def training_step(self, batch: Batch, batch_idx: int):
         return self._step(batch, batch_idx, "train")

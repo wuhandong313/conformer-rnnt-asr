@@ -278,7 +278,7 @@ decoding:
   # 解码模式:
   #   "beam"        — 标准 beam search (用 beam_width; 原行为)
   #   "spec_greedy" — 自投机贪心解码 (plan §3.5, 无损; 需 medusa heads)
-  mode: "beam"
+  mode: "spec_greedy"
 
   # spec_greedy 参数 (仅 mode=spec_greedy 生效)
   spec:
