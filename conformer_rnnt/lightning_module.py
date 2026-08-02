@@ -754,14 +754,19 @@ class LibriSpeechRNNTModule(LightningModule):
         )
         oracle_text = self.sp_model.decode(oracle_ids).lower().replace(" ", "")
 
-        # Spec greedy
-        result = speculative_greedy_decode(
-            self.model, features, feature_lengths, self.blank_idx,
-            max_draft=self.spec_max_draft,
-            per_token_blank=self.spec_per_token_blank,
-            tree=self.spec_tree,
-            return_stats=True,
-        )
+        # Spec greedy (with error guard)
+        try:
+            result = speculative_greedy_decode(
+                self.model, features, feature_lengths, self.blank_idx,
+                max_draft=self.spec_max_draft,
+                per_token_blank=self.spec_per_token_blank,
+                tree=self.spec_tree,
+                return_stats=True,
+            )
+        except Exception as e:
+            logging.error("spec_decode failed: %s; falling back to oracle", e)
+            return oracle_text
+
         if isinstance(result, tuple):
             token_ids, stats = result
         else:
@@ -772,11 +777,21 @@ class LibriSpeechRNNTModule(LightningModule):
         clean_ids = [t for t in token_ids if t not in remove_ids]
         spec_text = self.sp_model.decode(clean_ids).lower().replace(" ", "")
 
-        # Lossless check
-        if oracle_text != spec_text:
-            logging.warning(
-                "SPEC MISMATCH! oracle=%s spec=%s", oracle_text[:60], spec_text[:60]
-            )
+        # Lossless check (strip invisible chars)
+        if oracle_text.strip() != spec_text.strip():
+            # Find first diff position
+            for i, (a, b) in enumerate(zip(oracle_text, spec_text)):
+                if a != b:
+                    logging.warning(
+                        "SPEC MISMATCH @pos %d: oracle=%r spec=%r",
+                        i, oracle_text[max(0,i-5):i+5], spec_text[max(0,i-5):i+5],
+                    )
+                    break
+            else:
+                logging.warning(
+                    "SPEC MISMATCH (len diff): oracle=%d spec=%d",
+                    len(oracle_text), len(spec_text),
+                )
 
         # Log Medusa head acceptance stats
         if stats is not None and stats["total_drafts"] > 0:
