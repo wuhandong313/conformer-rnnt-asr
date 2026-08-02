@@ -743,15 +743,16 @@ class LibriSpeechRNNTModule(LightningModule):
     def _forward_spec_greedy(self, batch: Batch):
         """Speculative greedy decode — lossless, uses Medusa heads to draft.
 
-        Also runs oracle greedy for lossless verification.
+        Also runs oracle greedy (pure eager) for lossless verification.
         """
         features = batch.features.to(self.device)
         feature_lengths = batch.feature_lengths.to(self.device)
 
-        # Oracle greedy (RNNTBeamSearch width=1)
-        decoder = RNNTBeamSearch(self.model, self.blank_idx)
-        oracle_hypos = decoder(features, feature_lengths, 1)
-        oracle_text = post_process_hypos(oracle_hypos, self.sp_model)[0][0]
+        # Oracle greedy (pure eager, avoids JIT issues)
+        oracle_ids = greedy_decode(
+            self.model, features, feature_lengths, self.blank_idx,
+        )
+        oracle_text = self.sp_model.decode(oracle_ids).lower().replace(" ", "")
 
         # Spec greedy
         result = speculative_greedy_decode(
