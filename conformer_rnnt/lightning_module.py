@@ -328,18 +328,11 @@ class LibriSpeechRNNTModule(LightningModule):
         lstm_dropout: float = 0.3,
         # Model — joiner
         joiner_activation: str = "relu",
-        # Predictor — attention trunk
-        predictor_type: str = "lstm",
-        attn_d_model: int = 256,
-        attn_num_layers: int = 4,
-        attn_num_heads: int = 4,
-        attn_ffn_dim: int = 1024,
-        attn_left_context: int = 1024,
-        attn_dropout: float = 0.1,
         # Medusa
         medusa_num_heads: int = 0,
         medusa_ce_weights: tuple = (0.8, 0.64, 0.512, 0.4096),
         medusa_kl_weight: float = 0.05,
+        medusa_freeze_base: bool = False,
         # Decoding
         beam_width: int = 20,
         # Training
@@ -392,16 +385,17 @@ class LibriSpeechRNNTModule(LightningModule):
             lstm_layer_norm=lstm_layer_norm,
             lstm_layer_norm_epsilon=lstm_layer_norm_epsilon,
             lstm_dropout=lstm_dropout,
-            predictor_type=predictor_type,
-            attn_d_model=attn_d_model,
-            attn_num_layers=attn_num_layers,
-            attn_num_heads=attn_num_heads,
-            attn_ffn_dim=attn_ffn_dim,
-            attn_left_context=attn_left_context,
-            attn_dropout=attn_dropout,
             joiner_activation=joiner_activation,
             medusa_num_heads=medusa_num_heads,
         )
+
+        # ---- Freeze base model when training only Medusa heads ----
+        if medusa_num_heads > 0 and medusa_freeze_base:
+            for param in self.model.parameters():
+                param.requires_grad = False
+            if self.model.medusa_heads is not None:
+                for param in self.model.medusa_heads.parameters():
+                    param.requires_grad = True
 
         # ---- Mel spectrogram params (not a submodule — stays on CPU) ----
         self._mel_kwargs = dict(
@@ -426,7 +420,7 @@ class LibriSpeechRNNTModule(LightningModule):
 
         # ---- Optimizer & scheduler ----
         self.optimizer = torch.optim.Adam(
-            self.model.parameters(),
+            filter(lambda p: p.requires_grad, self.model.parameters()),
             lr=learning_rate,
             betas=adam_betas,
             eps=adam_eps,
@@ -493,7 +487,6 @@ class LibriSpeechRNNTModule(LightningModule):
         model_cfg = config.get("model", {})
         comp_cfg = model_cfg.get("compression", {})
         pred_cfg = model_cfg.get("predictor", {})
-        attn_cfg = pred_cfg.get("attn", {})
         joiner_cfg = model_cfg.get("joiner", {})
         medusa_cfg = model_cfg.get("medusa", {})
         training_cfg = config.get("training", {})
@@ -530,20 +523,13 @@ class LibriSpeechRNNTModule(LightningModule):
             lstm_layer_norm=pred_cfg.get("lstm_layer_norm", True),
             lstm_layer_norm_epsilon=pred_cfg.get("lstm_layer_norm_epsilon", 1e-3),
             lstm_dropout=pred_cfg.get("lstm_dropout", 0.3),
-            # Predictor — attention trunk
-            predictor_type=pred_cfg.get("type", "lstm"),
-            attn_d_model=attn_cfg.get("d_model", 256),
-            attn_num_layers=attn_cfg.get("num_layers", 4),
-            attn_num_heads=attn_cfg.get("num_heads", 4),
-            attn_ffn_dim=attn_cfg.get("ffn_dim", 1024),
-            attn_left_context=attn_cfg.get("left_context", 1024),
-            attn_dropout=attn_cfg.get("dropout", 0.1),
             # Joiner
             joiner_activation=joiner_cfg.get("activation", "relu"),
             # Medusa
             medusa_num_heads=medusa_cfg.get("num_heads", 0),
             medusa_ce_weights=tuple(medusa_cfg.get("ce_loss_weights", [0.8, 0.64, 0.512, 0.4096])),
             medusa_kl_weight=medusa_cfg.get("kl_weight", 0.05),
+            medusa_freeze_base=medusa_cfg.get("freeze_base", False),
             # Training
             learning_rate=training_cfg.get("learning_rate", 5e-4),
             adam_betas=tuple(training_cfg.get("adam_betas", [0.9, 0.999])),

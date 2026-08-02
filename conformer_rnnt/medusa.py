@@ -95,12 +95,13 @@ def shifted_ce_loss(
     targets: Tensor,
     weights: List[float],
 ) -> Tensor:
-    r"""Σ_{k=1..K} λ_k · CE(head_k 位置 u 的 logits, targets[u+k])。
+    r"""Σ_{k=1..K} λ_k · CE(head_k 位置 u 的 logits, targets[u+k-1])。
 
     偏移按本仓库 blank 前置布局钉死：
         prepended_targets = [blank, y_0, ..., y_{U-1}]  (长度 U+1)
-        g 位置 u 输入 prepended_targets[u] ⇒ head k 在位 u 预测 targets[u+k]
-        有效位 u ∈ [0, U-1-k] (共 U-k 个)；label = targets[k:U]
+        g 位置 u 输入 prepended_targets[u] ⇒ head k 在位 u 预测 targets[u+k-1]
+        (head 1 = 下一个token, head 2 = 下下个token, ...)
+        有效位 u ∈ [0, U-k] (共 U-k+1 个)；label = targets[k-1:U]
 
     Args:
         logits_future: List[K] 个 (B, L, V)，L≥U+1 (trunk 序列长)。
@@ -112,10 +113,10 @@ def shifted_ce_loss(
     total = targets.new_zeros(())
     for k_idx, logits_k in enumerate(logits_future):  # head k = k_idx+1
         k = k_idx + 1
-        if U - k <= 0:
+        if U - k + 1 <= 0:
             continue  # 序列太短，该 head 无有效位置
-        pred = logits_k[:, : U - k, :].reshape(-1, V)   # (B*(U-k), V)
-        label = targets[:, k: U].reshape(-1).long()     # (B*(U-k),) CE 需 Long
+        pred = logits_k[:, : U - k + 1, :].reshape(-1, V)   # (B*(U-k+1), V)
+        label = targets[:, k - 1 : U].reshape(-1).long()     # (B*(U-k+1),) CE 需 Long
         ce = F.cross_entropy(pred, label, reduction="mean", ignore_index=-1)
         total = total + weights[k_idx] * ce
     return total

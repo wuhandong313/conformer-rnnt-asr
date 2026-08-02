@@ -95,10 +95,8 @@ model:
 
   # === Predictor (RNN-T 语言模型组件) ===
   predictor:
-    # Predictor trunk 类型:
-    #   "lstm" — 原 LayerNorm-LSTM predictor (基线)
-    #   "attn" — 受限因果自注意力 trunk (本方案, Medusa backbone)
-    type: "attn"
+    # Predictor trunk 类型: "lstm" — LayerNorm-LSTM predictor
+    type: "lstm"
 
     # Token embedding 维度
     symbol_embedding_dim: 128
@@ -119,30 +117,13 @@ model:
     # LSTM 层间 Dropout 概率
     lstm_dropout: 0.3
 
-    # === 自注意力 trunk 参数 (仅 type=attn 生效) ===
-    attn:
-      # Transformer 内部维度
-      d_model: 256
-
-      # Transformer 层数
-      num_layers: 4
-
-      # 多头注意力头数
-      num_heads: 4
-
-      # FFN 隐藏维度
-      ffn_dim: 1024
-
-      # 受限左上下文窗 (含自身); 大值≈全因果 (非流式评测)
-      left_context: 1024
-
-      # Dropout
-      dropout: 0.1
-
   # === Medusa 多头未来标签预测 (plan §3.3) ===
   medusa:
     # 头数 K (head 1..K 做 aux CE); 0 = 关闭 (单头消融, 仅验 trunk)
     num_heads: 0
+
+    # 冻结 base model (encoder + predictor + joiner)，仅训练 Medusa heads
+    freeze_base: false
 
     # 各 head 的 shifted-CE 权重 λ_k=0.8^k (K 个; 不足自动补 0.8^(k+1))
     ce_loss_weights: [0.8, 0.64, 0.512, 0.4096]

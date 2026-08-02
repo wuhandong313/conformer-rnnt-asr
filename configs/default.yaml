@@ -94,7 +94,7 @@ model:
 
   # === Predictor (RNN-T 语言模型组件) ===
   predictor:
-    # Predictor trunk 类型: "lstm"(原基线) | "attn"(受限因果自注意力, Medusa backbone)
+    # Predictor trunk 类型: "lstm" — LayerNorm-LSTM predictor
     type: "lstm"
 
     # Token embedding 维度
@@ -107,18 +107,10 @@ model:
     lstm_layer_norm_epsilon: 0.001
     lstm_dropout: 0.3
 
-    # === 自注意力 trunk 参数 (仅 type=attn 生效) ===
-    attn:
-      d_model: 256
-      num_layers: 4
-      num_heads: 4
-      ffn_dim: 1024
-      left_context: 1024
-      dropout: 0.1
-
   # === Medusa 多头未来标签预测 (plan §3.3) ===
   medusa:
     num_heads: 0               # 0 = 关闭 (单头); >0 = K 个未来预测头
+    freeze_base: false         # 冻结 base model，仅训练 Medusa heads
     ce_loss_weights: [0.8, 0.64, 0.512, 0.4096]
     kl_weight: 0.05
 
