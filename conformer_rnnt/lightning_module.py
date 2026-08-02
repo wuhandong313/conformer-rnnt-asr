@@ -752,12 +752,18 @@ class LibriSpeechRNNTModule(LightningModule):
         oracle_text = post_process_hypos(oracle_hypos, self.sp_model)[0][0]
 
         # Spec greedy
-        token_ids = speculative_greedy_decode(
+        result = speculative_greedy_decode(
             self.model, features, feature_lengths, self.blank_idx,
             max_draft=self.spec_max_draft,
             per_token_blank=self.spec_per_token_blank,
             tree=self.spec_tree,
+            return_stats=True,
         )
+        if isinstance(result, tuple):
+            token_ids, stats = result
+        else:
+            token_ids, stats = result, None
+
         # Filter special tokens (belt-and-suspenders)
         remove_ids = {self.sp_model.unk_id(), self.sp_model.eos_id(), self.sp_model.pad_id()}
         clean_ids = [t for t in token_ids if t not in remove_ids]
@@ -767,6 +773,15 @@ class LibriSpeechRNNTModule(LightningModule):
         if oracle_text != spec_text:
             logging.warning(
                 "SPEC MISMATCH! oracle=%s spec=%s", oracle_text[:60], spec_text[:60]
+            )
+
+        # Log Medusa head acceptance stats
+        if stats is not None and stats["total_drafts"] > 0:
+            logging.info(
+                "Medusa accept: %d/%d (%.1f%%) | per-head: %s",
+                stats["total_accepted"], stats["total_drafts"],
+                100 * stats["accept_rate"],
+                " ".join(f"h{i+1}={ph['rate']:.2f}" for i, ph in enumerate(stats["per_head"])),
             )
 
         return spec_text

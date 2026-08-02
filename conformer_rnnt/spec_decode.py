@@ -14,7 +14,7 @@ width=1 oracle **逐 token 完全一致**（无损，PER 不牺牲）。
 本实现 eager (非 JIT)，规避 DynamicCompression 的 numpy 不可 script 问题。
 """
 
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import torch
 from torch import Tensor
@@ -81,7 +81,8 @@ def speculative_greedy_decode(
     per_token_blank: int = 4,
     tree: bool = False,
     max_steps: int = 100000,
-) -> List[int]:
+    return_stats: bool = False,
+):
     """自投机贪心解码 (链式 draft) — 无损。
 
     状态推进严格复刻 greedy_decode：emit 后 g_last 推进、t 不变；blank 后
@@ -89,6 +90,10 @@ def speculative_greedy_decode(
     d_1..d_K，逐个用 head-0 joiner argmax 验证(允许 ≤per_token_blank 个
     blank 步到下一次 emit)，命中即连续提交；失配或遇 blank 则本步用标准
     贪心推进。因验证器 == head-0 argmax == oracle argmax ⇒ 逐 token 一致。
+
+    Returns:
+        If ``return_stats=False``: ``List[int]`` token ids.
+        If ``return_stats=True``: ``(List[int], Dict)`` token ids + stats.
     """
     dev = features.device
     enc, enc_len = model.transcribe(features, feature_lengths)
@@ -98,6 +103,10 @@ def speculative_greedy_decode(
     assert model.medusa_heads is not None, "spec_decode 需 medusa_heads"
     K = min(max_draft, model.medusa_heads.num_heads)
     one = torch.tensor([1], device=dev, dtype=torch.int32)
+
+    # Stats
+    total_drafts: List[int] = [0] * K   # per head: total proposed
+    accepted: List[int] = [0] * K         # per head: accepted by joiner
 
     # 初始：predictor 吃 blank 得首位置编码 g_last (1,1,512)，state 累积
     cur_token = torch.tensor([[blank_idx]], device=dev, dtype=torch.long)
@@ -153,6 +162,7 @@ def speculative_greedy_decode(
             if emitted is None:
                 # 帧窗耗尽未 emit：停止投机，t 已前进若干 blank（与 oracle 的 blank 前进一致）
                 break
+            total_drafts[j] += 1
             if emitted != d_j:
                 # 失配：但 head-0 在此处确实 emit `emitted`，必须提交以与 oracle 一致
                 out.append(emitted)
@@ -160,11 +170,25 @@ def speculative_greedy_decode(
                 g_last, _, state = model.predict(tok, one, state)
                 break
             # 命中 d_j：提交，推进 predictor (吃 d_j)；emit 后 t 不变
+            accepted[j] += 1
             out.append(d_j)
             tok = torch.tensor([[d_j]], device=dev, dtype=torch.long)
             g_last, _, state = model.predict(tok, one, state)
         # 本轮投机结束，回到外层 while
 
+    if return_stats:
+        stats = {
+            "total_tokens": len(out),
+            "total_drafts": sum(total_drafts),
+            "total_accepted": sum(accepted),
+            "accept_rate": sum(accepted) / max(sum(total_drafts), 1),
+            "per_head": [
+                {"drafts": total_drafts[i], "accepted": accepted[i],
+                 "rate": accepted[i] / max(total_drafts[i], 1)}
+                for i in range(K)
+            ],
+        }
+        return out, stats
     return out
 
 
