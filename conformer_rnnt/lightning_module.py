@@ -749,7 +749,7 @@ class LibriSpeechRNNTModule(LightningModule):
 
         # Oracle greedy (RNNTBeamSearch width=1)
         decoder = RNNTBeamSearch(self.model, self.blank_idx)
-        oracle_hypos = decoder(features, feature_lengths, width=1)
+        oracle_hypos = decoder(features, feature_lengths, 1)
         oracle_text = post_process_hypos(oracle_hypos, self.sp_model)[0][0]
 
         # Spec greedy
