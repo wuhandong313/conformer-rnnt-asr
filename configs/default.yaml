@@ -94,9 +94,6 @@ model:
 
   # === Predictor (RNN-T 语言模型组件) ===
   predictor:
-    # Predictor trunk 类型: "lstm" — LayerNorm-LSTM predictor
-    type: "lstm"
-
     # Token embedding 维度
     symbol_embedding_dim: 128
 
