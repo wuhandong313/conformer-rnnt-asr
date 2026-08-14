@@ -706,7 +706,7 @@ class LibriSpeechRNNTModule(LightningModule):
             # pad weights if config provided fewer than K
             if len(weights) < K:
                 weights = weights + [0.8 ** (i + 1) for i in range(len(weights), K)]
-            ce_aux = shifted_ce_loss(logits_future, batch.targets, weights)
+            ce_aux = shifted_ce_loss(logits_future, batch.targets, weights, target_lengths)
             kl_aux = kl_to_base_loss(logits_future, logits_base, self.medusa_kl_weight)
             loss = loss + ce_aux + kl_aux
             self.log(f"Losses/{step_type}_medusa_ce", ce_aux, on_step=True, on_epoch=True)

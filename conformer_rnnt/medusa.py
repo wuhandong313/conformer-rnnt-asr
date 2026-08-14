@@ -111,20 +111,24 @@ def shifted_ce_loss(
     logits_future: List[Tensor],
     targets: Tensor,
     weights: List[float],
+    target_lengths: Tensor,
 ) -> Tensor:
     r"""Σ_{k=1..K} λ_k · CE(head_k 在 (t,u) 的 logits, targets[u+k])。
 
     joiner 在 (t,u) 预测 y_u (blank/emit 决策)，head k 预测下一个 token y_{u+k}。
-    标签对每个帧 t 相同（只依赖 u），在 T 维上广播。
+    标签对每个帧 t 相同（只依赖 u），在 T 维上广播。padding 位置
+    （u+k ≥ target_lengths[b]，标签落在短样本填充区）置 -1 被 ignore。
 
     Args:
         logits_future: List[K] 个 (B, T, L, V)，L≥U+1。
         targets: (B, U) 真实标签 id (0..V-2，不含 blank)。
         weights: [λ_1, ..., λ_K]。
+        target_lengths: (B,) 各样本有效 token 数，用于 mask padding。
     """
     U = targets.size(1)
     _, T, _, V = logits_future[0].shape
     total = targets.new_zeros(())
+    tl = target_lengths.to(targets.device)
     for k_idx, logits_k in enumerate(logits_future):  # head k = k_idx+1
         k = k_idx + 1
         if U - k <= 0:
@@ -133,6 +137,11 @@ def shifted_ce_loss(
         pred = logits_k[:, :, : U - k, :].reshape(-1, V)   # (B*T*(U-k), V)
         label = targets[:, k: U]                            # (B, U-k)
         label = label.unsqueeze(1).expand(-1, T, -1).reshape(-1).long()  # (B*T*(U-k),)
+        # mask：仅当 u+k < target_lengths[b] 时 label 是有效 token，否则 -1 (ignore)
+        u_idx = torch.arange(U - k, device=targets.device).unsqueeze(0)  # (1, U-k)
+        valid = (u_idx + k) < tl.unsqueeze(1)                            # (B, U-k)
+        valid = valid.unsqueeze(1).expand(-1, T, -1).reshape(-1)         # (B*T*(U-k),)
+        label = label.masked_fill(~valid, -1)
         ce = F.cross_entropy(pred, label, reduction="mean", ignore_index=-1)
         total = total + weights[k_idx] * ce
     return total
