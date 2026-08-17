@@ -118,6 +118,64 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
 # ═══════════════════════════════════════════════════════════════════════════
 
 
+def _extract_ckpt_snapshot(ckpt: Dict[str, Any]) -> Dict[str, Any] | None:
+    """从 checkpoint dict 读取训练时写入的 _config_snapshot (由 train.py 的 CheckpointSnapshot 写入)。
+
+    旧 checkpoint 没有该 key 时返回 None —— 无法校验, 但可正常加载。
+    """
+    snap = ckpt.get("_config_snapshot") if isinstance(ckpt, dict) else None
+    if not isinstance(snap, dict):
+        return None
+    return snap
+
+
+def _check_snapshot_mismatch(snapshot: Dict[str, Any] | None, config: Dict[str, Any]) -> None:
+    """校验 checkpoint 训练时的真实配置 vs 当前 eval config, 不一致则告警。
+
+    这是对「文件名可能和真实训练模式不符」的兜底: 即使文件名/自动加载选错,
+    也能从 checkpoint 内嵌快照发现配置不匹配 (如 compression.filter、medusa.num_heads 等)。
+    """
+    if snapshot is None:
+        logging.warning(
+            "Checkpoint has no _config_snapshot (old checkpoint) — cannot verify "
+            "it was trained with the current config. Results may be invalid if "
+            "compression.filter / medusa.num_heads differ from the eval config."
+        )
+        return
+
+    def _get(cfg: Dict[str, Any], dotted_path: str):
+        cur = cfg
+        for part in dotted_path.split(":"):
+            if isinstance(cur, dict):
+                cur = cur.get(part)
+            else:
+                return None
+        return cur
+
+    pairs = [
+        ("compression.filter",
+         _get(snapshot, "model:compression:filter"),
+         _get(config, "model:compression:filter")),
+        ("medusa.num_heads",
+         _get(snapshot, "model:medusa:num_heads"),
+         _get(config, "model:medusa:num_heads")),
+        ("medusa.freeze_base",
+         _get(snapshot, "model:medusa:freeze_base"),
+         _get(config, "model:medusa:freeze_base")),
+        ("decoding.mode",
+         _get(snapshot, "decoding:mode"),
+         _get(config, "decoding:mode")),
+    ]
+    for name, snap_val, cfg_val in pairs:
+        if snap_val != cfg_val:
+            logging.warning(
+                "SNAPSHOT MISMATCH: %s — checkpoint trained with %r, "
+                "eval config has %r. Results may be invalid (e.g. frame "
+                "alignment mismatch from wrong compression.filter).",
+                name, snap_val, cfg_val,
+            )
+
+
 def _find_latest_val_ckpt(checkpoint_dir: str) -> str | None:
     """Find the latest val-*.ckpt in the checkpoint directory."""
     pattern = os.path.join(checkpoint_dir, "val-*.ckpt")
@@ -167,6 +225,11 @@ def main():
     # Load checkpoint
     logging.info("Loading checkpoint: %s", ckpt_path)
     ckpt = torch.load(ckpt_path, map_location="cpu")
+
+    # 校验 checkpoint 训练时的真实配置 vs 当前 eval config (内嵌快照)
+    snapshot = _extract_ckpt_snapshot(ckpt)
+    _check_snapshot_mismatch(snapshot, config)
+
     state_dict = ckpt.get("state_dict", ckpt)
     model.load_state_dict(state_dict, strict=False)
 
