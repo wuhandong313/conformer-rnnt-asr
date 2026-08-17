@@ -14,7 +14,7 @@ head k 初始 logits == head 0 logits (draft 初始 = base，训练稳定；Medu
 共享 W_vocab (512→V，V=num_symbols+1 含 blank) 对应 Medusa 共享 output_proj。
 """
 
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import torch
 import torch.nn.functional as F
@@ -57,6 +57,8 @@ class MedusaHeads(torch.nn.Module):
         num_vocab: 词表大小 (含 blank) = num_symbols+1。
         num_heads: K，未来预测头数 (head 1..K)。0 = 关闭 (单头消融)。
         activation: 融合后激活函数名，与 joiner 保持一致。
+        w_vocab: 共享输出投影，应传入 joiner.linear 使 head 0 ≡ joiner
+            (draft 与验证器同一个打分标准)。None 时退回独立随机矩阵。
     """
 
     def __init__(
@@ -65,13 +67,27 @@ class MedusaHeads(torch.nn.Module):
         num_vocab: int = 75,
         num_heads: int = 4,
         activation: str = "relu",
+        w_vocab: Optional[torch.nn.Linear] = None,
     ) -> None:
         super().__init__()
         self.num_heads = num_heads
         self.res_blocks = torch.nn.ModuleList(
             [MedusaResBlock(input_dim) for _ in range(num_heads)]
         )
-        self.w_vocab = torch.nn.Linear(input_dim, num_vocab)
+        # 与 joiner 共享输出投影：head 0 ≡ joiner 精确一致，draft 与验证器
+        # 用同一个打分标准；None 时退回独立随机矩阵 (旧行为)。
+        if w_vocab is not None:
+            if (
+                w_vocab.in_features != input_dim
+                or w_vocab.out_features != num_vocab
+            ):
+                raise ValueError(
+                    f"w_vocab 形状不匹配: 传入 {w_vocab.in_features}→{w_vocab.out_features}, "
+                    f"期望 {input_dim}→{num_vocab}"
+                )
+            self.w_vocab = w_vocab
+        else:
+            self.w_vocab = torch.nn.Linear(input_dim, num_vocab)
         # 跟 joiner 一致的激活
         self.activation = torch.nn.ReLU() if activation == "relu" else (
             torch.nn.Tanh() if activation == "tanh" else (
@@ -173,8 +189,15 @@ def kl_to_base_loss(
 # ═══════════════════════════════════════════════════════════════════════════
 
 
-def medusa_heads_from_config(config: dict) -> "MedusaHeads":
-    """从 config['model']['medusa'] 段构建。num_heads=0 返回 None (关闭)。"""
+def medusa_heads_from_config(
+    config: dict, w_vocab: Optional[torch.nn.Linear] = None
+) -> "MedusaHeads":
+    """从 config['model']['medusa'] 段构建。num_heads=0 返回 None (关闭)。
+
+    Args:
+        config: 完整配置 dict (或 model 段)。
+        w_vocab: 可选共享输出投影 (应为 joiner.linear)；None 时独立矩阵。
+    """
     m = config.get("model", config)
     med = m.get("medusa", {})
     num_heads = med.get("num_heads", 4)
@@ -188,4 +211,5 @@ def medusa_heads_from_config(config: dict) -> "MedusaHeads":
         num_vocab=num_vocab,
         num_heads=num_heads,
         activation=activation,
+        w_vocab=w_vocab,
     )

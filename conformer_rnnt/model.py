@@ -186,14 +186,21 @@ def conformer_rnnt_model(
         lstm_dropout=lstm_dropout,
     )
 
+    joiner = Joiner(
+        input_dim=encoding_dim, output_dim=num_symbols, activation=joiner_activation
+    )
+
     medusa_heads = None
     if medusa_num_heads > 0:
         from conformer_rnnt.medusa import MedusaHeads
+        # 共享 joiner 的输出投影: head 0 ≡ joiner 精确一致,draft 与验证器
+        # 用同一个打分标准 (对应原版 Medusa 的共享 output_proj)。
         medusa_heads = MedusaHeads(
             input_dim=encoding_dim,
             num_vocab=num_symbols,
             num_heads=medusa_num_heads,
             activation=joiner_activation,
+            w_vocab=joiner.linear,
         )
 
     return ConformerRNNT(
@@ -214,7 +221,7 @@ def conformer_rnnt_model(
             weight_predictor_mode=weight_predictor_mode,
         ),
         predictor=predictor,
-        joiner=Joiner(input_dim=encoding_dim, output_dim=num_symbols, activation=joiner_activation),
+        joiner=joiner,
         medusa_heads=medusa_heads,
     )
 

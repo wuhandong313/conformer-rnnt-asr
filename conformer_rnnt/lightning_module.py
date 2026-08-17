@@ -400,7 +400,9 @@ class LibriSpeechRNNTModule(LightningModule):
             for param in self.model.parameters():
                 param.requires_grad = False
             if self.model.medusa_heads is not None:
-                for param in self.model.medusa_heads.parameters():
+                # 只解冻残差块。w_vocab 与 joiner.linear 共享 (同一 tensor),
+                # 若解冻会把冻结的 base 投影一起解冻,必须排除。
+                for param in self.model.medusa_heads.res_blocks.parameters():
                     param.requires_grad = True
 
         # ---- Mel spectrogram params (not a submodule — stays on CPU) ----
