@@ -3,36 +3,27 @@
 This module provides common components shared across the project:
 - Batch named tuple for data organization
 - GlobalStatsNormalization for feature standardization
-- Spectrogram transform and piecewise-linear-log
+- Piecewise-linear-log feature compression
 - Batching by token count
 - Post-processing of beam search hypotheses
+- Config loading / checkpoint tagging (shared by train.py and eval.py)
 """
 
 import json
+import logging
 import math
+import os
 from collections import namedtuple
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 import sentencepiece as spm
 import torch
-import torchaudio
+import yaml
 from torchaudio.models import Hypothesis
-
-
-MODEL_TYPE_LIBRISPEECH = "librispeech"
-MODEL_TYPE_TEDLIUM3 = "tedlium3"
-MODEL_TYPE_MUSTC = "mustc"
 
 
 DECIBEL = 2 * 20 * math.log10(torch.iinfo(torch.int16).max)
 GAIN = pow(10, 0.05 * DECIBEL)
-
-spectrogram_transform = torchaudio.transforms.MelSpectrogram(
-    sample_rate=16000,
-    n_fft=400,
-    n_mels=80,
-    hop_length=80,
-)
 
 Batch = namedtuple("Batch", ["features", "feature_lengths", "targets", "target_lengths"])
 
@@ -75,6 +66,12 @@ def batch_by_token_count(
     return batches
 
 
+def strip_special_tokens(ids: List[int], sp_model: spm.SentencePieceProcessor) -> List[int]:
+    """Remove unk/eos/pad tokens from a decoded id list."""
+    remove = {sp_model.unk_id(), sp_model.eos_id(), sp_model.pad_id()}
+    return [t for t in ids if t not in remove]
+
+
 def post_process_hypos(
     hypos: List[Hypothesis], sp_model: spm.SentencePieceProcessor
 ) -> List[Tuple[str, float, List[int], List[int]]]:
@@ -89,18 +86,8 @@ def post_process_hypos(
     """
     tokens_idx = 0
     score_idx = 3
-    post_process_remove_list = [
-        sp_model.unk_id(),
-        sp_model.eos_id(),
-        sp_model.pad_id(),
-    ]
     filtered_hypo_tokens = [
-        [
-            token_index
-            for token_index in h[tokens_idx][1:]
-            if token_index not in post_process_remove_list
-        ]
-        for h in hypos
+        strip_special_tokens(h[tokens_idx][1:], sp_model) for h in hypos
     ]
     hypos_str = [sp_model.decode(s) for s in filtered_hypo_tokens]
     hypos_ids = [h[tokens_idx][1:] for h in hypos]
@@ -158,3 +145,53 @@ class WarmupLR(torch.optim.lr_scheduler._LRScheduler):
             (min(1.0, self._step_count / self.warmup_updates)) * base_lr
             for base_lr in self.base_lrs
         ]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Config / checkpoint helpers (shared by train.py and eval.py)
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+def load_config(path: str) -> Dict[str, Any]:
+    with open(path, "r") as f:
+        cfg = yaml.safe_load(f)
+    if cfg is None:
+        raise ValueError(f"Config file '{path}' is empty.")
+    return cfg
+
+
+def setup_logging(config: Dict[str, Any]) -> None:
+    debug = config.get("debug", False)
+    fmt = "%(asctime)s %(message)s" if debug else "%(message)s"
+    level = logging.DEBUG if debug else logging.INFO
+    logging.basicConfig(format=fmt, level=level, datefmt="%Y-%m-%d %H:%M:%S")
+
+
+def checkpoint_dir(config: Dict[str, Any]) -> str:
+    exp_dir = config.get("paths", {}).get("exp_dir", "./exp")
+    return os.path.join(exp_dir, "checkpoints")
+
+
+def model_ckpt_tag(config: Dict[str, Any]) -> str:
+    """从训练实际使用的 config 生成 checkpoint 文件名标记。
+
+    真实训练参数标记 —— 压缩模式 + Medusa 头数 + 冻结状态。
+    与 from_config 使用同一个 config, 保证文件名反映模型真实训练模式。
+
+    例子:
+        naive + 1 head + 联合训练  -> "naive-h1-free"
+        naive + 2 head + 冻结基底  -> "naive-h2-frz"
+        无 Medusa (base 模型)      -> "naive-base"
+    """
+    model_cfg = config.get("model", {})
+    comp = model_cfg.get("compression", {})
+    medusa = model_cfg.get("medusa", {})
+
+    filt = comp.get("filter", "hanning")
+    heads = int(medusa.get("num_heads", 0))
+    freeze = "frz" if medusa.get("freeze_base", False) else "free"
+
+    # 有 Medusa heads 才区分冻结状态, 无 heads 时省略 (避免无意义后缀)
+    if heads > 0:
+        return f"{filt}-h{heads}-{freeze}"
+    return f"{filt}-base"

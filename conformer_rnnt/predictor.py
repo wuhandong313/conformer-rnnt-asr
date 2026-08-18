@@ -125,7 +125,6 @@ class Predictor(torch.nn.Module):
         self.dropout = torch.nn.Dropout(p=lstm_dropout)
         self.linear = torch.nn.Linear(lstm_hidden_dim, output_dim)
         self.output_layer_norm = torch.nn.LayerNorm(output_dim)
-        self.lstm_dropout = lstm_dropout
 
     def forward(
         self,

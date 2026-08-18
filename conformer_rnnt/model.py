@@ -1,10 +1,10 @@
 """RNN-T model assembly.
 
 Combines ConformerEncoder + Predictor + Joiner into a complete transducer.
-Provides both manual and config-driven factory functions.
+Provides the canonical ``conformer_rnnt_model`` factory.
 """
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 import torch
 from torch import Tensor
@@ -44,60 +44,37 @@ class ConformerRNNT(torch.nn.Module):
         self.medusa_heads = medusa_heads
 
     # ── Training forward ────────────────────────────────────────────────
-    def forward(
-        self,
-        sources: Tensor,
-        source_lengths: Tensor,
-        targets: Tensor,
-        target_lengths: Tensor,
-        predictor_state: Optional[List[List[Tensor]]] = None,
-    ) -> Tuple[Tensor, Tensor, Tensor, List[List[Tensor]]]:
-        """Training forward pass.
-
-        Returns:
-            (logits, src_len, tgt_len, pred_state)
-                logits: ``(B, T_enc, U_enc, num_symbols)``
-        """
-        src_enc, src_len = self.transcriber(sources, source_lengths)
-        tgt_enc, tgt_len, pred_state = self.predictor(targets, target_lengths, predictor_state)
-        logits, src_len, tgt_len = self.joiner(src_enc, src_len, tgt_enc, tgt_len)
-        return logits, src_len, tgt_len, pred_state
-
-    # ── Training forward with Medusa aux outputs ────────────────────────
     def forward_train_aux(
         self,
         sources: Tensor,
         source_lengths: Tensor,
         targets: Tensor,
         target_lengths: Tensor,
-    ) -> Tuple[Tensor, Tensor, Tensor, List[List[Tensor]], Optional[Tensor], Optional[List[Tensor]]]:
-        """Forward producing RNNT logits + Medusa head logits for aux loss.
+    ) -> Tuple[Tensor, Tensor, Tensor, Optional[Tensor], Optional[List[Tensor]]]:
+        """Training forward producing RNNT logits + Medusa head logits.
+
+        Joint fusion is computed once and shared by the joiner and the Medusa
+        heads (head 0's logits are the joiner's own logits — same projection).
 
         Returns:
-            (logits, src_len, tgt_len, pred_state, logits_base, logits_future)
+            (logits, src_len, tgt_len, logits_base, logits_future)
             logits_base/future are None when medusa_heads is None.
         """
         src_enc, src_len = self.transcriber(sources, source_lengths)
-        tgt_enc, tgt_len, pred_state = self.predictor(targets, target_lengths, None)
-        logits, src_len, tgt_len = self.joiner(src_enc, src_len, tgt_enc, tgt_len)
+        tgt_enc, tgt_len, _ = self.predictor(targets, target_lengths, None)
+        joint = self.joiner.fuse(src_enc, tgt_enc)
+        logits = self.joiner.project(joint)
         if self.medusa_heads is not None:
-            logits_base, logits_future = self.medusa_heads(src_enc, tgt_enc)
+            logits_base, logits_future = self.medusa_heads(joint)
         else:
             logits_base, logits_future = None, None
-        return logits, src_len, tgt_len, pred_state, logits_base, logits_future
+        return logits, src_len, tgt_len, logits_base, logits_future
 
     # ── Component-level APIs (for beam search) ──────────────────────────
     @torch.jit.export
     def transcribe(self, sources: Tensor, source_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         """Encode acoustics (non-streaming)."""
         return self.transcriber(sources, source_lengths)
-
-    @torch.jit.export
-    def transcribe_streaming(
-        self, sources: Tensor, source_lengths: Tensor, state: Optional[List[List[Tensor]]]
-    ) -> Tuple[Tensor, Tensor, List[List[Tensor]]]:
-        """Encode acoustics (streaming-compatible)."""
-        return self.transcriber.infer(sources, source_lengths, state)
 
     @torch.jit.export
     def predict(
@@ -129,10 +106,10 @@ class ConformerRNNT(torch.nn.Module):
         Returns:
             (logits_base, logits_future) — both empty/None when no heads.
         """
-        if self.medusa_heads is not None:
-            return self.medusa_heads(source_encodings, target_encodings)
-        empty: List[Tensor] = []
-        return None, empty
+        if self.medusa_heads is None:
+            return None, []
+        joint = self.joiner.fuse(source_encodings, target_encodings)
+        return self.medusa_heads(joint)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -199,7 +176,6 @@ def conformer_rnnt_model(
             input_dim=encoding_dim,
             num_vocab=num_symbols,
             num_heads=medusa_num_heads,
-            activation=joiner_activation,
             w_vocab=joiner.linear,
         )
 
@@ -223,56 +199,4 @@ def conformer_rnnt_model(
         predictor=predictor,
         joiner=joiner,
         medusa_heads=medusa_heads,
-    )
-
-
-def conformer_rnnt_model_from_config(config: Dict[str, Any]) -> ConformerRNNT:
-    """Build a Conformer-RNNT model from a config dictionary.
-
-    Expects the ``model`` section of ``configs/default.yaml``.
-    """
-    m = config.get("model", config)
-    c = m.get("compression", {})
-    p = m.get("predictor", {})
-    j = m.get("joiner", {})
-    med = m.get("medusa", {})
-
-    return conformer_rnnt_model(
-        input_dim=m.get("input_dim", 80),
-        encoding_dim=m.get("encoding_dim", 512),
-        num_symbols=m.get("num_symbols", 74) + 1,  # +blank
-        right_context_length=m.get("right_context_length", 4),
-        time_reduction_input_dim=m.get("time_reduction_input_dim", 128),
-        time_reduction_stride=m.get("time_reduction_stride", 4),
-        num_heads=m.get("num_heads", 8),
-        ffn_dim=m.get("ffn_dim", 1024),
-        num_layers_block1=m.get("num_layers_block1", 2),
-        num_layers_block2=m.get("num_layers_block2", 8),
-        dropout=m.get("dropout", 0.1),
-        depthwise_conv_kernel_size=m.get("depthwise_conv_kernel_size", 31),
-        compression_filter=c.get("filter", "hanning"),
-        hanning_window_size=c.get("hanning_window_size", 5),
-        weight_predictor_mode=c.get("weight_predictor_mode", "diff5"),
-        symbol_embedding_dim=p.get("symbol_embedding_dim", 128),
-        num_lstm_layers=p.get("num_lstm_layers", 2),
-        lstm_hidden_dim=p.get("lstm_hidden_dim", 128),
-        lstm_layer_norm=p.get("lstm_layer_norm", True),
-        lstm_layer_norm_epsilon=p.get("lstm_layer_norm_epsilon", 1e-3),
-        lstm_dropout=p.get("lstm_dropout", 0.3),
-        joiner_activation=j.get("activation", "relu"),
-        medusa_num_heads=med.get("num_heads", 0),
-    )
-
-
-def conformer_rnnt_base(num_symbols: int) -> ConformerRNNT:
-    """Quick factory with reasonable defaults for prototyping."""
-    return conformer_rnnt_model(
-        input_dim=80, encoding_dim=512, num_symbols=num_symbols,
-        right_context_length=4, time_reduction_input_dim=128, time_reduction_stride=4,
-        num_heads=8, ffn_dim=1024,
-        num_layers_block1=2, num_layers_block2=8,
-        dropout=0.1, depthwise_conv_kernel_size=31,
-        compression_filter="hanning", hanning_window_size=5, weight_predictor_mode="diff5",
-        symbol_embedding_dim=128, num_lstm_layers=2,
-        lstm_layer_norm=True, lstm_layer_norm_epsilon=1e-3, lstm_dropout=0.3,
     )

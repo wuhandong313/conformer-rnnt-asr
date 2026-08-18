@@ -19,6 +19,15 @@ _ACTIVATIONS: Dict[str, type] = {
 }
 
 
+def get_activation(name: str) -> torch.nn.Module:
+    """Build an activation module by name, raising on unknown names."""
+    if name not in _ACTIVATIONS:
+        raise ValueError(
+            f"Unknown activation '{name}'. Choose from: {list(_ACTIVATIONS)}."
+        )
+    return _ACTIVATIONS[name]()
+
+
 class Joiner(torch.nn.Module):
     """RNN-T joint network.
 
@@ -31,12 +40,26 @@ class Joiner(torch.nn.Module):
 
     def __init__(self, input_dim: int, output_dim: int, activation: str = "relu") -> None:
         super().__init__()
-        if activation not in _ACTIVATIONS:
-            raise ValueError(
-                f"Unknown activation '{activation}'. Choose from: {list(_ACTIVATIONS)}."
-            )
         self.linear = torch.nn.Linear(input_dim, output_dim, bias=True)
-        self.activation = _ACTIVATIONS[activation]()
+        self.activation = get_activation(activation)
+
+    def fuse(
+        self,
+        source_encodings: Tensor,
+        target_encodings: Tensor,
+    ) -> Tensor:
+        """Broadcast-add source and target encodings, then apply activation.
+
+        The fused ``joint`` is the single source of truth shared by the joiner
+        logits and the Medusa heads — keeping head 0 ≡ joiner exact.
+        """
+        # (B,T,1,D) + (B,1,U,D) → (B,T,U,D)
+        joint = source_encodings.unsqueeze(2) + target_encodings.unsqueeze(1)
+        return self.activation(joint)
+
+    def project(self, joint: Tensor) -> Tensor:
+        """Project fused features to vocabulary logits."""
+        return self.linear(joint)
 
     def forward(
         self,
@@ -59,7 +82,5 @@ class Joiner(torch.nn.Module):
                 - source_lengths: pass-through ``(B,)``
                 - target_lengths: pass-through ``(B,)``
         """
-        # Broadcast: (B,T,1,D) + (B,1,U,D) → (B,T,U,D)
-        joint = source_encodings.unsqueeze(2) + target_encodings.unsqueeze(1)
-        logits = self.linear(self.activation(joint))
+        logits = self.project(self.fuse(source_encodings, target_encodings))
         return logits, source_lengths, target_lengths

@@ -158,7 +158,7 @@ class DynamicCompression(torch.nn.Module):
             merged = np.unique(np.concatenate([np.array(peaks_refined) + 1, np.array(valleys_refined)]))
             return merged
 
-        else:  # "hanning", "naive", "none" — raw diff, no filtering
+        else:  # "hanning", "naive" — raw diff, no filtering
             diff_np = diff_np_raw
             peaks, _ = find_peaks(diff_np)
             valleys, _ = find_peaks(-diff_np)
@@ -240,6 +240,8 @@ class DynamicCompression(torch.nn.Module):
                 - Compressed sequences, shape ``(B, T_compressed, F)``.
                 - New valid lengths, shape ``(B,)``.
         """
+        if self.compression_filter == "none":
+            return input, lengths
         if input.dim() != 3:
             raise ValueError(f"Input must be 3D (B, T, F), got {input.dim()}D")
         if lengths.dim() != 1:
@@ -256,8 +258,13 @@ class DynamicCompression(torch.nn.Module):
         # Inter-frame absolute difference (B, T-1)
         diff = torch.abs(input[:, 1:, :] - input[:, :-1, :]).sum(dim=-1)
 
+        # Single host sync for lengths + diff, then slice per sample in numpy
+        lengths_list = lengths.tolist()
+        with torch.no_grad():
+            diff_np = diff.cpu().numpy()
+
         for b in range(B):
-            total_len = lengths[b].item()
+            total_len = lengths_list[b]
             if total_len <= 1:
                 compressed_features.append(input[b, :total_len, :])
                 continue
@@ -270,11 +277,8 @@ class DynamicCompression(torch.nn.Module):
             main_part = input[b, :main_len, :]
             right_context_part = input[b, main_len:total_len, :]
 
-            diff_b = diff[b, : main_len - 1]
-
-            with torch.no_grad():
-                diff_np_raw = diff_b.cpu().numpy()
-                merged_np = self._detect_peaks_valleys(diff_np_raw)
+            diff_np_b = diff_np[b, : main_len - 1]
+            merged_np = self._detect_peaks_valleys(diff_np_b)
 
             merged_indices = torch.as_tensor(merged_np, device=device).long()
             merged_indices = merged_indices[merged_indices < main_len]
@@ -284,6 +288,7 @@ class DynamicCompression(torch.nn.Module):
 
             # Apply smoothing or direct selection
             if self.compression_filter in ("hanning", "savgol_hanning"):
+                diff_b = diff[b, : main_len - 1]  # device tensor for the learnable predictor
                 compressed_main = self._hanning_smooth(
                     main_part, diff_b, merged_indices, main_len, device
                 )

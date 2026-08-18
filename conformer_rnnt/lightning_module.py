@@ -11,7 +11,6 @@ from functools import partial
 from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
-import numpy as np
 import sentencepiece as spm
 import torch
 import torchaudio
@@ -28,12 +27,12 @@ from common import (
     FunctionalModule,
     GlobalStatsNormalization,
     piecewise_linear_log,
-    post_process_hypos,
+    strip_special_tokens,
     WarmupLR,
 )
 from conformer_rnnt.model import conformer_rnnt_model
 from conformer_rnnt.medusa import shifted_ce_loss, kl_to_base_loss
-from conformer_rnnt.spec_decode import medusa_accept_stats
+from conformer_rnnt.spec_decode import speculative_greedy_decode
 
 
 # ---------------------------------------------------------------------------
@@ -94,6 +93,22 @@ def _download_librispeech(root: str, url: str) -> None:
     _extract_tar(archive)
 
 
+# 每 chapter 文件只解析一次 (per-process; DataLoader worker 各自缓存)
+_TRANSCRIPT_CACHE: dict = {}
+
+
+def _read_transcript(transcript_file: str) -> dict:
+    """Parse a LibriSpeech phoneme transcription file → {fileid: transcript}."""
+    if transcript_file not in _TRANSCRIPT_CACHE:
+        entries = {}
+        with open(transcript_file) as ft:
+            for line in ft:
+                fileid_text, transcript = line.strip().split(" ", 1)
+                entries[fileid_text] = transcript
+        _TRANSCRIPT_CACHE[transcript_file] = entries
+    return _TRANSCRIPT_CACHE[transcript_file]
+
+
 def _get_librispeech_metadata(
     fileid: str, root: str, folder: str, ext_audio: str, ext_txt: str
 ) -> Tuple[str, int, str, int, int, int]:
@@ -103,13 +118,10 @@ def _get_librispeech_metadata(
 
     file_text = f"{speaker_id}-{chapter_id}-ph{ext_txt}"
     file_text = os.path.join(root, folder, speaker_id, chapter_id, file_text)
-    with open(file_text) as ft:
-        for line in ft:
-            fileid_text, transcript = line.strip().split(" ", 1)
-            if fileid_audio == fileid_text:
-                break
-        else:
-            raise FileNotFoundError(f"Translation not found for {fileid_audio}")
+    transcripts = _read_transcript(file_text)
+    if fileid_audio not in transcripts:
+        raise FileNotFoundError(f"Translation not found for {fileid_audio}")
+    transcript = transcripts[fileid_audio]
 
     return (
         filepath,
@@ -231,10 +243,10 @@ class CustomDataset(torch.utils.data.Dataset):
             file_text = os.path.join(
                 self.base_dataset._path, speaker_id, chapter_id, file_text
             )
-            with open(file_text) as ft:
-                for line in ft:
-                    fileid_text, transcript = line.strip().split(" ", 1)
-                    fileid_to_target_length[fileid_text] = len(transcript)
+            transcripts = _read_transcript(file_text)
+            fileid_to_target_length.update(
+                {fid: len(t) for fid, t in transcripts.items()}
+            )
         return fileid_to_target_length[fileid]
 
     def __getitem__(self, idx: int):
@@ -340,7 +352,6 @@ class LibriSpeechRNNTModule(LightningModule):
         decoding_mode: str = "beam",
         spec_max_draft: int = 4,
         spec_per_token_blank: int = 4,
-        spec_tree: bool = False,
         # Training
         learning_rate: float = 5e-4,
         adam_betas: tuple = (0.9, 0.999),
@@ -480,24 +491,30 @@ class LibriSpeechRNNTModule(LightningModule):
         self.decoding_mode = decoding_mode
         self.spec_max_draft = spec_max_draft
         self.spec_per_token_blank = spec_per_token_blank
-        self.spec_tree = spec_tree
 
         # ---- Medusa aux loss config ----
         self.medusa_ce_weights = list(medusa_ce_weights)
         self.medusa_kl_weight = medusa_kl_weight
 
     # ------------------------------------------------------------------
-    # Checkpoint loading — allow missing medusa_heads keys + prefix fix
+    # Checkpoint loading — prefix fix + shared w_vocab alias + strict guard
     # ------------------------------------------------------------------
     def load_state_dict(self, state_dict, strict=True):
-        """Load state dict, handling prefix mismatch and missing Medusa keys.
+        """Load state dict, handling prefix mismatch and Medusa key aliasing.
 
         Lightning checkpoints may store keys with or without ``model.``
         prefix depending on the save/load version.  We auto-detect and fix.
-        Additionally, old base checkpoints don't contain
-        ``model.medusa_heads.*`` keys, so we relax strict when heads exist.
+
+        Medusa's ``w_vocab`` is the same module as ``joiner.linear``, so
+        checkpoints may carry ``medusa_heads.w_vocab.*`` alias keys. Those are
+        dropped on load: an old (pre-sharing) checkpoint would otherwise
+        clobber the joiner projection with stale draft-head weights.
+
+        When Medusa heads exist, missing keys are tolerated only for
+        ``medusa_heads.*`` (old base checkpoints); anything else missing or
+        unexpected raises instead of silently corrupting the model.
         """
-        _strict = False if self.model.medusa_heads is not None else strict
+        has_medusa = self.model.medusa_heads is not None
 
         # Fix prefix mismatch: Lightning ckpts often have 'model.' prefix,
         # but some loading paths strip it.  Auto-detect and realign.
@@ -512,7 +529,33 @@ class LibriSpeechRNNTModule(LightningModule):
                 # ckpt missing prefix, add it
                 state_dict = {"model." + k: v for k, v in state_dict.items()}
 
-        return super().load_state_dict(state_dict, strict=_strict)
+        # Drop the w_vocab alias so joiner.linear owns the shared tensor.
+        if has_medusa:
+            alias = [
+                k for k in state_dict
+                if k.endswith("medusa_heads.w_vocab.weight")
+                or k.endswith("medusa_heads.w_vocab.bias")
+            ]
+            if alias:
+                logging.info("Dropping shared w_vocab alias keys on load: %s", alias)
+                state_dict = {k: v for k, v in state_dict.items() if k not in alias}
+
+        result = super().load_state_dict(state_dict, strict=strict and not has_medusa)
+
+        # Old base checkpoints only miss medusa_heads.* — anything else is a
+        # real architecture mismatch and must not be silently skipped.
+        if has_medusa:
+            bad_missing = [
+                k for k in result.missing_keys
+                if not k.startswith("model.medusa_heads.")
+            ]
+            bad_unexpected = list(result.unexpected_keys)
+            if bad_missing or bad_unexpected:
+                raise RuntimeError(
+                    "load_state_dict mismatch: "
+                    f"missing={bad_missing}, unexpected={bad_unexpected}"
+                )
+        return result
 
     # ------------------------------------------------------------------
     # Factory: build from a config dictionary (e.g. loaded from YAML)
@@ -598,7 +641,6 @@ class LibriSpeechRNNTModule(LightningModule):
             decoding_mode=decoding_cfg.get("mode", "beam"),
             spec_max_draft=decoding_cfg.get("spec", {}).get("max_draft", 4),
             spec_per_token_blank=decoding_cfg.get("spec", {}).get("per_token_blank", 4),
-            spec_tree=decoding_cfg.get("spec", {}).get("tree", False),
         )
 
     # ------------------------------------------------------------------
@@ -631,7 +673,8 @@ class LibriSpeechRNNTModule(LightningModule):
     # ------------------------------------------------------------------
     # Feature extraction
     # ------------------------------------------------------------------
-    def _train_extract_features(self, samples: List):
+    def _compute_mel_batch(self, samples: List):
+        """mel per sample + pad to uniform length → (features, lengths)."""
         mel = self._get_mel_transform()
         mel_features = [
             mel(sample[0].squeeze()).transpose(1, 0)
@@ -641,37 +684,29 @@ class LibriSpeechRNNTModule(LightningModule):
         lengths = torch.tensor(
             [elem.shape[0] for elem in mel_features], dtype=torch.int32
         )
-        features = self.train_data_pipeline(features)
         return features, lengths
 
+    def _train_extract_features(self, samples: List):
+        features, lengths = self._compute_mel_batch(samples)
+        return self.train_data_pipeline(features), lengths
+
     def _valid_extract_features(self, samples: List):
-        mel = self._get_mel_transform()
-        mel_features = [
-            mel(sample[0].squeeze()).transpose(1, 0)
-            for sample in samples
-        ]
-        features = torch.nn.utils.rnn.pad_sequence(mel_features, batch_first=True)
-        lengths = torch.tensor(
-            [elem.shape[0] for elem in mel_features], dtype=torch.int32
-        )
-        features = self.valid_data_pipeline(features)
-        return features, lengths
+        features, lengths = self._compute_mel_batch(samples)
+        return self.valid_data_pipeline(features), lengths
 
     # ------------------------------------------------------------------
     # Collate functions
     # ------------------------------------------------------------------
-    def _train_collate_fn(self, samples: List):
-        features, feature_lengths = self._train_extract_features(samples)
-        targets, target_lengths = self._extract_labels(samples)
-        return Batch(features, feature_lengths, targets, target_lengths)
-
-    def _valid_collate_fn(self, samples: List):
-        features, feature_lengths = self._valid_extract_features(samples)
-        targets, target_lengths = self._extract_labels(samples)
-        return Batch(features, feature_lengths, targets, target_lengths)
+    def _make_collate(self, extract_features):
+        def collate(samples: List):
+            features, feature_lengths = extract_features(samples)
+            targets, target_lengths = self._extract_labels(samples)
+            return Batch(features, feature_lengths, targets, target_lengths)
+        return collate
 
     def _test_collate_fn(self, samples: List):
-        return self._valid_collate_fn(samples), [sample[2] for sample in samples]
+        collate = self._make_collate(self._valid_extract_features)
+        return collate(samples), [sample[2] for sample in samples]
 
     # ------------------------------------------------------------------
     # Training / validation / test step
@@ -687,7 +722,7 @@ class LibriSpeechRNNTModule(LightningModule):
         prepended_targets[:, 0] = self.blank_idx
         prepended_target_lengths = batch.target_lengths + 1
 
-        output, src_lengths, _, _, logits_base, logits_future = self.model.forward_train_aux(
+        output, src_lengths, _, logits_base, logits_future = self.model.forward_train_aux(
             batch.features,
             batch.feature_lengths,
             prepended_targets,
@@ -708,8 +743,12 @@ class LibriSpeechRNNTModule(LightningModule):
             # pad weights if config provided fewer than K
             if len(weights) < K:
                 weights = weights + [0.8 ** (i + 1) for i in range(len(weights), K)]
-            ce_aux = shifted_ce_loss(logits_future, batch.targets, weights, target_lengths)
-            kl_aux = kl_to_base_loss(logits_future, logits_base, self.medusa_kl_weight)
+            ce_aux = shifted_ce_loss(
+                logits_future, batch.targets, weights, target_lengths, src_lengths
+            )
+            kl_aux = kl_to_base_loss(
+                logits_future, logits_base, self.medusa_kl_weight, src_lengths, target_lengths
+            )
             loss = loss + ce_aux + kl_aux
             self.log(f"Losses/{step_type}_medusa_ce", ce_aux, on_step=True, on_epoch=True)
             self.log(f"Losses/{step_type}_medusa_kl", kl_aux, on_step=True, on_epoch=True)
@@ -732,63 +771,67 @@ class LibriSpeechRNNTModule(LightningModule):
             return self._forward_spec_greedy(batch)
         return self._forward_beam(batch)
 
-    def _forward_spec_greedy(self, batch: Batch):
-        """Medusa 模式:beam 解码 + draft 接受率统计。
+    def _beam_decode(self, features: Tensor, feature_lengths: Tensor) -> List[int]:
+        """RNNTBeamSearch 解码, 返回剥离首 blank 的 token id 列表。"""
+        width = 1 if self.beam_width == 0 else self.beam_width
+        decoder = RNNTBeamSearch(self.model, self.blank_idx)
+        hypotheses = decoder(features, feature_lengths, width)
+        token_ids = hypotheses[0][0]
+        if token_ids and token_ids[0] == self.blank_idx:
+            token_ids = token_ids[1:]
+        return token_ids
 
-        解码与 beam 模式相同(用 torchaudio RNNTBeamSearch 的长度归一化,
-        未收敛模型的 blank 先验弱时不会陷入贪心的单帧连续 emit 环)。
-        Medusa heads 的草拟质量用 medusa_accept_stats 在解码轨迹的贪心
-        回放上统计(draft 预测 == beam 实际输出 → accept)。
+    def _forward_spec_greedy(self, batch: Batch):
+        """Medusa 模式: 自投机贪心解码 (无损, 结果 == 贪心 oracle)。
+
+        投机解码逐 token 等价于 width-1 贪心; beam_width=0 时 RNNTBeamSearch
+        width-1 就是该 oracle, 因此与原 beam 路径输出一致。投机只省 predictor
+        往返并统计 draft 接受率。异常回退 beam。
         """
         features = batch.features.to(self.device)
         feature_lengths = batch.feature_lengths.to(self.device)
 
         try:
-            # 1) 解码:与 beam 模式一致的行为
-            width = 1 if self.beam_width == 0 else self.beam_width
-            decoder = RNNTBeamSearch(self.model, self.blank_idx)
-            hypotheses = decoder(features, feature_lengths, width)
-            # beam 假设 tokens 首位是初始 blank(即 blank_idx),跳过
-            token_ids = hypotheses[0][0]
-            if token_ids and token_ids[0] == self.blank_idx:
-                token_ids = token_ids[1:]
-
-            # 2) Medusa accept 统计(贪心回放,不改解码结果)
-            stats = medusa_accept_stats(
-                self.model, features, feature_lengths,
-                token_ids, self.blank_idx,
+            max_tokens = max(256, 4 * int(feature_lengths[0]))
+            token_ids, stats = speculative_greedy_decode(
+                self.model, features, feature_lengths, self.blank_idx,
                 max_draft=self.spec_max_draft,
+                per_token_blank=self.spec_per_token_blank,
+                max_tokens=max_tokens,
+                return_stats=True,
             )
         except Exception as e:
             logging.error("spec decode path failed: %s; falling back to beam", e)
             return self._forward_beam(batch)
 
-        remove_ids = {self.sp_model.unk_id(), self.sp_model.eos_id(), self.sp_model.pad_id()}
-        clean_ids = [t for t in token_ids if t not in remove_ids]
+        clean_ids = strip_special_tokens(token_ids, self.sp_model)
         spec_text = self.sp_model.decode(clean_ids).lower().replace(" ", "")
 
         # Log Medusa head acceptance stats
         if stats["total_drafts"] > 0:
             logging.info(
-                "Medusa accept: %d/%d (%.1f%%) | covered %d/%d emits | per-head: %s",
+                "Medusa accept: %d/%d (%.1f%%) | covered %d/%d tokens | per-head: %s",
                 stats["total_accepted"], stats["total_drafts"],
                 100 * stats["accept_rate"],
-                stats["covered_emits"], len(token_ids),
+                stats["total_tokens"], len(token_ids),
                 " ".join(f"h{i+1}={ph['rate']:.2f}" for i, ph in enumerate(stats["per_head"])),
+            )
+        if stats["truncated"]:
+            logging.warning(
+                "Spec decode truncated at %d tokens (hallucination guard)",
+                stats["total_tokens"],
             )
 
         return spec_text
 
     def _forward_beam(self, batch: Batch):
-        """Fallback: standard beam search."""
-        width = 1 if self.beam_width == 0 else self.beam_width
-        decoder = RNNTBeamSearch(self.model, self.blank_idx)
-        hypotheses = decoder(
+        """Fallback: standard beam search (top-1 hypothesis only)."""
+        token_ids = self._beam_decode(
             batch.features.to(self.device),
             batch.feature_lengths.to(self.device),
-            width,
         )
-        return post_process_hypos(hypotheses, self.sp_model)[0][0]
+        clean_ids = strip_special_tokens(token_ids, self.sp_model)
+        return self.sp_model.decode(clean_ids).lower().replace(" ", "")
 
     def training_step(self, batch: Batch, batch_idx: int):
         return self._step(batch, batch_idx, "train")
@@ -802,43 +845,33 @@ class LibriSpeechRNNTModule(LightningModule):
     # ------------------------------------------------------------------
     # DataLoaders
     # ------------------------------------------------------------------
-    def train_dataloader(self):
-        dataset = torch.utils.data.ConcatDataset(
-            [
-                CustomDataset(
-                    LIBRISPEECH(self.librispeech_path, url=self.train_subset),
-                    max_token_limit=self.max_token_limit,
-                ),
-            ]
+    def _make_loader(self, subset: str, collate, shuffle: bool = False):
+        dataset = CustomDataset(
+            LIBRISPEECH(self.librispeech_path, url=subset),
+            max_token_limit=self.max_token_limit,
         )
         return torch.utils.data.DataLoader(
             dataset,
             batch_size=None,
-            collate_fn=self._train_collate_fn,
+            collate_fn=collate,
             num_workers=self.num_workers,
-            shuffle=True,
+            shuffle=shuffle,
             pin_memory=True,
             prefetch_factor=self.prefetch_factor if self.num_workers > 0 else None,
             persistent_workers=True if self.num_workers > 0 else False,
         )
 
-    def val_dataloader(self):
-        dataset = torch.utils.data.ConcatDataset(
-            [
-                CustomDataset(
-                    LIBRISPEECH(self.librispeech_path, url=self.val_subset),
-                    max_token_limit=self.max_token_limit,
-                ),
-            ]
+    def train_dataloader(self):
+        return self._make_loader(
+            self.train_subset,
+            self._make_collate(self._train_extract_features),
+            shuffle=True,
         )
-        return torch.utils.data.DataLoader(
-            dataset,
-            batch_size=None,
-            collate_fn=self._valid_collate_fn,
-            num_workers=self.num_workers,
-            pin_memory=True,
-            prefetch_factor=self.prefetch_factor if self.num_workers > 0 else None,
-            persistent_workers=True if self.num_workers > 0 else False,
+
+    def val_dataloader(self):
+        return self._make_loader(
+            self.val_subset,
+            self._make_collate(self._valid_extract_features),
         )
 
     def test_dataloader(self):
@@ -847,4 +880,6 @@ class LibriSpeechRNNTModule(LightningModule):
             dataset,
             batch_size=1,
             collate_fn=self._test_collate_fn,
+            num_workers=min(self.num_workers, 4),
+            pin_memory=True,
         )

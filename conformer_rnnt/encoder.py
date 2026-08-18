@@ -12,7 +12,7 @@ Block 1 captures local patterns; compression selects key frames at change
 points; Block 2 models longer-range dependencies on the reduced sequence.
 """
 
-from typing import List, Optional, Tuple
+from typing import Tuple
 
 import torch
 from torch import Tensor
@@ -99,7 +99,6 @@ class ConformerEncoder(torch.nn.Module):
         self.time_reduction_stride = time_reduction_stride
 
         dim = time_reduction_input_dim * time_reduction_stride  # encoder dim
-        rc_frames = right_context_length // time_reduction_stride    # reduced right-ctx
 
         # Frontend
         self.input_linear = torch.nn.Linear(input_dim, time_reduction_input_dim, bias=False)
@@ -147,27 +146,12 @@ class ConformerEncoder(torch.nn.Module):
         x, x_len = self.time_reduction(self.input_linear(input), lengths)
         x, x_len = self.conformer1(x, x_len + rc_frames)
 
-        # Compression
-        if self.compression.compression_filter == "none":
-            x, x_len = x, x_len
-        else:
-            x, x_len = self.compression(x, x_len)
+        # Compression (no-op passthrough when filter == "none")
+        x, x_len = self.compression(x, x_len)
 
         # Stage 2 + output
         x, x_len = self.conformer2(x, x_len)
         return self.output_norm(self.output_linear(x)), x_len
-
-    # ------------------------------------------------------------------
-    @torch.jit.export
-    def infer(
-        self,
-        input: Tensor,
-        lengths: Tensor,
-        states: Optional[List[List[Tensor]]] = None,
-    ) -> Tuple[Tensor, Tensor, List[List[Tensor]]]:
-        """Streaming-compatible forward (delegates to forward, returns empty state)."""
-        output, out_len = self.forward(input, lengths)
-        return output, out_len, []
 
 
 # ═══════════════════════════════════════════════════════════════════════════
