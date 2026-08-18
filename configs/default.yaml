@@ -255,9 +255,7 @@ decoding:
   # spec_greedy 参数 (仅 mode=spec_greedy 生效)
   spec:
     max_draft: 4
-    frame_window: 16
     per_token_blank: 4
-    tree: false            # false=链式 | true=树式候选
 
 # ---------------------------------------------------------------------------
 # 其他

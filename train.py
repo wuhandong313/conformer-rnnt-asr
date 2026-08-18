@@ -11,46 +11,20 @@ Usage::
 from __future__ import annotations
 
 import logging
-import os
 import sys
 from typing import Any, Dict
 
-import yaml
 import torch
 from pytorch_lightning import Trainer, seed_everything
 from pytorch_lightning.callbacks import Callback, ModelCheckpoint
 
+from common import checkpoint_dir, load_config, model_ckpt_tag, setup_logging
 from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
 
 
 # ===========================================================================
 # Checkpoint 命名与配置快照
 # ===========================================================================
-
-
-def model_ckpt_tag(config: Dict[str, Any]) -> str:
-    """从训练实际使用的 config 生成 checkpoint 文件名标记。
-
-    方向 A + C: 真实训练参数标记 —— 压缩模式 + Medusa 头数 + 冻结状态。
-    与 from_config 使用同一个 config, 保证文件名反映模型真实训练模式。
-
-    例子:
-        naive + 1 head + 联合训练  -> "naive-h1-free"
-        naive + 2 head + 冻结基底  -> "naive-h2-frz"
-        无 Medusa (base 模型)      -> "naive-base"
-    """
-    model_cfg = config.get("model", {})
-    comp = model_cfg.get("compression", {})
-    medusa = model_cfg.get("medusa", {})
-
-    filt = comp.get("filter", "none")
-    heads = int(medusa.get("num_heads", 0))
-    freeze = "frz" if medusa.get("freeze_base", False) else "free"
-
-    # 有 Medusa heads 才区分冻结状态, 无 heads 时省略 (避免无意义后缀)
-    if heads > 0:
-        return f"{filt}-h{heads}-{freeze}"
-    return f"{filt}-base"
 
 
 class CheckpointSnapshot(Callback):
@@ -85,38 +59,24 @@ class CheckpointSnapshot(Callback):
 
 
 # ===========================================================================
-# Config helpers
-# ===========================================================================
-
-
-def load_config(path: str) -> Dict[str, Any]:
-    with open(path, "r") as f:
-        cfg = yaml.safe_load(f)
-    if cfg is None:
-        raise ValueError(f"Config file '{path}' is empty.")
-    return cfg
-
-
-# ===========================================================================
 # Trainer builder
 # ===========================================================================
 
 
 def build_trainer(config: Dict[str, Any]) -> Trainer:
-    paths = config.get("paths", {})
     trainer_cfg = config.get("trainer", {})
     training_cfg = config.get("training", {})
     ckpt = trainer_cfg.get("checkpoint", {})
 
-    exp_dir = paths.get("exp_dir", "./exp")
-    checkpoint_dir = os.path.join(exp_dir, "checkpoints")
+    exp_dir = config.get("paths", {}).get("exp_dir", "./exp")
+    ckpt_dir = checkpoint_dir(config)
 
-    # 真实训练参数标记: 压缩模式 + Medusa 头数 + 冻结状态 (方向 A + C)
+    # 真实训练参数标记: 压缩模式 + Medusa 头数 + 冻结状态
     tag = model_ckpt_tag(config)
     logging.info("Checkpoint tag: %s", tag)
 
     val_ckpt = ModelCheckpoint(
-        dirpath=checkpoint_dir,
+        dirpath=ckpt_dir,
         filename=f"val-{tag}-{{epoch:02d}}-{{step}}",
         monitor="Losses/val_loss",
         mode="min",
@@ -126,7 +86,7 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
         verbose=True,
     )
     train_ckpt = ModelCheckpoint(
-        dirpath=checkpoint_dir,
+        dirpath=ckpt_dir,
         filename=f"train-{tag}-{{epoch:02d}}-{{step}}",
         monitor="Losses/train_loss",
         mode="min",
@@ -165,10 +125,7 @@ def main(config_path: str) -> None:
     config = load_config(config_path)
 
     # 2. Logging
-    debug = config.get("debug", False)
-    fmt = "%(asctime)s %(message)s" if debug else "%(message)s"
-    level = logging.DEBUG if debug else logging.INFO
-    logging.basicConfig(format=fmt, level=level, datefmt="%Y-%m-%d %H:%M:%S")
+    setup_logging(config)
 
     # 3. Seed
     seed = config.get("seed", 42)

@@ -7,6 +7,7 @@ Usage:
 
 from __future__ import annotations
 
+import csv
 import glob
 import logging
 import os
@@ -17,22 +18,9 @@ from typing import Any, Dict
 
 import torch
 import torchaudio
-import yaml
 
+from common import checkpoint_dir, load_config, model_ckpt_tag, setup_logging
 from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# Config
-# ═══════════════════════════════════════════════════════════════════════════
-
-
-def load_config(path: str) -> Dict[str, Any]:
-    with open(path, "r") as f:
-        cfg = yaml.safe_load(f)
-    if cfg is None:
-        raise ValueError(f"Config file '{path}' is empty.")
-    return cfg
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -103,7 +91,6 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
     logging.info("=" * 60)
 
     # Save per-sample CSV
-    import csv
     with open(per_sample_file, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=["idx", "PER", "RTF", "ref", "hyp"])
         writer.writeheader()
@@ -176,10 +163,20 @@ def _check_snapshot_mismatch(snapshot: Dict[str, Any] | None, config: Dict[str, 
             )
 
 
-def _find_latest_val_ckpt(checkpoint_dir: str) -> str | None:
-    """Find the latest val-*.ckpt in the checkpoint directory."""
-    pattern = os.path.join(checkpoint_dir, "val-*.ckpt")
-    files = glob.glob(pattern)
+def _find_latest_val_ckpt(ckpt_dir: str, tag: str | None = None) -> str | None:
+    """Find the latest val-*.ckpt in the checkpoint directory.
+
+    When ``tag`` (e.g. ``"naive-h1-free"``) is given, only checkpoints matching
+    ``val-{tag}-*.ckpt`` are candidates — avoids auto-loading a checkpoint
+    from a different experiment (different medusa heads / compression mode).
+    Falls back to any ``val-*.ckpt`` if no tagged one exists (legacy format).
+    """
+    if tag:
+        tagged = glob.glob(os.path.join(ckpt_dir, f"val-{tag}-*.ckpt"))
+        if tagged:
+            return max(tagged, key=os.path.getmtime)
+        logging.warning("No val-%s-*.ckpt found; falling back to any val-*.ckpt", tag)
+    files = glob.glob(os.path.join(ckpt_dir, "val-*.ckpt"))
     if not files:
         return None
     return max(files, key=os.path.getmtime)
@@ -199,9 +196,7 @@ def main():
     config = load_config(args.config)
 
     # Logging
-    debug = config.get("debug", False)
-    fmt = "%(asctime)s %(message)s" if debug else "%(message)s"
-    logging.basicConfig(format=fmt, level=logging.INFO, datefmt="%Y-%m-%d %H:%M:%S")
+    setup_logging(config)
 
     # Build model from config (architecture, paths — all from YAML)
     logging.info("Building model from config …")
@@ -214,11 +209,10 @@ def main():
     # Resolve checkpoint path
     ckpt_path = args.checkpoint
     if ckpt_path is None:
-        exp_dir = config.get("paths", {}).get("exp_dir", "./exp")
-        checkpoint_dir = os.path.join(exp_dir, "checkpoints")
-        ckpt_path = _find_latest_val_ckpt(checkpoint_dir)
+        ckpt_dir = checkpoint_dir(config)
+        ckpt_path = _find_latest_val_ckpt(ckpt_dir, model_ckpt_tag(config))
         if ckpt_path is None:
-            logging.error("No val-*.ckpt found in %s. Specify --checkpoint.", checkpoint_dir)
+            logging.error("No val-*.ckpt found in %s. Specify --checkpoint.", ckpt_dir)
             sys.exit(1)
         logging.info("Auto-selected checkpoint: %s", ckpt_path)
 
@@ -234,8 +228,9 @@ def main():
     model.load_state_dict(state_dict, strict=False)
 
     # Eval
-    device = torch.device("cpu" if args.cpu else config.get("trainer", {}).get("accelerator", "cuda"))
-    run_eval(model, device)
+    accel = config.get("trainer", {}).get("accelerator", "cuda")
+    device_name = "cpu" if args.cpu else ("cuda" if accel == "gpu" else accel)
+    run_eval(model, torch.device(device_name))
 
 
 if __name__ == "__main__":
