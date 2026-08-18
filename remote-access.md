@@ -49,7 +49,7 @@ Mac (外网) ──ZeroTier──> 学校电脑 (10.137.230.170) ──内网─
 | **学校电脑用户/密码** | `vuser` / `user@123` |
 | **内网服务器** | `192.168.19.114` |
 | **内网服务器 SSH 端口** | `30584` |
-| **内网服务器用户/密码** | `root` / `559454` |
+| **内网服务器用户/密码** | `root` / `110401a?` |
 | **内网 Web 服务** | `https://192.168.19.114:32206/` |
 
 ## SSH Config
@@ -69,20 +69,20 @@ Host internal
 ### SSH 登录
 
 ```bash
-sshpass -p '559454' ssh internal
+sshpass -p '110401a?' ssh internal
 ```
 
 ### 文件传输 (scp)
 
 ```bash
 # 上传文件
-sshpass -p '559454' scp ~/本地文件 internal:/test21/
+sshpass -p '110401a?' scp ~/本地文件 internal:/test21/
 
 # 下载文件
-sshpass -p '559454' scp internal:/test21/文件名 ~/
+sshpass -p '110401a?' scp internal:/test21/文件名 ~/
 
 # 上传文件夹
-sshpass -p '559454' scp -r ~/文件夹 internal:/test21/
+sshpass -p '110401a?' scp -r ~/文件夹 internal:/test21/
 ```
 
 ### 浏览器访问内网网页
@@ -110,13 +110,13 @@ sshpass -p 'user@123' ssh -o StrictHostKeyChecking=no -L 2222:192.168.19.114:305
 | 服务器 | localhost |
 | 端口 | 2222 |
 | 用户名 | root |
-| 密码 | 559454 |
+| 密码 | 110401a? |
 
 ### 便捷别名 (可选，添加到 ~/.zshrc)
 
 ```bash
-alias sshin='sshpass -p '\''559454'\'' ssh internal'
-alias scpin='sshpass -p '\''559454'\'' scp'
+alias sshin='sshpass -p '\''110401a?'\'' ssh internal'
+alias scpin='sshpass -p '\''110401a?'\'' scp'
 alias webin='sshpass -p '\''user@123'\'' ssh -o StrictHostKeyChecking=no -L 32206:192.168.19.114:32206 vuser@10.137.230.170 -N -f && echo "打开 https://localhost:32206/"'
 alias duckin='sshpass -p '\''user@123'\'' ssh -o StrictHostKeyChecking=no -L 2222:192.168.19.114:30584 vuser@10.137.230.170 -N -f && echo "Cyberduck 连 localhost:2222"'
 ```
