@@ -766,10 +766,16 @@ class LibriSpeechRNNTModule(LightningModule):
         )
 
     def forward(self, batch: Batch):
+        """推理解码, 返回 (文本, stats)。
+
+        stats 为 Medusa 投机解码的接受率统计 (dict 或 None):
+        - spec_greedy 模式: 返回真解码器的 stats (含 per-head 接受率)。
+        - beam 模式 / 无 Medusa heads / 投机解码回退: 返回 None。
+        """
         # Auto-detect: use spec_greedy only when Medusa heads exist
         if self.decoding_mode == "spec_greedy" and self.model.medusa_heads is not None:
             return self._forward_spec_greedy(batch)
-        return self._forward_beam(batch)
+        return self._forward_beam(batch), None
 
     def _beam_decode(self, features: Tensor, feature_lengths: Tensor) -> List[int]:
         """RNNTBeamSearch 解码, 返回剥离首 blank 的 token id 列表。"""
@@ -802,7 +808,7 @@ class LibriSpeechRNNTModule(LightningModule):
             )
         except Exception as e:
             logging.error("spec decode path failed: %s; falling back to beam", e)
-            return self._forward_beam(batch)
+            return self._forward_beam(batch), None
 
         clean_ids = strip_special_tokens(token_ids, self.sp_model)
         spec_text = self.sp_model.decode(clean_ids).lower().replace(" ", "")
@@ -822,7 +828,7 @@ class LibriSpeechRNNTModule(LightningModule):
                 stats["total_tokens"],
             )
 
-        return spec_text
+        return spec_text, stats
 
     def _forward_beam(self, batch: Batch):
         """Fallback: standard beam search (top-1 hypothesis only)."""

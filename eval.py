@@ -50,18 +50,34 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
     n = 0
     per_sample = []
 
+    # Medusa 投机解码接受率 — 跨样本聚合 (仅 spec_greedy 模式填充)
+    med_drafts = 0
+    med_accepted = 0
+    med_per_head: Dict[int, Dict[str, int]] = {}  # head_idx -> {drafts, accepted}
+    med_samples = 0  # 有 draft 统计的样本数
+
     with torch.no_grad():
         for idx, (batch, transcripts) in enumerate(dataloader):
             actual = transcripts[0].lower().replace(" ", "")
 
             # Timing
             t0 = time.time()
-            predicted = model(batch)
+            predicted, stats = model(batch)
             t1 = time.time()
 
             # RTF: processing_time / audio_duration
             frame_dur = model._mel_kwargs["hop_length"] / model._mel_kwargs["sample_rate"]
             audio_dur = batch.feature_lengths[0].item() * frame_dur
+
+            # Aggregate Medusa accept stats (spec_greedy only)
+            if stats is not None and stats["total_drafts"] > 0:
+                med_drafts += stats["total_drafts"]
+                med_accepted += stats["total_accepted"]
+                for i, ph in enumerate(stats["per_head"]):
+                    head = med_per_head.setdefault(i, {"drafts": 0, "accepted": 0})
+                    head["drafts"] += ph["drafts"]
+                    head["accepted"] += ph["accepted"]
+                med_samples += 1
 
             # PER: character-level edit distance on raw text
             per = compute_per(actual, predicted)
@@ -88,6 +104,21 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
     logging.info("Evaluation complete — %d samples", n)
     logging.info("PER: %.4f", avg_per)
     logging.info("RTF: %.4f", avg_rtf)
+    if med_drafts > 0:
+        per_head_txt = " | ".join(
+            f"h{i+1}: {d['accepted']}/{d['drafts']} ({100*d['accepted']/max(d['drafts'],1):.1f}%)"
+            for i, d in sorted(med_per_head.items())
+        )
+        logging.info("Medusa accept rate (over %d spec samples):", med_samples)
+        logging.info(
+            "  overall: %d/%d (%.2f%%) | per-head: %s",
+            med_accepted, med_drafts, 100 * med_accepted / med_drafts, per_head_txt,
+        )
+    else:
+        logging.info(
+            "Medusa accept stats unavailable (decoding.mode != spec_greedy, "
+            "no Medusa heads, or all samples fell back to beam)."
+        )
     logging.info("=" * 60)
 
     # Save per-sample CSV
@@ -97,7 +128,22 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
         writer.writerows(per_sample)
     logging.info("Per-sample results saved to: %s", per_sample_file)
 
-    return {"per": avg_per, "rtf": avg_rtf, "num_samples": n}
+    summary: Dict[str, Any] = {
+        "per": avg_per,
+        "rtf": avg_rtf,
+        "num_samples": n,
+    }
+    if med_drafts > 0:
+        summary["medusa_accept_rate"] = med_accepted / med_drafts
+        summary["medusa_total_drafts"] = med_drafts
+        summary["medusa_total_accepted"] = med_accepted
+        summary["medusa_per_head"] = [
+            {"drafts": d["drafts"], "accepted": d["accepted"],
+             "rate": d["accepted"] / max(d["drafts"], 1)}
+            for _, d in sorted(med_per_head.items())
+        ]
+        summary["medusa_samples"] = med_samples
+    return summary
 
 
 # ═══════════════════════════════════════════════════════════════════════════
