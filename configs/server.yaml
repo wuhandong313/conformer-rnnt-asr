@@ -123,6 +123,7 @@ model:
     num_heads: 2
     input_mode: "stream_local"
     lookahead_frames: 1
+    draft_after_emit: true
 
     # 冻结 base model (encoder + predictor + joiner)，仅训练 Medusa heads
     freeze_base: true

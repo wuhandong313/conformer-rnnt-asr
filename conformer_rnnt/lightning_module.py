@@ -346,6 +346,7 @@ class LibriSpeechRNNTModule(LightningModule):
         medusa_num_heads: int = 0,
         medusa_input_mode: str = "stream_local",
         medusa_lookahead_frames: Optional[int] = None,
+        medusa_draft_after_emit: bool = False,
         medusa_ce_weights: tuple = (0.8, 0.64, 0.512, 0.4096),
         medusa_kl_weight: float = 0.05,
         medusa_freeze_base: bool = False,
@@ -408,6 +409,7 @@ class LibriSpeechRNNTModule(LightningModule):
             medusa_num_heads=medusa_num_heads,
             medusa_input_mode=medusa_input_mode,
             medusa_lookahead_frames=medusa_lookahead_frames,
+            medusa_draft_after_emit=medusa_draft_after_emit,
         )
 
         # ---- Freeze base model when training only Medusa heads ----
@@ -500,6 +502,7 @@ class LibriSpeechRNNTModule(LightningModule):
         # ---- Medusa aux loss config ----
         self.medusa_ce_weights = list(medusa_ce_weights)
         self.medusa_kl_weight = medusa_kl_weight
+        self.medusa_draft_after_emit = bool(medusa_draft_after_emit)
 
     # ------------------------------------------------------------------
     # Checkpoint loading — prefix fix + shared w_vocab alias + strict guard
@@ -617,6 +620,7 @@ class LibriSpeechRNNTModule(LightningModule):
             medusa_num_heads=medusa_cfg.get("num_heads", 0),
             medusa_input_mode=medusa_cfg.get("input_mode", "stream_local"),
             medusa_lookahead_frames=medusa_cfg.get("lookahead_frames"),
+            medusa_draft_after_emit=medusa_cfg.get("draft_after_emit", False),
             medusa_ce_weights=tuple(medusa_cfg.get("ce_loss_weights", [0.8, 0.64, 0.512, 0.4096])),
             medusa_kl_weight=medusa_cfg.get("kl_weight", 0.05),
             medusa_freeze_base=medusa_cfg.get("freeze_base", False),
@@ -757,9 +761,15 @@ class LibriSpeechRNNTModule(LightningModule):
                 target_lengths,
                 src_lengths,
                 blank_idx=self.blank_idx,
+                future_state_offset=1 if self.medusa_draft_after_emit else 0,
             )
             kl_aux = kl_to_base_loss(
-                logits_future, logits_base, self.medusa_kl_weight, src_lengths, target_lengths
+                logits_future,
+                logits_base,
+                self.medusa_kl_weight,
+                src_lengths,
+                target_lengths,
+                future_state_offset=1 if self.medusa_draft_after_emit else 0,
             )
             loss = loss + ce_aux + kl_aux
             self.log(f"Losses/{step_type}_medusa_ce", ce_aux, on_step=True, on_epoch=True)

@@ -165,6 +165,7 @@ def conformer_rnnt_model(
     medusa_num_heads: int = 0,
     medusa_input_mode: str = "stream_local",
     medusa_lookahead_frames: Optional[int] = None,
+    medusa_draft_after_emit: bool = False,
 ) -> ConformerRNNT:
     """Build a Conformer-RNNT model from explicit keyword arguments.
 
@@ -203,6 +204,7 @@ def conformer_rnnt_model(
             w_vocab=joiner.linear,
             input_mode=medusa_input_mode,
             lookahead_frames=medusa_lookahead_frames,
+            draft_after_emit=medusa_draft_after_emit,
         )
 
     return ConformerRNNT(

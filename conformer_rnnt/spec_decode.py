@@ -137,9 +137,18 @@ def speculative_greedy_decode(
         # ---- emit y*=pred0 ----
         out.append(pred0)
 
-        # ---- 草拟 d_1..d_K (在吃 token 之前: g_last = tgt_enc[u], head k → y_{u+k}) ----
-        # 必须吃之前草拟: training时 head k at (t,u) → label = targets[u+k]
-        # draft[0] = head_1 → y_{u+1}, 跟 joiner 在 (u+1) 的 emit 对齐
+        draft_after_emit = getattr(model.medusa_heads, "draft_after_emit", False)
+
+        # In post-emit mode, advance to g_{u+1} before drafting. This makes
+        # head k predict y_{u+k} from the same predictor state that the
+        # verifier will reach after the current base token.
+        if draft_after_emit:
+            g_last, state = _advance_predictor(
+                model, _make_tok(pred0, dev), state, one
+            )
+
+        # ---- 草拟 d_1..d_K ----
+        # Legacy mode drafts from g_u; post-emit mode drafts from g_{u+1}.
         draft_rounds += 1
         lookahead = getattr(model.medusa_heads, "lookahead_frames", 0)
         source_window = enc[:, t : t + 1 + lookahead]
@@ -150,8 +159,12 @@ def speculative_greedy_decode(
             if draft == blank_idx:
                 blank_drafts[j] += 1
 
-        # predictor 吃 pred0 → 新 g_last (label 位 +1，t 不变)
-        g_last, state = _advance_predictor(model, _make_tok(pred0, dev), state, one)
+        # Legacy mode consumes pred0 after drafting. In post-emit mode this was
+        # done above so the draft and verifier share the same current state.
+        if not draft_after_emit:
+            g_last, state = _advance_predictor(
+                model, _make_tok(pred0, dev), state, one
+            )
 
         # ---- 逐个验证 d_j ----
         # 状态推进与 oracle 完全一致：每个 d_j 允许 ≤per_token_blank 次 blank

@@ -10,6 +10,9 @@ context delta。这样新 head 在初始化时仍然等价于 base，但训练�
 lookahead frame；窗口在序列末尾用零填充，不会泄露 right-context 之外的信息。
 future head 另外接收当前 base logits 的 detached 投影，让它明确知道本轮
 已经由 verifier 选出的 token 分布，而不会改变 base/verifier 的输出。
+在 ``draft_after_emit`` 模式中，draft 从消费当前 token 后的 predictor state
+开始，head k 对齐到 ``y[u+k]``，避免用 ``g_u`` 预测本应由 ``g_{u+1}``
+条件化的 token。
 所有 future head 仍共享 ``joiner.linear``，因此 verifier 的 base logits
 和 head 0 使用完全相同的词表投影。
 """
@@ -71,6 +74,7 @@ class MedusaHeads(torch.nn.Module):
         w_vocab: torch.nn.Linear,
         input_mode: str = "stream_local",
         lookahead_frames: int = 1,
+        draft_after_emit: bool = False,
     ) -> None:
         super().__init__()
         if w_vocab.in_features != input_dim or w_vocab.out_features != num_vocab:
@@ -87,6 +91,7 @@ class MedusaHeads(torch.nn.Module):
         self.num_heads = num_heads
         self.input_mode = input_mode
         self.lookahead_frames = max(0, int(lookahead_frames))
+        self.draft_after_emit = bool(draft_after_emit)
         self.res_blocks = torch.nn.ModuleList(
             [MedusaResBlock(input_dim) for _ in range(num_heads)]
         )
@@ -242,6 +247,7 @@ def shifted_ce_loss(
     target_lengths: Tensor,
     src_lengths: Tensor,
     blank_idx: Optional[int] = None,
+    future_state_offset: int = 0,
 ) -> Tensor:
     r"""Σ λ_k · CE(head_k 在 (t,u) 的 logits, targets[u+k])。
 
@@ -251,6 +257,7 @@ def shifted_ce_loss(
     """
     if not logits_future:
         return targets.new_zeros(())
+    future_state_offset = max(0, int(future_state_offset))
     B, T, _, V = logits_future[0].shape
     U = targets.size(1)
     total = targets.new_zeros((), dtype=logits_future[0].dtype)
@@ -261,10 +268,12 @@ def shifted_ce_loss(
 
     for k_idx, logits_k in enumerate(logits_future):
         k = k_idx + 1
-        positions = min(U - k, logits_k.size(2))
+        positions = min(U - k, logits_k.size(2) - future_state_offset)
         if positions <= 0:
             continue
-        pred = logits_k[:, :, :positions, :].reshape(-1, V)
+        pred = logits_k[
+            :, :, future_state_offset : future_state_offset + positions, :
+        ].reshape(-1, V)
         label = targets[:, k : k + positions]
         label = label.unsqueeze(1).expand(-1, T, -1)
         u_idx = torch.arange(positions, device=targets.device).unsqueeze(0)
@@ -288,6 +297,7 @@ def kl_to_base_loss(
     beta: float,
     src_lengths: Tensor,
     target_lengths: Tensor,
+    future_state_offset: int = 0,
 ) -> Tensor:
     r"""β · Σ KL(head_k(u) ‖ base(u+k).detach()).
 
@@ -298,6 +308,7 @@ def kl_to_base_loss(
     """
     if beta <= 0 or not logits_future:
         return logits_base.new_zeros(())
+    future_state_offset = max(0, int(future_state_offset))
     _, T, L, _ = logits_base.shape
     dev = logits_base.device
     sl = src_lengths.to(dev)
@@ -308,7 +319,7 @@ def kl_to_base_loss(
 
     for k_idx, logits_k in enumerate(logits_future):
         k = k_idx + 1
-        positions = min(logits_k.size(2), L - k)
+        positions = min(logits_k.size(2) - future_state_offset, L - k)
         if positions <= 0:
             continue
         u_idx = torch.arange(positions, device=dev).unsqueeze(0)
@@ -316,7 +327,9 @@ def kl_to_base_loss(
         mask = valid_t[:, : logits_k.size(1), None] & valid_u[:, None, :]
         if not bool(mask.any()):
             continue
-        future = logits_k[:, :, :positions, :]
+        future = logits_k[
+            :, :, future_state_offset : future_state_offset + positions, :
+        ]
         base = logits_base[:, :, k : k + positions, :]
         log_p0 = F.log_softmax(base, dim=-1).detach()
         log_pk = F.log_softmax(future, dim=-1)

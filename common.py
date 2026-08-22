@@ -198,6 +198,8 @@ def model_ckpt_tag(config: Dict[str, Any]) -> str:
     }.get(input_mode, str(input_mode).replace("_", "-"))
     lookahead = medusa.get("lookahead_frames")
     lookahead_tag = f"{mode_tag}{lookahead}" if lookahead is not None else mode_tag
+    if medusa.get("draft_after_emit", False):
+        lookahead_tag += "-post"
 
     # 有 Medusa heads 才区分冻结状态, 无 heads 时省略 (避免无意义后缀)
     if heads > 0:
