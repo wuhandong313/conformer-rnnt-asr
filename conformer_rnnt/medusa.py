@@ -8,6 +8,8 @@ context delta。这样新 head 在初始化时仍然等价于 base，但训练�
 
 ``stream_local`` 的 acoustic window 只包含当前 encoder frame 和配置允许的
 lookahead frame；窗口在序列末尾用零填充，不会泄露 right-context 之外的信息。
+future head 另外接收当前 base logits 的 detached 投影，让它明确知道本轮
+已经由 verifier 选出的 token 分布，而不会改变 base/verifier 的输出。
 所有 future head 仍共享 ``joiner.linear``，因此 verifier 的 base logits
 和 head 0 使用完全相同的词表投影。
 """
@@ -96,10 +98,12 @@ class MedusaHeads(torch.nn.Module):
         self.context_mlp: Optional[torch.nn.Sequential]
         self.context_acoustic: Optional[torch.nn.Linear]
         self.context_predictor: Optional[torch.nn.Linear]
+        self.context_base_logits: Optional[torch.nn.Linear]
         if input_mode == "stream_local":
             window_dim = (1 + self.lookahead_frames) * input_dim
             self.context_acoustic = torch.nn.Linear(window_dim, input_dim)
             self.context_predictor = torch.nn.Linear(input_dim, input_dim)
+            self.context_base_logits = torch.nn.Linear(num_vocab, input_dim)
             self.context_norm = torch.nn.LayerNorm(input_dim)
             self.context_mlp = torch.nn.Sequential(
                 torch.nn.Linear(input_dim, 2 * input_dim),
@@ -109,6 +113,7 @@ class MedusaHeads(torch.nn.Module):
         elif input_mode == "predictor_only":
             self.context_acoustic = None
             self.context_predictor = torch.nn.Linear(input_dim, input_dim)
+            self.context_base_logits = torch.nn.Linear(num_vocab, input_dim)
             self.context_norm = torch.nn.LayerNorm(input_dim)
             self.context_mlp = torch.nn.Sequential(
                 torch.nn.Linear(input_dim, 2 * input_dim),
@@ -118,8 +123,16 @@ class MedusaHeads(torch.nn.Module):
         else:
             self.context_acoustic = None
             self.context_predictor = None
+            self.context_base_logits = None
             self.context_norm = None
             self.context_mlp = None
+
+        if self.context_base_logits is not None:
+            # This feature is added to checkpoints that may already contain a
+            # trained context MLP. Zero initialization therefore preserves an
+            # old head's behavior while allowing the new signal to be learned.
+            torch.nn.init.zeros_(self.context_base_logits.weight)
+            torch.nn.init.zeros_(self.context_base_logits.bias)
 
         if self.context_mlp is not None:
             # Preserve the exact base-logit initialization. The context path
@@ -136,6 +149,7 @@ class MedusaHeads(torch.nn.Module):
         joint: Tensor,
         source_encodings: Optional[Tensor],
         target_encodings: Optional[Tensor],
+        base_logits: Optional[Tensor],
     ) -> Tensor:
         """Build a bounded context delta with shape ``(B,T,L,D)``."""
         if self.input_mode == "current_joint" or self.context_mlp is None:
@@ -153,8 +167,19 @@ class MedusaHeads(torch.nn.Module):
             )
 
         predictor = self.context_predictor(target_encodings)
+        if base_logits is None or self.context_base_logits is None:
+            return torch.zeros_like(joint)
+        if base_logits.shape[:3] != (B, T, L):
+            raise ValueError(
+                "base_logits must match joint on batch/time/label axes: "
+                f"joint={tuple(joint.shape)}, base={tuple(base_logits.shape)}"
+            )
+        # The verifier distribution is an inference-available summary of the
+        # current token decision. Detach it so auxiliary head training cannot
+        # alter the base model through this shortcut.
+        base_context = self.context_base_logits(base_logits.detach())
         if self.input_mode == "predictor_only":
-            fused = predictor.unsqueeze(1).expand(-1, T, -1, -1)
+            fused = predictor.unsqueeze(1).expand(-1, T, -1, -1) + base_context
         else:
             if source_encodings is None:
                 return torch.zeros_like(joint)
@@ -172,7 +197,7 @@ class MedusaHeads(torch.nn.Module):
             # Tensor.unfold appends the window axis after D: (B,T,D,W).
             windows = windows.permute(0, 1, 3, 2).contiguous()[:, :T]
             acoustic = self.context_acoustic(windows.flatten(start_dim=2))
-            fused = acoustic.unsqueeze(2) + predictor.unsqueeze(1)
+            fused = acoustic.unsqueeze(2) + predictor.unsqueeze(1) + base_context
 
         normalized = self.context_norm(fused)
         return self.context_mlp(normalized)
@@ -197,7 +222,7 @@ class MedusaHeads(torch.nn.Module):
         """
         logits_base = self.w_vocab(joint)
         medusa_input = joint + self._context_delta(
-            joint, source_encodings, target_encodings
+            joint, source_encodings, target_encodings, logits_base
         )
         logits_future: List[Tensor] = []
         for block in self.res_blocks:
