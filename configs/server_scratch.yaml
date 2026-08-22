@@ -81,6 +81,8 @@ model:
   medusa:
     # 头数 K (head 1..K 做 aux CE); 0 = 关闭. 这里 1 = 仅 head1 预测 y_{u+1}
     num_heads: 1
+    input_mode: "stream_local"
+    lookahead_frames: 1
 
     # base model (encoder/predictor/joiner) 与 Medusa heads 联合从头训练
     freeze_base: false

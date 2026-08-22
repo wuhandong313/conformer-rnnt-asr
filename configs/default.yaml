@@ -107,6 +107,8 @@ model:
   # === Medusa 多头未来标签预测 (plan §3.3) ===
   medusa:
     num_heads: 0               # 0 = 关闭 (单头); >0 = K 个未来预测头
+    input_mode: "stream_local" # current_joint | predictor_only | stream_local
+    lookahead_frames: 1         # 不超过 right_context_length // stride
     freeze_base: false         # 冻结 base model，仅训练 Medusa heads
     ce_loss_weights: [0.8, 0.64, 0.512, 0.4096]
     kl_weight: 0.05

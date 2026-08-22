@@ -1,22 +1,18 @@
 """Medusa 式多头未来标签预测器。
 
-挂在 joiner 融合特征之上：
-    joint[t][u] = activation(src_enc[t] + tgt_enc[u])  (B, T, U+1, 512)
-    head 0 (base) : logits_0 = W_vocab(joint)            仅作 KL 锚 (不训 CE)
-    head k (1..K) : logits_k = W_vocab(ResBlock_k(joint)) 预测 y_{u+k} (后续 token)
+head 0 继续使用原始 Joiner 的 ``joint(t, u)``，作为无损 verifier 的唯一
+打分锚点。未来 head 则可以在同一个 joint 上叠加一个零初始化的、流式受限
+context delta。这样新 head 在初始化时仍然等价于 base，但训练后能看到
+``tgt[u]``、当前声学帧和有限的 right-context，而不是只从当前 joint 猜
+``y[u+k]``。
 
-K 个 ResBlock 对应 head 1..K (均做 aux CE)；head 0 = 直投影 (不经 ResBlock)，
-不单独训 CE —— 只作 KL 的 detach 锚。
-
-零初始化：每个 ResBlock 的第二个 Linear 初始化为 0 ⇒ 初始 ResBlock(x)≈x ⇒
-head k 初始 logits == head 0 logits (draft 初始 = base，训练稳定；Medusa 关键技巧)。
-
-融合 (broadcast-add + activation) 由 Joiner.fuse 完成，本模块直接吃 joint；
-W_vocab (512→V，V=num_symbols+1 含 blank) 与 joiner.linear 是同一个张量 ⇒
-head 0 ≡ joiner 精确一致 (draft 与验证器同一个打分标准)。
+``stream_local`` 的 acoustic window 只包含当前 encoder frame 和配置允许的
+lookahead frame；窗口在序列末尾用零填充，不会泄露 right-context 之外的信息。
+所有 future head 仍共享 ``joiner.linear``，因此 verifier 的 base logits
+和 head 0 使用完全相同的词表投影。
 """
 
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import torch
 import torch.nn.functional as F
@@ -36,7 +32,6 @@ class MedusaResBlock(torch.nn.Module):
         self.linear1 = torch.nn.Linear(dim, dim)
         self.act = torch.nn.SiLU()
         self.linear2 = torch.nn.Linear(dim, dim)
-        # 零初始化第二个 Linear：初始 linear2(act(linear1(x))) = 0 ⇒ out = x
         torch.nn.init.zeros_(self.linear2.weight)
         torch.nn.init.zeros_(self.linear2.bias)
 
@@ -52,15 +47,18 @@ class MedusaResBlock(torch.nn.Module):
 class MedusaHeads(torch.nn.Module):
     r"""K 个 Medusa 残差头 + 共享词表投影。
 
-    输入为 joiner 融合后的 joint 特征 activation(src_enc + tgt_enc)，
-    融合本身由 Joiner.fuse 完成（本模块不重复计算）。
+    ``current_joint`` 保留旧的 joint-only 消融；``predictor_only`` 只给
+    context 分支 predictor state；默认 ``stream_local`` 使用当前 encoder
+    frame、有限 lookahead 和当前 predictor state。context 分支的最后一层
+    零初始化，因此所有新 head 初始仍与 base head 完全一致。
 
     Args:
         input_dim: 特征维度 (=512)，ResBlock 在此维度做残差。
         num_vocab: 词表大小 (含 blank) = num_symbols+1。
-        num_heads: K，未来预测头数 (head 1..K)。0 = 关闭 (单头消融)。
-        w_vocab: 共享输出投影，必须传 joiner.linear 使 head 0 ≡ joiner
-            (draft 与验证器同一个打分标准)。
+        num_heads: K，未来预测头数 (head 1..K)。
+        w_vocab: 共享输出投影，必须传 joiner.linear。
+        input_mode: ``current_joint`` | ``predictor_only`` | ``stream_local``。
+        lookahead_frames: 允许读取的后续 encoder frame 数，不含当前帧。
     """
 
     def __init__(
@@ -69,39 +67,141 @@ class MedusaHeads(torch.nn.Module):
         num_vocab: int,
         num_heads: int,
         w_vocab: torch.nn.Linear,
+        input_mode: str = "stream_local",
+        lookahead_frames: int = 1,
     ) -> None:
         super().__init__()
-        if (
-            w_vocab.in_features != input_dim
-            or w_vocab.out_features != num_vocab
-        ):
+        if w_vocab.in_features != input_dim or w_vocab.out_features != num_vocab:
             raise ValueError(
                 f"w_vocab 形状不匹配: 传入 {w_vocab.in_features}→{w_vocab.out_features}, "
                 f"期望 {input_dim}→{num_vocab}"
             )
+        if input_mode not in {"current_joint", "predictor_only", "stream_local"}:
+            raise ValueError(
+                "Unknown Medusa input_mode {!r}; choose current_joint, "
+                "predictor_only, or stream_local".format(input_mode)
+            )
+
         self.num_heads = num_heads
+        self.input_mode = input_mode
+        self.lookahead_frames = max(0, int(lookahead_frames))
         self.res_blocks = torch.nn.ModuleList(
             [MedusaResBlock(input_dim) for _ in range(num_heads)]
         )
+
+        # Project the acoustic window and predictor state separately before
+        # combining them. This keeps full-grid training memory at O(B*T*L*D)
+        # instead of materializing O(B*T*L*window*D) concatenations.
+        self.context_norm: Optional[torch.nn.LayerNorm]
+        self.context_mlp: Optional[torch.nn.Sequential]
+        self.context_acoustic: Optional[torch.nn.Linear]
+        self.context_predictor: Optional[torch.nn.Linear]
+        if input_mode == "stream_local":
+            window_dim = (1 + self.lookahead_frames) * input_dim
+            self.context_acoustic = torch.nn.Linear(window_dim, input_dim)
+            self.context_predictor = torch.nn.Linear(input_dim, input_dim)
+            self.context_norm = torch.nn.LayerNorm(input_dim)
+            self.context_mlp = torch.nn.Sequential(
+                torch.nn.Linear(input_dim, 2 * input_dim),
+                torch.nn.SiLU(),
+                torch.nn.Linear(2 * input_dim, input_dim),
+            )
+        elif input_mode == "predictor_only":
+            self.context_acoustic = None
+            self.context_predictor = torch.nn.Linear(input_dim, input_dim)
+            self.context_norm = torch.nn.LayerNorm(input_dim)
+            self.context_mlp = torch.nn.Sequential(
+                torch.nn.Linear(input_dim, 2 * input_dim),
+                torch.nn.SiLU(),
+                torch.nn.Linear(2 * input_dim, input_dim),
+            )
+        else:
+            self.context_acoustic = None
+            self.context_predictor = None
+            self.context_norm = None
+            self.context_mlp = None
+
+        if self.context_mlp is not None:
+            # Preserve the exact base-logit initialization. The context path
+            # becomes active only after its final projection learns.
+            torch.nn.init.zeros_(self.context_mlp[-1].weight)
+            torch.nn.init.zeros_(self.context_mlp[-1].bias)
+
         # 与 joiner 共享输出投影：head 0 ≡ joiner 精确一致。
         self.w_vocab = w_vocab
 
     # ------------------------------------------------------------------
-    def forward(self, joint: Tensor) -> Tuple[Tensor, List[Tensor]]:
-        """计算所有 head 的 logits (训练: 全网格; 推理: 单点)。
+    def _context_delta(
+        self,
+        joint: Tensor,
+        source_encodings: Optional[Tensor],
+        target_encodings: Optional[Tensor],
+    ) -> Tensor:
+        """Build a bounded context delta with shape ``(B,T,L,D)``."""
+        if self.input_mode == "current_joint" or self.context_mlp is None:
+            return torch.zeros_like(joint)
+        if target_encodings is None:
+            # Keep direct ``heads(joint)`` diagnostics usable; production paths
+            # always pass predictor outputs so stream-local training is active.
+            return torch.zeros_like(joint)
+
+        B, T, L, _ = joint.shape
+        if target_encodings.size(0) != B or target_encodings.size(1) != L:
+            raise ValueError(
+                "target_encodings must match joint on batch/label axes: "
+                f"joint={tuple(joint.shape)}, targets={tuple(target_encodings.shape)}"
+            )
+
+        predictor = self.context_predictor(target_encodings)
+        if self.input_mode == "predictor_only":
+            fused = predictor.unsqueeze(1).expand(-1, T, -1, -1)
+        else:
+            if source_encodings is None:
+                return torch.zeros_like(joint)
+            if source_encodings.size(0) != B:
+                raise ValueError(
+                    "source_encodings must match joint batch size: "
+                    f"joint={tuple(joint.shape)}, source={tuple(source_encodings.shape)}"
+                )
+            width = 1 + self.lookahead_frames
+            source = source_encodings
+            required = T + self.lookahead_frames
+            if source.size(1) < required:
+                source = F.pad(source, (0, 0, 0, required - source.size(1)))
+            windows = source.unfold(1, width, 1)
+            # Tensor.unfold appends the window axis after D: (B,T,D,W).
+            windows = windows.permute(0, 1, 3, 2).contiguous()[:, :T]
+            acoustic = self.context_acoustic(windows.flatten(start_dim=2))
+            fused = acoustic.unsqueeze(2) + predictor.unsqueeze(1)
+
+        normalized = self.context_norm(fused)
+        return self.context_mlp(normalized)
+
+    def forward(
+        self,
+        joint: Tensor,
+        source_encodings: Optional[Tensor] = None,
+        target_encodings: Optional[Tensor] = None,
+    ) -> Tuple[Tensor, List[Tensor]]:
+        """计算所有 head 的 logits (训练: 全网格; 推理: 单点/小窗口)。
 
         Args:
-            joint: (B, T, L, input_dim) joiner 融合特征 (activation(src+tgt))。
+            joint: ``(B,T,L,D)`` joiner fused features.
+            source_encodings: ``(B,T,D)`` encoder outputs for stream-local
+                context. At inference this may be a current+lookahead window.
+            target_encodings: ``(B,L,D)`` predictor outputs.
 
         Returns:
-            (logits_base, logits_future):
-                logits_base   : (B, T, L, num_vocab)  head 0 = W_vocab(joint)
-                logits_future : List[K] 个 (B, T, L, num_vocab)
+            ``(logits_base, logits_future)`` where head 0 is the exact shared
+            Joiner projection and each future head predicts ``y[u+k]``.
         """
         logits_base = self.w_vocab(joint)
+        medusa_input = joint + self._context_delta(
+            joint, source_encodings, target_encodings
+        )
         logits_future: List[Tensor] = []
         for block in self.res_blocks:
-            logits_future.append(self.w_vocab(block(joint)))
+            logits_future.append(self.w_vocab(block(medusa_input)))
         return logits_base, logits_future
 
 
@@ -116,43 +216,43 @@ def shifted_ce_loss(
     weights: List[float],
     target_lengths: Tensor,
     src_lengths: Tensor,
+    blank_idx: Optional[int] = None,
 ) -> Tensor:
-    r"""Σ_{k=1..K} λ_k · CE(head_k 在 (t,u) 的 logits, targets[u+k])。
+    r"""Σ λ_k · CE(head_k 在 (t,u) 的 logits, targets[u+k])。
 
-    joiner 在 (t,u) 预测 y_u (blank/emit 决策)，head k 预测下一个 token y_{u+k}。
-    标签对每个帧 t 相同（只依赖 u），在 T 维上广播。padding 位置
-    （u+k ≥ target_lengths[b]，标签落在短样本填充区；或 t ≥ src_lengths[b]，
-    声学帧在 batch 填充区）置 -1 被 ignore。
-
-    Args:
-        logits_future: List[K] 个 (B, T, L, V)，L≥U+1。
-        targets: (B, U) 真实标签 id (0..V-2，不含 blank)。
-        weights: [λ_1, ..., λ_K]。
-        target_lengths: (B,) 各样本有效 token 数，用于 mask u 轴 padding。
-        src_lengths: (B,) 各样本有效编码帧数，用于 mask t 轴 padding。
+    ``targets`` 是不含 blank 的真实 label 序列；``blank_idx`` 作为额外
+    防线用于屏蔽可能混入的 blank 标签。每个 head 使用自己的
+    ``u+k < target_lengths`` mask，所有全 padding 的 batch 不会产生 NaN。
     """
+    if not logits_future:
+        return targets.new_zeros(())
+    B, T, _, V = logits_future[0].shape
     U = targets.size(1)
-    _, T, _, V = logits_future[0].shape
-    total = targets.new_zeros(())
+    total = targets.new_zeros((), dtype=logits_future[0].dtype)
     tl = target_lengths.to(targets.device)
     sl = src_lengths.to(targets.device)
-    # t 轴有效掩码: t < src_lengths[b]
-    t_idx = torch.arange(T, device=targets.device).unsqueeze(0)       # (1, T)
-    valid_t = t_idx < sl.unsqueeze(1)                                 # (B, T)
-    for k_idx, logits_k in enumerate(logits_future):  # head k = k_idx+1
+    t_idx = torch.arange(T, device=targets.device).unsqueeze(0)
+    valid_t = t_idx < sl.unsqueeze(1)
+
+    for k_idx, logits_k in enumerate(logits_future):
         k = k_idx + 1
-        if U - k <= 0:
-            continue  # 序列太短，该 head 无有效位置
-        # 取 u=0..U-k-1 共 U-k 个有效位置；T 维广播
-        pred = logits_k[:, :, : U - k, :].reshape(-1, V)   # (B*T*(U-k), V)
-        label = targets[:, k: U]                            # (B, U-k)
-        label = label.unsqueeze(1).expand(-1, T, -1).reshape(-1).long()  # (B*T*(U-k),)
-        # mask: u+k < target_lengths[b] (u 轴 padding) 且 t < src_lengths[b] (t 轴 padding)
-        u_idx = torch.arange(U - k, device=targets.device).unsqueeze(0)  # (1, U-k)
-        valid_u = (u_idx + k) < tl.unsqueeze(1)                          # (B, U-k)
-        valid = valid_t.unsqueeze(2) & valid_u.unsqueeze(1)              # (B, T, U-k)
-        label = label.masked_fill(~valid.reshape(-1), -1)
-        ce = F.cross_entropy(pred, label, reduction="mean", ignore_index=-1)
+        positions = min(U - k, logits_k.size(2))
+        if positions <= 0:
+            continue
+        pred = logits_k[:, :, :positions, :].reshape(-1, V)
+        label = targets[:, k : k + positions]
+        label = label.unsqueeze(1).expand(-1, T, -1)
+        u_idx = torch.arange(positions, device=targets.device).unsqueeze(0)
+        valid_u = (u_idx + k) < tl.unsqueeze(1)
+        valid = valid_t.unsqueeze(2) & valid_u.unsqueeze(1)
+        if blank_idx is not None:
+            valid = valid & (label != blank_idx)
+        flat_valid = valid.reshape(-1)
+        if not flat_valid.any():
+            continue
+        ce = F.cross_entropy(
+            pred[flat_valid], label.reshape(-1)[flat_valid].long(), reduction="mean"
+        )
         total = total + weights[k_idx] * ce
     return total
 
@@ -164,28 +264,37 @@ def kl_to_base_loss(
     src_lengths: Tensor,
     target_lengths: Tensor,
 ) -> Tensor:
-    r"""β · Σ_{k=1..K} KL(softmax(head_k) ‖ softmax(head_0).detach())。
+    r"""β · Σ KL(head_k(u) ‖ base(u+k).detach()).
 
-    同位置分布正则：防 draft 头漂离 base 分布先验。仅对有效位置
-    (t < src_lengths[b] 且 L ≤ target_lengths[b]) 取均值。head_0 detach。
+    Future head ``k`` is aligned with the base distribution at the predictor
+    position that corresponds to the same future token. The mask uses
+    ``u+k < target_lengths`` independently for every head, so padding and
+    unavailable future labels do not dilute the auxiliary loss.
     """
-    if beta <= 0 or len(logits_future) == 0:
+    if beta <= 0 or not logits_future:
         return logits_base.new_zeros(())
-    B, T, L, _ = logits_base.shape
+    _, T, L, _ = logits_base.shape
     dev = logits_base.device
     sl = src_lengths.to(dev)
     tl = target_lengths.to(dev)
-    # t 轴: t < src_len; L 轴: 位置 l ≤ tl[b] (prepended 长度 tl+1)
-    t_idx = torch.arange(T, device=dev).unsqueeze(0)            # (1, T)
-    valid_t = t_idx < sl.unsqueeze(1)                           # (B, T)
-    l_idx = torch.arange(L, device=dev).unsqueeze(0)            # (1, L)
-    valid_l = l_idx <= tl.unsqueeze(1)                          # (B, L)
-    mask = valid_t.unsqueeze(2) & valid_l.unsqueeze(1)          # (B, T, L)
-    denom = mask.sum().clamp_min(1)
-    log_p0 = F.log_softmax(logits_base, dim=-1).detach()
+    t_idx = torch.arange(T, device=dev).unsqueeze(0)
+    valid_t = t_idx < sl.unsqueeze(1)
     total = logits_base.new_zeros(())
-    for logits_k in logits_future:
-        log_pk = F.log_softmax(logits_k, dim=-1)
-        kl = (log_pk.exp() * (log_pk - log_p0)).sum(dim=-1)     # (B, T, L)
-        total = total + (kl * mask).sum() / denom
+
+    for k_idx, logits_k in enumerate(logits_future):
+        k = k_idx + 1
+        positions = min(logits_k.size(2), L - k)
+        if positions <= 0:
+            continue
+        u_idx = torch.arange(positions, device=dev).unsqueeze(0)
+        valid_u = (u_idx + k) < tl.unsqueeze(1)
+        mask = valid_t[:, : logits_k.size(1), None] & valid_u[:, None, :]
+        if not bool(mask.any()):
+            continue
+        future = logits_k[:, :, :positions, :]
+        base = logits_base[:, :, k : k + positions, :]
+        log_p0 = F.log_softmax(base, dim=-1).detach()
+        log_pk = F.log_softmax(future, dim=-1)
+        kl = (log_pk.exp() * (log_pk - log_p0)).sum(dim=-1)
+        total = total + (kl * mask).sum() / mask.sum()
     return beta * total

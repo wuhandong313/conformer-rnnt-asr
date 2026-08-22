@@ -109,8 +109,11 @@ def speculative_greedy_decode(
     K = min(max_draft, model.medusa_heads.num_heads)
     g_last, state, one = _init_decode(model, blank_idx, dev)
 
-    total_drafts: List[int] = [0] * K  # per head: total proposed
+    total_drafts: List[int] = [0] * K  # per head: every proposed token
     accepted: List[int] = [0] * K      # per head: accepted by joiner
+    blank_drafts: List[int] = [0] * K
+    draft_rounds = 0
+    fallback_count = 0
 
     out: List[int] = []
     t = 0
@@ -137,8 +140,15 @@ def speculative_greedy_decode(
         # ---- 草拟 d_1..d_K (在吃 token 之前: g_last = tgt_enc[u], head k → y_{u+k}) ----
         # 必须吃之前草拟: training时 head k at (t,u) → label = targets[u+k]
         # draft[0] = head_1 → y_{u+1}, 跟 joiner 在 (u+1) 的 emit 对齐
-        _, future_logits = model.predict_heads(enc[:, t : t + 1], g_last)
+        draft_rounds += 1
+        lookahead = getattr(model.medusa_heads, "lookahead_frames", 0)
+        source_window = enc[:, t : t + 1 + lookahead]
+        _, future_logits = model.predict_heads(source_window, g_last)
         drafts = [int(future_logits[k].argmax(dim=-1).item()) for k in range(K)]
+        for j, draft in enumerate(drafts):
+            total_drafts[j] += 1
+            if draft == blank_idx:
+                blank_drafts[j] += 1
 
         # predictor 吃 pred0 → 新 g_last (label 位 +1，t 不变)
         g_last, state = _advance_predictor(model, _make_tok(pred0, dev), state, one)
@@ -162,10 +172,11 @@ def speculative_greedy_decode(
                     break
             if emitted is None:
                 # 帧窗耗尽未 emit：停止投机，t 已前进若干 blank (与 oracle 的 blank 前进一致)
+                fallback_count += 1
                 break
-            total_drafts[j] += 1
             if emitted != d_j:
                 # 失配：但 head-0 在此处确实 emit `emitted`，必须提交以与 oracle 一致
+                fallback_count += 1
                 out.append(emitted)
                 g_last, state = _advance_predictor(model, _make_tok(emitted, dev), state, one)
                 break
@@ -180,9 +191,13 @@ def speculative_greedy_decode(
             "total_drafts": sum(total_drafts),
             "total_accepted": sum(accepted),
             "accept_rate": sum(accepted) / max(sum(total_drafts), 1),
+            "blank_drafts": sum(blank_drafts),
+            "fallbacks": fallback_count,
+            "draft_rounds": draft_rounds,
             "truncated": truncated,
             "per_head": [
                 {"drafts": total_drafts[i], "accepted": accepted[i],
+                 "blank_drafts": blank_drafts[i],
                  "rate": accepted[i] / max(total_drafts[i], 1)}
                 for i in range(K)
             ],

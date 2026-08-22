@@ -121,6 +121,8 @@ model:
   medusa:
     # 头数 K (head 1..K 做 aux CE); 0 = 关闭 (单头消融, 仅验 trunk)
     num_heads: 2
+    input_mode: "stream_local"
+    lookahead_frames: 1
 
     # 冻结 base model (encoder + predictor + joiner)，仅训练 Medusa heads
     freeze_base: true

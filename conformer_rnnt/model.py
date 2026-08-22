@@ -65,7 +65,11 @@ class ConformerRNNT(torch.nn.Module):
         joint = self.joiner.fuse(src_enc, tgt_enc)
         logits = self.joiner.project(joint)
         if self.medusa_heads is not None:
-            logits_base, logits_future = self.medusa_heads(joint)
+            logits_base, logits_future = self.medusa_heads(
+                joint,
+                source_encodings=src_enc,
+                target_encodings=tgt_enc,
+            )
         else:
             logits_base, logits_future = None, None
         return logits, src_len, tgt_len, logits_base, logits_future
@@ -100,7 +104,9 @@ class ConformerRNNT(torch.nn.Module):
         """Apply Medusa heads to joiner-fused features (for spec decode).
 
         Args:
-            source_encodings: (B, T, D) encoder output (T=1 at inference).
+            source_encodings: (B, T, D) encoder output. In ``stream_local``
+                mode this is the current frame followed by the bounded
+                lookahead window; only the first frame is scored.
             target_encodings: (B, L, D) from ``predict`` (L=1 at inference).
 
         Returns:
@@ -108,8 +114,18 @@ class ConformerRNNT(torch.nn.Module):
         """
         if self.medusa_heads is None:
             return None, []
-        joint = self.joiner.fuse(source_encodings, target_encodings)
-        return self.medusa_heads(joint)
+        if source_encodings.size(1) == 0:
+            raise ValueError("predict_heads requires at least one source frame")
+        # The verifier is always anchored at the current frame. The complete
+        # source window is passed separately so stream-local heads can inspect
+        # only the configured right-context lookahead.
+        current = source_encodings[:, :1]
+        joint = self.joiner.fuse(current, target_encodings)
+        return self.medusa_heads(
+            joint,
+            source_encodings=source_encodings,
+            target_encodings=target_encodings,
+        )
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -147,6 +163,8 @@ def conformer_rnnt_model(
     joiner_activation: str = "relu",
     # Medusa
     medusa_num_heads: int = 0,
+    medusa_input_mode: str = "stream_local",
+    medusa_lookahead_frames: Optional[int] = None,
 ) -> ConformerRNNT:
     """Build a Conformer-RNNT model from explicit keyword arguments.
 
@@ -170,6 +188,12 @@ def conformer_rnnt_model(
     medusa_heads = None
     if medusa_num_heads > 0:
         from conformer_rnnt.medusa import MedusaHeads
+        max_lookahead = max(0, right_context_length // time_reduction_stride)
+        if medusa_lookahead_frames is None:
+            medusa_lookahead_frames = max_lookahead
+        medusa_lookahead_frames = min(
+            max_lookahead, max(0, int(medusa_lookahead_frames))
+        )
         # 共享 joiner 的输出投影: head 0 ≡ joiner 精确一致,draft 与验证器
         # 用同一个打分标准 (对应原版 Medusa 的共享 output_proj)。
         medusa_heads = MedusaHeads(
@@ -177,6 +201,8 @@ def conformer_rnnt_model(
             num_vocab=num_symbols,
             num_heads=medusa_num_heads,
             w_vocab=joiner.linear,
+            input_mode=medusa_input_mode,
+            lookahead_frames=medusa_lookahead_frames,
         )
 
     return ConformerRNNT(

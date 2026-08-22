@@ -175,12 +175,12 @@ def checkpoint_dir(config: Dict[str, Any]) -> str:
 def model_ckpt_tag(config: Dict[str, Any]) -> str:
     """从训练实际使用的 config 生成 checkpoint 文件名标记。
 
-    真实训练参数标记 —— 压缩模式 + Medusa 头数 + 冻结状态。
+    真实训练参数标记 —— 压缩模式 + Medusa 头数 + 冻结状态 + 输入模式。
     与 from_config 使用同一个 config, 保证文件名反映模型真实训练模式。
 
     例子:
-        naive + 1 head + 联合训练  -> "naive-h1-free"
-        naive + 2 head + 冻结基底  -> "naive-h2-frz"
+        naive + 1 head + 联合训练  -> "naive-h1-free-sl1"
+        naive + 2 head + 冻结基底  -> "naive-h2-frz-sl1"
         无 Medusa (base 模型)      -> "naive-base"
     """
     model_cfg = config.get("model", {})
@@ -190,8 +190,16 @@ def model_ckpt_tag(config: Dict[str, Any]) -> str:
     filt = comp.get("filter", "hanning")
     heads = int(medusa.get("num_heads", 0))
     freeze = "frz" if medusa.get("freeze_base", False) else "free"
+    input_mode = medusa.get("input_mode", "stream_local")
+    mode_tag = {
+        "stream_local": "sl",
+        "predictor_only": "pred",
+        "current_joint": "joint",
+    }.get(input_mode, str(input_mode).replace("_", "-"))
+    lookahead = medusa.get("lookahead_frames")
+    lookahead_tag = f"{mode_tag}{lookahead}" if lookahead is not None else mode_tag
 
     # 有 Medusa heads 才区分冻结状态, 无 heads 时省略 (避免无意义后缀)
     if heads > 0:
-        return f"{filt}-h{heads}-{freeze}"
+        return f"{filt}-h{heads}-{freeze}-{lookahead_tag}"
     return f"{filt}-base"

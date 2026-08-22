@@ -344,6 +344,8 @@ class LibriSpeechRNNTModule(LightningModule):
         joiner_activation: str = "relu",
         # Medusa
         medusa_num_heads: int = 0,
+        medusa_input_mode: str = "stream_local",
+        medusa_lookahead_frames: Optional[int] = None,
         medusa_ce_weights: tuple = (0.8, 0.64, 0.512, 0.4096),
         medusa_kl_weight: float = 0.05,
         medusa_freeze_base: bool = False,
@@ -404,6 +406,8 @@ class LibriSpeechRNNTModule(LightningModule):
             lstm_dropout=lstm_dropout,
             joiner_activation=joiner_activation,
             medusa_num_heads=medusa_num_heads,
+            medusa_input_mode=medusa_input_mode,
+            medusa_lookahead_frames=medusa_lookahead_frames,
         )
 
         # ---- Freeze base model when training only Medusa heads ----
@@ -411,10 +415,11 @@ class LibriSpeechRNNTModule(LightningModule):
             for param in self.model.parameters():
                 param.requires_grad = False
             if self.model.medusa_heads is not None:
-                # 只解冻残差块。w_vocab 与 joiner.linear 共享 (同一 tensor),
-                # 若解冻会把冻结的 base 投影一起解冻,必须排除。
-                for param in self.model.medusa_heads.res_blocks.parameters():
-                    param.requires_grad = True
+                # 解冻残差块和新的 context 分支；w_vocab 与 joiner.linear
+                # 共享同一 tensor，必须继续冻结以保护 base verifier。
+                for name, param in self.model.medusa_heads.named_parameters():
+                    if not name.startswith("w_vocab."):
+                        param.requires_grad = True
 
         # ---- Mel spectrogram params (not a submodule — stays on CPU) ----
         self._mel_kwargs = dict(
@@ -610,6 +615,8 @@ class LibriSpeechRNNTModule(LightningModule):
             joiner_activation=joiner_cfg.get("activation", "relu"),
             # Medusa
             medusa_num_heads=medusa_cfg.get("num_heads", 0),
+            medusa_input_mode=medusa_cfg.get("input_mode", "stream_local"),
+            medusa_lookahead_frames=medusa_cfg.get("lookahead_frames"),
             medusa_ce_weights=tuple(medusa_cfg.get("ce_loss_weights", [0.8, 0.64, 0.512, 0.4096])),
             medusa_kl_weight=medusa_cfg.get("kl_weight", 0.05),
             medusa_freeze_base=medusa_cfg.get("freeze_base", False),
@@ -744,7 +751,12 @@ class LibriSpeechRNNTModule(LightningModule):
             if len(weights) < K:
                 weights = weights + [0.8 ** (i + 1) for i in range(len(weights), K)]
             ce_aux = shifted_ce_loss(
-                logits_future, batch.targets, weights, target_lengths, src_lengths
+                logits_future,
+                batch.targets,
+                weights,
+                target_lengths,
+                src_lengths,
+                blank_idx=self.blank_idx,
             )
             kl_aux = kl_to_base_loss(
                 logits_future, logits_base, self.medusa_kl_weight, src_lengths, target_lengths
