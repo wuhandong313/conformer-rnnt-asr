@@ -203,10 +203,16 @@ def main() -> int:
         "--stage-warmup-steps", type=int, default=None,
         help="Optional warmup length for staged head-only optimization.",
     )
+    parser.add_argument(
+        "--cycle-start", type=int, default=1,
+        help="First cycle number; use a new number to preserve prior cycles.",
+    )
     args = parser.parse_args()
 
     if not 0 <= args.start_stage < len(STAGES):
         parser.error(f"--start-stage must be in [0, {len(STAGES) - 1}]")
+    if args.cycle_start < 1:
+        parser.error("--cycle-start must be positive")
 
     root = Path(args.root_exp)
     root.mkdir(parents=True, exist_ok=True)
@@ -241,7 +247,7 @@ def main() -> int:
 
     resume_by_stage: Dict[str, Path] = {}
     resume_seed = Path(args.resume_checkpoint) if args.resume_checkpoint else None
-    cycle = 0
+    cycle = args.cycle_start - 1
     while True:
         cycle += 1
         print(
