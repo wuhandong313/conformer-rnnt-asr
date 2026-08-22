@@ -31,7 +31,11 @@ from common import (
     WarmupLR,
 )
 from conformer_rnnt.model import conformer_rnnt_model
-from conformer_rnnt.medusa import shifted_ce_loss, kl_to_base_loss
+from conformer_rnnt.medusa import (
+    base_next_token_ce_loss,
+    kl_to_base_loss,
+    shifted_ce_loss,
+)
 from conformer_rnnt.spec_decode import speculative_greedy_decode
 
 
@@ -347,6 +351,7 @@ class LibriSpeechRNNTModule(LightningModule):
         medusa_input_mode: str = "stream_local",
         medusa_lookahead_frames: Optional[int] = None,
         medusa_draft_after_emit: bool = False,
+        medusa_accept_ce_weight: float = 1.0,
         medusa_ce_weights: tuple = (0.8, 0.64, 0.512, 0.4096),
         medusa_kl_weight: float = 0.05,
         medusa_freeze_base: bool = False,
@@ -503,6 +508,7 @@ class LibriSpeechRNNTModule(LightningModule):
         self.medusa_ce_weights = list(medusa_ce_weights)
         self.medusa_kl_weight = medusa_kl_weight
         self.medusa_draft_after_emit = bool(medusa_draft_after_emit)
+        self.medusa_accept_ce_weight = float(medusa_accept_ce_weight)
 
     # ------------------------------------------------------------------
     # Checkpoint loading — prefix fix + shared w_vocab alias + strict guard
@@ -621,6 +627,7 @@ class LibriSpeechRNNTModule(LightningModule):
             medusa_input_mode=medusa_cfg.get("input_mode", "stream_local"),
             medusa_lookahead_frames=medusa_cfg.get("lookahead_frames"),
             medusa_draft_after_emit=medusa_cfg.get("draft_after_emit", False),
+            medusa_accept_ce_weight=medusa_cfg.get("accept_ce_weight", 1.0),
             medusa_ce_weights=tuple(medusa_cfg.get("ce_loss_weights", [0.8, 0.64, 0.512, 0.4096])),
             medusa_kl_weight=medusa_cfg.get("kl_weight", 0.05),
             medusa_freeze_base=medusa_cfg.get("freeze_base", False),
@@ -771,9 +778,27 @@ class LibriSpeechRNNTModule(LightningModule):
                 target_lengths,
                 future_state_offset=1 if self.medusa_draft_after_emit else 0,
             )
-            loss = loss + ce_aux + kl_aux
+            accept_aux = output.new_zeros(())
+            if self.medusa_draft_after_emit and self.medusa_accept_ce_weight > 0:
+                accept_aux = base_next_token_ce_loss(
+                    logits_future,
+                    logits_base,
+                    weights,
+                    target_lengths,
+                    src_lengths,
+                    blank_idx=self.blank_idx,
+                    future_state_offset=1,
+                    max_blank=self.spec_per_token_blank,
+                )
+            loss = loss + ce_aux + kl_aux + self.medusa_accept_ce_weight * accept_aux
             self.log(f"Losses/{step_type}_medusa_ce", ce_aux, on_step=True, on_epoch=True)
             self.log(f"Losses/{step_type}_medusa_kl", kl_aux, on_step=True, on_epoch=True)
+            self.log(
+                f"Losses/{step_type}_medusa_accept_ce",
+                accept_aux,
+                on_step=True,
+                on_epoch=True,
+            )
 
         self.log(f"Losses/{step_type}_loss", loss, on_step=True, on_epoch=True)
         return loss

@@ -84,6 +84,7 @@ model:
     input_mode: "stream_local"
     lookahead_frames: 1
     draft_after_emit: true
+    accept_ce_weight: 1.0
 
     # base model (encoder/predictor/joiner) 与 Medusa heads 联合从头训练
     freeze_base: false

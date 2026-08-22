@@ -336,3 +336,71 @@ def kl_to_base_loss(
         kl = (log_pk.exp() * (log_pk - log_p0)).sum(dim=-1)
         total = total + (kl * mask).sum() / mask.sum()
     return beta * total
+
+
+def base_next_token_ce_loss(
+    logits_future: List[Tensor],
+    logits_base: Tensor,
+    weights: List[float],
+    target_lengths: Tensor,
+    src_lengths: Tensor,
+    blank_idx: int,
+    future_state_offset: int = 1,
+    max_blank: int = 4,
+) -> Tensor:
+    r"""Distill the verifier's next emitted token into future heads.
+
+    In post-emission mode, head ``k`` is queried at predictor state ``u+1``
+    while the verifier reaches the corresponding token at state ``u+k``.
+    The verifier may emit blank for a few acoustic frames before that token,
+    so the target is the first non-blank argmax in the bounded frame window.
+    This auxiliary objective matches the actual acceptance event and does not
+    backpropagate through the base logits.
+    """
+    if not logits_future:
+        return logits_base.new_zeros(())
+    future_state_offset = max(0, int(future_state_offset))
+    max_blank = max(0, int(max_blank))
+    _, T, L, _ = logits_base.shape
+    dev = logits_base.device
+    sl = src_lengths.to(dev)
+    tl = target_lengths.to(dev)
+    valid_t = torch.arange(T, device=dev).unsqueeze(0) < sl.unsqueeze(1)
+    base_ids = logits_base.argmax(dim=-1).detach()
+    total = logits_base.new_zeros(())
+
+    for k_idx, logits_k in enumerate(logits_future):
+        k = k_idx + 1
+        positions = min(logits_k.size(2) - future_state_offset, L - k)
+        if positions <= 0:
+            continue
+        # State u+k is the verifier state used to emit the k-th future token.
+        candidates = base_ids[:, :, k : k + positions]
+        chosen = torch.full_like(candidates, blank_idx)
+        found = torch.zeros_like(candidates, dtype=torch.bool)
+        for delta in range(max_blank + 1):
+            if delta == 0:
+                shifted = candidates
+            else:
+                shifted = F.pad(
+                    candidates[:, delta:, :],
+                    (0, 0, 0, delta),
+                    value=blank_idx,
+                )
+            nonblank = shifted != blank_idx
+            take = nonblank & ~found
+            chosen = torch.where(take, shifted, chosen)
+            found = found | nonblank
+
+        u_idx = torch.arange(positions, device=dev).unsqueeze(0)
+        valid_u = (u_idx + k) < tl.unsqueeze(1)
+        valid = valid_t.unsqueeze(2) & valid_u.unsqueeze(1) & found
+        flat_valid = valid.reshape(-1)
+        if not flat_valid.any():
+            continue
+        pred = logits_k[
+            :, :, future_state_offset : future_state_offset + positions, :
+        ].reshape(-1, logits_k.size(-1))
+        ce = F.cross_entropy(pred[flat_valid], chosen.reshape(-1)[flat_valid].long())
+        total = total + weights[k_idx] * ce
+    return total

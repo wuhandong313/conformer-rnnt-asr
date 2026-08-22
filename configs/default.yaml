@@ -110,6 +110,7 @@ model:
     input_mode: "stream_local" # current_joint | predictor_only | stream_local
     lookahead_frames: 1         # 不超过 right_context_length // stride
     draft_after_emit: true      # 在消费当前 base token 后从 g_{u+1} 起草
+    accept_ce_weight: 1.0       # 对齐 verifier blank 窗口内的 next non-blank token
     freeze_base: false         # 冻结 base model，仅训练 Medusa heads
     ce_loss_weights: [0.8, 0.64, 0.512, 0.4096]
     kl_weight: 0.05
