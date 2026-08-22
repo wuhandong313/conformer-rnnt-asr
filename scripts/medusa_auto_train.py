@@ -187,7 +187,22 @@ def main() -> int:
     parser.add_argument("--root-exp", required=True)
     parser.add_argument("--max-samples", type=int, default=100)
     parser.add_argument("--poll-seconds", type=int, default=600)
+    parser.add_argument(
+        "--start-stage", type=int, default=0,
+        help="Start at a zero-based stage index; earlier stages are preserved.",
+    )
+    parser.add_argument(
+        "--resume-checkpoint", default=None,
+        help="Checkpoint used to initialize the first selected stage.",
+    )
+    parser.add_argument(
+        "--stage-epochs", type=int, default=None,
+        help="Optional epoch cap for each staged experiment.",
+    )
     args = parser.parse_args()
+
+    if not 0 <= args.start_stage < len(STAGES):
+        parser.error(f"--start-stage must be in [0, {len(STAGES) - 1}]")
 
     root = Path(args.root_exp)
     root.mkdir(parents=True, exist_ok=True)
@@ -221,19 +236,30 @@ def main() -> int:
     print(f"baseline PER={baseline_per:.6f}", flush=True)
 
     resume_by_stage: Dict[str, Path] = {}
+    resume_seed = Path(args.resume_checkpoint) if args.resume_checkpoint else None
     cycle = 0
     while True:
         cycle += 1
-        print(f"===== Medusa experiment cycle {cycle} =====", flush=True)
+        print(
+            f"===== Medusa experiment cycle {cycle} "
+            f"(start_stage={args.start_stage}) =====",
+            flush=True,
+        )
         had_checkpoint = False
-        for stage in STAGES:
+        for stage_index, stage in enumerate(STAGES):
+            if stage_index < args.start_stage:
+                continue
             stage_name = stage["name"]
             stage_dir = root / f"cycle-{cycle:03d}" / stage_name
             stage_dir.mkdir(parents=True, exist_ok=True)
-            resume = resume_by_stage.get(stage_name, base_checkpoint)
+            resume = resume_by_stage.get(stage_name)
+            if resume is None:
+                resume = resume_seed if stage_index == args.start_stage and resume_seed else base_checkpoint
             config = make_config(
                 template, exp_dir=stage_dir, checkpoint=resume, stage=stage
             )
+            if args.stage_epochs is not None:
+                config.setdefault("training", {})["epochs"] = args.stage_epochs
             config_path = stage_dir / "config.yaml"
             write_yaml(config_path, config)
             print(
