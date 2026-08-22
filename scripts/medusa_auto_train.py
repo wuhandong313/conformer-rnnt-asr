@@ -199,6 +199,10 @@ def main() -> int:
         "--stage-epochs", type=int, default=None,
         help="Optional epoch cap for each staged experiment.",
     )
+    parser.add_argument(
+        "--stage-warmup-steps", type=int, default=None,
+        help="Optional warmup length for staged head-only optimization.",
+    )
     args = parser.parse_args()
 
     if not 0 <= args.start_stage < len(STAGES):
@@ -260,6 +264,8 @@ def main() -> int:
             )
             if args.stage_epochs is not None:
                 config.setdefault("training", {})["epochs"] = args.stage_epochs
+            if args.stage_warmup_steps is not None:
+                config.setdefault("training", {})["warmup_steps"] = args.stage_warmup_steps
             config_path = stage_dir / "config.yaml"
             write_yaml(config_path, config)
             print(
