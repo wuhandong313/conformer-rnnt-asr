@@ -118,12 +118,16 @@ def main():
 
     print("=== 2. chain decode lossless (random weights → fallback path) ===")
     model.zero_grad()
-    oracle = greedy_decode(model, feats, feat_lens, blank)
+    # 随机权重模型会幻觉 (同帧无限 emit), 用 max_steps 把两者截到可比长度。
+    MAX = 200
+    oracle = greedy_decode(model, feats, feat_lens, blank, max_steps=MAX)
     spec, stats = speculative_greedy_decode(
         model, feats, feat_lens, blank,
-        max_draft=K, per_token_blank=4, return_stats=True,
+        max_draft=K, per_token_blank=4, max_steps=MAX * 4, return_stats=True,
     )
-    assert spec == oracle, "chain spec decode must equal greedy oracle"
+    # spec 每步最多产出 1+K 个 token; 两者按公共前缀比较 (幻觉截断点不同
+    # 不影响无损性判断 — 前 MAX 步的 oracle 输出必须是 spec 的前缀)。
+    assert spec[: len(oracle)] == oracle, "chain spec decode must equal greedy oracle"
     print(f"  tokens={len(spec)} drafts={stats['total_drafts']} "
           f"accepted={stats['total_accepted']} lossless: OK")
 
