@@ -162,15 +162,18 @@ result = recognizer.flush()            # 结束：补尾 chunk、收尾解码
 
 ```yaml
 streaming:
-  left_ctx: 96      # mel 帧 = 24 reduced (0.96s @hop160) ≥ conv 感受野 15
-  chunk_size: 64    # mel 帧 = 16 reduced (0.64s) 的产出粒度
-  right_ctx: 4      # mel 帧 = 1 reduced —— 等于训练 rc，不泄露
+  left_ctx: 64      # mel 帧 = 16 reduced (0.64s @hop160) ≥ conv 感受野下限(15)
+  chunk_size: 16    # mel 帧 = 4 reduced (0.16s) 的产出粒度
+  right_ctx: 4      # mel 帧 = 1 reduced —— 等于训练 rc，不泄露（必须 == right_context_length）
   medusa_preview: true
   preview_tokens: 2 # 显示的 lookahead token 数（= heads 数）
 ```
 
-- 计算量：`(L+C+R)/C = (96+64+4)/64 ≈ 2.6x` 编码重算开销（换 0.64s 的 chunk 粒度）。
-- 延迟：每 chunk 0.64s 音频到达后 ≤ 一次 encoder 前向 + 该 chunk 的解码推进。
+- 计算量：`(L+C+R)/C = (64+16+4)/16 = 5.25x` 编码重算开销（0.16s 粒度）。
+- 延迟：中段 chunk 每 0.16s 音频到达后 ≤ 一次 encoder 前向 + 解码推进；首个窗口需等满
+  (L+C+R)=84 mel = 0.84s 才能出首批提交帧（左文零 pad 不算）。
+- 有限近似提醒：深度 conv 在窗口边界用零 pad（SAME padding）近似真实邻帧；自注意力在
+  窗口内全可见、窗外截断。二者都是流式-离线差异来源，PER 兜底。
 - 参数是实验标定量：验证节的矩阵扫描定稿。
 
 ## 测试（streaming_tests.py，独立可跑）
