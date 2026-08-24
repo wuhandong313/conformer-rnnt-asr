@@ -14,6 +14,8 @@ from collections import Counter
 
 import torch
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from common import checkpoint_dir, load_config, model_ckpt_tag, setup_logging
 from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
 from conformer_rnnt.spec_decode import _init_decode, _join_argmax, _make_tok, _advance_predictor
