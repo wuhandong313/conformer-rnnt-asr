@@ -20,6 +20,10 @@ import torch.nn.functional as F
 
 from common import load_config
 from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
+from conformer_rnnt.medusa import shifted_ce_loss
+from conformer_rnnt.spec_decode import (
+    _init_decode, _join_argmax, _make_tok, _advance_predictor
+)
 
 
 def main() -> None:
@@ -74,7 +78,6 @@ def main() -> None:
                             n_ok[k] += 1
             # CE per head at valid positions (the actual training objective)
             sl = src_len.to(torch.int32)
-            from conformer_rnnt.medusa import shifted_ce_loss
             ce = shifted_ce_loss(
                 future, tgts, [1.0] * 3, tl.to(torch.int32), sl,
                 blank_idx=blank, future_state_offset=1,
@@ -86,9 +89,6 @@ def main() -> None:
     print(f"   shifted-CE (avg): {sum(ce_vals)/len(ce_vals):.4f}")
 
     # B. draft-forcing chain accuracy: replay greedy, at each emit roll drafts
-    from conformer_rnnt.spec_decode import (
-        _init_decode, _join_argmax, _make_tok, _advance_predictor
-    )
     dk_ok = [0, 0, 0]
     dk_tot = [0, 0, 0]
     with torch.no_grad():
