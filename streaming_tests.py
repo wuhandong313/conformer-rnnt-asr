@@ -106,5 +106,42 @@ def test_feature_extractor_matches_offline_pipeline():
     assert torch.allclose(ex2.frames(), streamed, atol=1e-6)
 
 
+def test_chunked_encoder_none_commits_chunk():
+    import torch
+    from conformer_rnnt.streaming.encoder import ChunkedEncoder
+    from tests_tiny_model import make_tiny_model
+
+    model = make_tiny_model(compression_filter="none")
+    enc = ChunkedEncoder(model=model, chunk_frames=16, left_context_frames=64,
+                         right_context_frames=4, stride=4)
+    torch.manual_seed(7)
+    mel = torch.randn(1, 64 + 16 + 4, 80)  # 中段 chunk 窗口(左文真实)
+    out, ids = enc.encode_window(mel, content_len=16 + 64)
+    assert out.shape[1] == (64 + 16 + 4) // 4, out.shape            # 21 reduced
+    assert tuple(ids) == tuple(range(21)), ids
+    # 提交 = source 在 chunk 局部 [16, 20)
+    committed = enc.committed_frames(out, ids, chunk_local_start=16, chunk_local_end=20)
+    assert committed.shape == (1, 4, out.shape[-1]), committed.shape
+
+
+def test_chunked_encoder_none_equals_full_transcribe():
+    """相同窗口输入（content 80 + 尾部 rc 4 = 84 mel 帧），手动分 stage 的
+    ChunkedEncoder 输出必须与整体 encoder.forward 逐位一致。"""
+    import torch
+    from conformer_rnnt.streaming.encoder import ChunkedEncoder
+    from tests_tiny_model import make_tiny_model
+
+    model = make_tiny_model(compression_filter="none")
+    enc = ChunkedEncoder(model=model, chunk_frames=16, left_context_frames=64,
+                         right_context_frames=4, stride=4)
+    torch.manual_seed(2)
+    W = 64 + 16 + 4                        # 84 mel 帧，含尾部 rc(4)
+    mel = torch.randn(1, W, 80)
+    out, ids = enc.encode_window(mel, content_len=64 + 16)
+    ref, ref_len = model.transcriber(mel, torch.tensor([64 + 16], dtype=torch.int32))
+    assert out.shape[1] == ref.shape[1], (out.shape, ref.shape)
+    assert torch.allclose(out, ref, atol=1e-5), (out - ref).abs().max()
+
+
 if __name__ == "__main__":
     sys.exit(main())
