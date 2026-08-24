@@ -197,9 +197,10 @@ def conformer_rnnt_model(
         max_lookahead = max(0, right_context_length // time_reduction_stride)
         if medusa_lookahead_frames is None:
             medusa_lookahead_frames = max_lookahead
-        medusa_lookahead_frames = min(
-            max_lookahead, max(0, int(medusa_lookahead_frames))
-        )
+        # Offline (non-streaming) decoding encodes the full utterance up
+        # front, so a wider draft-side acoustic window is legitimate — the
+        # clamp to right-context only applies to streaming constraints.
+        medusa_lookahead_frames = max(0, int(medusa_lookahead_frames))
         # 共享 joiner 的输出投影: head 0 ≡ joiner 精确一致,draft 与验证器
         # 用同一个打分标准 (对应原版 Medusa 的共享 output_proj)。
         medusa_heads = MedusaHeads(
