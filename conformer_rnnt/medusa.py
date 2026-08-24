@@ -348,21 +348,27 @@ class MedusaHeads(torch.nn.Module):
             logits_future: List[Tensor] = []
             inference = chain_drafts is not None
             for k in range(K):
-                if k == 0:
-                    draft_tok: Optional[Tensor] = None
-                elif inference:
-                    tok = chain_drafts[k - 1]
-                    draft_tok = torch.full(
-                        (joint.size(0), 1, 1), int(tok),
-                        dtype=torch.long, device=joint.device,
-                    )
-                else:
-                    draft_tok = None  # grid mode: use prev head logits
+                draft_tok: Optional[Tensor] = None
+                prev = None
+                if k >= 1:
+                    if inference:
+                        if k - 1 < len(chain_drafts):
+                            draft_tok = torch.full(
+                                (joint.size(0), 1, 1), int(chain_drafts[k - 1]),
+                                dtype=torch.long, device=joint.device,
+                            )
+                        # else: incremental inference — this head's draft is
+                        # not fixed yet; its logits are unused by the caller.
+                        # Fall back to the training-style previous head argmax
+                        # so the graph stays well-formed.
+                        else:
+                            prev = logits_future[k - 1].detach()
+                    else:
+                        prev = logits_future[k - 1].detach()
                 delta_k = self._chain_head_delta(
                     shared, joint, k,
                     draft_ids=draft_tok,
-                    prev_logits=None if k == 0 or inference
-                    else logits_future[k - 1].detach(),
+                    prev_logits=prev,
                 )
                 logits_k = self.w_vocab(self.res_blocks[k](joint + delta_k))
                 logits_future.append(logits_k)
