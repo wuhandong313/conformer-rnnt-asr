@@ -100,6 +100,7 @@ class ConformerRNNT(torch.nn.Module):
         self,
         source_encodings: Tensor,
         target_encodings: Tensor,
+        chain_target_encodings: Optional[List[Tensor]] = None,
     ) -> Tuple[Optional[Tensor], List[Tensor]]:
         """Apply Medusa heads to joiner-fused features (for spec decode).
 
@@ -108,6 +109,8 @@ class ConformerRNNT(torch.nn.Module):
                 mode this is the current frame followed by the bounded
                 lookahead window; only the first frame is scored.
             target_encodings: (B, L, D) from ``predict`` (L=1 at inference).
+            chain_target_encodings: chain 模式推理时使用 — K 个 (B,1,D)
+                draft-rolled predictor states (head-k 已吃 draft y_{u+1..u+k-1}).
 
         Returns:
             (logits_base, logits_future) — both empty/None when no heads.
@@ -125,6 +128,7 @@ class ConformerRNNT(torch.nn.Module):
             joint,
             source_encodings=source_encodings,
             target_encodings=target_encodings,
+            chain_target_encodings=chain_target_encodings,
         )
 
 
@@ -166,6 +170,7 @@ def conformer_rnnt_model(
     medusa_input_mode: str = "stream_local",
     medusa_lookahead_frames: Optional[int] = None,
     medusa_draft_after_emit: bool = False,
+    medusa_chain_states: bool = False,
 ) -> ConformerRNNT:
     """Build a Conformer-RNNT model from explicit keyword arguments.
 
@@ -205,6 +210,7 @@ def conformer_rnnt_model(
             input_mode=medusa_input_mode,
             lookahead_frames=medusa_lookahead_frames,
             draft_after_emit=medusa_draft_after_emit,
+            chain_states=medusa_chain_states,
         )
 
     return ConformerRNNT(

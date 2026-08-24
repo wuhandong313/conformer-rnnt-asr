@@ -152,12 +152,43 @@ def speculative_greedy_decode(
         draft_rounds += 1
         lookahead = getattr(model.medusa_heads, "lookahead_frames", 0)
         source_window = enc[:, t : t + 1 + lookahead]
-        _, future_logits = model.predict_heads(source_window, g_last)
-        drafts = [int(future_logits[k].argmax(dim=-1).item()) for k in range(K)]
-        for j, draft in enumerate(drafts):
-            total_drafts[j] += 1
-            if draft == blank_idx:
-                blank_drafts[j] += 1
+        chain_mode = getattr(model.medusa_heads, "chain_states", False)
+        drafts: List[int] = []
+        if chain_mode:
+            # 链式草拟: head-k 的条件状态是「吃掉 d_1..d_{k-1}」后的滚动
+            # predictor 状态 g̃ (head-1 即当前 g_last)。draft 全对时
+            # g̃ == verifier 验证到该位置时的真实状态, head 只需在正确
+            # 前缀上做一步预测, 信息差归零。
+            # 逐 head 增量调用: states[0..j] 已知时算出 head-(j+1) 的 logits。
+            chain_states: List[Tensor] = [g_last]  # head-1 的条件状态
+            g_cur, st_cur = g_last, state
+            for j in range(K):
+                _, future_logits = model.predict_heads(
+                    source_window, g_last,
+                    chain_target_encodings=list(chain_states),
+                )
+                d_j = int(future_logits[j].argmax(dim=-1).item())
+                total_drafts[j] += 1
+                if d_j == blank_idx:
+                    # blank draft 后链式滚动失去意义 (verifier 不会把 blank
+                    # 作为 emit 吃掉), 直接停止草拟。
+                    blank_drafts[j] += 1
+                    break
+                drafts.append(d_j)
+                if j + 1 < K:
+                    # 滚动: predictor 吃 d_j, 作为 head-(j+2) 的条件状态
+                    g_cur, st_cur = _advance_predictor(
+                        model, _make_tok(d_j, dev), st_cur, one
+                    )
+                    chain_states.append(g_cur)
+            # 未草拟的 head 不计入 drafts 统计
+        else:
+            _, future_logits = model.predict_heads(source_window, g_last)
+            drafts = [int(future_logits[k].argmax(dim=-1).item()) for k in range(K)]
+            for j, draft in enumerate(drafts):
+                total_drafts[j] += 1
+                if draft == blank_idx:
+                    blank_drafts[j] += 1
 
         # Legacy mode consumes pred0 after drafting. In post-emit mode this was
         # done above so the draft and verifier share the same current state.
@@ -171,7 +202,7 @@ def speculative_greedy_decode(
         # (t 前进) 后 emit。若 emit == d_j：接受、推进 predictor。若 emit != d_j：
         # 失配但仍须 emit 该 label (与 oracle 一致)，然后停止投机。若 frame 耗尽
         # 未 emit：停止投机 (状态停留，下轮外层从同 t 继续，等价 oracle 走 blank)。
-        for j in range(K):
+        for j in range(min(K, len(drafts))):
             d_j = drafts[j]
             blanks = 0
             emitted = None

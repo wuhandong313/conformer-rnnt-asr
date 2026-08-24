@@ -53,9 +53,15 @@ class MedusaHeads(torch.nn.Module):
     r"""K 个 Medusa 残差头 + 共享词表投影。
 
     ``current_joint`` 保留旧的 joint-only 消融；``predictor_only`` 只给
-    context 分支 predictor state；默认 ``stream_local`` 使用当前 encoder
+    context 分支 predictor state；``stream_local`` 使用当前 encoder
     frame、有限 lookahead 和当前 predictor state。context 分支的最后一层
     零初始化，因此所有新 head 初始仍与 base head 完全一致。
+
+    **链式对齐 (iter-2)**: ``chain_states=True`` 时 head-k 的 context
+    分支条件于 teacher-forcing 滚动状态 ``tgt_enc[u+k]`` (吃掉
+    ``y_{u+1..u+k-1}`` 之后) 而非统一的 ``tgt_enc[u+1]``。这与推理时
+    「draft 喂回 predictor 滚动」严格对应: draft 全对时滚动状态 ==
+    tgt_enc[u+k],信息差归零,head-k 只需在正确前缀上做一步预测。
 
     Args:
         input_dim: 特征维度 (=512)，ResBlock 在此维度做残差。
@@ -64,6 +70,7 @@ class MedusaHeads(torch.nn.Module):
         w_vocab: 共享输出投影，必须传 joiner.linear。
         input_mode: ``current_joint`` | ``predictor_only`` | ``stream_local``。
         lookahead_frames: 允许读取的后续 encoder frame 数，不含当前帧。
+        chain_states: 链式对齐 (head-k 条件于 tgt_enc[u+k])。
     """
 
     def __init__(
@@ -75,6 +82,7 @@ class MedusaHeads(torch.nn.Module):
         input_mode: str = "stream_local",
         lookahead_frames: int = 1,
         draft_after_emit: bool = False,
+        chain_states: bool = False,
     ) -> None:
         super().__init__()
         if w_vocab.in_features != input_dim or w_vocab.out_features != num_vocab:
@@ -92,6 +100,7 @@ class MedusaHeads(torch.nn.Module):
         self.input_mode = input_mode
         self.lookahead_frames = max(0, int(lookahead_frames))
         self.draft_after_emit = bool(draft_after_emit)
+        self.chain_states = bool(chain_states)
         self.res_blocks = torch.nn.ModuleList(
             [MedusaResBlock(input_dim) for _ in range(num_heads)]
         )
@@ -153,21 +162,53 @@ class MedusaHeads(torch.nn.Module):
         self,
         joint: Tensor,
         source_encodings: Optional[Tensor],
-        target_encodings: Optional[Tensor],
+        target_encodings: Tensor,
         base_logits: Optional[Tensor],
+        chain_target_encodings: Optional[List[Tensor]] = None,
     ) -> Tensor:
-        """Build a bounded context delta with shape ``(B,T,L,D)``."""
+        """Build a bounded context delta with shape ``(B,T,L,D)``.
+
+        With ``chain_states`` and a full-sequence ``target_encodings`` the
+        head-k context uses the teacher-forcing rolled state at ``u+k``
+        (training). At inference ``chain_target_encodings`` supplies the
+        draft-rolled states directly (one tensor per head).
+        """
         if self.input_mode == "current_joint" or self.context_mlp is None:
-            return torch.zeros_like(joint)
-        if target_encodings is None:
-            # Keep direct ``heads(joint)`` diagnostics usable; production paths
-            # always pass predictor outputs so stream-local training is active.
             return torch.zeros_like(joint)
 
         B, T, L, _ = joint.shape
-        if target_encodings.size(0) != B or target_encodings.size(1) != L:
+        if target_encodings.size(0) != B:
             raise ValueError(
-                "target_encodings must match joint on batch/label axes: "
+                "target_encodings must match joint batch size: "
+                f"joint={tuple(joint.shape)}, targets={tuple(target_encodings.shape)}"
+            )
+
+        if self.chain_states:
+            # Chain mode: per-head rolled states.
+            # Training: target_encodings is (B, L, D) full sequence; head k
+            # at L-position l is conditioned on tgt_enc[:, l+k-1, :].
+            # Inference: chain_target_encodings is a list of (B, 1, D)
+            # tensors from rolling the predictor on accepted drafts (may be
+            # shorter than K when drafting stopped early).
+            if chain_target_encodings is not None:
+                states = [
+                    s if s.dim() == 4 else s.unsqueeze(1).unsqueeze(1)
+                    for s in chain_target_encodings
+                ]
+            else:
+                K = self.num_heads
+                padded = F.pad(target_encodings, (0, 0, 0, K), value=0.0)
+                states = [
+                    padded[:, k - 1 : k - 1 + L, :].unsqueeze(2)
+                    for k in range(1, K + 1)
+                ]
+            return self._chain_context_delta(
+                joint, source_encodings, states, base_logits
+            )
+
+        if target_encodings.size(1) != L:
+            raise ValueError(
+                "target_encodings must match joint on label axis: "
                 f"joint={tuple(joint.shape)}, targets={tuple(target_encodings.shape)}"
             )
 
@@ -207,11 +248,82 @@ class MedusaHeads(torch.nn.Module):
         normalized = self.context_norm(fused)
         return self.context_mlp(normalized)
 
+    def _chain_context_delta(
+        self,
+        joint: Tensor,
+        source_encodings: Optional[Tensor],
+        states: List[Tensor],
+        base_logits: Optional[Tensor],
+    ) -> List[Tensor]:
+        """Per-head context deltas for chain mode.
+
+        Each entry of ``states`` is the rolled predictor state for the
+        corresponding head: ``(B, L, 1, D)`` at training, or ``(B, 1, 1, D)``
+        at inference (broadcast over the T axis; L is 1 there). The list may
+        be shorter than ``num_heads`` when inference drafting stopped early —
+        remaining heads get a zero delta.
+
+        Returns a list of ``num_heads`` tensors, each shaped like ``joint``.
+        """
+        B, T, L, D = joint.shape
+        K = self.num_heads
+
+        # Precompute the shared stream-local acoustic term once (B,T,D).
+        acoustic_term: Optional[Tensor] = None
+        if self.input_mode == "stream_local":
+            if source_encodings is None:
+                raise ValueError("stream_local chain mode requires source_encodings")
+            if source_encodings.size(0) != B:
+                raise ValueError(
+                    "source_encodings must match joint batch size: "
+                    f"joint={tuple(joint.shape)}, source={tuple(source_encodings.shape)}"
+                )
+            width = 1 + self.lookahead_frames
+            source = source_encodings
+            required = T + self.lookahead_frames
+            if source.size(1) < required:
+                source = F.pad(source, (0, 0, 0, required - source.size(1)))
+            windows = source.unfold(1, width, 1)
+            windows = windows.permute(0, 1, 3, 2).contiguous()[:, :T]
+            acoustic_term = self.context_acoustic(windows.flatten(start_dim=2))
+
+        base_term: Optional[Tensor] = None
+        if base_logits is not None and self.context_base_logits is not None:
+            base_term = self.context_base_logits(base_logits.detach())
+
+        deltas: List[Tensor] = []
+        for k in range(K):
+            if k >= len(states):
+                deltas.append(torch.zeros_like(joint))
+                continue
+            state = states[k]
+            if state.dim() != 4 or state.size(0) != B:
+                raise ValueError(
+                    "chain state must be (B,L,1,D) or (B,1,1,D); got "
+                    f"{tuple(state.shape)}"
+                )
+            if state.size(1) == 1 and L != 1:
+                state_b = state.expand(B, L, 1, D)
+            elif state.size(1) == L:
+                state_b = state
+            else:
+                state_b = F.pad(state, (0, 0, 0, 0, 0, L - state.size(1)))
+            predictor = self.context_predictor(state_b.squeeze(2))  # (B,L,D)
+            fused = predictor.unsqueeze(1)  # (B,1,L,D)
+            if base_term is not None:
+                fused = fused + base_term
+            if acoustic_term is not None:
+                fused = fused + acoustic_term.unsqueeze(2)
+            normalized = self.context_norm(fused)
+            deltas.append(self.context_mlp(normalized))
+        return deltas
+
     def forward(
         self,
         joint: Tensor,
         source_encodings: Optional[Tensor] = None,
         target_encodings: Optional[Tensor] = None,
+        chain_target_encodings: Optional[List[Tensor]] = None,
     ) -> Tuple[Tensor, List[Tensor]]:
         """计算所有 head 的 logits (训练: 全网格; 推理: 单点/小窗口)。
 
@@ -220,16 +332,28 @@ class MedusaHeads(torch.nn.Module):
             source_encodings: ``(B,T,D)`` encoder outputs for stream-local
                 context. At inference this may be a current+lookahead window.
             target_encodings: ``(B,L,D)`` predictor outputs.
+            chain_target_encodings: chain 模式推理时使用 — K 个
+                ``(B,1,D)`` draft-rolled predictor states。
 
         Returns:
             ``(logits_base, logits_future)`` where head 0 is the exact shared
             Joiner projection and each future head predicts ``y[u+k]``.
         """
         logits_base = self.w_vocab(joint)
+        if self.chain_states:
+            deltas = self._context_delta(
+                joint, source_encodings, target_encodings,
+                logits_base, chain_target_encodings,
+            )
+            logits_future: List[Tensor] = []
+            for k, block in enumerate(self.res_blocks):
+                logits_future.append(self.w_vocab(block(joint + deltas[k])))
+            return logits_base, logits_future
+
         medusa_input = joint + self._context_delta(
             joint, source_encodings, target_encodings, logits_base
         )
-        logits_future: List[Tensor] = []
+        logits_future = []
         for block in self.res_blocks:
             logits_future.append(self.w_vocab(block(medusa_input)))
         return logits_base, logits_future
@@ -298,6 +422,7 @@ def kl_to_base_loss(
     src_lengths: Tensor,
     target_lengths: Tensor,
     future_state_offset: int = 0,
+    chain_align: bool = False,
 ) -> Tensor:
     r"""β · Σ KL(head_k(u) ‖ base(u+k).detach()).
 
@@ -305,6 +430,10 @@ def kl_to_base_loss(
     position that corresponds to the same future token. The mask uses
     ``u+k < target_lengths`` independently for every head, so padding and
     unavailable future labels do not dilute the auxiliary loss.
+
+    With ``chain_align=True`` (chain mode), head ``k`` at L-position ``l`` is
+    conditioned on the rolled state ``tgt_enc[l+k-1]``, matching the base
+    logits at the same L-position (base@l+k-1), not ``l+k``.
     """
     if beta <= 0 or not logits_future:
         return logits_base.new_zeros(())
@@ -330,7 +459,10 @@ def kl_to_base_loss(
         future = logits_k[
             :, :, future_state_offset : future_state_offset + positions, :
         ]
-        base = logits_base[:, :, k : k + positions, :]
+        # Chain mode: head-k@l is conditioned on tgt_enc[l+k-1] and predicts
+        # targets[l+k-1]; align to the base distribution at l+k-1.
+        base_shift = (k - 1) if chain_align else k
+        base = logits_base[:, :, base_shift : base_shift + positions, :]
         log_p0 = F.log_softmax(base, dim=-1).detach()
         log_pk = F.log_softmax(future, dim=-1)
         kl = (log_pk.exp() * (log_pk - log_p0)).sum(dim=-1)
@@ -347,6 +479,7 @@ def base_next_token_ce_loss(
     blank_idx: int,
     future_state_offset: int = 1,
     max_blank: int = 4,
+    chain_align: bool = False,
 ) -> Tensor:
     r"""Distill the verifier's next emitted token into future heads.
 
@@ -375,7 +508,11 @@ def base_next_token_ce_loss(
         if positions <= 0:
             continue
         # State u+k is the verifier state used to emit the k-th future token.
-        candidates = base_ids[:, :, k : k + positions]
+        # Chain mode: head-k@l predicts targets[l+k-1] conditioned on the
+        # rolled state tgt_enc[l+k-1]; the verifier's decision for that token
+        # lives at base L-position l+k-1.
+        base_shift = (k - 1) if chain_align else k
+        candidates = base_ids[:, :, base_shift : base_shift + positions]
         chosen = torch.full_like(candidates, blank_idx)
         found = torch.zeros_like(candidates, dtype=torch.bool)
         for delta in range(max_blank + 1):

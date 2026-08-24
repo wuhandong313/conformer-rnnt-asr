@@ -351,6 +351,7 @@ class LibriSpeechRNNTModule(LightningModule):
         medusa_input_mode: str = "stream_local",
         medusa_lookahead_frames: Optional[int] = None,
         medusa_draft_after_emit: bool = False,
+        medusa_chain_states: bool = False,
         medusa_accept_ce_weight: float = 1.0,
         medusa_ce_weights: tuple = (0.8, 0.64, 0.512, 0.4096),
         medusa_kl_weight: float = 0.05,
@@ -415,6 +416,7 @@ class LibriSpeechRNNTModule(LightningModule):
             medusa_input_mode=medusa_input_mode,
             medusa_lookahead_frames=medusa_lookahead_frames,
             medusa_draft_after_emit=medusa_draft_after_emit,
+            medusa_chain_states=medusa_chain_states,
         )
 
         # ---- Freeze base model when training only Medusa heads ----
@@ -508,6 +510,7 @@ class LibriSpeechRNNTModule(LightningModule):
         self.medusa_ce_weights = list(medusa_ce_weights)
         self.medusa_kl_weight = medusa_kl_weight
         self.medusa_draft_after_emit = bool(medusa_draft_after_emit)
+        self.medusa_chain_states = bool(medusa_chain_states)
         self.medusa_accept_ce_weight = float(medusa_accept_ce_weight)
 
     # ------------------------------------------------------------------
@@ -627,6 +630,7 @@ class LibriSpeechRNNTModule(LightningModule):
             medusa_input_mode=medusa_cfg.get("input_mode", "stream_local"),
             medusa_lookahead_frames=medusa_cfg.get("lookahead_frames"),
             medusa_draft_after_emit=medusa_cfg.get("draft_after_emit", False),
+            medusa_chain_states=medusa_cfg.get("chain_states", False),
             medusa_accept_ce_weight=medusa_cfg.get("accept_ce_weight", 1.0),
             medusa_ce_weights=tuple(medusa_cfg.get("ce_loss_weights", [0.8, 0.64, 0.512, 0.4096])),
             medusa_kl_weight=medusa_cfg.get("kl_weight", 0.05),
@@ -777,6 +781,7 @@ class LibriSpeechRNNTModule(LightningModule):
                 src_lengths,
                 target_lengths,
                 future_state_offset=1 if self.medusa_draft_after_emit else 0,
+                chain_align=self.medusa_chain_states,
             )
             accept_aux = output.new_zeros(())
             if self.medusa_draft_after_emit and self.medusa_accept_ce_weight > 0:
@@ -789,6 +794,7 @@ class LibriSpeechRNNTModule(LightningModule):
                     blank_idx=self.blank_idx,
                     future_state_offset=1,
                     max_blank=self.spec_per_token_blank,
+                    chain_align=self.medusa_chain_states,
                 )
             loss = loss + ce_aux + kl_aux + self.medusa_accept_ce_weight * accept_aux
             self.log(f"Losses/{step_type}_medusa_ce", ce_aux, on_step=True, on_epoch=True)

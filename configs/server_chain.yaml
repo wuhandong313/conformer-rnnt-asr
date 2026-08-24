@@ -1,0 +1,127 @@
+# ===========================================================================
+# iter-2: 链式 Medusa 草拟 (chained drafting) — 服务器训练配置
+# ===========================================================================
+# 基于 multihead 分支 (iter-1 最好成绩 h1=0.80 / h2=0.22, WINNER 于
+# exp_medusa_auto/WINNER)。
+#
+# 核心改动 (相对 iter-1):
+#   1. chain_states: true — head-k 条件于 teacher-forcing 滚动状态
+#      tgt_enc[u+k] (训练) / draft-rolled 状态 (推理)。draft 全对时
+#      head 的条件状态 == verifier 状态, 信息差归零。
+#   2. lookahead_frames: 8 — 非流式, encoder 全序列已知, 解除
+#      right-context=1 的限制, head 可看未来 emit 位置的声学。
+#   3. K=3 直接训 (目标 h1/h2/h3 >= 0.90)。
+#
+# 用法: python train.py configs/server_chain.yaml
+# ===========================================================================
+
+paths:
+  dataset_path: "/test21/medusa"
+  sp_model_path: "/test21/medusa/spm_bpe_74.model"
+  global_stats_path: "/test21/medusa/global_stats.json"
+  exp_dir: "/test21/conformer-rnnt-asr/exp_iter2"
+  from_checkpoint: "/test21/conformer-rnnt-asr/exp/checkpoints/val-none-epoch=34-step=21600.ckpt"
+
+model:
+  input_dim: 80
+  encoding_dim: 512
+  num_symbols: 74
+
+  time_reduction_input_dim: 128
+  time_reduction_stride: 4
+  right_context_length: 4
+
+  num_heads: 8
+  ffn_dim: 1024
+  num_layers_block1: 2
+  num_layers_block2: 8
+  depthwise_conv_kernel_size: 31
+  dropout: 0.1
+
+  compression:
+    # 必须与 base checkpoint (val-none-epoch=34-step=21600, 实际 naive 训练) 一致
+    filter: "naive"
+    hanning_window_size: 5
+    weight_predictor_mode: "diff5"
+
+  predictor:
+    symbol_embedding_dim: 128
+    num_lstm_layers: 2
+    lstm_hidden_dim: 128
+    lstm_layer_norm: true
+    lstm_layer_norm_epsilon: 0.001
+    lstm_dropout: 0.3
+
+  medusa:
+    num_heads: 3
+    input_mode: "stream_local"
+    lookahead_frames: 8
+    draft_after_emit: true
+    chain_states: true
+    accept_ce_weight: 1.0
+
+    # 冻结 base (encoder + predictor + joiner), 只训 Medusa heads
+    freeze_base: true
+
+    ce_loss_weights: [0.8, 0.64, 0.512]
+    kl_weight: 0.05
+
+  joiner:
+    activation: "relu"
+
+training:
+  learning_rate: 0.0005
+  adam_betas: [0.9, 0.999]
+  adam_eps: 1.0e-8
+  warmup_steps: 1000
+  rnnt_loss_reduction: "mean"
+  rnnt_loss_clamp: 1.0
+  gradient_clip_val: 10.0
+  epochs: 60
+
+data:
+  sample_rate: 16000
+  n_fft: 400
+  n_mels: 80
+  hop_length: 160
+
+  spec_augment:
+    freq_mask_param: 27
+    time_mask_param: 100
+    time_mask_prob: 0.2
+
+  max_token_limit: 4000
+  num_workers: 20
+  prefetch_factor: 2
+
+  train_subset: "train-clean-100"
+  val_subset: "dev-clean"
+  test_subset: "test-clean"
+
+trainer:
+  accelerator: "cuda"
+  strategy: "auto"
+  devices: 1
+  num_nodes: 1
+  log_every_n_steps: 10
+  val_check_interval: 200
+  num_sanity_val_steps: 0
+  fast_dev_run: false
+  matmul_precision: "high"
+  accumulate_grad_batches: 1
+
+  checkpoint:
+    save_top_k: 2
+    save_weights_only: true
+    val_checkpoint_interval: 200
+    train_checkpoint_interval: 100
+
+decoding:
+  beam_width: 0
+  mode: "spec_greedy"
+  spec:
+    max_draft: 3
+    per_token_blank: 4
+
+debug: false
+seed: 42
