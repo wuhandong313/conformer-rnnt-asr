@@ -1,0 +1,1 @@
+"""Streaming recognition (chunked, right-context-limited)."""
