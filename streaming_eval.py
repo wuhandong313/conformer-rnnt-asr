@@ -84,6 +84,7 @@ def run_eval(model, dataset, dcfg, paths, device, args, sc):
     from conformer_rnnt.spec_decode import greedy_decode
 
     total_per, tok_hits, tok_tot, n = 0.0, 0, 0, 0
+    off_per_tot = 0.0   # 受控对比: 同 checkpoint/同样本的 offline greedy PER
     t0 = time.time()
     total_audio = 0.0
     for idx, sample in iterate(dataset, args.max_samples):
@@ -116,6 +117,7 @@ def run_eval(model, dataset, dcfg, paths, device, args, sc):
             hits = sum(a == b for a, b in zip(pred, off))
             tok_hits += hits
             tok_tot += max(len(pred), len(off))
+            off_per_tot += per(off, ref_ids)   # 受控: 同样本/同模型的 offline PER
         n += 1
         pace = (time.time() - t0) / n
         logging.info("[%3d] PER %.3f | cum PER %.4f | %.2fs/sample",
@@ -128,6 +130,9 @@ def run_eval(model, dataset, dcfg, paths, device, args, sc):
         if args.check_offline:
             logging.info("token match vs offline greedy: %.3f%%",
                          100.0 * tok_hits / max(1, tok_tot))
+            logging.info("controlled A/B (same %d samples): "
+                         "streaming PER %.4f vs offline greedy PER %.4f",
+                         n, total_per / n, off_per_tot / n)
 
 
 if __name__ == "__main__":
