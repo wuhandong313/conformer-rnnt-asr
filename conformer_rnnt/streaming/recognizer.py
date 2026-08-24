@@ -31,7 +31,8 @@ class StreamingRecognizer:
 
     def window_for_chunk(self, ci: int) -> Tensor:
         g0, need, left_pad, right_pad = self.plan.window_for_chunk(ci)
-        w = torch.zeros(1, need, self.mel.size(1), dtype=self.mel.dtype)
+        w = torch.zeros(1, need, self.mel.size(1), dtype=self.mel.dtype,
+                        device=self.mel.device)
         real = need - left_pad - right_pad
         w[0, left_pad: left_pad + real] = self.mel[g0: g0 + real]
         return w
