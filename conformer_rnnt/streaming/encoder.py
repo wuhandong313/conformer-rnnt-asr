@@ -54,6 +54,12 @@ class ChunkedEncoder:
                if chunk_local_start <= s < chunk_local_end]
         return enc_out[:, idx, :] if idx else enc_out.new_zeros(1, 0, enc_out.size(-1))
 
+    def slice_since(self, enc_out: Tensor, source_ids: List[int],
+                    src_start: int) -> Tensor:
+        """Output frames whose source reduced index is >= src_start. (1, k, D)."""
+        idx = [i for i, s in enumerate(source_ids) if s >= src_start]
+        return enc_out[:, idx, :] if idx else enc_out.new_zeros(1, 0, enc_out.size(-1))
+
 
 def replicate_compression(comp, x: Tensor, total_reduced: int
                           ) -> Tuple[Tensor, Tensor, List[int]]:
