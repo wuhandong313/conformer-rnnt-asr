@@ -40,22 +40,24 @@ def preview_acceptance(preview_log: List[Tuple[int, List[int]]],
                        final_out: List[int]) -> List[Dict[str, float]]:
     """Per-head acceptance of preview drafts vs the final greedy output.
 
-    ``preview_log`` entries are ``(u, drafts)`` collected by the recognizer at
-    each displayed lookahead, where ``u = len(decoder.out)`` at that moment and
-    head ``k`` predicted ``final_out[u + k]`` (1-based k, so drafts[0] -> u+1).
+    Semantics match offline ``draft_after_emit``: a draft is sampled right after
+    an emission, when the predictor has advanced to position ``u = len(out)``.
+    Head ``k`` (1-based; drafts[0] = head 1) predicts the next emission(s):
+    head 1 -> ``final_out[u]``, head k -> ``final_out[u + k - 1]``. So a preview
+    entry's draft at index j is checked against ``final_out[u + j]``.
     """
     total: Dict[int, int] = {}
     hit: Dict[int, int] = {}
     for u, drafts in preview_log:
-        for k, d in enumerate(drafts):
-            idx = u + (k + 1)
-            total[k] = total.get(k, 0) + 1
+        for j, d in enumerate(drafts):
+            idx = u + j
+            total[j] = total.get(j, 0) + 1
             if idx < len(final_out) and d == final_out[idx]:
-                hit[k] = hit.get(k, 0) + 1
+                hit[j] = hit.get(j, 0) + 1
     out = []
-    for k in sorted(total):
-        tk = total[k]
-        hk = hit.get(k, 0)
-        out.append({"head": k + 1, "accepted": hk, "drafts": tk,
-                    "rate": hk / float(tk)})
+    for j in sorted(total):
+        tj = total[j]
+        hj = hit.get(j, 0)
+        out.append({"head": j + 1, "accepted": hj, "drafts": tj,
+                    "rate": hj / float(tj)})
     return out

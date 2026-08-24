@@ -288,16 +288,18 @@ def test_preview_on_off_produces_identical_inference():
 def test_preview_acceptance_metric():
     from conformer_rnnt.streaming.preview import preview_acceptance
     final = [1, 2, 3, 4, 5, 6]
-    # 语义: u = 已发射 token 数; head k 预测 final_out[u+k] (drafts[0]->u+1)
-    # u=0: h1->final[1]=2, h2->final[2]=3 ; u=2: h1->final[3]=4, h2->final[4]=5
+    # 语义对齐 offline draft_after_emit: 采样在 emit 后, u = len(out)。
+    # head j (0-based: drafts[j]) 检查 final_out[u + j]。
+    # u=0(已发0 token, 发射后预测): h1->final[0]=1, h2->final[1]=2
+    # u=2(已发2 token):            h1->final[2]=3, h2->final[3]=4
     log = [(0, [2, 9]), (2, [3, 5])]
     r = preview_acceptance(log, final)
     by = {a["head"]: a for a in r}
-    # h1: [2==2 ✓, 3!=4 ✗] → 1/2
+    # h1: [2!=1 ✗, 3==3 ✓] → 1/2
     assert by[1]["accepted"] == 1 and by[1]["drafts"] == 2, by[1]
-    # h2: [9!=3 ✗, 5==5 ✓] → 1/2
-    assert by[2]["accepted"] == 1 and by[2]["drafts"] == 2, by[2]
-    # 越界 draft (u 末尾) 不报错
+    # h2: [9!=2 ✗, 5!=4 ✗] → 0/2
+    assert by[2]["accepted"] == 0 and by[2]["drafts"] == 2, by[2]
+    # 越界 draft (u 接近末尾) 不报错
     preview_acceptance([(4, [9, 9])], final)
     assert by[1]["rate"] == 0.5
 

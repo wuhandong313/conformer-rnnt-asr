@@ -27,6 +27,7 @@ class StreamingGreedyDecoder:
         self._enc_frames: List[Tensor] = []
         self.g_last, self.state, self.one = _init_decode(
             self.model, self.blank_idx, self.dev)
+        self.on_emit = None   # 可选回调: 每次发射 token 后调用(采样 preview)
 
     def push(self, frames: Tensor) -> List[int]:
         """Append (1, k, D) encoder frames and advance decode as far as possible."""
@@ -50,6 +51,8 @@ class StreamingGreedyDecoder:
                 self.out.append(pred)
                 self.g_last, self.state = _advance_predictor(
                     self.model, _make_tok(pred, self.dev), self.state, self.one)
+                if self.on_emit is not None:
+                    self.on_emit()
             self.steps += 1
 
     def partial(self) -> List[int]:
