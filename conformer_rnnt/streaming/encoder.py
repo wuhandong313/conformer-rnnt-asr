@@ -35,7 +35,7 @@ class ChunkedEncoder:
         self.enc.eval()
         x = self.enc.input_linear(window)                       # (1, W, tr_dim)
         x, xlen = self.enc.time_reduction(
-            x, torch.tensor([content_len], dtype=torch.int32))
+            x, torch.tensor([content_len], dtype=torch.int32, device=window.device))
         rc_frames = self.rc // self.stride                       # = 1
         x, _ = self.enc.conformer1(x, xlen + rc_frames)
         total_reduced = x.size(1)
@@ -67,10 +67,10 @@ def replicate_compression(comp, x: Tensor, total_reduced: int
             "streaming 无法精确复刻，本计划不覆盖"
         )
     if comp.compression_filter == "none":
-        return x, torch.tensor([x.size(1)], dtype=torch.int32), list(range(total_reduced))
+        return x, torch.tensor([x.size(1)], dtype=torch.int32, device=dev), list(range(total_reduced))
     main_len = total_reduced - comp.right_context_length   # mirrors module bug semantics
     if total_reduced <= 1 or main_len <= 0:
-        return x, torch.tensor([x.size(1)], dtype=torch.int32), list(range(total_reduced))
+        return x, torch.tensor([x.size(1)], dtype=torch.int32, device=dev), list(range(total_reduced))
     main = x[:, :main_len]
     rc = x[:, main_len:]
     diff = torch.abs(x[:, 1:main_len, :] - x[:, : main_len - 1, :]).sum(dim=-1)
@@ -86,4 +86,4 @@ def replicate_compression(comp, x: Tensor, total_reduced: int
         compressed_main = main.index_select(1, merged)
     out = torch.cat([compressed_main, rc], dim=1)
     ids = list(merged.tolist()) + list(range(main_len, total_reduced))
-    return out, torch.tensor([out.size(1)], dtype=torch.int32), ids
+    return out, torch.tensor([out.size(1)], dtype=torch.int32, device=dev), ids
