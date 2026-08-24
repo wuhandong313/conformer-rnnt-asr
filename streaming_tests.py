@@ -218,5 +218,28 @@ def test_streaming_decoder_reset():
     assert dec.out == [] and dec.t == 0
 
 
+def test_preview_readonly_and_shape():
+    import torch
+    from conformer_rnnt.streaming.preview import MedusaPreview
+    from conformer_rnnt.streaming.decoder import StreamingGreedyDecoder
+    from tests_tiny_model import make_tiny_model
+
+    model = make_tiny_model(compression_filter="none", medusa_heads=2)
+    blank = model.joiner.linear.out_features - 1
+    dec = StreamingGreedyDecoder(model=model, blank_idx=blank)
+    torch.manual_seed(5)
+    feat = torch.cat([torch.randn(1, 120, 80), torch.zeros(1, 4, 80)], dim=1)
+    enc, _ = model.transcribe(feat, torch.tensor([120], dtype=torch.int32))
+    dec.push(enc[:, :40, :])
+
+    prev = MedusaPreview(model=model)
+    before = (dec.t, tuple(dec.out), dec.g_last.clone())
+    drafts = prev.lookahead(decoder=dec, enc=dec._enc())
+    assert len(drafts) == 2, drafts
+    assert all(0 <= d <= blank for d in drafts)
+    assert dec.t == before[0] and tuple(dec.out) == before[1]
+    assert bool((dec.g_last == before[2]).all()), "g_last 被改写"
+
+
 if __name__ == "__main__":
     sys.exit(main())
