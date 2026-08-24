@@ -192,9 +192,9 @@ class MedusaHeads(torch.nn.Module):
             # shorter than K when drafting stopped early).
             if chain_target_encodings is not None:
                 states = [
-                    s if s.dim() == 4 else s.unsqueeze(1).unsqueeze(1)
+                    s if s.dim() == 4 else s.unsqueeze(1)
                     for s in chain_target_encodings
-                ]
+                ]  # (B,1,D) → (B,1,1,D); training form stays (B,L,1,D)
             else:
                 K = self.num_heads
                 padded = F.pad(target_encodings, (0, 0, 0, K), value=0.0)
