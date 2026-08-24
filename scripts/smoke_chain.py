@@ -61,7 +61,7 @@ def build_tiny_model(K: int, chain: bool, lookahead: int = 2):
     return model
 
 
-def fake_batch(B=2, T=12, L=6, V=6):
+def fake_batch(B=1, T=12, L=6, V=6):
     torch.manual_seed(1)
     feats = torch.randn(B, T, 8)
     feat_lens = torch.full((B,), T, dtype=torch.int32)
