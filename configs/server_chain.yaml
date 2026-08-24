@@ -55,7 +55,7 @@ model:
   medusa:
     num_heads: 3
     input_mode: "stream_local"
-    lookahead_frames: 1
+    lookahead_frames: 8
     draft_after_emit: true
     chain_states: true
     accept_ce_weight: 1.0
