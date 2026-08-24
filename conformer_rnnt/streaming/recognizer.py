@@ -26,6 +26,7 @@ class StreamingRecognizer:
                                       stride=stride)
         self.decoder = StreamingGreedyDecoder(model=model, blank_idx=blank_idx)
         self.previewer = MedusaPreview(model=model, max_heads=preview_heads) if preview else None
+        self.preview_log = []   # (u, drafts) per displayed lookahead; 统计用, 不回写
         self.rc_reduced = self.encoder.rc // self.encoder.stride
         self.mel = mel.detach()
 
@@ -59,4 +60,6 @@ class StreamingRecognizer:
         # Read-only: capture drafts for display, never touch decoder state.
         if self.previewer is None:
             return
-        self.previewer.lookahead(self.decoder, self.decoder._enc())
+        drafts = self.previewer.lookahead(self.decoder, self.decoder._enc())
+        if drafts:
+            self.preview_log.append((len(self.decoder.out), drafts))

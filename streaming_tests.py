@@ -285,5 +285,22 @@ def test_preview_on_off_produces_identical_inference():
     assert rec_on.run_offline() == rec_off.run_offline(), "preview 影响了识别输出"
 
 
+def test_preview_acceptance_metric():
+    from conformer_rnnt.streaming.preview import preview_acceptance
+    final = [1, 2, 3, 4, 5, 6]
+    # 语义: u = 已发射 token 数; head k 预测 final_out[u+k] (drafts[0]->u+1)
+    # u=0: h1->final[1]=2, h2->final[2]=3 ; u=2: h1->final[3]=4, h2->final[4]=5
+    log = [(0, [2, 9]), (2, [3, 5])]
+    r = preview_acceptance(log, final)
+    by = {a["head"]: a for a in r}
+    # h1: [2==2 ✓, 3!=4 ✗] → 1/2
+    assert by[1]["accepted"] == 1 and by[1]["drafts"] == 2, by[1]
+    # h2: [9!=3 ✗, 5==5 ✓] → 1/2
+    assert by[2]["accepted"] == 1 and by[2]["drafts"] == 2, by[2]
+    # 越界 draft (u 末尾) 不报错
+    preview_acceptance([(4, [9, 9])], final)
+    assert by[1]["rate"] == 0.5
+
+
 if __name__ == "__main__":
     sys.exit(main())

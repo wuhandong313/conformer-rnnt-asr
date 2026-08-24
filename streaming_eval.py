@@ -85,6 +85,7 @@ def run_eval(model, dataset, dcfg, paths, device, args, sc):
 
     total_per, tok_hits, tok_tot, n = 0.0, 0, 0, 0
     off_per_tot = 0.0   # 受控对比: 同 checkpoint/同样本的 offline greedy PER
+    prev_acc = None     # 汇总各样本 preview 接受率 (per head)
     t0 = time.time()
     total_audio = 0.0
     for idx, sample in iterate(dataset, args.max_samples):
@@ -107,6 +108,17 @@ def run_eval(model, dataset, dcfg, paths, device, args, sc):
         pred = rec.run_offline()
         ref_ids = model.sp_model.encode(transcript.lower().replace(" ", ""))
         total_per += per(pred, ref_ids)
+        if rec.preview_log:   # 有 medusa 头且 preview 开启时才有
+            from conformer_rnnt.streaming.preview import preview_acceptance
+            acc = preview_acceptance(rec.preview_log, pred)
+            if prev_acc is None:
+                prev_acc = [(a["head"], a["accepted"], a["drafts"]) for a in acc]
+            else:
+                m = {h: (a, d) for h, a, d in prev_acc}
+                for a in acc:
+                    aa, dd = m.get(a["head"], (0, 0))
+                    m[a["head"]] = (aa + a["accepted"], dd + a["drafts"])
+                prev_acc = [(h, a, d) for h, (a, d) in sorted(m.items())]
         if args.check_offline:
             feat = torch.cat([mel.unsqueeze(0), torch.zeros(1, 4, mel.size(1),
                                                             device=device)], dim=1)
@@ -133,6 +145,13 @@ def run_eval(model, dataset, dcfg, paths, device, args, sc):
             logging.info("controlled A/B (same %d samples): "
                          "streaming PER %.4f vs offline greedy PER %.4f",
                          n, total_per / n, off_per_tot / n)
+        if prev_acc:
+            parts = " | ".join(
+                f"h{h}: {a}/{d} ({100.0 * a / max(d, 1):.1f}%)"
+                for h, a, d in prev_acc if d > 0
+            )
+            logging.info("medusa preview accept (per head, draft↔final greedy): %s",
+                         parts)
 
 
 if __name__ == "__main__":
