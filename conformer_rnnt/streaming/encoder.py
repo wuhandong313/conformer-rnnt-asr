@@ -61,6 +61,11 @@ def replicate_compression(comp, x: Tensor, total_reduced: int
     the module's own private methods so peak selection stays bit-identical to
     the trained path. Returns (out, lengths, source_ids)."""
     dev = x.device
+    if comp.compression_filter in ("fir", "savgol"):
+        raise NotImplementedError(
+            f"{comp.compression_filter} 依赖全信号 (filtfilt/savgol span > 窗口), "
+            "streaming 无法精确复刻，本计划不覆盖"
+        )
     if comp.compression_filter == "none":
         return x, torch.tensor([x.size(1)], dtype=torch.int32), list(range(total_reduced))
     main_len = total_reduced - comp.right_context_length   # mirrors module bug semantics
