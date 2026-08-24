@@ -148,6 +148,22 @@ class MedusaHeads(torch.nn.Module):
             torch.nn.init.zeros_(self.context_base_logits.weight)
             torch.nn.init.zeros_(self.context_base_logits.bias)
 
+        # Draft-conditioned chaining (iter-3): head-k (k>=2) additionally
+        # consumes the embedding of the previous head's draft token. Training
+        # uses the previous head's argmax (detached) on the same grid, so the
+        # train and inference conditions are exactly isomorphic — no LSTM
+        # rolling and no emit-gap sequence dependence.
+        self.chain_draft_embed: Optional[torch.nn.Embedding]
+        self.chain_draft_proj: Optional[torch.nn.Linear]
+        if self.chain_states and num_heads > 1:
+            self.chain_draft_embed = torch.nn.Embedding(num_vocab, 128)
+            self.chain_draft_proj = torch.nn.Linear(128, input_dim)
+            torch.nn.init.zeros_(self.chain_draft_proj.weight)
+            torch.nn.init.zeros_(self.chain_draft_proj.bias)
+        else:
+            self.chain_draft_embed = None
+            self.chain_draft_proj = None
+
         if self.context_mlp is not None:
             # Preserve the exact base-logit initialization. The context path
             # becomes active only after its final projection learns.
@@ -184,26 +200,12 @@ class MedusaHeads(torch.nn.Module):
             )
 
         if self.chain_states:
-            # Chain mode: per-head rolled states.
-            # Training: target_encodings is (B, L, D) full sequence; head k
-            # at L-position l is conditioned on tgt_enc[:, l+k-1, :].
-            # Inference: chain_target_encodings is a list of (B, 1, D)
-            # tensors from rolling the predictor on accepted drafts (may be
-            # shorter than K when drafting stopped early).
-            if chain_target_encodings is not None:
-                states = [
-                    s if s.dim() == 4 else s.unsqueeze(1)
-                    for s in chain_target_encodings
-                ]  # (B,1,D) → (B,1,1,D); training form stays (B,L,1,D)
-            else:
-                K = self.num_heads
-                padded = F.pad(target_encodings, (0, 0, 0, K), value=0.0)
-                states = [
-                    padded[:, k - 1 : k - 1 + L, :].unsqueeze(2)
-                    for k in range(1, K + 1)
-                ]
-            return self._chain_context_delta(
-                joint, source_encodings, states, base_logits
+            # Draft-conditioned chaining (iter-3) — handled in forward(),
+            # which builds heads sequentially. This path is unreachable in
+            # production; raise to catch stale callers.
+            raise RuntimeError(
+                "chain mode builds heads in forward(); _context_delta "
+                "should not be called with chain_states=True"
             )
 
         if target_encodings.size(1) != L:
@@ -248,36 +250,20 @@ class MedusaHeads(torch.nn.Module):
         normalized = self.context_norm(fused)
         return self.context_mlp(normalized)
 
-    def _chain_context_delta(
+    def _chain_shared_terms(
         self,
         joint: Tensor,
         source_encodings: Optional[Tensor],
-        states: List[Tensor],
+        target_encodings: Tensor,
         base_logits: Optional[Tensor],
-    ) -> List[Tensor]:
-        """Per-head context deltas for chain mode.
-
-        Each entry of ``states`` is the rolled predictor state for the
-        corresponding head: ``(B, L, 1, D)`` at training, or ``(B, 1, 1, D)``
-        at inference (broadcast over the T axis; L is 1 there). The list may
-        be shorter than ``num_heads`` when inference drafting stopped early —
-        remaining heads get a zero delta.
-
-        Returns a list of ``num_heads`` tensors, each shaped like ``joint``.
-        """
+    ) -> Tuple[Tensor, Optional[Tensor], Optional[Tensor]]:
+        """Shared chain inputs: predictor state, acoustic window, base logits."""
         B, T, L, D = joint.shape
-        K = self.num_heads
-
-        # Precompute the shared stream-local acoustic term once (B,T,D).
+        predictor = self.context_predictor(target_encodings)  # (B,L,D)
         acoustic_term: Optional[Tensor] = None
         if self.input_mode == "stream_local":
             if source_encodings is None:
                 raise ValueError("stream_local chain mode requires source_encodings")
-            if source_encodings.size(0) != B:
-                raise ValueError(
-                    "source_encodings must match joint batch size: "
-                    f"joint={tuple(joint.shape)}, source={tuple(source_encodings.shape)}"
-                )
             width = 1 + self.lookahead_frames
             source = source_encodings
             required = T + self.lookahead_frames
@@ -286,44 +272,54 @@ class MedusaHeads(torch.nn.Module):
             windows = source.unfold(1, width, 1)
             windows = windows.permute(0, 1, 3, 2).contiguous()[:, :T]
             acoustic_term = self.context_acoustic(windows.flatten(start_dim=2))
-
         base_term: Optional[Tensor] = None
         if base_logits is not None and self.context_base_logits is not None:
             base_term = self.context_base_logits(base_logits.detach())
+        return predictor, acoustic_term, base_term
 
-        deltas: List[Tensor] = []
-        for k in range(K):
-            if k >= len(states):
-                deltas.append(torch.zeros_like(joint))
-                continue
-            state = states[k]
-            if state.dim() != 4 or state.size(0) != B:
-                raise ValueError(
-                    "chain state must be (B,L,1,D) or (B,1,1,D); got "
-                    f"{tuple(state.shape)}"
-                )
-            if state.size(1) == 1 and L != 1:
-                state_b = state.expand(B, L, 1, D)
-            elif state.size(1) == L:
-                state_b = state
+    def _chain_head_delta(
+        self,
+        shared: Tuple[Tensor, Optional[Tensor], Optional[Tensor]],
+        joint: Tensor,
+        k: int,
+        draft_ids: Optional[Tensor] = None,
+        prev_logits: Optional[Tensor] = None,
+    ) -> Tensor:
+        """Context delta for chain head ``k`` (0-based).
+
+        ``draft_ids`` (inference, (B,1,1) long) or ``prev_logits`` (training,
+        (B,T,L) detached) supply the previous head's draft embedding. For
+        ``k == 0`` neither is used — the head is the plain non-chain head.
+        """
+        predictor, acoustic_term, base_term = shared
+        fused = predictor.unsqueeze(1)  # (B,1,L,D)
+        if base_term is not None:
+            fused = fused + base_term
+        if acoustic_term is not None:
+            fused = fused + acoustic_term.unsqueeze(2)
+        if k >= 1:
+            if draft_ids is not None:
+                ids = draft_ids
+            elif prev_logits is not None:
+                ids = prev_logits.argmax(dim=-1).detach()  # (B,T,L)
             else:
-                state_b = F.pad(state, (0, 0, 0, 0, 0, L - state.size(1)))
-            predictor = self.context_predictor(state_b.squeeze(2))  # (B,L,D)
-            fused = predictor.unsqueeze(1)  # (B,1,L,D)
-            if base_term is not None:
-                fused = fused + base_term
-            if acoustic_term is not None:
-                fused = fused + acoustic_term.unsqueeze(2)
-            normalized = self.context_norm(fused)
-            deltas.append(self.context_mlp(normalized))
-        return deltas
+                ids = None
+            if ids is not None:
+                if ids.dim() == 4:
+                    ids = ids.squeeze(-1)
+                emb = self.chain_draft_proj(self.chain_draft_embed(ids))
+                if emb.dim() == 3:
+                    emb = emb.unsqueeze(1)  # (B,1,1,D) inference → broadcast
+                fused = fused + emb
+        normalized = self.context_norm(fused)
+        return self.context_mlp(normalized)
 
     def forward(
         self,
         joint: Tensor,
         source_encodings: Optional[Tensor] = None,
         target_encodings: Optional[Tensor] = None,
-        chain_target_encodings: Optional[List[Tensor]] = None,
+        chain_drafts: Optional[List[int]] = None,
     ) -> Tuple[Tensor, List[Tensor]]:
         """计算所有 head 的 logits (训练: 全网格; 推理: 单点/小窗口)。
 
@@ -332,8 +328,8 @@ class MedusaHeads(torch.nn.Module):
             source_encodings: ``(B,T,D)`` encoder outputs for stream-local
                 context. At inference this may be a current+lookahead window.
             target_encodings: ``(B,L,D)`` predictor outputs.
-            chain_target_encodings: chain 模式推理时使用 — K 个
-                ``(B,1,D)`` draft-rolled predictor states。
+            chain_drafts: chain 模式推理时使用 — 已确定的前序 draft id 列表
+                (d_1..d_{k-1}); head-k 消费 chain_drafts[k-1]。
 
         Returns:
             ``(logits_base, logits_future)`` where head 0 is the exact shared
@@ -341,13 +337,35 @@ class MedusaHeads(torch.nn.Module):
         """
         logits_base = self.w_vocab(joint)
         if self.chain_states:
-            deltas = self._context_delta(
-                joint, source_encodings, target_encodings,
-                logits_base, chain_target_encodings,
+            # Draft-conditioned chain: heads are built sequentially — head-k
+            # consumes the previous head's draft (training: actual head
+            # logits' argmax over the grid, detached; inference: fixed ids
+            # from chain_drafts). _chain_shared_terms is precomputed once.
+            K = self.num_heads
+            shared = self._chain_shared_terms(
+                joint, source_encodings, target_encodings, logits_base
             )
             logits_future: List[Tensor] = []
-            for k, block in enumerate(self.res_blocks):
-                logits_future.append(self.w_vocab(block(joint + deltas[k])))
+            inference = chain_drafts is not None
+            for k in range(K):
+                if k == 0:
+                    draft_tok: Optional[Tensor] = None
+                elif inference:
+                    tok = chain_drafts[k - 1]
+                    draft_tok = torch.full(
+                        (joint.size(0), 1, 1), int(tok),
+                        dtype=torch.long, device=joint.device,
+                    )
+                else:
+                    draft_tok = None  # grid mode: use prev head logits
+                delta_k = self._chain_head_delta(
+                    shared, joint, k,
+                    draft_ids=draft_tok,
+                    prev_logits=None if k == 0 or inference
+                    else logits_future[k - 1].detach(),
+                )
+                logits_k = self.w_vocab(self.res_blocks[k](joint + delta_k))
+                logits_future.append(logits_k)
             return logits_base, logits_future
 
         medusa_input = joint + self._context_delta(

@@ -139,12 +139,9 @@ def main():
     real_predict_heads = model.predict_heads
 
     def oracle_predict_heads(source_encodings, target_encodings,
-                             chain_target_encodings=None):
-        # 返回一个未来 logits: 让 head-k argmax == 未来的 oracle token。
-        # 这里借助 closure 里的 oracle 序列和当前已输出长度不可行 (签名
-        # 不含位置信息), 因此此路径仅验证链式调用不崩 + 统计一致性。
+                             chain_drafts=None):
         return real_predict_heads(source_encodings, target_encodings,
-                                  chain_target_encodings)
+                                  chain_drafts)
 
     # 链式草拟状态推进结构验证: draft 全对时, 滚动状态 == greedy 状态。
     # 直接验证核心不变量: 用 greedy 序列逐 token 重放。

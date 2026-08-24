@@ -155,33 +155,20 @@ def speculative_greedy_decode(
         chain_mode = getattr(model.medusa_heads, "chain_states", False)
         drafts: List[int] = []
         if chain_mode:
-            # 链式草拟: head-k 的条件状态是「吃掉 d_1..d_{k-1}」后的滚动
-            # predictor 状态 g̃ (head-1 即当前 g_last)。draft 全对时
-            # g̃ == verifier 验证到该位置时的真实状态, head 只需在正确
-            # 前缀上做一步预测, 信息差归零。
-            # 逐 head 增量调用: states[0..j] 已知时算出 head-(j+1) 的 logits。
-            chain_states: List[Tensor] = [g_last]  # head-1 的条件状态
-            g_cur, st_cur = g_last, state
+            # Draft-conditioned chaining (iter-3): head-k consumes the
+            # embedding of the accepted draft d_{k-1}; heads are drafted
+            # incrementally with fixed drafts passed back in.
             for j in range(K):
                 _, future_logits = model.predict_heads(
                     source_window, g_last,
-                    chain_target_encodings=list(chain_states),
+                    chain_drafts=list(drafts),
                 )
                 d_j = int(future_logits[j].argmax(dim=-1).item())
                 total_drafts[j] += 1
                 if d_j == blank_idx:
-                    # blank draft 后链式滚动失去意义 (verifier 不会把 blank
-                    # 作为 emit 吃掉), 直接停止草拟。
                     blank_drafts[j] += 1
                     break
                 drafts.append(d_j)
-                if j + 1 < K:
-                    # 滚动: predictor 吃 d_j, 作为 head-(j+2) 的条件状态
-                    g_cur, st_cur = _advance_predictor(
-                        model, _make_tok(d_j, dev), st_cur, one
-                    )
-                    chain_states.append(g_cur)
-            # 未草拟的 head 不计入 drafts 统计
         else:
             _, future_logits = model.predict_heads(source_window, g_last)
             drafts = [int(future_logits[k].argmax(dim=-1).item()) for k in range(K)]
