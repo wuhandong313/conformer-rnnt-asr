@@ -241,5 +241,49 @@ def test_preview_readonly_and_shape():
     assert bool((dec.g_last == before[2]).all()), "g_last 被改写"
 
 
+def test_recognizer_full_context_equals_offline():
+    import torch
+    from conformer_rnnt.streaming.recognizer import StreamingRecognizer
+    from conformer_rnnt.spec_decode import greedy_decode
+    from tests_tiny_model import make_tiny_model
+
+    model = make_tiny_model(compression_filter="none")
+    blank = model.joiner.linear.out_features - 1
+    torch.manual_seed(9)
+    T = 40  # 单个 chunk 恰好覆盖全句; L=0, C=T, R=4
+    mel = torch.randn(1, T, 80)
+    ln = torch.tensor([T], dtype=torch.int32)
+    feat = torch.cat([mel, torch.zeros(1, 4, 80)], dim=1)
+
+    rec = StreamingRecognizer(model=model, mel=mel[0], chunk_frames=T,
+                              left_context_frames=0,
+                              right_context_frames=4, stride=4, blank_idx=blank)
+    final = rec.run_offline()
+    oracle = greedy_decode(model, feat, ln, blank)
+    assert final == oracle, ("streaming", final, "offline", oracle)
+
+
+def test_preview_on_off_produces_identical_inference():
+    """关键保证: medusa preview 只影响显示——开/关两次识别输出逐 token 一致。"""
+    import torch
+    from conformer_rnnt.streaming.recognizer import StreamingRecognizer
+    from tests_tiny_model import make_tiny_model
+
+    model = make_tiny_model(compression_filter="none", medusa_heads=2)
+    blank = model.joiner.linear.out_features - 1
+    torch.manual_seed(6)
+    mel = torch.randn(40, 80)
+
+    rec_on = StreamingRecognizer(model=model, mel=mel, chunk_frames=40,
+                                 left_context_frames=0, right_context_frames=4,
+                                 stride=4, blank_idx=blank, preview=True,
+                                 preview_heads=2)
+    rec_off = StreamingRecognizer(model=model, mel=mel, chunk_frames=40,
+                                  left_context_frames=0, right_context_frames=4,
+                                  stride=4, blank_idx=blank, preview=False)
+    # 同一输入，同一识别逻辑：preview 开关不影响 decoder 轨迹
+    assert rec_on.run_offline() == rec_off.run_offline(), "preview 影响了识别输出"
+
+
 if __name__ == "__main__":
     sys.exit(main())
