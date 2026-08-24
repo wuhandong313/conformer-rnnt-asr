@@ -72,5 +72,39 @@ def test_chunk_plan_first_and_last():
     assert p.chunk_content_frames(2) == 4
 
 
+def test_feature_extractor_matches_offline_pipeline():
+    import json
+    import torch
+    import torchaudio
+    from conformer_rnnt.streaming.features import StreamingFeatureExtractor
+    from common import piecewise_linear_log, GlobalStatsNormalization
+
+    sr, n_fft, n_mels, hop = 16000, 400, 80, 160
+    torch.manual_seed(0)
+    pcm = torch.randn(1, 16000 * 4)  # 4s 随机音频
+
+    stats = "/tmp/global_stats_test.json"
+    json.dump({"mean": [0.0] * n_mels, "invstddev": [1.0] * n_mels}, open(stats, "w"))
+
+    mel = torchaudio.transforms.MelSpectrogram(
+        sample_rate=sr, n_fft=n_fft, n_mels=n_mels, hop_length=hop)
+    offline = GlobalStatsNormalization(stats)(piecewise_linear_log(mel(pcm)).transpose(1, 2))[0]
+
+    ex = StreamingFeatureExtractor(sample_rate=sr, n_fft=n_fft, n_mels=n_mels,
+                                   hop_length=hop, global_stats_path=stats)
+    streamed = ex.compute_all(pcm[0])
+    assert streamed.shape == offline.shape, (streamed.shape, offline.shape)
+    assert torch.allclose(streamed, offline, atol=1e-6), (streamed - offline).abs().max()
+
+    # 增量 push + flush 与一次性 compute_all 等价
+    ex2 = StreamingFeatureExtractor(sample_rate=sr, n_fft=n_fft, n_mels=n_mels,
+                                    hop_length=hop, global_stats_path=stats)
+    chunk = 8000
+    for i in range(0, pcm.numel(), chunk):
+        ex2.push(pcm[0, i: i + chunk])
+    ex2.flush()
+    assert torch.allclose(ex2.frames(), streamed, atol=1e-6)
+
+
 if __name__ == "__main__":
     sys.exit(main())
