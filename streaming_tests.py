@@ -183,5 +183,40 @@ def test_chunked_encoder_naive_commits_ids():
     assert committed.shape[1] == len(committed_ids), (committed.shape[1], committed_ids)
 
 
+def test_streaming_decoder_equals_greedy():
+    import torch
+    from conformer_rnnt.streaming.decoder import StreamingGreedyDecoder
+    from conformer_rnnt.spec_decode import greedy_decode
+    from tests_tiny_model import make_tiny_model
+
+    model = make_tiny_model(compression_filter="none")
+    blank = model.joiner.linear.out_features - 1   # 最后一个 logit 是 blank
+    torch.manual_seed(3)
+    mel = torch.randn(1, 200, 80)
+    ln = torch.tensor([200], dtype=torch.int32)
+    # 补 rc pad, 与 greedy_decode 的输入约定一致
+    feat = torch.cat([mel, torch.zeros(1, 4, 80)], dim=1)
+    oracle = greedy_decode(model, feat, ln, blank)
+
+    enc, enc_len = model.transcribe(feat, ln)
+    T = enc.size(1)
+    dec = StreamingGreedyDecoder(model=model, blank_idx=blank)
+    step = 7
+    for t0 in range(0, T, step):
+        dec.push(enc[:, t0: t0 + step, :])
+    assert dec.partial() == oracle, ("streaming", dec.partial(), "offline", oracle)
+
+
+def test_streaming_decoder_reset():
+    import torch
+    from conformer_rnnt.streaming.decoder import StreamingGreedyDecoder
+    from tests_tiny_model import make_tiny_model
+    model = make_tiny_model(compression_filter="none")
+    dec = StreamingGreedyDecoder(model=model, blank_idx=model.joiner.linear.out_features - 1)
+    dec.push(torch.randn(1, 5, model.transcriber.output_linear.out_features))
+    dec._reset()
+    assert dec.out == [] and dec.t == 0
+
+
 if __name__ == "__main__":
     sys.exit(main())
