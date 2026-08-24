@@ -85,8 +85,10 @@ def run_eval(model, dataset, dcfg, paths, device, args, sc):
 
     total_per, tok_hits, tok_tot, n = 0.0, 0, 0, 0
     t0 = time.time()
+    total_audio = 0.0
     for idx, sample in iterate(dataset, args.max_samples):
         wav, sr, transcript = sample[0], sample[1], sample[2]
+        total_audio += wav.size(-1) / float(sr)
         wav = wav.squeeze(0) if wav.dim() == 2 else wav
         ex = StreamingFeatureExtractor(
             sample_rate=dcfg["sample_rate"], n_fft=dcfg["n_fft"],
@@ -119,9 +121,10 @@ def run_eval(model, dataset, dcfg, paths, device, args, sc):
         logging.info("[%3d] PER %.3f | cum PER %.4f | %.2fs/sample",
                      idx, total_per / n, total_per / n, pace)
     if n:
+        dec_sec = time.time() - t0
         logging.info("=== streaming eval ===\n"
-                     "PER %.4f | RTF %.3f | samples %d",
-                     total_per / n, pace * max(1, n), n)
+                     "PER %.4f | RTF %.3f (decode wallclock/audio) | samples %d",
+                     total_per / n, dec_sec / max(total_audio, 1e-6), n)
         if args.check_offline:
             logging.info("token match vs offline greedy: %.3f%%",
                          100.0 * tok_hits / max(1, tok_tot))

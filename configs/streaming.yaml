@@ -283,8 +283,11 @@ decoding:
 # 流式识别配置 (仅 streaming_eval.py 使用; train/eval 主干不读此节)
 # ---------------------------------------------------------------------------
 streaming:
-  chunk_frames: 16            # 本 chunk 的 mel 帧数 (对齐 stride 4)
-  left_context_frames: 64     # chunk 左文 mel 帧数 (为 attention/conv 提供历史)
+  # 左文必须足够: 模型训练时是全句双向 attention, 窗口化后 left 决定每帧能看到多远的
+  # 已到历史。left=128 mel(32 reduced) 在长句(>2 chunk)下崩溃(PER 0.17→31);
+  # left=512 mel(128 reduced ≈ 5s) 实测全句稳定 PER ~0.07 ≈ offline。
+  chunk_frames: 128           # 本 chunk 的 mel 帧数 (对齐 stride 4; 32 reduced)
+  left_context_frames: 512    # chunk 左文 mel 帧数 (为 attention/conv 提供历史)
   right_context_frames: 4     # 右文 mel 帧数 — 必须 == model.right_context_length
   preview: true               # Medusa lookahead 显示 (只读, 不回写)
   preview_heads: 2            # 显示的 draft token 数 (= medusa.num_heads)
