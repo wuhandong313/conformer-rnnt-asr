@@ -64,7 +64,9 @@ model:
     freeze_base: true
 
     ce_loss_weights: [0.8, 0.64, 0.512]
-    kl_weight: 0.05
+    # iter-1 实验筛选出 KL=0 是最优 (WINNER=stream_h2_kl0); 且 chain 对齐下
+    # KL(base@l) 是 blank-dominant 分布, 与 CE 目标冲突, 必须为 0。
+    kl_weight: 0.0
 
   joiner:
     activation: "relu"
