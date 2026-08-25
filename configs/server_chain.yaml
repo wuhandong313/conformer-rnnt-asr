@@ -20,7 +20,7 @@ paths:
   sp_model_path: "/test21/medusa/spm_bpe_74.model"
   global_stats_path: "/test21/medusa/global_stats.json"
   exp_dir: "/test21/conformer-rnnt-asr/exp_iter2"
-  from_checkpoint: "/test21/conformer-rnnt-asr/exp/checkpoints/val-none-epoch=34-step=21600.ckpt"
+  from_checkpoint: "/test21/conformer-rnnt-asr/exp_iter2/BEST_h1_0.915.ckpt"
 
 model:
   input_dim: 80
