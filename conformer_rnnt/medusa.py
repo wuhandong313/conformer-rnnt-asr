@@ -155,14 +155,22 @@ class MedusaHeads(torch.nn.Module):
         # rolling and no emit-gap sequence dependence.
         self.chain_draft_embed: Optional[torch.nn.Embedding]
         self.chain_draft_proj: Optional[torch.nn.Linear]
+        self.chain_state_proj: Optional[torch.nn.Linear]
         if self.chain_states and num_heads > 1:
             self.chain_draft_embed = torch.nn.Embedding(num_vocab, 128)
             self.chain_draft_proj = torch.nn.Linear(128, input_dim)
             torch.nn.init.zeros_(self.chain_draft_proj.weight)
             torch.nn.init.zeros_(self.chain_draft_proj.bias)
+            # iter-4: rolled-language-state input. Training uses the
+            # teacher-forcing tgt_enc[l+k-1]; inference uses the predictor
+            # rolled on accepted drafts (bit-exact when drafts hit).
+            self.chain_state_proj = torch.nn.Linear(input_dim, input_dim)
+            torch.nn.init.zeros_(self.chain_state_proj.weight)
+            torch.nn.init.zeros_(self.chain_state_proj.bias)
         else:
             self.chain_draft_embed = None
             self.chain_draft_proj = None
+            self.chain_state_proj = None
 
         if self.context_mlp is not None:
             # Preserve the exact base-logit initialization. The context path
@@ -284,12 +292,18 @@ class MedusaHeads(torch.nn.Module):
         k: int,
         draft_ids: Optional[Tensor] = None,
         prev_logits: Optional[Tensor] = None,
+        rolled_state: Optional[Tensor] = None,
     ) -> Tensor:
         """Context delta for chain head ``k`` (0-based).
 
         ``draft_ids`` (inference, (B,1,1) long) or ``prev_logits`` (training,
         (B,T,L) detached) supply the previous head's draft embedding. For
         ``k == 0`` neither is used — the head is the plain non-chain head.
+
+        ``rolled_state`` (iter-4) is the rolled language state for head k:
+        ``(B, L, D)`` at training (tgt_enc shifted by k) or ``(B, 1, D)`` at
+        inference (predictor advanced on accepted drafts). It carries the LM
+        context the verifier will have when reaching this token.
         """
         predictor, acoustic_term, base_term = shared
         fused = predictor.unsqueeze(1)  # (B,1,L,D)
@@ -297,6 +311,11 @@ class MedusaHeads(torch.nn.Module):
             fused = fused + base_term
         if acoustic_term is not None:
             fused = fused + acoustic_term.unsqueeze(2)
+        if rolled_state is not None and self.chain_state_proj is not None:
+            state_term = self.chain_state_proj(rolled_state)
+            if state_term.dim() == 3:
+                state_term = state_term.unsqueeze(1)  # (B,1,L,D) or (B,1,1,D)
+            fused = fused + state_term
         if k >= 1:
             if draft_ids is not None:
                 ids = draft_ids
@@ -320,6 +339,7 @@ class MedusaHeads(torch.nn.Module):
         source_encodings: Optional[Tensor] = None,
         target_encodings: Optional[Tensor] = None,
         chain_drafts: Optional[List[int]] = None,
+        chain_states: Optional[List[Tensor]] = None,
     ) -> Tuple[Tensor, List[Tensor]]:
         """计算所有 head 的 logits (训练: 全网格; 推理: 单点/小窗口)。
 
@@ -330,6 +350,9 @@ class MedusaHeads(torch.nn.Module):
             target_encodings: ``(B,L,D)`` predictor outputs.
             chain_drafts: chain 模式推理时使用 — 已确定的前序 draft id 列表
                 (d_1..d_{k-1}); head-k 消费 chain_drafts[k-1]。
+            chain_states: chain 模式推理时使用 (iter-4) — K 个 (B,1,D)
+                predictor 滚动状态; head-k 消费 chain_states[k]
+                (k=0 为 draft 点状态本身)。
 
         Returns:
             ``(logits_base, logits_future)`` where head 0 is the exact shared
@@ -347,6 +370,20 @@ class MedusaHeads(torch.nn.Module):
             )
             logits_future: List[Tensor] = []
             inference = chain_drafts is not None
+            # Rolled states: inference passes them via chain_states; training
+            # shifts tgt_enc so head-k sees the state after consuming
+            # y_l..y_{l+k-1} (teacher forcing; bit-exact with inference when
+            # drafts are accepted).
+            rolled: List[Optional[Tensor]] = [None] * K
+            if inference:
+                for k in range(K):
+                    if chain_states is not None and k < len(chain_states):
+                        rolled[k] = chain_states[k]
+            else:
+                L = joint.size(2)
+                padded = F.pad(target_encodings, (0, 0, 0, K), value=0.0)
+                for k in range(K):
+                    rolled[k] = padded[:, k : k + L, :]
             for k in range(K):
                 draft_tok: Optional[Tensor] = None
                 prev = None
@@ -369,6 +406,7 @@ class MedusaHeads(torch.nn.Module):
                     shared, joint, k,
                     draft_ids=draft_tok,
                     prev_logits=prev,
+                    rolled_state=rolled[k],
                 )
                 logits_k = self.w_vocab(self.res_blocks[k](joint + delta_k))
                 logits_future.append(logits_k)

@@ -155,13 +155,17 @@ def speculative_greedy_decode(
         chain_mode = getattr(model.medusa_heads, "chain_states", False)
         drafts: List[int] = []
         if chain_mode:
-            # Draft-conditioned chaining (iter-3): head-k consumes the
-            # embedding of the accepted draft d_{k-1}; heads are drafted
-            # incrementally with fixed drafts passed back in.
+            # Draft-conditioned chaining (iter-3) + rolled language states
+            # (iter-4): head-k consumes embed(d_{k-1}) and the predictor
+            # state rolled on accepted drafts. Heads are drafted
+            # incrementally with fixed drafts/states passed back in.
+            chain_rolls: List[Tensor] = [g_last]  # head-1 state: draft point
+            g_cur, st_cur = g_last, state
             for j in range(K):
                 _, future_logits = model.predict_heads(
                     source_window, g_last,
                     chain_drafts=list(drafts),
+                    chain_states=list(chain_rolls),
                 )
                 d_j = int(future_logits[j].argmax(dim=-1).item())
                 total_drafts[j] += 1
@@ -169,6 +173,12 @@ def speculative_greedy_decode(
                     blank_drafts[j] += 1
                     break
                 drafts.append(d_j)
+                if j + 1 < K:
+                    # roll the predictor on the accepted draft for head j+2
+                    g_cur, st_cur = _advance_predictor(
+                        model, _make_tok(d_j, dev), st_cur, one
+                    )
+                    chain_rolls.append(g_cur)
         else:
             _, future_logits = model.predict_heads(source_window, g_last)
             drafts = [int(future_logits[k].argmax(dim=-1).item()) for k in range(K)]

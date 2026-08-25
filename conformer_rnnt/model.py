@@ -101,6 +101,7 @@ class ConformerRNNT(torch.nn.Module):
         source_encodings: Tensor,
         target_encodings: Tensor,
         chain_drafts: Optional[List[int]] = None,
+        chain_states: Optional[List[Tensor]] = None,
     ) -> Tuple[Optional[Tensor], List[Tensor]]:
         """Apply Medusa heads to joiner-fused features (for spec decode).
 
@@ -111,6 +112,8 @@ class ConformerRNNT(torch.nn.Module):
             target_encodings: (B, L, D) from ``predict`` (L=1 at inference).
             chain_drafts: chain 模式推理时使用 — 已确定的前序 draft id;
                 head-k 消费 chain_drafts[k-1] 的 embedding。
+            chain_states: chain 模式推理时使用 (iter-4) — K 个 (B,1,D)
+                predictor 滚动状态; head-k 消费 chain_states[k]。
 
         Returns:
             (logits_base, logits_future) — both empty/None when no heads.
@@ -129,6 +132,7 @@ class ConformerRNNT(torch.nn.Module):
             source_encodings=source_encodings,
             target_encodings=target_encodings,
             chain_drafts=chain_drafts,
+            chain_states=chain_states,
         )
 
 
