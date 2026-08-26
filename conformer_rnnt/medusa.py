@@ -119,15 +119,25 @@ class MedusaHeads(torch.nn.Module):
             self.context_predictor = torch.nn.Linear(input_dim, input_dim)
             self.context_base_logits = torch.nn.Linear(num_vocab, input_dim)
             self.context_norm = torch.nn.LayerNorm(input_dim)
-            # iter-6: one extra hidden layer (zero-init last projection
-            # preserves warm-start behavior at step 0).
+            # iter-6: residual capacity expansion. context_mlp keeps the
+            # exact iter-4 two-layer structure (warm-start loads it fully);
+            # context_mlp_extra adds a parallel deeper path whose output
+            # projection is zero-initialized — at step 0 the module is
+            # bit-identical to iter-4.
             self.context_mlp = torch.nn.Sequential(
+                torch.nn.Linear(input_dim, 2 * input_dim),
+                torch.nn.SiLU(),
+                torch.nn.Linear(2 * input_dim, input_dim),
+            )
+            self.context_mlp_extra = torch.nn.Sequential(
                 torch.nn.Linear(input_dim, 2 * input_dim),
                 torch.nn.SiLU(),
                 torch.nn.Linear(2 * input_dim, 2 * input_dim),
                 torch.nn.SiLU(),
                 torch.nn.Linear(2 * input_dim, input_dim),
             )
+            torch.nn.init.zeros_(self.context_mlp_extra[-1].weight)
+            torch.nn.init.zeros_(self.context_mlp_extra[-1].bias)
         elif input_mode == "predictor_only":
             self.context_acoustic = None
             self.context_predictor = torch.nn.Linear(input_dim, input_dim)
@@ -271,7 +281,8 @@ class MedusaHeads(torch.nn.Module):
             fused = acoustic.unsqueeze(2) + predictor.unsqueeze(1) + base_context
 
         normalized = self.context_norm(fused)
-        return self.context_mlp(normalized)
+        extra = getattr(self, "context_mlp_extra", None)
+        return self.context_mlp(normalized) + (extra(normalized) if extra is not None else 0.0)
 
     def _chain_shared_terms(
         self,
@@ -374,7 +385,8 @@ class MedusaHeads(torch.nn.Module):
                     emb = emb.unsqueeze(1)  # (B,1,1,D) inference → broadcast
                 fused = fused + emb
         normalized = self.context_norm(fused)
-        return self.context_mlp(normalized)
+        extra = getattr(self, "context_mlp_extra", None)
+        return self.context_mlp(normalized) + (extra(normalized) if extra is not None else 0.0)
 
     def forward(
         self,
