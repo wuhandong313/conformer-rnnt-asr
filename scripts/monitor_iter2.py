@@ -94,10 +94,14 @@ def main() -> int:
     h_txt = " ".join(
         f"h{i+1}={ph['rate']:.3f}" for i, ph in enumerate(heads)
     )
+    per = metrics.get("per", float("nan"))
+    # warm-start 重启后的前 ~400 步会有 PER 瞬态 (BN running stats 重整),
+    # 会自愈 — 显著标注但不当作训练失败。
+    per_flag = " <<PER_TRANSIENT?" if per > 0.2 else ""
     print(
         f"TRAIN {status} {step} | CKPT {os.path.basename(ckpt)} | "
         f"{h_txt} | overall={metrics.get('medusa_accept_rate', 0):.3f} | "
-        f"PER={metrics.get('per', float('nan')):.4f} | "
+        f"PER={per:.4f}{per_flag} | "
         f"lossless_fail={metrics.get('lossless_failures', 0)}"
     )
     return 0
