@@ -167,6 +167,17 @@ class MedusaHeads(torch.nn.Module):
             self.chain_state_proj = torch.nn.Linear(input_dim, input_dim)
             torch.nn.init.zeros_(self.chain_state_proj.weight)
             torch.nn.init.zeros_(self.chain_state_proj.bias)
+            # iter-5: frame-level attention over the acoustic window. The
+            # head-specific rolled state is the query; window frames are
+            # keys/values. This lets each head *point at* the frames that
+            # carry its target token instead of relying on a flatten-linear
+            # summary of all 9 frames at once.
+            self.win_attn_key = torch.nn.Linear(input_dim, 128)
+            self.win_attn_val = torch.nn.Linear(input_dim, input_dim)
+            self.win_attn_query = torch.nn.Linear(input_dim, 128)
+            self.win_attn_out = torch.nn.Linear(input_dim, input_dim)
+            torch.nn.init.zeros_(self.win_attn_out.weight)
+            torch.nn.init.zeros_(self.win_attn_out.bias)
         else:
             self.chain_draft_embed = None
             self.chain_draft_proj = None
@@ -264,11 +275,17 @@ class MedusaHeads(torch.nn.Module):
         source_encodings: Optional[Tensor],
         target_encodings: Tensor,
         base_logits: Optional[Tensor],
-    ) -> Tuple[Tensor, Optional[Tensor], Optional[Tensor]]:
-        """Shared chain inputs: predictor state, acoustic window, base logits."""
+    ) -> Tuple[Tensor, Optional[Tensor], Optional[Tensor], Optional[Tensor]]:
+        """Shared chain inputs.
+
+        Returns (predictor, flat_acoustic, base_term, attn_frames) where
+        ``attn_frames`` is ``(B, T, W, D)`` — the raw per-frame window tensor
+        for the iter-5 attention (None when not stream_local).
+        """
         B, T, L, D = joint.shape
         predictor = self.context_predictor(target_encodings)  # (B,L,D)
         acoustic_term: Optional[Tensor] = None
+        attn_frames: Optional[Tensor] = None
         if self.input_mode == "stream_local":
             if source_encodings is None:
                 raise ValueError("stream_local chain mode requires source_encodings")
@@ -278,16 +295,17 @@ class MedusaHeads(torch.nn.Module):
             if source.size(1) < required:
                 source = F.pad(source, (0, 0, 0, required - source.size(1)))
             windows = source.unfold(1, width, 1)
-            windows = windows.permute(0, 1, 3, 2).contiguous()[:, :T]
+            windows = windows.permute(0, 1, 3, 2).contiguous()[:, :T]  # (B,T,W,D)
+            attn_frames = windows
             acoustic_term = self.context_acoustic(windows.flatten(start_dim=2))
         base_term: Optional[Tensor] = None
         if base_logits is not None and self.context_base_logits is not None:
             base_term = self.context_base_logits(base_logits.detach())
-        return predictor, acoustic_term, base_term
+        return predictor, acoustic_term, base_term, attn_frames
 
     def _chain_head_delta(
         self,
-        shared: Tuple[Tensor, Optional[Tensor], Optional[Tensor]],
+        shared: Tuple[Tensor, Optional[Tensor], Optional[Tensor], Optional[Tensor]],
         joint: Tensor,
         k: int,
         draft_ids: Optional[Tensor] = None,
@@ -303,9 +321,10 @@ class MedusaHeads(torch.nn.Module):
         ``rolled_state`` (iter-4) is the rolled language state for head k:
         ``(B, L, D)`` at training (tgt_enc shifted by k) or ``(B, 1, D)`` at
         inference (predictor advanced on accepted drafts). It carries the LM
-        context the verifier will have when reaching this token.
+        context the verifier will have when reaching this token. It also
+        serves as the attention query (iter-5) over the acoustic window.
         """
-        predictor, acoustic_term, base_term = shared
+        predictor, acoustic_term, base_term, attn_frames = shared
         fused = predictor.unsqueeze(1)  # (B,1,L,D)
         if base_term is not None:
             fused = fused + base_term
@@ -316,6 +335,26 @@ class MedusaHeads(torch.nn.Module):
             if state_term.dim() == 3:
                 state_term = state_term.unsqueeze(1)  # (B,1,L,D) or (B,1,1,D)
             fused = fused + state_term
+            # iter-5: frame attention — query from this head's rolled state,
+            # keys/values over the (B,T,W,D) window frames. Output mixes
+            # additively into the fused context.
+            if attn_frames is not None:
+                B, T, L2, D = fused.shape
+                frames = attn_frames  # (B,T,W,D)
+                W = frames.size(2)
+                keys = self.win_attn_key(frames)          # (B,T,W,128)
+                vals = self.win_attn_val(frames)          # (B,T,W,D)
+                # query: (B, L, D) → (B, L, 128); broadcast over T
+                q = self.win_attn_query(rolled_state)     # (B,L,128) or (B,1,128)
+                scores = torch.einsum(
+                    "bld,btwd->bltw", q, keys
+                ) / (128 ** 0.5)                          # (B,L,T,W)
+                weights = F.softmax(scores, dim=-1)
+                attended = torch.einsum(
+                    "bltw,btwd->bltd", weights, vals
+                )                                         # (B,L,T,D)
+                out = self.win_attn_out(attended)         # (B,L,T,D)
+                fused = fused + out.permute(0, 2, 1, 3)   # → (B,T,L,D)
         if k >= 1:
             if draft_ids is not None:
                 ids = draft_ids
