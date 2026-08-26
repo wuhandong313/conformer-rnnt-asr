@@ -129,6 +129,10 @@ class MedusaHeads(torch.nn.Module):
                 torch.nn.SiLU(),
                 torch.nn.Linear(2 * input_dim, input_dim),
             )
+            # iter-7: per-head deep paths. The shared iter-6 extra path is
+            # kept (warm-start loads its keys); each head additionally gets
+            # its own zero-init deep path so h2/h3 escape the shared-capacity
+            # bottleneck without disturbing the warm-start equivalence.
             self.context_mlp_extra = torch.nn.Sequential(
                 torch.nn.Linear(input_dim, 2 * input_dim),
                 torch.nn.SiLU(),
@@ -138,6 +142,19 @@ class MedusaHeads(torch.nn.Module):
             )
             torch.nn.init.zeros_(self.context_mlp_extra[-1].weight)
             torch.nn.init.zeros_(self.context_mlp_extra[-1].bias)
+            self.context_mlp_heads = torch.nn.ModuleList([
+                torch.nn.Sequential(
+                    torch.nn.Linear(input_dim, 2 * input_dim),
+                    torch.nn.SiLU(),
+                    torch.nn.Linear(2 * input_dim, 2 * input_dim),
+                    torch.nn.SiLU(),
+                    torch.nn.Linear(2 * input_dim, input_dim),
+                )
+                for _ in range(num_heads)
+            ])
+            for mlp_h in self.context_mlp_heads:
+                torch.nn.init.zeros_(mlp_h[-1].weight)
+                torch.nn.init.zeros_(mlp_h[-1].bias)
         elif input_mode == "predictor_only":
             self.context_acoustic = None
             self.context_predictor = torch.nn.Linear(input_dim, input_dim)
@@ -181,6 +198,15 @@ class MedusaHeads(torch.nn.Module):
             self.chain_state_proj = torch.nn.Linear(input_dim, input_dim)
             torch.nn.init.zeros_(self.chain_state_proj.weight)
             torch.nn.init.zeros_(self.chain_state_proj.bias)
+            # iter-7: per-head state projections (zero-init, additive on top
+            # of the shared one).
+            self.chain_state_proj_heads = torch.nn.ModuleList([
+                torch.nn.Linear(input_dim, input_dim)
+                for _ in range(num_heads)
+            ])
+            for proj in self.chain_state_proj_heads:
+                torch.nn.init.zeros_(proj.weight)
+                torch.nn.init.zeros_(proj.bias)
             # iter-5 (abandoned): frame-level attention over the acoustic
             # window. Training destabilized (PER 0.07 → 0.50, greedy output
             # corrupted) — the modules are kept for checkpoint compatibility
@@ -282,7 +308,14 @@ class MedusaHeads(torch.nn.Module):
 
         normalized = self.context_norm(fused)
         extra = getattr(self, "context_mlp_extra", None)
-        return self.context_mlp(normalized) + (extra(normalized) if extra is not None else 0.0)
+        delta = self.context_mlp(normalized) + (
+            extra(normalized) if extra is not None else 0.0
+        )
+        # iter-7: per-head deep path (zero-init output; additive)
+        mlp_heads = getattr(self, "context_mlp_heads", None)
+        if mlp_heads is not None and k < len(mlp_heads):
+            delta = delta + mlp_heads[k](normalized)
+        return delta
 
     def _chain_shared_terms(
         self,
@@ -350,6 +383,13 @@ class MedusaHeads(torch.nn.Module):
             if state_term.dim() == 3:
                 state_term = state_term.unsqueeze(1)  # (B,1,L,D) or (B,1,1,D)
             fused = fused + state_term
+            # iter-7: per-head additive state projection
+            proj_heads = getattr(self, "chain_state_proj_heads", None)
+            if proj_heads is not None and k < len(proj_heads):
+                head_term = proj_heads[k](rolled_state)
+                if head_term.dim() == 3:
+                    head_term = head_term.unsqueeze(1)
+                fused = fused + head_term
             # iter-5: frame attention — query from this head's rolled state,
             # keys/values over the (B,T,W,D) window frames. Output mixes
             # additively into the fused context.
@@ -386,7 +426,14 @@ class MedusaHeads(torch.nn.Module):
                 fused = fused + emb
         normalized = self.context_norm(fused)
         extra = getattr(self, "context_mlp_extra", None)
-        return self.context_mlp(normalized) + (extra(normalized) if extra is not None else 0.0)
+        delta = self.context_mlp(normalized) + (
+            extra(normalized) if extra is not None else 0.0
+        )
+        # iter-7: per-head deep path (zero-init output; additive)
+        mlp_heads = getattr(self, "context_mlp_heads", None)
+        if mlp_heads is not None and k < len(mlp_heads):
+            delta = delta + mlp_heads[k](normalized)
+        return delta
 
     def forward(
         self,
