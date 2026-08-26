@@ -557,6 +557,24 @@ class LibriSpeechRNNTModule(LightningModule):
                 logging.info("Dropping shared w_vocab alias keys on load: %s", alias)
                 state_dict = {k: v for k, v in state_dict.items() if k not in alias}
 
+        # Architecture iterations may resize medusa submodules (e.g. a deeper
+        # context_mlp). Drop checkpoint keys whose shapes no longer match —
+        # the fresh (zero-init output) layers keep warm-start equivalence.
+        if has_medusa:
+            own = self.state_dict()
+            resized = [
+                k for k, v in state_dict.items()
+                if k in own and own[k].shape != v.shape
+                and k.startswith("model.medusa_heads.")
+            ]
+            if resized:
+                logging.info(
+                    "Dropping shape-mismatched medusa keys on load: %s", resized
+                )
+                state_dict = {
+                    k: v for k, v in state_dict.items() if k not in resized
+                }
+
         result = super().load_state_dict(state_dict, strict=strict and not has_medusa)
 
         # Old base checkpoints only miss medusa_heads.* — anything else is a
