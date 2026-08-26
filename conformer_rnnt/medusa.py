@@ -119,8 +119,12 @@ class MedusaHeads(torch.nn.Module):
             self.context_predictor = torch.nn.Linear(input_dim, input_dim)
             self.context_base_logits = torch.nn.Linear(num_vocab, input_dim)
             self.context_norm = torch.nn.LayerNorm(input_dim)
+            # iter-6: one extra hidden layer (zero-init last projection
+            # preserves warm-start behavior at step 0).
             self.context_mlp = torch.nn.Sequential(
                 torch.nn.Linear(input_dim, 2 * input_dim),
+                torch.nn.SiLU(),
+                torch.nn.Linear(2 * input_dim, 2 * input_dim),
                 torch.nn.SiLU(),
                 torch.nn.Linear(2 * input_dim, input_dim),
             )
@@ -167,11 +171,11 @@ class MedusaHeads(torch.nn.Module):
             self.chain_state_proj = torch.nn.Linear(input_dim, input_dim)
             torch.nn.init.zeros_(self.chain_state_proj.weight)
             torch.nn.init.zeros_(self.chain_state_proj.bias)
-            # iter-5: frame-level attention over the acoustic window. The
-            # head-specific rolled state is the query; window frames are
-            # keys/values. This lets each head *point at* the frames that
-            # carry its target token instead of relying on a flatten-linear
-            # summary of all 9 frames at once.
+            # iter-5 (abandoned): frame-level attention over the acoustic
+            # window. Training destabilized (PER 0.07 → 0.50, greedy output
+            # corrupted) — the modules are kept for checkpoint compatibility
+            # but disabled via win_attn_enabled=False.
+            self.win_attn_enabled = False
             self.win_attn_key = torch.nn.Linear(input_dim, 128)
             self.win_attn_val = torch.nn.Linear(input_dim, input_dim)
             self.win_attn_query = torch.nn.Linear(input_dim, 128)
@@ -338,7 +342,7 @@ class MedusaHeads(torch.nn.Module):
             # iter-5: frame attention — query from this head's rolled state,
             # keys/values over the (B,T,W,D) window frames. Output mixes
             # additively into the fused context.
-            if attn_frames is not None:
+            if attn_frames is not None and getattr(self, "win_attn_enabled", False):
                 B, T, L2, D = fused.shape
                 frames = attn_frames  # (B,T,W,D)
                 W = frames.size(2)
