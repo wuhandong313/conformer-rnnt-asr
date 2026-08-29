@@ -15,6 +15,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -28,7 +29,17 @@ TRAIN_LOG = os.path.join(REPO, "exp_iter8_train.log")
 
 def latest_ckpt() -> str | None:
     files = glob.glob(os.path.join(CKPT_DIR, "val-*.ckpt"))
-    return max(files, key=os.path.getmtime) if files else None
+    if not files:
+        return None
+    newest = max(files, key=os.path.getmtime)
+    # Lightning 可能仍在写文件 — 太新的 ckpt 跳过 (防止读到半截权重,
+    # 那会产生 PER 虚高被缓存的坏结果)。
+    if time.time() - os.path.getmtime(newest) < 180:
+        older = [f for f in files if f != newest]
+        if not older:
+            return None
+        newest = max(older, key=os.path.getmtime)
+    return newest
 
 
 def eval_ckpt(ckpt: str) -> dict | None:
