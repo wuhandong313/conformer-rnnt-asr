@@ -359,6 +359,7 @@ class LibriSpeechRNNTModule(LightningModule):
         medusa_rhythm_feature: bool = False,
         medusa_accept_ce_weight: float = 1.0,
         medusa_delay_ce_weight: float = 0.5,
+        medusa_sim_bias_lr_mult: float = 1.0,
         medusa_ce_weights: tuple = (0.8, 0.64, 0.512, 0.4096),
         medusa_kl_weight: float = 0.05,
         medusa_freeze_base: bool = False,
@@ -463,8 +464,24 @@ class LibriSpeechRNNTModule(LightningModule):
         )
 
         # ---- Optimizer & scheduler ----
+        # iter-8b: sim 偏查表用独立学习率组 — 行范数需要达到 3-5 才能翻转
+        # head argmax, 基础 lr 下增长太慢 (实测 ~5e-4/步线性); 专用倍率
+        # 只影响 draft 头 logits, 对 verifier/greedy 路径零风险。
+        sim_bias_params, other_params = [], []
+        for name, p in self.model.named_parameters():
+            if not p.requires_grad:
+                continue
+            if "sim_bias_heads" in name:
+                sim_bias_params.append(p)
+            else:
+                other_params.append(p)
+        group_list = [{"params": other_params, "lr": learning_rate}]
+        if sim_bias_params:
+            group_list.append(
+                {"params": sim_bias_params, "lr": learning_rate * sim_bias_lr_mult}
+            )
         self.optimizer = torch.optim.Adam(
-            filter(lambda p: p.requires_grad, self.model.parameters()),
+            group_list,
             lr=learning_rate,
             betas=adam_betas,
             eps=adam_eps,
@@ -524,6 +541,7 @@ class LibriSpeechRNNTModule(LightningModule):
         self.medusa_chain_states = bool(medusa_chain_states)
         self.medusa_accept_ce_weight = float(medusa_accept_ce_weight)
         self.medusa_delay_ce_weight = float(medusa_delay_ce_weight)
+        self.sim_bias_lr_mult = float(medusa_sim_bias_lr_mult)
 
     # ------------------------------------------------------------------
     # Checkpoint loading — prefix fix + shared w_vocab alias + strict guard
@@ -667,6 +685,7 @@ class LibriSpeechRNNTModule(LightningModule):
             medusa_rhythm_feature=medusa_cfg.get("rhythm_feature", False),
             medusa_accept_ce_weight=medusa_cfg.get("accept_ce_weight", 1.0),
             medusa_delay_ce_weight=medusa_cfg.get("delay_ce_weight", 0.5),
+            medusa_sim_bias_lr_mult=medusa_cfg.get("sim_bias_lr_mult", 1.0),
             medusa_ce_weights=tuple(medusa_cfg.get("ce_loss_weights", [0.8, 0.64, 0.512, 0.4096])),
             medusa_kl_weight=medusa_cfg.get("kl_weight", 0.05),
             medusa_freeze_base=medusa_cfg.get("freeze_base", False),
