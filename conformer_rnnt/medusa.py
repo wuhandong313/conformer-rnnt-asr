@@ -15,9 +15,19 @@ future head 另外接收当前 base logits 的 detached 投影，让它明确知
 条件化的 token。
 所有 future head 仍共享 ``joiner.linear``，因此 verifier 的 base logits
 和 head 0 使用完全相同的词表投影。
+
+iter-8 (流式合法的预测能力增强, 1 帧 lookahead 预算):
+  1. 声学窗重排为 ``[t-past .. t-1, t, t+lookahead]`` — 用已提交的过去帧
+     替换非法未来帧, 结构宽度不变 (warm-start 保形)。
+  2. 验证器模拟扫描特征 (chain_sim): head-k 读取真 joiner 在
+     ``[t, t+lookahead]`` 窗口对其 rolled state 的逐步 argmax — 窗口内的
+     接受事件从「学习猜」变成「确定性读出」。
+  3. 时延分解 (delay_decompose): 每头一个时延分类器预测验证器对本头
+     token 的 blank-walk 时延; 期望时延 embedding 以加性调制的方式
+     注入 token 路径。
 """
 
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import torch
 import torch.nn.functional as F
@@ -42,11 +52,6 @@ class MedusaResBlock(torch.nn.Module):
 
     def forward(self, x: Tensor) -> Tensor:
         return x + self.linear2(self.act(self.linear1(x)))
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# MedusaHeads
-# ═══════════════════════════════════════════════════════════════════════════
 
 
 class MedusaHeads(torch.nn.Module):
@@ -83,6 +88,11 @@ class MedusaHeads(torch.nn.Module):
         lookahead_frames: int = 1,
         draft_after_emit: bool = False,
         chain_states: bool = False,
+        past_frames: int = 0,
+        chain_sim: bool = False,
+        delay_decompose: bool = False,
+        rhythm_feature: bool = False,
+        per_token_blank: int = 4,
     ) -> None:
         super().__init__()
         if w_vocab.in_features != input_dim or w_vocab.out_features != num_vocab:
@@ -99,8 +109,16 @@ class MedusaHeads(torch.nn.Module):
         self.num_heads = num_heads
         self.input_mode = input_mode
         self.lookahead_frames = max(0, int(lookahead_frames))
+        # iter-8: 声学窗重排为 [t-past .. t-1, t, t+lookahead]。
+        # past_frames=0 时窗口退化为旧布局 [t .. t+lookahead] (向后兼容)。
+        self.past_frames = max(0, int(past_frames))
         self.draft_after_emit = bool(draft_after_emit)
         self.chain_states = bool(chain_states)
+        # 本仓库约定 blank = 词表最后一个 id (lightning: blank_idx =
+        # sp_model.get_piece_size(), num_vocab = num_symbols+1)。
+        self.blank_idx = num_vocab - 1
+        # 时延分类桶数: 相对偏移 0..per_token_blank-1 + not-found。
+        self.per_token_blank = max(1, int(per_token_blank))
         self.res_blocks = torch.nn.ModuleList(
             [MedusaResBlock(input_dim) for _ in range(num_heads)]
         )
@@ -114,7 +132,9 @@ class MedusaHeads(torch.nn.Module):
         self.context_predictor: Optional[torch.nn.Linear]
         self.context_base_logits: Optional[torch.nn.Linear]
         if input_mode == "stream_local":
-            window_dim = (1 + self.lookahead_frames) * input_dim
+            # iter-8: 窗口 = past + 当前 + lookahead (重排后宽度含过去帧;
+            # iter-7 布局 past=0 时退化为 1+lookahead, 形状不变)。
+            window_dim = (1 + self.past_frames + self.lookahead_frames) * input_dim
             self.context_acoustic = torch.nn.Linear(window_dim, input_dim)
             self.context_predictor = torch.nn.Linear(input_dim, input_dim)
             self.context_base_logits = torch.nn.Linear(num_vocab, input_dim)
@@ -207,6 +227,35 @@ class MedusaHeads(torch.nn.Module):
             for proj in self.chain_state_proj_heads:
                 torch.nn.init.zeros_(proj.weight)
                 torch.nn.init.zeros_(proj.bias)
+            # iter-8: 验证器模拟扫描特征。head-k 读到真 joiner 在
+            # [t, t+lookahead] 窗口对其 rolled state 的逐步 argmax 结果
+            # (token/位置/置信度) — 流式窗口内的接受事件成为确定性读出。
+            # 训练从 base_logits 网格 gather (零 FLOPs); 推理由
+            # model.predict_heads 用真 joiner 算好窗口 logits 传入。
+            self.chain_sim_enabled = bool(chain_sim)
+            if self.chain_sim_enabled:
+                self.chain_sim_proj = torch.nn.Linear(128 + 2, input_dim)
+                torch.nn.init.zeros_(self.chain_sim_proj.weight)
+                torch.nn.init.zeros_(self.chain_sim_proj.bias)
+            # iter-8: 时延分解。每头一个分类器预测验证器对本头 token 的
+            # blank-walk 时延 (相对偏移 0..pb-1 或 not-found); 期望时延
+            # embedding 经零初始化投影调制 token hidden — 因 w_vocab 是
+            # 线性层, 这等价于对时延后验做 token logits 边缘化。
+            self.delay_enabled = bool(delay_decompose)
+            if self.delay_enabled:
+                self.delay_classes = self.per_token_blank + 1
+                self.delay_heads = torch.nn.ModuleList([
+                    torch.nn.Linear(input_dim, self.delay_classes)
+                    for _ in range(num_heads)
+                ])
+                self.delay_emb = torch.nn.Embedding(self.delay_classes, input_dim)
+                self.delay_proj = torch.nn.Linear(input_dim, input_dim)
+                torch.nn.init.zeros_(self.delay_proj.weight)
+                torch.nn.init.zeros_(self.delay_proj.bias)
+            # 节律特征 (rhythm_feature) 在设计中被砍掉: 训练网格无法精确
+            # 重构推理端「自上次发射以来的 blank 数」(路径依赖), 会破坏
+            # 训练-推理同构。参数保留仅为配置兼容。
+            self.rhythm_enabled = False
             # iter-5 (abandoned): frame-level attention over the acoustic
             # window. Training destabilized (PER 0.07 → 0.50, greedy output
             # corrupted) — the modules are kept for checkpoint compatibility
@@ -229,8 +278,141 @@ class MedusaHeads(torch.nn.Module):
             torch.nn.init.zeros_(self.context_mlp[-1].weight)
             torch.nn.init.zeros_(self.context_mlp[-1].bias)
 
+        # iter-8 开关默认值 (chain 块内按配置覆盖); 非 chain 模式恒 False。
+        if not (self.chain_states and num_heads > 1):
+            self.chain_sim_enabled = False
+            self.delay_enabled = False
+
         # 与 joiner 共享输出投影：head 0 ≡ joiner 精确一致。
         self.w_vocab = w_vocab
+
+    # ------------------------------------------------------------------
+    def _anchor_window(self, source_encodings: Tensor, T: int) -> Tensor:
+        """iter-8 声学窗重排: [t-past .. t-1, t, t+1..t+lookahead]。
+
+        旧布局 (past_frames=0) 为 [t .. t+lookahead], 行为不变。开启
+        past_frames 后, 窗口宽度不变 (warm-start 保形), 但把非法的未来帧
+        替换为已提交的过去帧 — 流式部署时过去帧免费可得。序列起始处过去
+        帧零填充。返回形状 (B, T, W, D), W = 1 + past + lookahead。
+        """
+        B = source_encodings.size(0)
+        width = 1 + self.past_frames + self.lookahead_frames
+        required = T + self.lookahead_frames
+        source = source_encodings
+        if source.size(1) < required:
+            source = F.pad(source, (0, 0, 0, required - source.size(1)))
+        cols: List[Tensor] = []
+        # 过去帧: t-p .. t-1 (p = past..1), 越界 (t-p < 0) 用零帧。
+        for p in range(self.past_frames, 0, -1):
+            past = source[:, :T].roll(p, dims=1)
+            if p > 0:
+                past[:, :p] = 0.0
+            cols.append(past)
+        cols.append(source[:, :T])  # 当前帧
+        # 未来帧: t+1 .. t+lookahead, 序列尾越界部分由上面的 pad 兜底。
+        for f in range(1, self.lookahead_frames + 1):
+            fut = torch.zeros_like(source[:, :T])
+            take = T - f
+            if take > 0:
+                fut[:, :take] = source[:, f:T]
+            cols.append(fut)
+        return torch.stack(cols, dim=2)  # (B, T, W, D)
+
+    # ------------------------------------------------------------------
+    def _sim_scan_grid(
+        self,
+        base_ids: Tensor,
+        base_conf: Tensor,
+        valid_t: Tensor,
+    ) -> List[Dict[str, Tensor]]:
+        """iter-8: 在 base-argmax 网格上模拟验证器扫描 (训练路径)。
+
+        验证器对 draft k 的接受判定 = 从上一发射帧起逐帧扫
+        ``argmax(joiner(enc[t'], g_{l+k}))``, 取首个非 blank (blank 预算
+        per_token_blank)。这里在 (B, T, L) 网格上对每个 head k 递归执行:
+        head-0 从 t 扫, head-k 从 head-(k-1) 的解析发射帧起扫 — 与
+        spec_decode 的验证循环逐步一致。
+
+        Args:
+            base_ids: (B, T, L) long — joiner argmax 网格 (detach)。
+            base_conf: (B, T, L) float — 对应 softmax 置信度 (detach)。
+            valid_t: (B, T) bool — 有效帧掩码。
+
+        Returns:
+            K 个 dict: sim_id (B,T,L) long, sim_conf (B,T,L),
+            sim_delta (B,T,L) long 相对帧偏移 0..pb, sim_found (B,T,L) bool。
+            找不到时 sim_id = blank, sim_delta = pb (最后一桶), found=False。
+        """
+        pb = self.per_token_blank
+        B, T, L = base_ids.shape
+        results: List[Dict[str, Tensor]] = []
+        # prev_start[b, t, l]: 本头扫描起点帧 (绝对坐标)。head-0 从网格点
+        # 自己的帧 t 起 (= 验证器在 emit 后从当前帧起扫); head-k 从上一头
+        # 解析发射帧的下一帧起。与推理相对窗口的 prev_emit=0 语义一致。
+        t_range = torch.arange(T, device=base_ids.device).view(1, T, 1)
+        prev_start = t_range.expand(B, T, L).contiguous()
+        for k in range(self.num_heads):
+            # head-k 的验证器状态在网格 L 位置 l'+k (rolled 状态), 扫描读
+            # 该状态的 joiner argmax — 左移 k 对齐, 越界补 blank。
+            ids_k = F.pad(base_ids, (0, k), value=self.blank_idx)[:, :, k : k + L]
+            conf_k = F.pad(base_conf, (0, k), value=0.0)[:, :, k : k + L]
+            found = torch.zeros(B, T, L, dtype=torch.bool, device=base_ids.device)
+            sim_id = torch.full((B, T, L), self.blank_idx, dtype=torch.long,
+                                device=base_ids.device)
+            sim_conf = torch.zeros(B, T, L, dtype=base_conf.dtype,
+                                   device=base_conf.device)
+            sim_delta = torch.full((B, T, L), pb, dtype=torch.long,
+                                   device=base_ids.device)
+            for d in range(pb + 1):
+                t_idx = prev_start + d
+                in_bound = t_idx < T
+                safe_t = t_idx.clamp(max=T - 1)
+                if T == 0:
+                    break
+                # gather(dim=1): out[b,t,l] = ids_k[b, safe_t[b,t,l], l]
+                ids = torch.gather(ids_k, 1, safe_t)
+                conf = torch.gather(conf_k, 1, safe_t)
+                nonblank = (ids != self.blank_idx) & in_bound & valid_t.unsqueeze(-1)
+                take = nonblank & ~found
+                sim_id = torch.where(take, ids, sim_id)
+                sim_conf = torch.where(take, conf, sim_conf)
+                sim_delta = torch.where(
+                    take, torch.full_like(sim_delta, d), sim_delta
+                )
+                found = found | (nonblank & in_bound)
+            results.append({
+                "sim_id": sim_id, "sim_conf": sim_conf,
+                "sim_delta": sim_delta, "found": found,
+                "start": prev_start.clone(),
+            })
+            # 下一头从本头解析发射帧同帧起扫 (验证器接受后 t 不前进, 同帧
+            # 可连发 — spec_decode 验证循环语义); 本头未命中时起点不前进。
+            emit_t = (prev_start + sim_delta).clamp(max=T - 1)
+            prev_start = torch.where(found, emit_t, prev_start)
+        return results
+
+    def _sim_feature(self, scan: Dict[str, Tensor]) -> Tensor:
+        """把单头扫描读出投成 delta 向量 (B,T,L,D), 全零初始化投影。"""
+        conf_vec = scan["sim_conf"].unsqueeze(-1)
+        pos_vec = (
+            scan["sim_delta"].to(conf_vec.dtype).unsqueeze(-1)
+            / max(self.per_token_blank, 1)
+        )
+        emb = self.chain_draft_embed(scan["sim_id"])  # (B,T,L,128)
+        feats = torch.cat([emb, pos_vec, conf_vec], dim=-1)
+        return self.chain_sim_proj(feats)
+
+    # ------------------------------------------------------------------
+    def _delay_mod(self, dl: Tensor, norm: Tensor) -> Tensor:
+        """iter-8 时延调制项: delay_proj(norm + Σ_δ p(δ)·emb_δ)。
+
+        ``dl``: (B,T,L,C) 本头时延分类 logits。与 token 路径线性边缘化
+        近似等价的加性调制 — w_vocab 线性 ⇒ 期望 embedding ≈ 期望 logits。
+        """
+        probs = F.softmax(dl, dim=-1)  # (B,T,L,C)
+        embs = self.delay_emb.weight.to(norm.dtype)  # (C,D)
+        expected = torch.einsum("btlc,cd->btld", probs, embs)
+        return self.delay_proj(self.context_norm(expected + norm))
 
     # ------------------------------------------------------------------
     def _context_delta(
@@ -311,10 +493,6 @@ class MedusaHeads(torch.nn.Module):
         delta = self.context_mlp(normalized) + (
             extra(normalized) if extra is not None else 0.0
         )
-        # iter-7: per-head deep path (zero-init output; additive)
-        mlp_heads = getattr(self, "context_mlp_heads", None)
-        if mlp_heads is not None and k < len(mlp_heads):
-            delta = delta + mlp_heads[k](normalized)
         return delta
 
     def _chain_shared_terms(
@@ -328,7 +506,7 @@ class MedusaHeads(torch.nn.Module):
 
         Returns (predictor, flat_acoustic, base_term, attn_frames) where
         ``attn_frames`` is ``(B, T, W, D)`` — the raw per-frame window tensor
-        for the iter-5 attention (None when not stream_local).
+        (iter-8: past-anchored layout) for the disabled iter-5 attention.
         """
         B, T, L, D = joint.shape
         predictor = self.context_predictor(target_encodings)  # (B,L,D)
@@ -337,13 +515,7 @@ class MedusaHeads(torch.nn.Module):
         if self.input_mode == "stream_local":
             if source_encodings is None:
                 raise ValueError("stream_local chain mode requires source_encodings")
-            width = 1 + self.lookahead_frames
-            source = source_encodings
-            required = T + self.lookahead_frames
-            if source.size(1) < required:
-                source = F.pad(source, (0, 0, 0, required - source.size(1)))
-            windows = source.unfold(1, width, 1)
-            windows = windows.permute(0, 1, 3, 2).contiguous()[:, :T]  # (B,T,W,D)
+            windows = self._anchor_window(source_encodings, T)  # (B,T,W,D)
             attn_frames = windows
             acoustic_term = self.context_acoustic(windows.flatten(start_dim=2))
         base_term: Optional[Tensor] = None
@@ -353,13 +525,14 @@ class MedusaHeads(torch.nn.Module):
 
     def _chain_head_delta(
         self,
-        shared: Tuple[Tensor, Optional[Tensor], Optional[Tensor], Optional[Tensor]],
+        shared: Tuple[Tensor, Optional[Tensor], Optional[Tensor], Optional[Tensor], Optional[Tensor]],
         joint: Tensor,
         k: int,
         draft_ids: Optional[Tensor] = None,
         prev_logits: Optional[Tensor] = None,
         rolled_state: Optional[Tensor] = None,
-    ) -> Tensor:
+        sim_feature: Optional[Tensor] = None,
+    ) -> Tuple[Tensor, Optional[Tensor]]:
         """Context delta for chain head ``k`` (0-based).
 
         ``draft_ids`` (inference, (B,1,1) long) or ``prev_logits`` (training,
@@ -371,6 +544,14 @@ class MedusaHeads(torch.nn.Module):
         inference (predictor advanced on accepted drafts). It carries the LM
         context the verifier will have when reaching this token. It also
         serves as the attention query (iter-5) over the acoustic window.
+
+        iter-8: ``sim_feature`` (B,T,L,D) 训练 / (B,1,1,D) 推理, 为验证器
+        模拟扫描读出的零初始化投影。时延分类在本头 ``normalized`` 上计算,
+        期望 embedding 调制本头 token 路径。
+
+        Returns:
+            ``(delta, delay_logits)`` — delay_logits 为本头时延分类
+            (B,T,L,C) 或 (B,1,1,C), delay 关闭时 None。
         """
         predictor, acoustic_term, base_term, attn_frames = shared
         fused = predictor.unsqueeze(1)  # (B,1,L,D)
@@ -433,16 +614,26 @@ class MedusaHeads(torch.nn.Module):
         mlp_heads = getattr(self, "context_mlp_heads", None)
         if mlp_heads is not None and k < len(mlp_heads):
             delta = delta + mlp_heads[k](normalized)
-        return delta
+        # iter-8: verifier-lookahead 读出 (零初始化)
+        if sim_feature is not None:
+            delta = delta + sim_feature
+        # iter-8: 时延分类 + 期望 embedding 调制 (分类器自然初始化,
+        # 调制投影零初始化 ⇒ step-0 无扰动)。
+        dl: Optional[Tensor] = None
+        if self.delay_enabled:
+            dl = self.delay_heads[k](normalized)
+            delta = delta + self._delay_mod(dl, normalized)
+        return delta, dl
 
     def forward(
         self,
         joint: Tensor,
         source_encodings: Optional[Tensor] = None,
         target_encodings: Optional[Tensor] = None,
-        chain_drafts: Optional[List[int]] = None,
-        chain_states: Optional[List[Tensor]] = None,
-    ) -> Tuple[Tensor, List[Tensor]]:
+            chain_drafts: Optional[List[int]] = None,
+            chain_states: Optional[List[Tensor]] = None,
+            sim_window_logits: Optional[List[Tensor]] = None,
+        ) -> Tuple[Tensor, List[Tensor]]:
         """计算所有 head 的 logits (训练: 全网格; 推理: 单点/小窗口)。
 
         Args:
@@ -455,12 +646,18 @@ class MedusaHeads(torch.nn.Module):
             chain_states: chain 模式推理时使用 (iter-4) — K 个 (B,1,D)
                 predictor 滚动状态; head-k 消费 chain_states[k]
                 (k=0 为 draft 点状态本身)。
+            sim_window_logits: iter-8 推理 — 每 head 一个 (B, W+1, V) 真
+                joiner 窗口 logits (model.predict_heads 计算); 启用
+                chain_sim 时 head-k 在其上做验证器模拟扫描读出。
 
         Returns:
             ``(logits_base, logits_future)`` where head 0 is the exact shared
             Joiner projection and each future head predicts ``y[u+k]``.
+            训练时的辅助量 (时延 logits / sim 扫描) 暂存在
+            ``self.last_train_aux`` (dict 或 None), 供损失函数取用。
         """
         logits_base = self.w_vocab(joint)
+        self.last_train_aux: Optional[Dict[str, object]] = None
         if self.chain_states:
             # Draft-conditioned chain: heads are built sequentially — head-k
             # consumes the previous head's draft (training: actual head
@@ -468,7 +665,7 @@ class MedusaHeads(torch.nn.Module):
             # from chain_drafts). _chain_shared_terms is precomputed once.
             K = self.num_heads
             shared = self._chain_shared_terms(
-                joint, source_encodings, target_encodings, logits_base
+                joint, source_encodings, target_encodings, logits_base,
             )
             logits_future: List[Tensor] = []
             inference = chain_drafts is not None
@@ -486,6 +683,67 @@ class MedusaHeads(torch.nn.Module):
                 padded = F.pad(target_encodings, (0, 0, 0, K), value=0.0)
                 for k in range(K):
                     rolled[k] = padded[:, k : k + L, :]
+
+            # iter-8 训练: 从 base-argmax 网格模拟验证器扫描 (零 FLOPs)。
+            sim_feats: List[Optional[Tensor]] = [None] * K
+            scans: Optional[List[Dict[str, Tensor]]] = None
+            if not inference and self.chain_sim_enabled and logits_base is not None:
+                B, T = joint.size(0), joint.size(1)
+                base_ids = logits_base.argmax(dim=-1).detach()
+                base_conf = (
+                    F.softmax(logits_base.detach(), dim=-1)
+                    .max(dim=-1).values
+                )
+                scans = self._sim_scan_grid(
+                    base_ids, base_conf,
+                    torch.ones(B, T, dtype=torch.bool, device=joint.device),
+                )
+                for k in range(K):
+                    sim_feats[k] = self._sim_feature(scans[k])
+
+            # iter-8 推理: 每 head 在自己的窗口 logits 上顺序扫描。
+            sim_scan_infer: List[Optional[Dict[str, Tensor]]] = [None] * K
+            if inference and self.chain_sim_enabled and sim_window_logits:
+                prev_emit = torch.zeros(
+                    joint.size(0), dtype=torch.long, device=joint.device
+                )
+                for k in range(min(K, len(sim_window_logits))):
+                    win = sim_window_logits[k].detach()  # (B, W+1, V)
+                    W = win.size(1)
+                    probs = F.softmax(win, dim=-1)
+                    ids = win.argmax(dim=-1)            # (B, W+1)
+                    conf = probs.max(dim=-1).values      # (B, W+1)
+                    sim_id = torch.full((joint.size(0),), self.blank_idx,
+                                        dtype=torch.long, device=joint.device)
+                    sim_conf = torch.zeros(joint.size(0), device=joint.device)
+                    sim_delta = torch.full((joint.size(0),),
+                                           self.per_token_blank,
+                                           dtype=torch.long, device=joint.device)
+                    found = torch.zeros(joint.size(0), dtype=torch.bool,
+                                        device=joint.device)
+                    for d in range(self.per_token_blank + 1):
+                        idx = prev_emit + d
+                        ok = idx < W
+                        safe = idx.clamp(max=W - 1)
+                        id_b = ids.gather(1, safe.unsqueeze(1)).squeeze(1)
+                        c_b = conf.gather(1, safe.unsqueeze(1)).squeeze(1)
+                        take = ok & (id_b != self.blank_idx) & ~found
+                        sim_id = torch.where(take, id_b, sim_id)
+                        sim_conf = torch.where(take, c_b, sim_conf)
+                        sim_delta = torch.where(
+                            take, torch.full_like(sim_delta, d), sim_delta
+                        )
+                        found = found | take
+                    sim_scan_infer[k] = {
+                        "sim_id": sim_id, "sim_conf": sim_conf,
+                        "sim_delta": sim_delta, "found": found,
+                    }
+                    emit = (prev_emit + sim_delta).clamp(max=W - 1)
+                    prev_emit = torch.where(found, emit, prev_emit)
+                # 暂存推理扫描读出 (供诊断/测试对比训练网格路径)
+                self.last_infer_scan = sim_scan_infer
+
+            aux_delay: List[Optional[Tensor]] = [None] * K
             for k in range(K):
                 draft_tok: Optional[Tensor] = None
                 prev = None
@@ -504,14 +762,35 @@ class MedusaHeads(torch.nn.Module):
                             prev = logits_future[k - 1].detach()
                     else:
                         prev = logits_future[k - 1].detach()
-                delta_k = self._chain_head_delta(
+                sim_k: Optional[Tensor] = None
+                if not inference:
+                    sim_k = sim_feats[k]
+                elif sim_scan_infer[k] is not None:
+                    # 单点读出: (B,) → (B,1,·) → proj → (B,1,1,D)
+                    sc = sim_scan_infer[k]
+                    assert sc is not None and self.chain_sim_proj is not None
+                    emb = self.chain_draft_embed(sc["sim_id"])      # (B,128)
+                    pos = (sc["sim_delta"].to(emb.dtype)
+                           / max(self.per_token_blank, 1)).unsqueeze(1)
+                    cf = sc["sim_conf"].to(emb.dtype).unsqueeze(1)
+                    sim_k = self.chain_sim_proj(
+                        torch.cat([emb, pos, cf], dim=-1)
+                    ).unsqueeze(1)                                   # (B,1,1,D)
+                delta_k, dl_k = self._chain_head_delta(
                     shared, joint, k,
                     draft_ids=draft_tok,
                     prev_logits=prev,
                     rolled_state=rolled[k],
+                    sim_feature=sim_k,
                 )
+                aux_delay[k] = dl_k
                 logits_k = self.w_vocab(self.res_blocks[k](joint + delta_k))
                 logits_future.append(logits_k)
+            if not inference:
+                self.last_train_aux = {
+                    "delay_logits": aux_delay,
+                    "sim_scans": scans,
+                }
             return logits_base, logits_future
 
         medusa_input = joint + self._context_delta(
@@ -704,4 +983,132 @@ def base_next_token_ce_loss(
         ].reshape(-1, logits_k.size(-1))
         ce = F.cross_entropy(pred[flat_valid], chosen.reshape(-1)[flat_valid].long())
         total = total + weights[k_idx] * ce
+    return total
+
+
+def delay_ce_loss(
+    aux_delay: List[Optional[Tensor]],
+    sim_scans: Optional[List[Dict[str, Tensor]]],
+    weights: List[float],
+    target_lengths: Tensor,
+    src_lengths: Tensor,
+    future_state_offset: int = 1,
+) -> Tensor:
+    r"""iter-8: 时延分类 CE — 蒸馏验证器对本头 token 的 blank-walk 时延。
+
+    目标 = ``sim_scans[k]["sim_delta"]`` (``_sim_scan_grid`` 的解析结果,
+    相对偏移 0..per_token_blank, not-found 桶不产生损失)。时延标签只在
+    训练网格上存在 (标签不是输入), 不违反流式约束。
+    """
+    if not aux_delay or sim_scans is None:
+        return torch.zeros(())
+    future_state_offset = max(0, int(future_state_offset))
+    dev = target_lengths.device
+    sl = src_lengths.to(dev)
+    tl = target_lengths.to(dev)
+    total = torch.zeros((), device=dev)
+    for k_idx, dl in enumerate(aux_delay):
+        if dl is None or k_idx >= len(sim_scans):
+            continue
+        scan = sim_scans[k_idx]
+        k = k_idx + 1
+        positions = min(dl.size(2) - future_state_offset, scan["found"].size(2) - 0)
+        offset = future_state_offset
+        if positions <= 0:
+            continue
+        T = dl.size(1)
+        t_idx = torch.arange(T, device=dev).unsqueeze(0)
+        valid_t = t_idx < sl.unsqueeze(1)
+        u_idx = torch.arange(positions, device=dev).unsqueeze(0)
+        valid_u = (u_idx + k) < tl.unsqueeze(1)
+        label = scan["sim_delta"][:, :, offset : offset + positions]
+        found = scan["found"][:, :, offset : offset + positions]
+        valid = (
+            valid_t.unsqueeze(2)
+            & valid_u.unsqueeze(1)
+            & found
+            & (label < dl.size(-1) - 1)
+        )
+        flat_valid = valid.reshape(-1)
+        if not bool(flat_valid.any()):
+            continue
+        pred = dl[:, :, offset : offset + positions, :].reshape(
+            -1, dl.size(-1)
+        )
+        ce = F.cross_entropy(
+            pred[flat_valid], label.reshape(-1)[flat_valid].long(),
+            reduction="mean",
+        )
+        total = total + weights[k_idx] * ce
+    return total
+
+
+def verifier_distillation_loss(
+    logits_future: List[Tensor],
+    logits_base: Tensor,
+    sim_scans: Optional[List[Dict[str, Tensor]]],
+    weights: List[float],
+    target_lengths: Tensor,
+    src_lengths: Tensor,
+    future_state_offset: int = 1,
+) -> Tensor:
+    r"""iter-8: 验证器软目标蒸馏。
+
+    对每个 head-k, 在其解析发射帧 ``(start_k + δ_k)`` 与 rolled 状态
+    ``l + k`` 处取 base 分布 ``softmax(base_logits[t_emit, l+k])`` 作为
+    软目标 — 即「验证器真正发射本头 token 时看到的完整分布」。训练网格
+    全知, 可取窗口外的帧: 这教会头从合法输入预测非法未来帧的 joint 输出,
+    是流式约束下预测能力的来源。not-found 位置不产生损失。
+    """
+    if not logits_future or sim_scans is None:
+        return logits_base.new_zeros(())
+    future_state_offset = max(0, int(future_state_offset))
+    offset = future_state_offset
+    _, T, L, V = logits_base.shape
+    dev = logits_base.device
+    sl = src_lengths.to(dev)
+    tl = target_lengths.to(dev)
+    t_idx = torch.arange(T, device=dev).unsqueeze(0)
+    valid_t = t_idx < sl.unsqueeze(1)
+    log_base = F.log_softmax(logits_base.detach(), dim=-1)
+    total = logits_base.new_zeros(())
+    for k_idx, logits_k in enumerate(logits_future):
+        if k_idx >= len(sim_scans):
+            continue
+        scan = sim_scans[k_idx]
+        k = k_idx + 1
+        positions = min(
+            logits_k.size(2) - offset,
+            scan["found"].size(2) - 0,
+            L - k,
+        )
+        if positions <= 0:
+            continue
+        u_idx = torch.arange(positions, device=dev).unsqueeze(0)
+        valid_u = (u_idx + k) < tl.unsqueeze(1)
+        found = scan["found"][:, :, offset : offset + positions]
+        valid = valid_t.unsqueeze(2) & valid_u.unsqueeze(1) & found
+        flat_valid = valid.reshape(-1)
+        if not bool(flat_valid.any()):
+            continue
+        # 解析发射帧: t_emit = start + δ (逐 (b, t, l) 网格点)。
+        start = scan["start"][:, :, offset : offset + positions]
+        delta = scan["sim_delta"][:, :, offset : offset + positions]
+        t_emit = (start + delta).clamp(max=T - 1)
+        l_state = (offset + u_idx.unsqueeze(0) + k_idx).clamp(max=L - 1)
+        l_state = l_state.expand_as(t_emit)
+        # 目标: base 在 (t_emit, l_state) 的 log 分布。先 L 轴 gather
+        # (rolled 状态列), 再 T 轴 gather (解析发射帧)。
+        sub = log_base.gather(
+            2, l_state.unsqueeze(-1).expand(-1, -1, -1, V)
+        )  # (B,T,P,V)
+        sub = sub.gather(
+            1, t_emit.unsqueeze(-1).expand(-1, -1, -1, V)
+        )  # (B,T,P,V)
+        pred = logits_k[:, :, offset : offset + positions, :]
+        log_pk = F.log_softmax(pred, dim=-1)
+        soft_ce = -(sub.exp() * log_pk).sum(dim=-1)  # (B,T,P)
+        total = total + weights[k_idx] * (
+            soft_ce.reshape(-1)[flat_valid].mean()
+        )
     return total

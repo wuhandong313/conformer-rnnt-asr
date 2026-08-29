@@ -17,6 +17,7 @@ helper，保证「状态推进严格复刻」是结构性事实而非复制粘�
 from typing import Dict, List, Optional
 
 import torch
+import torch.nn.functional as F
 from torch import Tensor
 
 
@@ -150,8 +151,37 @@ def speculative_greedy_decode(
         # ---- 草拟 d_1..d_K ----
         # Legacy mode drafts from g_u; post-emit mode drafts from g_{u+1}.
         draft_rounds += 1
-        lookahead = getattr(model.medusa_heads, "lookahead_frames", 0)
-        source_window = enc[:, t : t + 1 + lookahead]
+        heads = model.medusa_heads
+        lookahead = getattr(heads, "lookahead_frames", 0)
+        past = getattr(heads, "past_frames", 0)
+        chain_sim_on = getattr(heads, "chain_sim_enabled", False)
+        # iter-8: past-anchored window [t-past .. t+lookahead] (零 pad 兜底
+        # 序列两端), 宽度 past+1+lookahead — 与训练 _anchor_window 一致。
+        win_len = past + 1 + lookahead
+        if past > 0:
+            if t < past:
+                src = F.pad(enc, (0, 0, past - t, 0))
+                w_start = 0
+            else:
+                src = enc
+                w_start = t - past
+            source_window = src[:, w_start : w_start + win_len]
+        else:
+            source_window = enc[:, t : t + win_len]
+        if source_window.size(1) < win_len:
+            source_window = F.pad(
+                source_window, (0, 0, 0, win_len - source_window.size(1))
+            )
+        # iter-8: chain_sim 的验证器模拟扫描窗 [t .. t+lookahead] —
+        # 流式合法的未来帧预算内。
+        if chain_sim_on:
+            sim_window = enc[:, t : t + 1 + lookahead]
+            if sim_window.size(1) < 1 + lookahead:
+                sim_window = F.pad(
+                    sim_window, (0, 0, 0, 1 + lookahead - sim_window.size(1))
+                )
+        else:
+            sim_window = None
         chain_mode = getattr(model.medusa_heads, "chain_states", False)
         drafts: List[int] = []
         if chain_mode:
@@ -166,6 +196,7 @@ def speculative_greedy_decode(
                     source_window, g_last,
                     chain_drafts=list(drafts),
                     chain_states=list(chain_rolls),
+                    sim_window=sim_window,
                 )
                 d_j = int(future_logits[j].argmax(dim=-1).item())
                 total_drafts[j] += 1
@@ -180,7 +211,9 @@ def speculative_greedy_decode(
                     )
                     chain_rolls.append(g_cur)
         else:
-            _, future_logits = model.predict_heads(source_window, g_last)
+            _, future_logits = model.predict_heads(
+                source_window, g_last, sim_window=sim_window
+            )
             drafts = [int(future_logits[k].argmax(dim=-1).item()) for k in range(K)]
             for j, draft in enumerate(drafts):
                 total_drafts[j] += 1

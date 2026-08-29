@@ -28,7 +28,9 @@ from conformer_rnnt.medusa import (
 from conformer_rnnt.spec_decode import greedy_decode, speculative_greedy_decode
 
 
-def build_tiny_model(K: int, chain: bool, lookahead: int = 2):
+def build_tiny_model(
+    K: int, chain: bool, lookahead: int = 2, iter8: bool = False,
+):
     from conformer_rnnt.model import conformer_rnnt_model
 
     torch.manual_seed(0)
@@ -57,6 +59,10 @@ def build_tiny_model(K: int, chain: bool, lookahead: int = 2):
         medusa_lookahead_frames=lookahead,
         medusa_draft_after_emit=True,
         medusa_chain_states=chain,
+        medusa_past_frames=3 if iter8 else 0,
+        medusa_chain_sim=iter8,
+        medusa_delay_decompose=iter8,
+        medusa_per_token_blank=4,
     )
     return model
 
@@ -170,6 +176,167 @@ def main():
         assert ph["drafts"] >= ph["accepted"], "accepted cannot exceed drafts"
         if ph["drafts"] == 0 and ph["accepted"] == 0:
             print(f"  head-{j+1}: no drafts (early stop)")
+
+    # ═══════════════════════════════════════════════════════════════════
+    print("=== 5. iter-8 zero-init with sim + delay on ===")
+    m8 = build_tiny_model(K, chain=True, iter8=True)
+    f8, fl8, tg8, tl8 = fake_batch(V=V)
+    prep8 = tg8.new_empty((tg8.size(0), tg8.size(1) + 1))
+    prep8[:, 1:] = tg8
+    prep8[:, 0] = blank
+    _, sl8, _, base8, fut8 = m8.forward_train_aux(f8, fl8, prep8, tl8 + 1)
+    for k in range(K):
+        assert torch.allclose(fut8[k], base8, atol=1e-5), (
+            f"iter-8 head-{k+1} must equal base at init (zero-init paths)"
+        )
+    aux = getattr(m8.medusa_heads, "last_train_aux", None)
+    assert aux is not None and aux.get("sim_scans") is not None, (
+        "last_train_aux must carry sim scans in training"
+    )
+    assert len(aux["delay_logits"]) == K and aux["delay_logits"][0] is not None, (
+        "delay logits must be present when delay_decompose=True"
+    )
+    print(f"  all {K} heads ≈ base at init (sim+delay on): OK; aux populated")
+
+    print("=== 6. anchor window layout (past swap) ===")
+    heads8 = m8.medusa_heads
+    enc8, _ = m8.transcribe(f8, fl8)
+    T8 = enc8.size(1)
+    win = heads8._anchor_window(enc8, T8)          # (B,T,W,D)
+    W = 1 + heads8.past_frames + heads8.lookahead_frames
+    assert win.shape == (1, T8, W, enc8.size(2)), f"anchor window shape {win.shape}"
+    past, look = heads8.past_frames, heads8.lookahead_frames
+    t_probe = min(4, T8 - 1)
+    # [t-p .. t-1 | t | t+1 .. t+look]
+    for p in range(past):
+        col = win[0, t_probe, p]
+        if t_probe - (past - p) >= 0:
+            assert torch.allclose(col, enc8[0, t_probe - (past - p)], atol=1e-6), (
+                f"past col {p} mismatch"
+            )
+        else:
+            assert torch.allclose(col, torch.zeros_like(col), atol=1e-6), (
+                f"past col {p} should be zero-padded at sequence start"
+            )
+    assert torch.allclose(win[0, t_probe, past], enc8[0, t_probe], atol=1e-6), (
+        "current frame column mismatch"
+    )
+    for fcol in range(look):
+        idx = t_probe + 1 + fcol
+        col = win[0, t_probe, past + 1 + fcol]
+        if idx < T8:
+            assert torch.allclose(col, enc8[0, idx], atol=1e-6), "future col mismatch"
+        else:
+            assert torch.allclose(col, torch.zeros_like(col), atol=1e-6), (
+                "future col past sequence end should be zero"
+            )
+    print(f"  window layout [t-{past}..t, t, t+1..t+{look}]: OK")
+
+    print("=== 7. sim scan invariants + dual-path consistency ===")
+    scans = aux["sim_scans"]
+    joint8 = m8.joiner.fuse(enc8, m8.predictor(prep8, tl8 + 1, None)[0])
+    base_ids = base8.argmax(dim=-1).detach()       # (B,T,L)
+    pb = heads8.per_token_blank
+    B, T, L = base_ids.shape
+    for b in (0,):
+        for t in range(0, T, 3):
+            for l in range(L):
+                prev_emit = t  # head-0 从网格点自身帧起扫 (绝对坐标)
+                for k in range(K):
+                    sc = scans[k]
+                    found = bool(sc["found"][b, t, l])
+                    d = int(sc["sim_delta"][b, t, l])
+                    sid = int(sc["sim_id"][b, t, l])
+                    state_col = min(l + k, L - 1)
+                    if found:
+                        assert sid != blank, "found sim_id must be non-blank"
+                        assert 0 <= d <= pb, f"delta {d} out of range"
+                        assert int(base_ids[b, prev_emit + d, state_col]) == sid, (
+                            "sim_id must equal base_ids at (start+delta, l+k)"
+                        )
+                        for dd in range(d):
+                            assert int(base_ids[b, prev_emit + dd, state_col]) == blank, (
+                                "frames before resolved emit must be blank"
+                            )
+                        prev_emit = prev_emit + d  # 验证器同帧可连发
+                    else:
+                        assert sid == blank
+    print("  grid scan invariants (recursion start / blank prefix / L-shift): OK")
+    # 双路径一致性: 推理侧 predict_heads(sim_window) 的单点扫描 == 训练网格扫描。
+    # 取一个确定的 draft 点 (t0, l0), 用网格解析出的前序 draft 驱动推理。
+    t0 = min(5, T - 2)
+    l0 = min(2, L - K - 1)
+    g_states = [
+        m8.predictor(prep8[:, : l0 + k + 1], None, None)[0][:, l0 + k : l0 + k + 1]
+        for k in range(K + 1)
+    ]
+    chain_states8 = [g_states[k] for k in range(K)]
+    grid_drafts = [
+        int(scans[k]["sim_id"][0, t0, l0]) for k in range(K - 1)
+    ]
+    if all(d != blank for d in grid_drafts):
+        past8, look8 = heads8.past_frames, heads8.lookahead_frames
+        win_len = past8 + 1 + look8
+        w_start = t0 - past8 if t0 >= past8 else 0
+        raw_win = enc8[:, w_start : w_start + win_len]
+        if raw_win.size(1) < win_len:
+            raw_win = torch.nn.functional.pad(
+                raw_win, (0, 0, 0, win_len - raw_win.size(1))
+            )
+        sim_win = enc8[:, t0 : t0 + 1 + look8]
+        _, fut_inf = m8.predict_heads(
+            raw_win, g_states[0],
+            chain_drafts=grid_drafts,
+            chain_states=chain_states8,
+            sim_window=sim_win,
+        )
+        inf_scans = getattr(m8.medusa_heads, "last_infer_scan", None)
+        assert inf_scans is not None, "inference scan must be stashed"
+        for k in range(K):
+            inf_id = int(inf_scans[k]["sim_id"][0])
+            grid_id = int(scans[k]["sim_id"][0, t0, l0])
+            inf_d = int(inf_scans[k]["sim_delta"][0])
+            grid_d = int(scans[k]["sim_delta"][0, t0, l0])
+            assert inf_id == grid_id and inf_d == grid_d, (
+                f"dual-path mismatch head-{k+1}: infer=({inf_id},{inf_d}) "
+                f"grid=({grid_id},{grid_d})"
+            )
+        print(f"  dual-path (grid vs joiner-window) scan id @({t0},{l0}): OK")
+    else:
+        print("  (grid drafts blank at probe point — dual-path skipped)")
+
+    print("=== 8. iter-8 losses backprop + lossless ===")
+    from conformer_rnnt.medusa import delay_ce_loss, verifier_distillation_loss
+    w8 = [0.8] * K
+    distill = verifier_distillation_loss(
+        fut8, base8, scans, w8, tl8, sl8, future_state_offset=1,
+    )
+    dce = delay_ce_loss(
+        aux["delay_logits"], scans, w8, tl8, sl8, future_state_offset=1,
+    )
+    ce8 = shifted_ce_loss(fut8, tg8, w8, tl8, sl8, blank_idx=blank,
+                          future_state_offset=1)
+    total8 = ce8 + distill + dce
+    total8.backward()
+    named = dict(m8.medusa_heads.named_parameters())
+    for pname in ("chain_sim_proj.weight", "delay_heads.0.weight",
+                  "delay_proj.weight"):
+        assert pname in named and named[pname].grad is not None, (
+            f"{pname} received no gradient"
+        )
+    gvals = {p: float(named[p].grad.abs().sum()) for p in
+             ("chain_sim_proj.weight", "delay_proj.weight")}
+    print(f"  distill={float(distill):.4f} delay_ce={float(dce):.4f}; "
+          f"grads sim={gvals['chain_sim_proj.weight']:.4f} "
+          f"delay={gvals['delay_proj.weight']:.4f}: OK")
+    m8.zero_grad()
+    oracle8 = greedy_decode(m8, f8, fl8, blank, max_steps=MAX)
+    spec8, stats8 = speculative_greedy_decode(
+        m8, f8, fl8, blank,
+        max_draft=K, per_token_blank=4, max_steps=MAX * 4, return_stats=True,
+    )
+    assert spec8[: len(oracle8)] == oracle8, "iter-8 spec decode must stay lossless"
+    print(f"  iter-8 chain decode lossless: OK (drafts={stats8['total_drafts']})")
     print("ALL SMOKE TESTS PASSED")
 
 

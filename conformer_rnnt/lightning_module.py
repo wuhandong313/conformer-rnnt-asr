@@ -32,9 +32,10 @@ from common import (
 )
 from conformer_rnnt.model import conformer_rnnt_model
 from conformer_rnnt.medusa import (
-    base_next_token_ce_loss,
+    delay_ce_loss,
     kl_to_base_loss,
     shifted_ce_loss,
+    verifier_distillation_loss,
 )
 from conformer_rnnt.spec_decode import speculative_greedy_decode
 
@@ -352,7 +353,12 @@ class LibriSpeechRNNTModule(LightningModule):
         medusa_lookahead_frames: Optional[int] = None,
         medusa_draft_after_emit: bool = False,
         medusa_chain_states: bool = False,
+        medusa_past_frames: int = 0,
+        medusa_chain_sim: bool = False,
+        medusa_delay_decompose: bool = False,
+        medusa_rhythm_feature: bool = False,
         medusa_accept_ce_weight: float = 1.0,
+        medusa_delay_ce_weight: float = 0.5,
         medusa_ce_weights: tuple = (0.8, 0.64, 0.512, 0.4096),
         medusa_kl_weight: float = 0.05,
         medusa_freeze_base: bool = False,
@@ -417,6 +423,11 @@ class LibriSpeechRNNTModule(LightningModule):
             medusa_lookahead_frames=medusa_lookahead_frames,
             medusa_draft_after_emit=medusa_draft_after_emit,
             medusa_chain_states=medusa_chain_states,
+            medusa_past_frames=medusa_past_frames,
+            medusa_chain_sim=medusa_chain_sim,
+            medusa_delay_decompose=medusa_delay_decompose,
+            medusa_rhythm_feature=medusa_rhythm_feature,
+            medusa_per_token_blank=spec_per_token_blank,
         )
 
         # ---- Freeze base model when training only Medusa heads ----
@@ -512,6 +523,7 @@ class LibriSpeechRNNTModule(LightningModule):
         self.medusa_draft_after_emit = bool(medusa_draft_after_emit)
         self.medusa_chain_states = bool(medusa_chain_states)
         self.medusa_accept_ce_weight = float(medusa_accept_ce_weight)
+        self.medusa_delay_ce_weight = float(medusa_delay_ce_weight)
 
     # ------------------------------------------------------------------
     # Checkpoint loading — prefix fix + shared w_vocab alias + strict guard
@@ -649,7 +661,12 @@ class LibriSpeechRNNTModule(LightningModule):
             medusa_lookahead_frames=medusa_cfg.get("lookahead_frames"),
             medusa_draft_after_emit=medusa_cfg.get("draft_after_emit", False),
             medusa_chain_states=medusa_cfg.get("chain_states", False),
+            medusa_past_frames=medusa_cfg.get("past_frames", 0),
+            medusa_chain_sim=medusa_cfg.get("chain_sim", False),
+            medusa_delay_decompose=medusa_cfg.get("delay_decompose", False),
+            medusa_rhythm_feature=medusa_cfg.get("rhythm_feature", False),
             medusa_accept_ce_weight=medusa_cfg.get("accept_ce_weight", 1.0),
+            medusa_delay_ce_weight=medusa_cfg.get("delay_ce_weight", 0.5),
             medusa_ce_weights=tuple(medusa_cfg.get("ce_loss_weights", [0.8, 0.64, 0.512, 0.4096])),
             medusa_kl_weight=medusa_cfg.get("kl_weight", 0.05),
             medusa_freeze_base=medusa_cfg.get("freeze_base", False),
@@ -801,23 +818,46 @@ class LibriSpeechRNNTModule(LightningModule):
                 future_state_offset=1 if self.medusa_draft_after_emit else 0,
             )
             accept_aux = output.new_zeros(())
+            delay_aux = output.new_zeros(())
+            aux = getattr(self.model.medusa_heads, "last_train_aux", None)
+            scans = aux.get("sim_scans") if aux else None
             if self.medusa_draft_after_emit and self.medusa_accept_ce_weight > 0:
-                accept_aux = base_next_token_ce_loss(
+                # iter-8: 验证器软目标蒸馏 (替代硬 argmax accept_ce) —
+                # accept_ce_weight 配置键复用为蒸馏权重。
+                accept_aux = verifier_distillation_loss(
                     logits_future,
                     logits_base,
+                    scans,
                     weights,
                     target_lengths,
                     src_lengths,
-                    blank_idx=self.blank_idx,
                     future_state_offset=1,
-                    max_blank=self.spec_per_token_blank,
                 )
-            loss = loss + ce_aux + kl_aux + self.medusa_accept_ce_weight * accept_aux
+                if aux and aux.get("delay_logits"):
+                    delay_aux = delay_ce_loss(
+                        aux["delay_logits"],
+                        scans,
+                        weights,
+                        target_lengths,
+                        src_lengths,
+                        future_state_offset=1,
+                    )
+            loss = (
+                loss + ce_aux + kl_aux
+                + self.medusa_accept_ce_weight * accept_aux
+                + self.medusa_delay_ce_weight * delay_aux
+            )
             self.log(f"Losses/{step_type}_medusa_ce", ce_aux, on_step=True, on_epoch=True)
             self.log(f"Losses/{step_type}_medusa_kl", kl_aux, on_step=True, on_epoch=True)
             self.log(
                 f"Losses/{step_type}_medusa_accept_ce",
                 accept_aux,
+                on_step=True,
+                on_epoch=True,
+            )
+            self.log(
+                f"Losses/{step_type}_medusa_delay_ce",
+                delay_aux,
                 on_step=True,
                 on_epoch=True,
             )

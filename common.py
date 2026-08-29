@@ -202,6 +202,14 @@ def model_ckpt_tag(config: Dict[str, Any]) -> str:
         lookahead_tag += "-post"
     if medusa.get("chain_states", False):
         lookahead_tag += "-chain"
+    # iter-8 标记: 过去帧锚定 / 验证器模拟扫描 / 时延分解
+    past = medusa.get("past_frames", 0)
+    if past:
+        lookahead_tag += f"-p{past}"
+    if medusa.get("chain_sim", False):
+        lookahead_tag += "-sim"
+    if medusa.get("delay_decompose", False):
+        lookahead_tag += "-dl"
 
     # 有 Medusa heads 才区分冻结状态, 无 heads 时省略 (避免无意义后缀)
     if heads > 0:

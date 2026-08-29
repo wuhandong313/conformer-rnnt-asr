@@ -102,18 +102,23 @@ class ConformerRNNT(torch.nn.Module):
         target_encodings: Tensor,
         chain_drafts: Optional[List[int]] = None,
         chain_states: Optional[List[Tensor]] = None,
+        sim_window: Optional[Tensor] = None,
     ) -> Tuple[Optional[Tensor], List[Tensor]]:
         """Apply Medusa heads to joiner-fused features (for spec decode).
 
         Args:
             source_encodings: (B, T, D) encoder output. In ``stream_local``
-                mode this is the current frame followed by the bounded
-                lookahead window; only the first frame is scored.
+                mode this is the window consumed by the heads (iter-8:
+                past-anchored ``[t-past..t, t+1..t+lookahead]``); only the
+                anchor frame is scored.
             target_encodings: (B, L, D) from ``predict`` (L=1 at inference).
             chain_drafts: chain 模式推理时使用 — 已确定的前序 draft id;
                 head-k 消费 chain_drafts[k-1] 的 embedding。
             chain_states: chain 模式推理时使用 (iter-4) — K 个 (B,1,D)
                 predictor 滚动状态; head-k 消费 chain_states[k]。
+            sim_window: iter-8 — (B, W+1, D) 真 encoder 帧 ``[t..t+W]``,
+                chain_sim 开启时逐 head 与其 rolled state 过 joiner 得到
+                验证器模拟扫描的窗口 logits, 传给 medusa forward。
 
         Returns:
             (logits_base, logits_future) — both empty/None when no heads.
@@ -122,17 +127,29 @@ class ConformerRNNT(torch.nn.Module):
             return None, []
         if source_encodings.size(1) == 0:
             raise ValueError("predict_heads requires at least one source frame")
-        # The verifier is always anchored at the current frame. The complete
-        # source window is passed separately so stream-local heads can inspect
-        # only the configured right-context lookahead.
-        current = source_encodings[:, :1]
+        # The verifier is always anchored at the current frame. iter-8: the
+        # past-anchored window [t-past..t+lookahead] places that frame at
+        # offset ``past`` (legacy layout: offset 0).
+        past = getattr(self.medusa_heads, "past_frames", 0)
+        current = source_encodings[:, past : past + 1]
         joint = self.joiner.fuse(current, target_encodings)
+        sim_window_logits: Optional[List[Tensor]] = None
+        if sim_window is not None and getattr(self.medusa_heads, "chain_sim_enabled", False):
+            sim_window_logits = []
+            states = chain_states or [target_encodings]
+            for k in range(self.medusa_heads.num_heads):
+                state_k = states[k] if k < len(states) else target_encodings
+                win_joint = self.joiner.fuse(sim_window, state_k)  # (B,W+1,1,D)
+                sim_window_logits.append(
+                    self.joiner.project(win_joint.squeeze(2))
+                )
         return self.medusa_heads(
             joint,
             source_encodings=source_encodings,
             target_encodings=target_encodings,
             chain_drafts=chain_drafts,
             chain_states=chain_states,
+            sim_window_logits=sim_window_logits,
         )
 
 
@@ -175,6 +192,11 @@ def conformer_rnnt_model(
     medusa_lookahead_frames: Optional[int] = None,
     medusa_draft_after_emit: bool = False,
     medusa_chain_states: bool = False,
+    medusa_past_frames: int = 0,
+    medusa_chain_sim: bool = False,
+    medusa_delay_decompose: bool = False,
+    medusa_rhythm_feature: bool = False,
+    medusa_per_token_blank: int = 4,
 ) -> ConformerRNNT:
     """Build a Conformer-RNNT model from explicit keyword arguments.
 
@@ -216,6 +238,11 @@ def conformer_rnnt_model(
             lookahead_frames=medusa_lookahead_frames,
             draft_after_emit=medusa_draft_after_emit,
             chain_states=medusa_chain_states,
+            past_frames=medusa_past_frames,
+            chain_sim=medusa_chain_sim,
+            delay_decompose=medusa_delay_decompose,
+            rhythm_feature=medusa_rhythm_feature,
+            per_token_blank=medusa_per_token_blank,
         )
 
     return ConformerRNNT(

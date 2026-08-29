@@ -113,17 +113,38 @@ def main() -> None:
                     model.model, _make_tok(pred0, "cuda"), state, one
                 )
                 # chain drafts with GT check against future oracle tokens
-                lookahead = model.model.medusa_heads.lookahead_frames
-                src_win = enc[:, t : t + 1 + lookahead]
-                chain_states = [g_last]
+                heads_m = model.model.medusa_heads
+                lookahead = heads_m.lookahead_frames
+                past = getattr(heads_m, "past_frames", 0)
+                win_len = past + 1 + lookahead
+                if past > 0:
+                    if t < past:
+                        src_full = F.pad(enc, (0, 0, past - t, 0))
+                        w0 = 0
+                    else:
+                        src_full = enc
+                        w0 = t - past
+                    src_win = src_full[:, w0 : w0 + win_len]
+                else:
+                    src_win = enc[:, t : t + win_len]
+                sim_on = getattr(heads_m, "chain_sim_enabled", False)
+                sim_win = enc[:, t : t + 1 + lookahead]
+                if sim_win.size(1) < 1 + lookahead:
+                    sim_win = F.pad(
+                        sim_win, (0, 0, 0, 1 + lookahead - sim_win.size(1))
+                    )
+                chain_rolls = [g_last]
                 g_cur, st_cur = g_last, state
+                drafts = []
                 oracle_rest = _oracle_tail(
                     model.model, enc, t, g_last, state, one, blank, 3
                 )
                 for j in range(3):
                     _, flog = model.model.predict_heads(
                         src_win, g_last,
-                        chain_target_encodings=list(chain_states),
+                        chain_drafts=list(drafts),
+                        chain_states=list(chain_rolls),
+                        sim_window=sim_win if sim_on else None,
                     )
                     d = int(flog[j].argmax(dim=-1).item())
                     if d == blank:
@@ -131,12 +152,12 @@ def main() -> None:
                     dk_tot[j] += 1
                     if j < len(oracle_rest) and d == oracle_rest[j]:
                         dk_ok[j] += 1
-                    chain_states.append(g_cur)
+                    drafts.append(d)
                     if j < 2:
                         g_cur, st_cur = _advance_predictor(
                             model.model, _make_tok(d, "cuda"), st_cur, one
                         )
-                        chain_states[-1] = g_cur
+                        chain_rolls.append(g_cur)
                 # advance verifier normally (consume pred0 path done above);
                 # continue greedy from current state
                 # (this loop only measures drafts; actual decode continues)

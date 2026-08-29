@@ -1,16 +1,18 @@
 # ===========================================================================
-# iter-2: 链式 Medusa 草拟 (chained drafting) — 服务器训练配置
+# iter-8: 时延分解预测 (1 帧 lookahead 流式预算) — 服务器训练配置
 # ===========================================================================
-# 基于 multihead 分支 (iter-1 最好成绩 h1=0.80 / h2=0.22, WINNER 于
-# exp_medusa_auto/WINNER)。
-#
-# 核心改动 (相对 iter-1):
-#   1. chain_states: true — head-k 条件于 teacher-forcing 滚动状态
-#      tgt_enc[u+k] (训练) / draft-rolled 状态 (推理)。draft 全对时
-#      head 的条件状态 == verifier 状态, 信息差归零。
-#   2. lookahead_frames: 8 — 非流式, encoder 全序列已知, 解除
-#      right-context=1 的限制, head 可看未来 emit 位置的声学。
-#   3. K=3 直接训 (目标 h1/h2/h3 >= 0.90)。
+# 基于 multihead 分支 (iter-7 最好成绩 h1=0.920/h2=0.688/h3=0.346,
+# overall=0.651, PER=0.073)。iter-6/7 证实容量翻倍无效 (h2/h3 平台),
+# iter-8 转向信息注入, 严格满足 streaming 分支的 1 帧未来预算
+# (streaming.yaml: right_context_frames=4 mel = 1 encoder 帧):
+#   1. lookahead_frames: 1 + past_frames: 7 — 声学窗重排为
+#      [t-7..t-1, t, t+1], 用已提交过去帧替换非法未来帧 (结构宽度
+#      不变, context_acoustic 权重完整 warm-start)。
+#   2. chain_sim: true — 验证器模拟扫描特征: head-k 读取真 joiner 在
+#      [t, t+1] 窗口对其 rolled state 的逐步 argmax (零初始化投影)。
+#   3. delay_decompose: true — 每头时延分类器蒸馏验证器 blank-walk
+#      时延, 期望 embedding 调制 token 路径; accept_ce 升级为验证器
+#      软目标蒸馏 (完整 softmax, 网格全知)。
 #
 # 用法: python train.py configs/server_chain.yaml
 # ===========================================================================
@@ -20,7 +22,7 @@ paths:
   sp_model_path: "/test21/medusa/spm_bpe_74.model"
   global_stats_path: "/test21/medusa/global_stats.json"
   exp_dir: "/test21/conformer-rnnt-asr/exp_iter2"
-  from_checkpoint: "/test21/conformer-rnnt-asr/exp_iter2/BEST_iter6.ckpt"
+  from_checkpoint: "/test21/conformer-rnnt-asr/exp_iter2/BEST_iter7.ckpt"
 
 model:
   input_dim: 80
@@ -55,10 +57,15 @@ model:
   medusa:
     num_heads: 3
     input_mode: "stream_local"
-    lookahead_frames: 8
+    # iter-8: 1 帧流式未来预算 + 7 帧已提交过去 (结构宽度不变 = 9 帧)
+    lookahead_frames: 1
+    past_frames: 7
     draft_after_emit: true
     chain_states: true
+    chain_sim: true
+    delay_decompose: true
     accept_ce_weight: 1.0
+    delay_ce_weight: 0.5
 
     # 冻结 base (encoder + predictor + joiner), 只训 Medusa heads
     freeze_base: true
