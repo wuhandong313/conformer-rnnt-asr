@@ -22,7 +22,7 @@ paths:
   sp_model_path: "/test21/medusa/spm_bpe_74.model"
   global_stats_path: "/test21/medusa/global_stats.json"
   exp_dir: "/test21/conformer-rnnt-asr/exp_iter2"
-  from_checkpoint: "/test21/conformer-rnnt-asr/exp_iter2/checkpoints/val-naive-h3-frz-sl1-post-chain-p7-sim-dl-epoch=02-step=6200.ckpt"
+  from_checkpoint: "/test21/conformer-rnnt-asr/exp_iter2/checkpoints/val-naive-h3-frz-sl1-post-chain-p7-sim-dl-epoch=00-step=2600.ckpt"
 
 model:
   input_dim: 80
