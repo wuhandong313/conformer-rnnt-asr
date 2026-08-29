@@ -45,6 +45,9 @@ def latest_ckpt() -> str | None:
 def eval_ckpt(ckpt: str) -> dict | None:
     os.makedirs(EVAL_DIR, exist_ok=True)
     base = os.path.splitext(os.path.basename(ckpt))[0]
+    # 缓存键含 ckpt 文件大小 — 不同 run 的同名 ckpt (epoch/step 相同)
+    # 不会互相命中陈旧结果。
+    base = f"{base}-{os.path.getsize(ckpt)}"
     out_json = os.path.join(EVAL_DIR, base + ".json")
     if os.path.exists(out_json):
         try:
