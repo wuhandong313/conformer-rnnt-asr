@@ -478,7 +478,10 @@ class LibriSpeechRNNTModule(LightningModule):
         group_list = [{"params": other_params, "lr": learning_rate}]
         if sim_bias_params:
             group_list.append(
-                {"params": sim_bias_params, "lr": learning_rate * sim_bias_lr_mult}
+                {
+                    "params": sim_bias_params,
+                    "lr": learning_rate * medusa_sim_bias_lr_mult,
+                }
             )
         self.optimizer = torch.optim.Adam(
             group_list,
