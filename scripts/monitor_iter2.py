@@ -23,7 +23,7 @@ PY = "/root/anaconda3/envs/whd/bin/python"
 CONFIG = os.path.join(REPO, "configs/server_chain.yaml")
 CKPT_DIR = os.path.join(REPO, "exp_iter2/checkpoints")
 EVAL_DIR = os.path.join(REPO, "exp_iter2/monitor_eval")
-TRAIN_LOG = os.path.join(REPO, "exp_iter7_train.log")
+TRAIN_LOG = os.path.join(REPO, "exp_iter8_train.log")
 
 
 def latest_ckpt() -> str | None:
@@ -55,12 +55,11 @@ def eval_ckpt(ckpt: str) -> dict | None:
 
 
 def train_status() -> tuple[str, str]:
-    """Return (alive?, last-step) from tmux + log tail."""
+    """Return (alive?, last-step) from screen session + log tail."""
     r = subprocess.run(
-        ["tmux", "has-session", "-t", "iter2-train"],
-        capture_output=True,
+        ["screen", "-ls"], capture_output=True, text=True,
     )
-    alive = r.returncode == 0
+    alive = "iter2-train" in (r.stdout + r.stderr)
     step = "?"
     loss = "?"
     try:
