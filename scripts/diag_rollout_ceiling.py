@@ -79,12 +79,7 @@ def analyze_sample(model, features, feature_lengths, blank_idx, K, pb):
         if pred0 == blank_idx:
             t += 1
             continue
-        # pred0 在 oracle 中的位置: 消费直到匹配 (带防御)
-        while next_oracle < len(oracle_emits) and (
-            oracle_emits[next_oracle][1] != pred0
-            or oracle_emits[next_oracle][0] < t - 8
-        ):
-            next_oracle += 1
+        # 活解码与 oracle walk 严格同操作 ⇒ next_oracle 必指向 pred0。
         # 完全信息上限的 drafts = oracle 后续 K 个 token
         oracle_drafts = [
             oracle_emits[i][1]
@@ -200,42 +195,32 @@ def main():
     max_samples = int(sys.argv[2]) if len(sys.argv) > 2 else 100
     checkpoint = config.get("paths", {}).get("from_checkpoint")
     model = build_model(config, checkpoint)
-    sp = model.sp_model if hasattr(model, "sp_model") else None
+    inner = model.model  # ConformerRNNT
     blank = model.blank_idx
-    K = model.medusa_heads.num_heads
-    pb = model.spec_per_token_blank if hasattr(model, "spec_per_token_blank") else 4
+    K = inner.medusa_heads.num_heads
+    pb = model.spec_per_token_blank
 
-    dataset = model.test_dataset() if hasattr(model, "test_dataset") else None
-    import torchaudio
-
-    ds = torchaudio.datasets.LIBRISPEECH(
-        model.librispeech_path, url=model.test_subset
-    )
-    mel_kw = dict(model._mel_kwargs)
-    import torchaudio.transforms as T
-    mel = T.MelSpectrogram(**mel_kw)
-    from common import GlobalStatsNormalization, piecewise_linear_log
-
-    norm = GlobalStatsNormalization(config["paths"]["global_stats_path"])
-
+    dataset = None
+    dl = model.test_dataloader()  # 与 eval.py 同一条数据管线 (batch_size=1)
     agg_sim = [{"drafts": 0, "found": 0, "accepted": 0} for _ in range(K)]
     agg_orc = [{"drafts": 0, "accepted": 0} for _ in range(K)]
-    n = min(max_samples, len(ds))
-    for i in range(n):
-        wav, sr, text, *_ = ds[i]
-        feats = mel(wav.squeeze(0)).transpose(1, 0)
-        feats = piecewise_linear_log(feats)
-        feats = norm(feats).unsqueeze(0)
-        flen = torch.tensor([feats.size(1)], dtype=torch.int32)
-        feats = torch.nn.functional.pad(feats, (0, 0, 0, 4))
-        sim_s, orc_s = analyze_sample(model, feats, flen, blank, K, pb)
+    n_done = 0
+    for batch_tuple in dl:
+        if n_done >= max_samples:
+            break
+        batch, _texts = batch_tuple
+        sim_s, orc_s = analyze_sample(
+            inner, batch.features, batch.feature_lengths, blank, K, pb
+        )
         for j in range(K):
             for k in ("drafts", "found", "accepted"):
                 agg_sim[j][k] += sim_s[j][k]
             for k in ("drafts", "accepted"):
                 agg_orc[j][k] += orc_s[j][k]
-        if (i + 1) % 10 == 0:
-            print(f"  .. {i + 1}/{n}", flush=True)
+        n_done += 1
+        if n_done % 10 == 0:
+            print(f"  .. {n_done}/{max_samples}", flush=True)
+    n = n_done
 
     print("\n=== iter-8 上限诊断 (1 帧流式预算) ===")
     overall_f = overall_a = 0

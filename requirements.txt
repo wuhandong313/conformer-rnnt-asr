@@ -1,0 +1,9 @@
+torch
+torchaudio
+pytorch_lightning
+
+numpy
+scipy
+sentencepiece
+PyYAML
+soundfile
