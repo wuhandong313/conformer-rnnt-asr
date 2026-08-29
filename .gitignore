@@ -45,5 +45,9 @@ env/
 # Claude
 .claude/
 
+# CodeBuddy / WorkBuddy
+.workbuddy/
+.zcode/
+
 # temp probe scripts
 _probe*.py
