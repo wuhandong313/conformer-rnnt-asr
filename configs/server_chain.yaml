@@ -71,6 +71,9 @@ model:
     # iter-8b'': 直注偏置行范数增长 ~5e-4/步 (Adam 基础步长), 翻转需 3-5 —
     # 专用 10x lr 组加速 (只影响 draft 头)
     sim_bias_lr_mult: 10.0
+    # iter-8b''': 偏置只在 sim found 位置应用 (稠密网格上 blank 位置曾把
+    # 偏置带歪); 从学歪状态重启, 清零重学
+    sim_bias_rezero: true
 
     # 冻结 base (encoder + predictor + joiner), 只训 Medusa heads
     freeze_base: true

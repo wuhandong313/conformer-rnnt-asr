@@ -360,6 +360,7 @@ class LibriSpeechRNNTModule(LightningModule):
         medusa_accept_ce_weight: float = 1.0,
         medusa_delay_ce_weight: float = 0.5,
         medusa_sim_bias_lr_mult: float = 1.0,
+        medusa_sim_bias_rezero: bool = False,
         medusa_ce_weights: tuple = (0.8, 0.64, 0.512, 0.4096),
         medusa_kl_weight: float = 0.05,
         medusa_freeze_base: bool = False,
@@ -441,6 +442,12 @@ class LibriSpeechRNNTModule(LightningModule):
                 for name, param in self.model.medusa_heads.named_parameters():
                     if not name.startswith("w_vocab."):
                         param.requires_grad = True
+        # iter-8b: 从学歪的直注偏置重启时清零重学 (warm-start 加载后执行)
+        if medusa_sim_bias_rezero and self.model.medusa_heads is not None:
+            heads = self.model.medusa_heads
+            for bias in getattr(heads, "sim_bias_heads", []):
+                torch.nn.init.zeros_(bias.weight)
+            logging.info("Re-zeroed sim_bias_heads weights on load")
 
         # ---- Mel spectrogram params (not a submodule — stays on CPU) ----
         self._mel_kwargs = dict(
@@ -689,6 +696,7 @@ class LibriSpeechRNNTModule(LightningModule):
             medusa_accept_ce_weight=medusa_cfg.get("accept_ce_weight", 1.0),
             medusa_delay_ce_weight=medusa_cfg.get("delay_ce_weight", 0.5),
             medusa_sim_bias_lr_mult=medusa_cfg.get("sim_bias_lr_mult", 1.0),
+            medusa_sim_bias_rezero=medusa_cfg.get("sim_bias_rezero", False),
             medusa_ce_weights=tuple(medusa_cfg.get("ce_loss_weights", [0.8, 0.64, 0.512, 0.4096])),
             medusa_kl_weight=medusa_cfg.get("kl_weight", 0.05),
             medusa_freeze_base=medusa_cfg.get("freeze_base", False),

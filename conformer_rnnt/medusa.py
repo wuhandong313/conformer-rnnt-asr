@@ -796,17 +796,21 @@ class MedusaHeads(torch.nn.Module):
                 )
                 aux_delay[k] = dl_k
                 logits_k = self.w_vocab(self.res_blocks[k](joint + delta_k))
-                # iter-8b: logit 级 sim 直注 (零初始化偏查表)
+                # iter-8b: logit 级 sim 直注 (零初始化偏查表)。只在 found
+                # 位置应用 — 稠密训练网格上大多数位置 sim=blank (发射稀疏),
+                # 若不遮挡, 偏置在 blank 行学出巨大的反 blank 信号, 真实
+                # token 行的复制梯度被稀释 (实测 diag≈0)。found 位置 ==
+                # 推理时 draft 实际发生并被接受的条件, 训练/推理同规则。
                 if self.chain_sim_enabled:
                     if scans is not None:
-                        logits_k = logits_k + self.sim_bias_heads[k](
-                            scans[k]["sim_id"]
-                        )
+                        bias = self.sim_bias_heads[k](scans[k]["sim_id"])
+                        mask = scans[k]["found"].unsqueeze(-1).to(bias.dtype)
+                        logits_k = logits_k + bias * mask
                     elif sim_scan_infer[k] is not None:
-                        bias = self.sim_bias_heads[k](
-                            sim_scan_infer[k]["sim_id"]
-                        )  # (B,V)
-                        logits_k = logits_k + bias.unsqueeze(1).unsqueeze(1)
+                        sc = sim_scan_infer[k]
+                        bias = self.sim_bias_heads[k](sc["sim_id"])
+                        m = sc["found"].to(bias.dtype).unsqueeze(-1)
+                        logits_k = logits_k + (bias * m).unsqueeze(1).unsqueeze(1)
                 logits_future.append(logits_k)
             if not inference:
                 self.last_train_aux = {
