@@ -320,7 +320,7 @@ def main():
     total8.backward()
     named = dict(m8.medusa_heads.named_parameters())
     for pname in ("chain_sim_proj.weight", "delay_heads.0.weight",
-                  "delay_proj.weight"):
+                  "delay_proj.weight", "sim_bias_heads.0.weight"):
         assert pname in named and named[pname].grad is not None, (
             f"{pname} received no gradient"
         )

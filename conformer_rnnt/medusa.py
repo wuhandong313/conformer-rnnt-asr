@@ -237,6 +237,17 @@ class MedusaHeads(torch.nn.Module):
                 self.chain_sim_proj = torch.nn.Linear(128 + 2, input_dim)
                 torch.nn.init.zeros_(self.chain_sim_proj.weight)
                 torch.nn.init.zeros_(self.chain_sim_proj.bias)
+                # iter-8b: logit 级 sim 直注 — 每 head 一个 (V,V) 零初始化
+                # 偏查表, logits_k += sim_bias[k][sim_id]。隐路径
+                # (chain_sim_proj → res_block → w_vocab) 学习「复制 sim」
+                # 很慢 (epoch0-2 平台 0.50 vs 上限 0.92); 直查表让每条样本
+                # 对 bias[S] 的梯度直达, 75 类复制问题 1 个 epoch 可收敛。
+                self.sim_bias_heads = torch.nn.ModuleList([
+                    torch.nn.Embedding(num_vocab, num_vocab)
+                    for _ in range(num_heads)
+                ])
+                for bias in self.sim_bias_heads:
+                    torch.nn.init.zeros_(bias.weight)
             # iter-8: 时延分解。每头一个分类器预测验证器对本头 token 的
             # blank-walk 时延 (相对偏移 0..pb-1 或 not-found); 期望时延
             # embedding 经零初始化投影调制 token hidden — 因 w_vocab 是
@@ -785,6 +796,17 @@ class MedusaHeads(torch.nn.Module):
                 )
                 aux_delay[k] = dl_k
                 logits_k = self.w_vocab(self.res_blocks[k](joint + delta_k))
+                # iter-8b: logit 级 sim 直注 (零初始化偏查表)
+                if self.chain_sim_enabled:
+                    if scans is not None:
+                        logits_k = logits_k + self.sim_bias_heads[k](
+                            scans[k]["sim_id"]
+                        )
+                    elif sim_scan_infer[k] is not None:
+                        bias = self.sim_bias_heads[k](
+                            sim_scan_infer[k]["sim_id"]
+                        )  # (B,V)
+                        logits_k = logits_k + bias.unsqueeze(1).unsqueeze(1)
                 logits_future.append(logits_k)
             if not inference:
                 self.last_train_aux = {
