@@ -22,7 +22,7 @@ paths:
   sp_model_path: "/test21/medusa/spm_bpe_74.model"
   global_stats_path: "/test21/medusa/global_stats.json"
   exp_dir: "/test21/conformer-rnnt-asr/exp_iter2"
-  from_checkpoint: "/test21/conformer-rnnt-asr/exp_iter2/BEST_iter7.ckpt"
+  from_checkpoint: "/test21/conformer-rnnt-asr/exp_iter2/checkpoints/val-naive-h3-frz-sl1-post-chain-p7-sim-dl-epoch=02-step=5400.ckpt"
 
 model:
   input_dim: 80
@@ -64,8 +64,10 @@ model:
     chain_states: true
     chain_sim: true
     delay_decompose: true
-    accept_ce_weight: 1.0
-    delay_ce_weight: 0.5
+    # iter-8b: epoch0-2 平台在 overall~0.50 (sim 上限 0.92), 蒸馏压力不足
+    # — accept_ce 1.0→3.0, delay_ce 0.5→1.0, 从 epoch=02 ckpt warm-start
+    accept_ce_weight: 3.0
+    delay_ce_weight: 1.0
 
     # 冻结 base (encoder + predictor + joiner), 只训 Medusa heads
     freeze_base: true
