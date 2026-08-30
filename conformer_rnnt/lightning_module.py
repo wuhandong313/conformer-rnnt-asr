@@ -616,24 +616,36 @@ class LibriSpeechRNNTModule(LightningModule):
                 }
 
             # Head-count changes (e.g. warm-start a 2-head model from a
-            # 3-head checkpoint) leave stale `medusa_heads.*` keys for
-            # per-head weights the model no longer owns. The head index
-            # sits at varying depths (`sim_bias_heads.2`, `res_blocks.2.0`,
-            # `context_mlp_heads.2.0`), so match on the medusa prefix and
-            # drop every such key the model doesn't have; kept heads load
-            # bit-identically, anything else unexpected still fails loudly.
-            stale_heads = [
-                k for k in state_dict
-                if ".medusa_heads." in k and k not in own
-            ]
-            if stale_heads:
-                logging.info(
-                    "Dropping stale medusa head keys (head-count change): %s",
-                    stale_heads,
-                )
-                state_dict = {
-                    k: v for k, v in state_dict.items() if k not in stale_heads
-                }
+            # 3-head checkpoint) leave stale per-head keys. Per-head params
+            # live in ModuleLists (`res_blocks.<i>.*`, `context_mlp_heads.
+            # <i>.*`, `chain_state_proj_heads.<i>`, `sim_bias_heads.<i>.*`,
+            # `delay_heads.<i>.*`), so the head index is the first numeric
+            # segment after `medusa_heads.`. Drop keys whose head index is
+            # >= the model's head count; kept heads load bit-identically
+            # and anything else unexpected still fails loudly below.
+            num_own_heads = int(getattr(self.model.medusa_heads, "num_heads", 0))
+            if num_own_heads > 0:
+                marker = ".medusa_heads."
+                head_offset = len(marker)
+
+                def _stale_head_key(key: str) -> bool:
+                    i = key.find(marker)
+                    if i < 0:
+                        return False
+                    for seg in key[i + head_offset:].split("."):
+                        if seg.isdigit():
+                            return int(seg) >= num_own_heads
+                    return False
+
+                stale_heads = [k for k in state_dict if _stale_head_key(k)]
+                if stale_heads:
+                    logging.info(
+                        "Dropping stale medusa head keys (head-count change): %s",
+                        stale_heads,
+                    )
+                    state_dict = {
+                        k: v for k, v in state_dict.items() if k not in stale_heads
+                    }
 
         result = super().load_state_dict(state_dict, strict=strict and not has_medusa)
 
