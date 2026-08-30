@@ -276,7 +276,8 @@ def main() -> None:
     total_hits = sum(hits)
     header = (
         f"{'head':<6}{'att':>8}{'disp':>8}{'abst':>8}{'hit':>8}"
-        f"{'hit%':>8}{'repl%':>8}{'leadP50':>9}{'leadP90':>9}{'leadP99':>9} (ms)"
+        f"{'hit%':>8}{'repl%':>8}{'leadP50':>9}{'leadP90':>9}{'leadP99':>9}"
+        f"{'leadAvg':>9}{'value':>9} (ms)"
     )
     print(header)
     for j in range(K):
@@ -286,10 +287,15 @@ def main() -> None:
         repl_rate = 100.0 - hit_rate if disp else float("nan")
         q = _quantiles(leads[j])
         lead_ms = {k: v * frame_ms for k, v in q.items()}
+        # 一级指标: 期望感知提前量 = 命中率 × 命中草稿的平均提前量。
+        # 未命中的草稿会被真实 token 替换 (闪烁), 提前量记 0。
+        mean_lead = sum(leads[j]) / len(leads[j]) if leads[j] else float("nan")
+        value = (hit / disp) * mean_lead * frame_ms if disp else float("nan")
         print(
             f"h{j + 1:<5}{attempted[j]:>8}{disp:>8}{abstained[j]:>8}"
             f"{hit:>8}{hit_rate:>8.2f}{repl_rate:>8.2f}"
             f"{lead_ms['P50']:>9.0f}{lead_ms['P90']:>9.0f}{lead_ms['P99']:>9.0f}"
+            f"{mean_lead * frame_ms:>9.0f}{value:>9.1f}"
         )
     merged_hit = 100.0 * total_hits / total_displayed if total_displayed else float("nan")
     print(
