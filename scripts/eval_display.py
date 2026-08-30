@@ -159,15 +159,22 @@ def main() -> None:
     if ckpt_override:
         ckpt_path = ckpt_override
     else:
+        # 只认本配置 tag 的 ckpt, 或配置里显式指定的 from_checkpoint。
+        # 不做 val-* 通配回退: 不同窗口/机制的 ckpt 参数集合不兼容,
+        # 抓到最新文件会得到「布局错配」的假数字 (且 strict 加载会直接报错)。
         ckpt_dir = checkpoint_dir(config)
         tag = model_ckpt_tag(config)
-        candidates = glob.glob(os.path.join(ckpt_dir, f"val-{tag}-*.ckpt")) or glob.glob(
-            os.path.join(ckpt_dir, "val-*.ckpt")
-        )
-        if not candidates:
-            print("no checkpoint found")
+        candidates = glob.glob(os.path.join(ckpt_dir, f"val-{tag}-*.ckpt"))
+        if candidates:
+            ckpt_path = max(candidates, key=os.path.getmtime)
+        else:
+            ckpt_path = config.get("paths", {}).get("from_checkpoint", "")
+        if not ckpt_path or not os.path.exists(ckpt_path):
+            print(
+                f"no checkpoint found for tag '{tag}' in {ckpt_dir}; "
+                "pass one explicitly as argv[3]"
+            )
             sys.exit(1)
-        ckpt_path = max(candidates, key=os.path.getmtime)
     print(f"checkpoint: {ckpt_path}")
     state_dict = torch.load(ckpt_path, map_location="cpu").get("state_dict", {})
     model.load_state_dict(state_dict)
