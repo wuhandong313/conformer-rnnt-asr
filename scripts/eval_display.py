@@ -88,11 +88,12 @@ def _draft_chain(
     one: torch.Tensor,
     blank_idx: int,
     dev,
-) -> Tuple[List[int], int]:
+) -> Tuple[List[int], int, List[Optional[Dict[str, object]]]]:
     """在帧 t 以 (g0, st0) 为起点草拟一轮 (chain + post-emit 语义)。
 
-    返回 (drafts, attempted): drafts 为非 blank 草稿 id 列表 (链在首个
-    blank 处截断); attempted 为尝试草拟的头数 (含弃权的那个头)。
+    返回 (drafts, attempted, sim_reads): drafts 为非 blank 草稿 id 列表
+    (链在首个 blank 处截断); attempted 为尝试草拟的头数 (含弃权的那个头);
+    sim_reads 为每头的推理端 sim 扫描读出 (chain_sim 关闭时为 None)。
     逐位复刻 spec_decode.speculative_greedy_decode 的草拟分支, 但不做验证。
     """
     heads = model.medusa_heads
@@ -102,6 +103,7 @@ def _draft_chain(
     # 「真 joiner 在本头 rolled state 上的窗口 argmax」— 流式预算内可得,
     # 所以显示评估也应当给它 (否则量的是被阉割的头)。
     sim_window: Optional[torch.Tensor] = None
+    sim_read: Optional[Dict[str, torch.Tensor]] = None
     if getattr(heads, "chain_sim_enabled", False):
         lookahead = getattr(heads, "lookahead_frames", 0)
         need = 1 + lookahead
@@ -111,6 +113,7 @@ def _draft_chain(
                 sim_window, (0, 0, 0, need - sim_window.size(1))
             )
     drafts: List[int] = []
+    sim_reads: List[Optional[Dict[str, object]]] = [None] * K
     chain_rolls: List[torch.Tensor] = [g0]
     g_cur, st_cur = g0, st0
     attempted = 0
@@ -124,6 +127,18 @@ def _draft_chain(
             sim_window=sim_window,
         )
         d_j = int(future_logits[j].argmax(dim=-1).item())
+        # 本头推理端 sim 扫描读出 (predict_heads 内部已算好): 用来判断
+        # 「直注查表到底有没有被点亮」— found=False 时直注不生效。
+        scans = getattr(heads, "last_infer_scan", None)
+        if scans is not None and j < len(scans) and scans[j] is not None:
+            sim_read = {
+                "found": bool(scans[j]["found"].item()),
+                "sim_id": int(scans[j]["sim_id"].item()),
+                "sim_delta": int(scans[j]["sim_delta"].item()),
+            }
+        else:
+            sim_read = None
+        sim_reads[j] = sim_read
         if d_j == blank_idx:
             break
         drafts.append(d_j)
@@ -132,7 +147,7 @@ def _draft_chain(
                 model, _make_tok(d_j, dev), st_cur, one
             )
             chain_rolls.append(g_cur)
-    return drafts, attempted
+    return drafts, attempted, sim_reads
 
 
 def _quantiles(values: List[int], qs=(0.5, 0.9, 0.99)) -> Dict[str, float]:
@@ -208,6 +223,12 @@ def main() -> None:
     hits = [0] * K
     leads: List[List[int]] = [[] for _ in range(K)]
     unscorable = 0  # 草稿指向句尾之后 (无真实 token 可确认), 不计入命中率
+    # chain_sim 诊断: 推理端扫描是否找到 token / 找到的是否就是目标 /
+    # 头是否照抄了直注 (sim_id)。三者分离才能定位「信息在但头没用上」。
+    sim_seen = [0] * K
+    sim_found = [0] * K
+    sim_right = [0] * K
+    sim_copied = [0] * K
     n_utts = 0
     n_ref_tokens = 0
 
@@ -248,7 +269,7 @@ def main() -> None:
 
                 # pass 2: 在每个 emit 点上屏草稿 (对齐到完整参考序列)。
                 for u, (t_emit, g_disp, st_disp) in enumerate(snaps):
-                    drafts, att = _draft_chain(
+                    drafts, att, sim_reads = _draft_chain(
                         model.model, enc, t_emit, g_disp, st_disp,
                         one, blank_idx, device,
                     )
@@ -264,6 +285,15 @@ def main() -> None:
                         if target >= len(ref_tokens):
                             unscorable += 1
                             continue
+                        sr = sim_reads[j] if j < len(sim_reads) else None
+                        if sr is not None:
+                            sim_seen[j] += 1
+                            if sr["found"]:
+                                sim_found[j] += 1
+                                if sr["sim_id"] == ref_tokens[target]:
+                                    sim_right[j] += 1
+                                if drafts[j] == sr["sim_id"]:
+                                    sim_copied[j] += 1
                         if drafts[j] == ref_tokens[target]:
                             hits[j] += 1
                             leads[j].append(ref_frames[target] - t_emit)
@@ -308,6 +338,20 @@ def main() -> None:
         "lead(all hits, ms): "
         + " ".join(f"{k}={v * frame_ms:.0f}" for k, v in q_all.items())
     )
+
+    if any(sim_seen):
+        print("\nchain_sim 推理端诊断 (直注是否被点亮):")
+        print(f"{'head':<6}{'scan':>8}{'found%':>9}{'simRight%':>11}{'copied%':>10}")
+        for j in range(K):
+            seen = sim_seen[j]
+            if not seen:
+                continue
+            print(
+                f"h{j + 1:<5}{seen:>8}"
+                f"{100.0 * sim_found[j] / seen:>9.2f}"
+                f"{100.0 * sim_right[j] / max(sim_found[j], 1):>11.2f}"
+                f"{100.0 * sim_copied[j] / max(sim_found[j], 1):>10.2f}"
+            )
 
 
 if __name__ == "__main__":
