@@ -210,6 +210,11 @@ def model_ckpt_tag(config: Dict[str, Any]) -> str:
         lookahead_tag += "-sim"
     if medusa.get("delay_decompose", False):
         lookahead_tag += "-dl"
+    # iter-9 标记: 配置驱动的自由后缀 (如 "disp" → "-disp"), 区分参数相同
+    # 但价值模型不同的 checkpoint 文件名 — 避免同名 ckpt 触发 monitor 缓存串档
+    suffix = medusa.get("tag_suffix")
+    if suffix:
+        lookahead_tag += f"-{suffix}"
 
     # 有 Medusa heads 才区分冻结状态, 无 heads 时省略 (避免无意义后缀)
     if heads > 0:
