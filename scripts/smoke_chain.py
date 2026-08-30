@@ -8,6 +8,10 @@
      一致 (无损) — 随机权重下 draft 几乎必错, 走 fallback 路径; 再用
      「oracle draft」注入验证接受路径也无损。
   4. 链式训练状态对齐: head-k 的条件状态 == 推理时 draft 全对的滚动状态。
+  5..8. iter-8 零初始化 / 窗布局 / sim 扫描双路径 / 损失反传 + 无损。
+  9. iter-9: 推理声学窗 == 训练声学窗 (T==1 二次开窗会清零 lookahead 列)。
+  10. iter-9: 3 头 ckpt → 2 头 warm-start 只丢 per-head 索引 >= 2 的键,
+      共享 MLP 的*层*索引 (context_mlp.2 / context_mlp_extra.2,4) 须保留。
 """
 
 from __future__ import annotations
@@ -65,6 +69,48 @@ def build_tiny_model(
         medusa_per_token_blank=4,
     )
     return model
+
+
+def build_tiny_lit(K: int):
+    """极小 LightningModule (仅用于 warm-start 键过滤测试)。"""
+    from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
+
+    return LibriSpeechRNNTModule.from_config(
+        {
+            "model": {
+                "input_dim": 8,
+                "encoding_dim": 16,
+                "num_symbols": 5,
+                "time_reduction_input_dim": 8,
+                "time_reduction_stride": 1,
+                "right_context_length": 0,
+                "num_heads": 2,
+                "ffn_dim": 16,
+                "num_layers_block1": 1,
+                "num_layers_block2": 1,
+                "depthwise_conv_kernel_size": 3,
+                "dropout": 0.0,
+                "compression": {"filter": "none"},
+                "predictor": {
+                    "symbol_embedding_dim": 8,
+                    "num_lstm_layers": 1,
+                    "lstm_hidden_dim": 8,
+                    "lstm_layer_norm": True,
+                    "lstm_dropout": 0.0,
+                },
+                "joiner": {"activation": "relu"},
+                "medusa": {
+                    "num_heads": K,
+                    "input_mode": "stream_local",
+                    "lookahead_frames": 1,
+                    "past_frames": 0,
+                    "draft_after_emit": True,
+                    "chain_states": True,
+                },
+            },
+            "decoding": {"spec": {"per_token_blank": 4}},
+        }
+    )
 
 
 def fake_batch(B=1, T=12, L=6, V=6):
@@ -389,6 +435,52 @@ def main():
                 f"{label}: lookahead column 1 is zero — window was re-anchored"
             )
         print(f"  window train==infer, current=enc[{t_probe}] ({label}): OK")
+
+    print("=== 10. iter-9: 3-head ckpt -> 2-head warm-start key filter ===")
+    # Regression test: the stale-head drop used to take the first numeric
+    # segment after `medusa_heads.`, which also matched *layer* indices of
+    # the shared MLPs (context_mlp.2, context_mlp_extra.2/4). Those trained
+    # weights were then silently reset to their zero-init value on every
+    # 3 -> 2 head warm-start (iter-8h2 and the iter-9 baseline both hit it).
+    torch.manual_seed(0)
+    src3 = build_tiny_lit(3)
+    sd3 = src3.state_dict()
+    # Sentinel values: preserved keys must load, dropped keys must not.
+    sentinels = {
+        "model.medusa_heads.res_blocks.1.linear1.weight": 3.0,   # kept head
+        "model.medusa_heads.context_mlp.2.weight": 7.0,          # shared MLP
+        "model.medusa_heads.context_mlp_extra.2.weight": 6.0,    # shared MLP
+        "model.medusa_heads.context_mlp_extra.4.weight": 5.0,    # shared MLP
+        "model.medusa_heads.res_blocks.2.linear1.weight": 9.0,   # stale head
+        "model.medusa_heads.context_mlp_heads.2.0.weight": 8.0,  # stale head
+    }
+    sd3 = {
+        k: (torch.full_like(v, sentinels[k]) if k in sentinels else v.clone())
+        for k, v in sd3.items()
+    }
+    dst2 = build_tiny_lit(2)
+    dst2.load_state_dict(sd3, strict=True)
+    got = dst2.state_dict()
+    # Shared-MLP layer indices must survive (the bug zeroed them).
+    for key in (
+        "model.medusa_heads.context_mlp.2.weight",
+        "model.medusa_heads.context_mlp_extra.2.weight",
+        "model.medusa_heads.context_mlp_extra.4.weight",
+        "model.medusa_heads.res_blocks.1.linear1.weight",
+    ):
+        want = sentinels[key]
+        assert torch.allclose(got[key], torch.full_like(got[key], want)), (
+            f"{key} was dropped/reinitialized on warm-start (expected all {want})"
+        )
+    # Genuine per-head keys with index >= num_heads must be dropped.
+    for key in (
+        "model.medusa_heads.res_blocks.2.linear1.weight",
+        "model.medusa_heads.context_mlp_heads.2.0.weight",
+    ):
+        assert not torch.allclose(
+            got[key], torch.full_like(got[key], sentinels[key])
+        ), f"{key} should have been dropped (head index >= 2)"
+    print("  kept shared MLP layers + dropped stale head-2 keys: OK")
 
     print("ALL SMOKE TESTS PASSED")
 

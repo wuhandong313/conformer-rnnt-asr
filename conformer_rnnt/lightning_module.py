@@ -620,22 +620,39 @@ class LibriSpeechRNNTModule(LightningModule):
             # live in ModuleLists (`res_blocks.<i>.*`, `context_mlp_heads.
             # <i>.*`, `chain_state_proj_heads.<i>`, `sim_bias_heads.<i>.*`,
             # `delay_heads.<i>.*`), so the head index is the first numeric
-            # segment after `medusa_heads.`. Drop keys whose head index is
-            # >= the model's head count; kept heads load bit-identically
-            # and anything else unexpected still fails loudly below.
+            # segment after one of those module names. Drop keys whose head
+            # index is >= the model's head count; kept heads load
+            # bit-identically and anything else unexpected still fails loudly
+            # below.
+            #
+            # iter-9 fix: the index must be read *only* under a per-head
+            # module name. Scanning for the first numeric segment anywhere
+            # also matched shared-MLP layer indices (`context_mlp.2.*`,
+            # `context_mlp_extra.2/4.*` — a 3-layer Sequential), silently
+            # resetting trained shared weights to their zero-init value on
+            # every 3->2 head warm-start.
             num_own_heads = int(getattr(self.model.medusa_heads, "num_heads", 0))
             if num_own_heads > 0:
                 marker = ".medusa_heads."
                 head_offset = len(marker)
+                per_head_modules = (
+                    "res_blocks",
+                    "context_mlp_heads",
+                    "chain_state_proj_heads",
+                    "sim_bias_heads",
+                    "delay_heads",
+                )
 
                 def _stale_head_key(key: str) -> bool:
                     i = key.find(marker)
                     if i < 0:
                         return False
-                    for seg in key[i + head_offset:].split("."):
-                        if seg.isdigit():
-                            return int(seg) >= num_own_heads
-                    return False
+                    segs = key[i + head_offset:].split(".")
+                    if len(segs) < 2 or segs[0] not in per_head_modules:
+                        return False
+                    if not segs[1].isdigit():
+                        return False
+                    return int(segs[1]) >= num_own_heads
 
                 stale_heads = [k for k in state_dict if _stale_head_key(k)]
                 if stale_heads:
