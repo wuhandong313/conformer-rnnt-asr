@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ssh internal:*)",
+      "Bash(cat ~/.ssh/config 2>/dev/null | head -40; echo '==='; ls ~/.ssh/ 2>/dev/null)"
+    ]
+  }
+}
