@@ -1,18 +1,12 @@
 # ===========================================================================
-# iter-8: 时延分解预测 (1 帧 lookahead 流式预算) — 服务器训练配置
+# iter-8h2: 修复推理窗后 2 头重训 — 服务器训练配置
 # ===========================================================================
-# 基于 multihead 分支 (iter-7 最好成绩 h1=0.920/h2=0.688/h3=0.346,
-# overall=0.651, PER=0.073)。iter-6/7 证实容量翻倍无效 (h2/h3 平台),
-# iter-8 转向信息注入, 严格满足 streaming 分支的 1 帧未来预算
-# (streaming.yaml: right_context_frames=4 mel = 1 encoder 帧):
-#   1. lookahead_frames: 1 + past_frames: 7 — 声学窗重排为
-#      [t-7..t-1, t, t+1], 用已提交过去帧替换非法未来帧 (结构宽度
-#      不变, context_acoustic 权重完整 warm-start)。
-#   2. chain_sim: true — 验证器模拟扫描特征: head-k 读取真 joiner 在
-#      [t, t+1] 窗口对其 rolled state 的逐步 argmax (零初始化投影)。
-#   3. delay_decompose: true — 每头时延分类器蒸馏验证器 blank-walk
-#      时延, 期望 embedding 调制 token 路径; accept_ce 升级为验证器
-#      软目标蒸馏 (完整 softmax, 网格全知)。
+# 代码 = iter-8 最终态 + 推理窗修复 (a56ab42): 训练路径从未受影响, 但旧
+# 推理在 _anchor_window 处把 (B,W,D) 窗整体清零, 0.521 是坏推理测出 —
+# "信息守恒"结论存疑, 用修复后的推理重训一次。2 头 (h3 依既定决策舍弃,
+# ckpt 加载时 medusa_heads.2.* 权重自动丢弃), warm-start 沿用 8b''' 重启
+# 点 (epoch=01-step=5200-v1), sim_bias_rezero 清零重学。
+# 预期: 冷启动 PER/接受率瞬态 (窗重排分布 shift), 自愈。
 #
 # 用法: python train.py configs/server_chain.yaml
 # ===========================================================================
@@ -55,7 +49,8 @@ model:
     lstm_dropout: 0.3
 
   medusa:
-    num_heads: 3
+    # iter-8h2: 固定 2 头 (h1/h2), h3 权重在 warm-start 加载时自动丢弃
+    num_heads: 2
     input_mode: "stream_local"
     # iter-8: 1 帧流式未来预算 + 7 帧已提交过去 (结构宽度不变 = 9 帧)
     lookahead_frames: 1
@@ -78,7 +73,7 @@ model:
     # 冻结 base (encoder + predictor + joiner), 只训 Medusa heads
     freeze_base: true
 
-    ce_loss_weights: [0.8, 0.64, 0.512]
+    ce_loss_weights: [0.8, 0.64]
     # iter-1 实验筛选出 KL=0 是最优 (WINNER=stream_h2_kl0); 且 chain 对齐下
     # KL(base@l) 是 blank-dominant 分布, 与 CE 目标冲突, 必须为 0。
     kl_weight: 0.0
@@ -137,7 +132,7 @@ decoding:
   beam_width: 0
   mode: "spec_greedy"
   spec:
-    max_draft: 3
+    max_draft: 2
     per_token_blank: 4
 
 debug: false

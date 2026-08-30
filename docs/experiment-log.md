@@ -17,6 +17,7 @@
 | iter-6 | 共享深路径 context_mlp_extra | 0.927 | 0.690 | 0.365 | 0.661 | 0.073 | 零初始化扩容有效 |
 | iter-7 | 逐头容量 (6.3M→13M) | 0.920 | 0.688 | 0.346 | 0.651 | 0.0729 | **容量翻倍无效**, 平台确认 |
 | iter-8 | 1 帧预算: sim 扫描+时延分解+直注 | 0.841 | 0.494 | 0.228 | 0.521 | 0.0756 | **未超 iter-7, 舍弃** (见教训) |
+| iter-8h2 | 推理窗修复 (a56ab42) + 2 头重训 | — | — | — | — | — | 进行中 |
 
 ## 评估约定
 
@@ -135,6 +136,22 @@
 - 保留资产: verifier_distillation_loss (软目标蒸馏, loss 5.18→2.5 有效);
   过去帧换未来帧的窗重排被证伪 (分布 shift 伤害 warm-start 路径);
   delay 分类器被扫描语义包含, 冗余。
+
+## iter-8h2 — 推理窗修复 + 2 头重训 (进行中)
+
+- 背景: 发现 iter-8 全系评估的推理路径 bug (a56ab42) — 推理时
+  `_chain_shared_terms` 对 spec_decode 已建好的 (B,W,D) 窗再次
+  `_anchor_window(·, T=1)`, past 列清零、当前列错取 `enc[t-past]`、
+  lookahead 列清零, context_acoustic 在推理时只见过单列。训练路径
+  不受影响 (bit-identical), 故 0.521 是坏推理测出的数字, "信息守恒"
+  结论存疑, 需以修复后的推理重训。
+- 改动: 配置 2 头 (num_heads: 2, h3 依既定决策舍弃, warm-start 加载
+  自动丢 medusa_heads.2.*); ce_loss_weights [0.8, 0.64]; max_draft 2;
+  其余沿用 iter-8 最终态 (accept_ce 3.0 / sim_bias found-only +
+  10x lr / sim_bias_rezero), warm-start 8b''' 重启点
+  (epoch=01-step=5200-v1)。
+- 口径: monitor 100 样本, 对照 iter-7 matched-head h1=0.920/h2=0.688
+  (ep14) 或 h1=0.925/h2=0.702 (ep11)。
 
 ---
 
