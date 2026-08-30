@@ -110,7 +110,9 @@ class ConformerRNNT(torch.nn.Module):
             source_encodings: (B, T, D) encoder output. In ``stream_local``
                 mode this is the window consumed by the heads (iter-8:
                 past-anchored ``[t-past..t, t+1..t+lookahead]``); only the
-                anchor frame is scored.
+                anchor frame is scored. Must be exactly
+                ``1 + past_frames + lookahead_frames`` frames wide — it is
+                used verbatim as the acoustic window (iter-9).
             target_encodings: (B, L, D) from ``predict`` (L=1 at inference).
             chain_drafts: chain 模式推理时使用 — 已确定的前序 draft id;
                 head-k 消费 chain_drafts[k-1] 的 embedding。
@@ -150,6 +152,9 @@ class ConformerRNNT(torch.nn.Module):
             chain_drafts=chain_drafts,
             chain_states=chain_states,
             sim_window_logits=sim_window_logits,
+            # iter-9: source_encodings is already the (B, W, D) window; do not
+            # let MedusaHeads re-anchor it (T == 1 there would zero it out).
+            window_prebuilt=True,
         )
 
 

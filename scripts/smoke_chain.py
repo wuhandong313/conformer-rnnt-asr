@@ -337,6 +337,59 @@ def main():
     )
     assert spec8[: len(oracle8)] == oracle8, "iter-8 spec decode must stay lossless"
     print(f"  iter-8 chain decode lossless: OK (drafts={stats8['total_drafts']})")
+
+    print("=== 9. iter-9: inference acoustic window == training window ===")
+    # Regression test for the bug where _anchor_window was re-applied at
+    # inference with T == 1, zeroing every lookahead column (and, with
+    # past_frames > 0, putting enc[t-past] in the "current" slot).
+    for label, past, look in (("past=0,look=8", 0, 8), ("past=3,look=1", 3, 1)):
+        mw = build_tiny_model(K, chain=True, lookahead=look, iter8=(past > 0))
+        mw.medusa_heads.past_frames = past
+        mw.medusa_heads.lookahead_frames = look
+        fw, flw, tgw, tlw = fake_batch(B=1, T=12, L=6, V=6)
+        encw, _ = mw.transcriber(fw, flw)
+        encw = encw.detach()
+        W = past + 1 + look
+
+        t_probe = 6
+        ref = mw.medusa_heads._anchor_window(encw, encw.size(1))[0, t_probe]
+
+        captured = {}
+        hook = mw.medusa_heads.context_acoustic.register_forward_pre_hook(
+            lambda mod, inp: captured.__setitem__(
+                "x", inp[0].detach().clone())
+        )
+        w_start = t_probe - past if past > 0 else t_probe
+        win = encw[:, w_start : w_start + W]
+        if win.size(1) < W:
+            win = torch.nn.functional.pad(win, (0, 0, 0, W - win.size(1)))
+        gw, _, _ = mw.predict(tgw, tlw, None)
+        g_last = gw[:, -1:, :].detach()
+        with torch.no_grad():
+            mw.predict_heads(win, g_last, chain_drafts=[1] * (K - 1),
+                             chain_states=[g_last] * K)
+        hook.remove()
+
+        got = captured["x"].reshape(1, 1, W, -1)[0, 0]
+        assert got.shape == ref.shape, (
+            f"{label}: window shape {tuple(got.shape)} != {tuple(ref.shape)}"
+        )
+        assert torch.allclose(got, ref, atol=1e-5), (
+            f"{label}: inference acoustic window differs from training "
+            f"window (max abs diff {float((got - ref).abs().max()):.6f})"
+        )
+        # The current-frame slot must hold enc[t_probe] exactly, and at least
+        # one lookahead column must be non-zero (the bug zeroed all of them).
+        cur = got[past]
+        assert torch.allclose(cur, encw[0, t_probe], atol=1e-5), (
+            f"{label}: current-frame slot does not hold enc[{t_probe}]"
+        )
+        if look > 0 and t_probe + 1 < encw.size(1):
+            assert got[past + 1].norm().item() > 1e-5, (
+                f"{label}: lookahead column 1 is zero — window was re-anchored"
+            )
+        print(f"  window train==infer, current=enc[{t_probe}] ({label}): OK")
+
     print("ALL SMOKE TESTS PASSED")
 
 

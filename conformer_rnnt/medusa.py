@@ -305,6 +305,10 @@ class MedusaHeads(torch.nn.Module):
         past_frames 后, 窗口宽度不变 (warm-start 保形), 但把非法的未来帧
         替换为已提交的过去帧 — 流式部署时过去帧免费可得。序列起始处过去
         帧零填充。返回形状 (B, T, W, D), W = 1 + past + lookahead。
+
+        iter-9: 仅供训练路径使用 (T = 序列长度)。推理时 T == 1, 本函数会
+        把全部未来列清零并在 past_frames > 0 时把 enc[t-past] 当作当前帧,
+        因此推理改由调用方传入预建窗口 (见 ``window_prebuilt``)。
         """
         B = source_encodings.size(0)
         width = 1 + self.past_frames + self.lookahead_frames
@@ -512,8 +516,14 @@ class MedusaHeads(torch.nn.Module):
         source_encodings: Optional[Tensor],
         target_encodings: Tensor,
         base_logits: Optional[Tensor],
+        window_prebuilt: bool = False,
     ) -> Tuple[Tensor, Optional[Tensor], Optional[Tensor], Optional[Tensor]]:
         """Shared chain inputs.
+
+        Args:
+            window_prebuilt: inference — ``source_encodings`` is already the
+                ``(B, W, D)`` window for the single scored frame, built by
+                ``spec_decode``. Use it verbatim instead of re-anchoring.
 
         Returns (predictor, flat_acoustic, base_term, attn_frames) where
         ``attn_frames`` is ``(B, T, W, D)`` — the raw per-frame window tensor
@@ -526,7 +536,26 @@ class MedusaHeads(torch.nn.Module):
         if self.input_mode == "stream_local":
             if source_encodings is None:
                 raise ValueError("stream_local chain mode requires source_encodings")
-            windows = self._anchor_window(source_encodings, T)  # (B,T,W,D)
+            if window_prebuilt:
+                # iter-9 fix: at inference T == 1, so re-anchoring would zero
+                # every lookahead column (take = T - f <= 0) and, with
+                # past_frames > 0, pick enc[t-past] as "current". Take the
+                # caller-built window as-is.
+                if T != 1:
+                    raise ValueError(
+                        "window_prebuilt requires a single scored frame, got "
+                        f"T={T}"
+                    )
+                windows = source_encodings.unsqueeze(1)  # (B,1,W,D)
+            else:
+                windows = self._anchor_window(source_encodings, T)  # (B,T,W,D)
+            expected_w = 1 + self.past_frames + self.lookahead_frames
+            if windows.size(2) != expected_w:
+                raise ValueError(
+                    f"acoustic window width {windows.size(2)} != expected "
+                    f"{expected_w} (past={self.past_frames}, "
+                    f"lookahead={self.lookahead_frames})"
+                )
             attn_frames = windows
             acoustic_term = self.context_acoustic(windows.flatten(start_dim=2))
         base_term: Optional[Tensor] = None
@@ -644,6 +673,7 @@ class MedusaHeads(torch.nn.Module):
             chain_drafts: Optional[List[int]] = None,
             chain_states: Optional[List[Tensor]] = None,
             sim_window_logits: Optional[List[Tensor]] = None,
+            window_prebuilt: bool = False,
         ) -> Tuple[Tensor, List[Tensor]]:
         """计算所有 head 的 logits (训练: 全网格; 推理: 单点/小窗口)。
 
@@ -660,6 +690,9 @@ class MedusaHeads(torch.nn.Module):
             sim_window_logits: iter-8 推理 — 每 head 一个 (B, W+1, V) 真
                 joiner 窗口 logits (model.predict_heads 计算); 启用
                 chain_sim 时 head-k 在其上做验证器模拟扫描读出。
+            window_prebuilt: iter-9 — 推理时 ``source_encodings`` 已是
+                spec_decode 拼好的 (B, W, D) 窗口 (W = 1+past+lookahead),
+                直接作为声学窗使用, 不再调用 ``_anchor_window`` 二次开窗。
 
         Returns:
             ``(logits_base, logits_future)`` where head 0 is the exact shared
@@ -677,6 +710,7 @@ class MedusaHeads(torch.nn.Module):
             K = self.num_heads
             shared = self._chain_shared_terms(
                 joint, source_encodings, target_encodings, logits_base,
+                window_prebuilt=window_prebuilt,
             )
             logits_future: List[Tensor] = []
             inference = chain_drafts is not None
