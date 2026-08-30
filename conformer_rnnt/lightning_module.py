@@ -615,6 +615,32 @@ class LibriSpeechRNNTModule(LightningModule):
                     k: v for k, v in state_dict.items() if k not in resized
                 }
 
+            # Head-count changes (e.g. warm-start a 2-head model from a
+            # 3-head checkpoint) leave stale `medusa_heads.<i>.*` keys for
+            # head indices the model no longer owns. Drop exactly those;
+            # kept heads load bit-identically, anything else unexpected
+            # still fails loudly below.
+            def _stale_head_key(k: str) -> bool:
+                marker = ".medusa_heads."
+                i = k.find(marker)
+                if i < 0:
+                    return False
+                head = k[i + len(marker):].split(".", 1)[0]
+                return head.isdigit()
+
+            stale_heads = [
+                k for k in state_dict
+                if _stale_head_key(k) and k not in own
+            ]
+            if stale_heads:
+                logging.info(
+                    "Dropping stale medusa head keys (head-count change): %s",
+                    stale_heads,
+                )
+                state_dict = {
+                    k: v for k, v in state_dict.items() if k not in stale_heads
+                }
+
         result = super().load_state_dict(state_dict, strict=strict and not has_medusa)
 
         # Old base checkpoints only miss medusa_heads.* — anything else is a
