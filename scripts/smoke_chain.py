@@ -71,12 +71,24 @@ def build_tiny_model(
     return model
 
 
+# 测试 10 需要构造 LightningModule, 而它构造时就加载 sp 模型 / 全局统计量。
+# 二者只在数据集侧存在 (本地无数据集时跳过该测试)。
+LIT_SP_MODEL = os.environ.get("SP_MODEL_PATH", "/test21/medusa/spm_bpe_74.model")
+LIT_GLOBAL_STATS = os.environ.get(
+    "GLOBAL_STATS_PATH", "/test21/medusa/global_stats.json"
+)
+
+
 def build_tiny_lit(K: int):
     """极小 LightningModule (仅用于 warm-start 键过滤测试)。"""
     from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
 
     return LibriSpeechRNNTModule.from_config(
         {
+            "paths": {
+                "sp_model_path": LIT_SP_MODEL,
+                "global_stats_path": LIT_GLOBAL_STATS,
+            },
             "model": {
                 "input_dim": 8,
                 "encoding_dim": 16,
@@ -437,6 +449,12 @@ def main():
         print(f"  window train==infer, current=enc[{t_probe}] ({label}): OK")
 
     print("=== 10. iter-9: 3-head ckpt -> 2-head warm-start key filter ===")
+    if not (
+        os.path.exists(LIT_SP_MODEL) and os.path.exists(LIT_GLOBAL_STATS)
+    ):
+        print(f"  SKIPPED (no sp model / global stats at {LIT_SP_MODEL})")
+        print("ALL SMOKE TESTS PASSED")
+        return
     # Regression test: the stale-head drop used to take the first numeric
     # segment after `medusa_heads.`, which also matched *layer* indices of
     # the shared MLPs (context_mlp.2, context_mlp_extra.2/4). Those trained
