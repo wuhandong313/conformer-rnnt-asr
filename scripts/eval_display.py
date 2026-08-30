@@ -32,7 +32,7 @@ from __future__ import annotations
 import glob
 import os
 import sys
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import torch
 
@@ -98,6 +98,18 @@ def _draft_chain(
     heads = model.medusa_heads
     K = int(heads.num_heads)
     window = _build_source_window(model, enc, t)
+    # iter-8 验证器模拟扫描窗 [t .. t+lookahead]: chain_sim 头用它读出
+    # 「真 joiner 在本头 rolled state 上的窗口 argmax」— 流式预算内可得,
+    # 所以显示评估也应当给它 (否则量的是被阉割的头)。
+    sim_window: Optional[torch.Tensor] = None
+    if getattr(heads, "chain_sim_enabled", False):
+        lookahead = getattr(heads, "lookahead_frames", 0)
+        need = 1 + lookahead
+        sim_window = enc[:, t : t + need]
+        if sim_window.size(1) < need:
+            sim_window = torch.nn.functional.pad(
+                sim_window, (0, 0, 0, need - sim_window.size(1))
+            )
     drafts: List[int] = []
     chain_rolls: List[torch.Tensor] = [g0]
     g_cur, st_cur = g0, st0
@@ -109,6 +121,7 @@ def _draft_chain(
             g_cur,
             chain_drafts=list(drafts),
             chain_states=list(chain_rolls),
+            sim_window=sim_window,
         )
         d_j = int(future_logits[j].argmax(dim=-1).item())
         if d_j == blank_idx:

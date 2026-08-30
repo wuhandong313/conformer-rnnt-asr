@@ -1,0 +1,130 @@
+# ===========================================================================
+# iter-9 显示评估 — 参考配置 A: BEST_iter7 的*训练布局* [t..t+8]
+# ===========================================================================
+# 仅用于 scripts/eval_display.py 的对照测量, 不用于训练。
+#
+# BEST_iter7 的 context_acoustic 是 (512, 4608) = 9 列窗, 但那是 iter-2d
+# 解除后的 lookahead=8 布局 [t .. t+8] — 320ms 未来, 违反流式预算。
+# 本配置按它训练时的布局评估, 得到「头在 8 帧未来下能到多少」的参考值,
+# 与流式合法布局的差值 = 流式约束的真实代价。
+#
+# 注意: 与 configs/server_display.yaml (past=7/look=1) 同宽不同义 — 拿
+# iter-7 权重跑 [t-7..t+1] 是布局错配, 数字无意义 (实测 h1=47.9%)。
+#
+# 用法:
+#   python scripts/eval_display.py configs/display_iter7.yaml 100 \
+#       /test21/conformer-rnnt-asr/exp_iter2/BEST_iter7.ckpt
+# ===========================================================================
+
+paths:
+  dataset_path: "/test21/medusa"
+  sp_model_path: "/test21/medusa/spm_bpe_74.model"
+  global_stats_path: "/test21/medusa/global_stats.json"
+  exp_dir: "/test21/conformer-rnnt-asr/exp_iter2"
+  from_checkpoint: "/test21/conformer-rnnt-asr/exp_iter2/BEST_iter7.ckpt"
+
+model:
+  input_dim: 80
+  encoding_dim: 512
+  num_symbols: 74
+
+  time_reduction_input_dim: 128
+  time_reduction_stride: 4
+  right_context_length: 4
+
+  num_heads: 8
+  ffn_dim: 1024
+  num_layers_block1: 2
+  num_layers_block2: 8
+  depthwise_conv_kernel_size: 31
+  dropout: 0.1
+
+  compression:
+    filter: "naive"
+    hanning_window_size: 5
+    weight_predictor_mode: "diff5"
+
+  predictor:
+    symbol_embedding_dim: 128
+    num_lstm_layers: 2
+    lstm_hidden_dim: 128
+    lstm_layer_norm: true
+    lstm_layer_norm_epsilon: 0.001
+    lstm_dropout: 0.3
+
+  medusa:
+    num_heads: 2
+    input_mode: "stream_local"
+    # iter-7 训练布局: 9 列全部是未来 [t .. t+8] (past=0, lookahead=8)
+    lookahead_frames: 8
+    past_frames: 0
+    draft_after_emit: true
+    chain_states: true
+    # iter-7 无 iter-8 的验证器模拟特征
+    chain_sim: false
+    delay_decompose: false
+    accept_ce_weight: 0.0
+    delay_ce_weight: 0.0
+    freeze_base: true
+    ce_loss_weights: [0.8, 0.64]
+    kl_weight: 0.0
+
+  joiner:
+    activation: "relu"
+
+training:
+  learning_rate: 0.0005
+  adam_betas: [0.9, 0.999]
+  adam_eps: 1.0e-8
+  warmup_steps: 1000
+  rnnt_loss_reduction: "mean"
+  rnnt_loss_clamp: 1.0
+  gradient_clip_val: 10.0
+  epochs: 20
+
+data:
+  sample_rate: 16000
+  n_fft: 400
+  n_mels: 80
+  hop_length: 160
+
+  spec_augment:
+    freq_mask_param: 27
+    time_mask_param: 100
+    time_mask_prob: 0.2
+
+  max_token_limit: 4000
+  num_workers: 20
+  prefetch_factor: 2
+
+  train_subset: "train-clean-100"
+  val_subset: "dev-clean"
+  test_subset: "test-clean"
+
+trainer:
+  accelerator: "cuda"
+  strategy: "auto"
+  devices: 1
+  num_nodes: 1
+  log_every_n_steps: 10
+  val_check_interval: 200
+  num_sanity_val_steps: 0
+  fast_dev_run: false
+  matmul_precision: "high"
+  accumulate_grad_batches: 1
+
+  checkpoint:
+    save_top_k: 2
+    save_weights_only: true
+    val_checkpoint_interval: 200
+    train_checkpoint_interval: 100
+
+decoding:
+  beam_width: 0
+  mode: "spec_greedy"
+  spec:
+    max_draft: 2
+    per_token_blank: 4
+
+debug: false
+seed: 42
