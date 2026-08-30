@@ -490,14 +490,18 @@ def main():
         assert torch.allclose(got[key], torch.full_like(got[key], want)), (
             f"{key} was dropped/reinitialized on warm-start (expected all {want})"
         )
-    # Genuine per-head keys with index >= num_heads must be dropped.
+    # Genuine per-head keys with index >= num_heads must be dropped — the
+    # 2-head model has no such parameters at all.
     for key in (
         "model.medusa_heads.res_blocks.2.linear1.weight",
         "model.medusa_heads.context_mlp_heads.2.0.weight",
+        "model.medusa_heads.chain_state_proj_heads.2.weight",
     ):
-        assert not torch.allclose(
-            got[key], torch.full_like(got[key], sentinels[key])
-        ), f"{key} should have been dropped (head index >= 2)"
+        assert key not in got, (
+            f"{key} exists in the 2-head model — stale head keys were not "
+            "dropped (or the head count is wrong)"
+        )
+        assert key in sd3, f"test setup: {key} missing from the 3-head source"
     print("  kept shared MLP layers + dropped stale head-2 keys: OK")
 
     print("ALL SMOKE TESTS PASSED")
