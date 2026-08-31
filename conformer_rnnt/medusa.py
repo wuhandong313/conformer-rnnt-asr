@@ -233,6 +233,11 @@ class MedusaHeads(torch.nn.Module):
             # 训练从 base_logits 网格 gather (零 FLOPs); 推理由
             # model.predict_heads 用真 joiner 算好窗口 logits 传入。
             self.chain_sim_enabled = bool(chain_sim)
+            # iter-9 诊断开关: False 时仍跑 sim 扫描 (诊断标签照出), 但不把
+            # 读出注入 delta / logits。用于量「头在没有复制通道可走时的真实
+            # 预测准确率」— 复制通道在训练时会给免费正确答案, 可能掩盖头的
+            # 预测能力 (也可能把预测通道养废)。默认 True, 仅评估脚本关。
+            self.sim_inject_enabled = True
             if self.chain_sim_enabled:
                 self.chain_sim_proj = torch.nn.Linear(128 + 2, input_dim)
                 torch.nn.init.zeros_(self.chain_sim_proj.weight)
@@ -809,8 +814,8 @@ class MedusaHeads(torch.nn.Module):
                         prev = logits_future[k - 1].detach()
                 sim_k: Optional[Tensor] = None
                 if not inference:
-                    sim_k = sim_feats[k]
-                elif sim_scan_infer[k] is not None:
+                    sim_k = sim_feats[k] if self.sim_inject_enabled else None
+                elif self.sim_inject_enabled and sim_scan_infer[k] is not None:
                     # 单点读出: (B,) → (B,1,·) → proj → (B,1,1,D)
                     sc = sim_scan_infer[k]
                     assert sc is not None and self.chain_sim_proj is not None
@@ -835,7 +840,7 @@ class MedusaHeads(torch.nn.Module):
                 # 若不遮挡, 偏置在 blank 行学出巨大的反 blank 信号, 真实
                 # token 行的复制梯度被稀释 (实测 diag≈0)。found 位置 ==
                 # 推理时 draft 实际发生并被接受的条件, 训练/推理同规则。
-                if self.chain_sim_enabled:
+                if self.chain_sim_enabled and self.sim_inject_enabled:
                     if scans is not None:
                         bias = self.sim_bias_heads[k](scans[k]["sim_id"])
                         mask = scans[k]["found"].unsqueeze(-1).to(bias.dtype)

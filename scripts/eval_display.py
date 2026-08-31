@@ -16,15 +16,22 @@ iter-9 价值模型: 解码回归纯贪心 RNNT; Medusa 草稿只上屏 (用完�
   - 显示数 / 弃权数 (blank): 上屏行为统计;
   - 命中率 = 命中 / 显示 (未命中即被真实 token 替换 → 替换率 = 1−命中率);
   - 提前量 = 真实 emit 帧 − 草稿帧 (×帧时长 ms), 只对命中统计有意义
-    (命中草稿的提前量 = 观众提前看到正确内容的时间)。
+    (命中草稿的提前量 = 观众提前看到正确内容的时间);
+  - **区域拆分**: 复制区 (sim 扫描在可见窗内问到答案, 头照抄) vs 预测区
+    (答案在窗外, 头必须真的预测)。总命中率被复制区占比主导, 不可跨头比较;
+    头的真实能力看预测区那一列。
+  - **LM 先验基线**: predictor 自回归 (喂自己的 argmax)、声学侧固定为句级
+    常量。这是预测区的下限参照 — 头若 ≈ 该值, 说明它只是个 LM。
 
 用法:
-  python scripts/eval_display.py <config.yaml> [max_samples] [checkpoint]
+  python scripts/eval_display.py <config.yaml> [max_samples] [checkpoint] [--no-sim]
   # 例: 先对 iter-7 基线跑天花板数字
   #   python scripts/eval_display.py configs/server_display.yaml 100 \
   #       /test21/conformer-rnnt-asr/exp_iter2/BEST_iter7.ckpt
   # 重训后不带 checkpoint 参数则自动选 exp_dir/checkpoints 里最新的
   # val-{tag}-*.ckpt (tag 由配置生成, iter-9 为 ...-disp)。
+  # --no-sim: 屏蔽 sim 注入 (扫描照跑, 只是不喂给头) → 纯预测模式, 用于
+  #   量「头在没有复制通道可走时的真实预测准确率」。
 """
 
 from __future__ import annotations
@@ -150,6 +157,40 @@ def _draft_chain(
     return drafts, attempted, sim_reads
 
 
+def _lm_free_run(
+    model,
+    src_const: torch.Tensor,
+    g0: torch.Tensor,
+    st0: List[torch.Tensor],
+    one: torch.Tensor,
+    K: int,
+    blank_idx: int,
+    dev,
+) -> List[Optional[int]]:
+    """纯语言先验基线 — predictor 自回归 (喂自己的 argmax), 声学侧固定。
+
+    ``src_const`` 是句级常量 (enc 的时间均值), 抹掉逐帧声学信息但保留
+    in-distribution 偏置 (直接置零会让 relu 工作点整体偏移, 基线失真)。
+    返回长度 K 的猜测列表, blank 处截断 (与头同规则: blank = 弃权)。
+
+    这是「头的预测区准确率」的下限参照: 若头在预测区的命中率 ≈ 该基线,
+    说明头根本没在用声学窗做预测, 只是个 LM; 显著高于它才说明头在干活。
+    """
+    out: List[Optional[int]] = []
+    g_cur, st_cur = g0, st0
+    for _ in range(K):
+        joint = model.joiner.fuse(src_const, g_cur)  # (1,1,1,D)
+        logits = model.joiner.project(joint.squeeze(2))  # (1,1,V)
+        tok = int(logits.argmax(dim=-1).item())
+        if tok == blank_idx:
+            break
+        out.append(tok)
+        g_cur, st_cur = _advance_predictor(
+            model, _make_tok(tok, dev), st_cur, one
+        )
+    return out
+
+
 def _quantiles(values: List[int], qs=(0.5, 0.9, 0.99)) -> Dict[str, float]:
     """离散值分位数 (升序累计)。"""
     if not values:
@@ -163,9 +204,11 @@ def _quantiles(values: List[int], qs=(0.5, 0.9, 0.99)) -> Dict[str, float]:
 
 
 def main() -> None:
-    config_path = sys.argv[1] if len(sys.argv) > 1 else "configs/server_display.yaml"
-    max_samples = int(sys.argv[2]) if len(sys.argv) > 2 else 100
-    ckpt_override = sys.argv[3] if len(sys.argv) > 3 else None
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    no_sim = "--no-sim" in sys.argv  # 屏蔽 sim 注入 → 纯预测模式
+    config_path = args[0] if args else "configs/server_display.yaml"
+    max_samples = int(args[1]) if len(args) > 1 else 100
+    ckpt_override = args[2] if len(args) > 2 else None
 
     config = load_config(config_path)
     setup_logging(config)
@@ -200,6 +243,13 @@ def main() -> None:
         "显示时间线按 post-emit 语义设计 (draft_after_emit: true)"
     )
     K = int(heads.num_heads)
+    # 纯预测模式: 扫描照跑 (诊断标签照出), 但不注入读出 → 头只能靠自己猜。
+    # 用来分离「复制通道刷出的命中率」与「头真正的预测能力」。
+    if no_sim and getattr(heads, "chain_sim_enabled", False):
+        heads.sim_inject_enabled = False
+        print("sim 注入: 已屏蔽 (纯预测模式)")
+    elif no_sim:
+        print("sim 注入: 本 ckpt 未启用 chain_sim, --no-sim 无效果")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device).eval()
@@ -229,6 +279,17 @@ def main() -> None:
     sim_found = [0] * K
     sim_right = [0] * K
     sim_copied = [0] * K
+    # 区域拆分: 复制区 (sim 在窗内问到答案, 头只需照抄) vs 预测区 (答案在
+    # 窗外, 头必须真的预测)。后者才是头的战场 — 前者是直注查表的功劳。
+    disp_copy = [0] * K
+    hit_copy = [0] * K
+    disp_pred = [0] * K
+    hit_pred = [0] * K
+    # 纯语言先验基线 (自回归 LM, 声学侧为句级常量): 预测区的下限参照。
+    lm_guess = [0] * K
+    lm_hit = [0] * K
+    lm_guess_pred = [0] * K
+    lm_hit_pred = [0] * K
     n_utts = 0
     n_ref_tokens = 0
 
@@ -267,11 +328,17 @@ def main() -> None:
                     )
                     snaps.append((t, g_last, state))
 
+                enc_mean = enc.mean(dim=1, keepdim=True)  # (1,1,D) 句级常量
+
                 # pass 2: 在每个 emit 点上屏草稿 (对齐到完整参考序列)。
                 for u, (t_emit, g_disp, st_disp) in enumerate(snaps):
                     drafts, att, sim_reads = _draft_chain(
                         model.model, enc, t_emit, g_disp, st_disp,
                         one, blank_idx, device,
+                    )
+                    lm_drafts = _lm_free_run(
+                        model.model, enc_mean, g_disp, st_disp,
+                        one, K, blank_idx, device,
                     )
                     for j in range(K):
                         if j >= att:
@@ -286,17 +353,32 @@ def main() -> None:
                             unscorable += 1
                             continue
                         sr = sim_reads[j] if j < len(sim_reads) else None
+                        is_copy = bool(sr is not None and sr["found"])
                         if sr is not None:
                             sim_seen[j] += 1
-                            if sr["found"]:
+                            if is_copy:
                                 sim_found[j] += 1
                                 if sr["sim_id"] == ref_tokens[target]:
                                     sim_right[j] += 1
                                 if drafts[j] == sr["sim_id"]:
                                     sim_copied[j] += 1
-                        if drafts[j] == ref_tokens[target]:
+                        ok = drafts[j] == ref_tokens[target]
+                        if ok:
                             hits[j] += 1
                             leads[j].append(ref_frames[target] - t_emit)
+                        if is_copy:
+                            disp_copy[j] += 1
+                            hit_copy[j] += ok
+                        else:
+                            disp_pred[j] += 1
+                            hit_pred[j] += ok
+                        if j < len(lm_drafts) and lm_drafts[j] is not None:
+                            lm_guess[j] += 1
+                            lm_ok = lm_drafts[j] == ref_tokens[target]
+                            lm_hit[j] += lm_ok
+                            if not is_copy:
+                                lm_guess_pred[j] += 1
+                                lm_hit_pred[j] += lm_ok
                 n_utts += 1
                 n_ref_tokens += len(ref_tokens)
 
@@ -338,6 +420,45 @@ def main() -> None:
         "lead(all hits, ms): "
         + " ".join(f"{k}={v * frame_ms:.0f}" for k, v in q_all.items())
     )
+
+    # ---- 区域拆分: 复制通道 vs 预测通道 ----
+    # 复制区 = sim 扫描在可见窗内问到答案 (头照抄即可); 预测区 = 答案在窗
+    # 外 (头必须真的预测)。头的价值只在预测区, 总命中率被复制区占比主导,
+    # 所以 h1 的 90% 与 h2 的 59% 不可直接比较 — 要看预测区那一列。
+    if any(disp_copy) or any(disp_pred):
+        print("\n区域拆分 (复制区 = 答案在窗内, 预测区 = 答案在窗外):")
+        print(
+            f"{'head':<6}{'copy_n':>8}{'copyHit%':>10}"
+            f"{'pred_n':>8}{'predHit%':>10}"
+            f"{'LMhit%':>9}{'LMguess%':>10}"
+        )
+        for j in range(K):
+            n_c, n_p = disp_copy[j], disp_pred[j]
+            c_hit = 100.0 * hit_copy[j] / n_c if n_c else float("nan")
+            p_hit = 100.0 * hit_pred[j] / n_p if n_p else float("nan")
+            # LM 命中率以「全部可打分草稿」为分母, 与 predHit% 同口径可比;
+            # LMguess% 是 LM 给出非 blank 猜测的比例 (其余视为弃权)。
+            denom = n_c + n_p
+            lm_rate = 100.0 * lm_hit[j] / denom if denom else float("nan")
+            lm_g = 100.0 * lm_guess[j] / denom if denom else float("nan")
+            print(
+                f"h{j + 1:<5}{n_c:>8}{c_hit:>10.2f}"
+                f"{n_p:>8}{p_hit:>10.2f}"
+                f"{lm_rate:>9.2f}{lm_g:>10.2f}"
+            )
+        if any(lm_guess_pred):
+            print("\n预测区 LM 先验 vs 头 (同一批样本):")
+            print(f"{'head':<6}{'pred_n':>8}{'headHit%':>10}{'LMhit%':>9}{'gap':>8}")
+            for j in range(K):
+                n_p = disp_pred[j]
+                if not n_p:
+                    continue
+                p_hit = 100.0 * hit_pred[j] / n_p
+                lm_p = 100.0 * lm_hit_pred[j] / n_p
+                print(
+                    f"h{j + 1:<5}{n_p:>8}{p_hit:>10.2f}{lm_p:>9.2f}"
+                    f"{p_hit - lm_p:>+8.2f}"
+                )
 
     if any(sim_seen):
         print("\nchain_sim 推理端诊断 (直注是否被点亮):")
