@@ -17,7 +17,8 @@
 | iter-6 | 共享深路径 context_mlp_extra | 0.927 | 0.690 | 0.365 | 0.661 | 0.073 | 零初始化扩容有效 |
 | iter-7 | 逐头容量 (6.3M→13M) | 0.920 | 0.688 | 0.346 | 0.651 | 0.0729 | **容量翻倍无效**, 平台确认 |
 | iter-8 | 1 帧预算: sim 扫描+时延分解+直注 | 0.841 | 0.494 | 0.228 | 0.521 | 0.0756 | **未超 iter-7, 舍弃** (见教训) |
-| iter-8h2 | 推理窗修复 (a56ab42) + 2 头重训 | — | — | — | — | — | 进行中 |
+| iter-8h2 | 推理窗修复 (a56ab42) + 2 头重训 | 0.889 | 0.612 | — | 0.751 | 0.0733 | 超 iter-7 同头口径, 已停 |
+| iter-9 | **投机显示 (Speculative Display)** | — | — | — | — | — | 价值模型换轨, 见下 |
 
 ## 评估约定
 
@@ -152,6 +153,106 @@
   (epoch=01-step=5200-v1)。
 - 口径: monitor 100 样本, 对照 iter-7 matched-head h1=0.920/h2=0.688
   (ep14) 或 h1=0.925/h2=0.702 (ep11)。
+- **最终结果** (epoch=09, step≈25500, 100 样本): **h1=0.889 / h2=0.612 /
+  overall=0.751**, PER=0.0733, lossless_fail=0。按同头数口径已超 iter-7
+  (h1 0.920/h2 0.688 是 3 头模型的 matched-head 数字)。
+- 已停止 (用户指令 2026-08-31): 训练 screen `iter2-train` 与监控
+  `iter8-watch` 均退出, 无残留进程; ckpt 与 log 留档供 iter-9 warm-start。
+
+---
+
+## iter-9 — 投机显示 (Speculative Display) — 价值模型换轨 (进行中)
+
+**换轨动机 (用户提出)**: Medusa 草稿只用于上屏显示, 真实 token 到达时
+确认/替换; 解码回归纯贪心 RNNT。因此**明示放弃真实提速** (RTF 不变),
+旧指标"接受率"作废, 新指标为
+
+    value(head-k) = 命中率 × 平均提前量(ms)  −  替换(闪烁)惩罚
+
+即"感知提前量" = 提前量 × 命中率。提前量以 reduced 帧计 (1 帧 = 4 mel
+= **40ms**); 命中 = 草稿与随后真实 emit 的 token 相同; 替换 = 上屏后被
+改写 (感官闪烁)。
+
+### 本轮产出
+
+- `scripts/eval_display.py` (新): 两趟评估器。pass 1 纯贪心产出参考序列
+  并快照每个 emit 点的 post-emit 状态; pass 2 在快照上草拟并与
+  `target = u + 1 + j` 对齐打分。输出 `hit% / repl% / leadP50,P90,P99 /
+  leadAvg / value`; chain_sim 开启时追加 `found% / simRight% / copied%`。
+- ckpt 选择**去掉 `val-*` 通配回退** (曾抓到 iter-8h2 的 ckpt → strict 加载
+  报 11 个 unexpected 键), 只认本配置 tag 或 `paths.from_checkpoint`。
+- `configs/server_display.yaml` (新, 阶段 1 训练配置, 尚未启动):
+  2 头 / `stream_local` / lookahead=1 / **past_frames=7** / post-emit /
+  chain_states / `freeze_base: true` / `tag_suffix: "disp"`。
+- `configs/display_iter7.yaml` / `configs/display_iter8h2.yaml` (新):
+  两套评估配置, 分别对应 iter-7 的训练布局与 iter-8h2 的流式布局。
+- `common.py`: `model_ckpt_tag()` 增加 `tag_suffix` 旋钮 (参数相同但价值
+  模型不同的 ckpt 不再同名, 避免 monitor 缓存串档)。
+- `scripts/smoke_chain.py`: 新增测试 10, 哨兵值法断言共享 MLP 层保留 /
+  过期头键丢弃 (缺数据集时自动 SKIPPED)。
+
+### bug 修复 (两个, 都影响过历史数字)
+
+1. **warm-start 误删共享 MLP 权重** (`lightning_module.py:618-660`):
+   过期头键过滤取 `medusa_heads.` 后第一个数字段, 把共享 MLP 的**层**索引
+   (`context_mlp.2`、`context_mlp_extra.2/4`) 误判为头索引 ≥2 而丢弃
+   (BEST_iter7 中范数 97.9 / 76.4 / 40.2 → 丢弃后回落零初始化)。改为只在
+   per-head ModuleList (`res_blocks`, `context_mlp_heads`,
+   `chain_state_proj_heads`, `sim_bias_heads`, `delay_heads`) 下读索引。
+   **iter-8h2 与 iter-9 首次基线都中了这招**, 数字须以此后的为准。
+2. **布局错配的假基线**: BEST_iter7 的 `context_acoustic` 是 `(512, 4608)`
+   = 9 列, 但语义是 **iter-2d 解除流式后的 `[t..t+8]`** (past=0,
+   lookahead=8, 非流式); iter-8h2 才是 `[t-7..t+1]` (past=7, lookahead=1,
+   流式合法)。**同宽不同义** — 用 iter-7 权重跑 past=7 布局是错配, 实测
+   h1 仅 47.91% / h2 14.81%, 与日志 0.920 严重不符, 数字无效。
+
+### 三组显示基线 (100 样本, 服务器)
+
+| 配置 | 窗口 | h1 hit% | h2 hit% | h1 value | h2 value | merged |
+|------|------|---------|---------|----------|----------|--------|
+| A `display_iter7.yaml` (BEST_iter7) | `[t..t+8]` look=8 **非流式** (训练布局) | 94.81 | 67.60 | 35.1ms | 45.0ms | 81.21 |
+| B `display_iter8h2.yaml` (ep07 st20400) | `[t-7..t+1]` look=1 **流式合法** (sim 开) | 90.60 | 59.38 | 30.3ms | 34.0ms | 74.99 |
+| C BEST_iter7 @ 错配 | `[t-7..t+1]` | 47.91 | 14.81 | — | — | — |
+
+提前量分布: leadP50=40ms / P90=80ms / P99=120-160ms (两配置一致)。
+
+- **结论 1**: 流式预算几乎不亏 — lookahead 8→1 只掉 h1 −4.2pt / h2 −8.2pt。
+  (iter-8 的"信息守恒"结论曾据此存疑, 现确认流式不是主要矛盾。)
+- **结论 2**: 瓶颈是**提前量** (平均 33ms/头 ≈ 不到 1 帧), 不是命中率;
+  两头合计期望感知提前量 ≈ 64ms。
+- **结论 3**: iter-9 原计划"重训流式合法头"收益很小 — 天花板就是 A。
+
+### h2 瓶颈诊断 (chain_sim 推理端, 配置 B)
+
+```
+head      scan   found%  simRight%   copied%
+h1        8370    85.72     100.00     99.79
+h2        8269    45.02      82.76     99.81
+```
+
+- `found` = sim 扫描在**可见窗口**内问到了答案 (问的是 oracle 自己, 故
+  found 时 simRight 必为 100%); `copied%` = 直注查表 `sim_bias_heads`
+  被点亮的比例, ≈100% 说明复制电路通畅。
+- h2 训练曲线是平的 (ep00 0.590 → ep02 0.579 → ep04 0.589 → ep07 0.612),
+  续训救不了。
+- **根因是物理上限, 不是能力问题**: h2 目标 token 中位落在 1 帧后、P90
+  落在 2 帧后, 而 lookahead=1 的窗只有 `[t, t+1]` — `found%=45%` 与
+  `P(lead ≤ 1 帧)=45%` 精确吻合。
+- h2 那 17.2% 错误是**级联**: h2 的状态建立在 h1 草稿上, h1 猜错 9.4% →
+  传导给 h2。h1 位置上"头其实是多余的" (直注复制率 99.8%, 跑 2 次小
+  joiner 就能拿到 85.7% 覆盖 + 100% 正确), 头真正不可替代的只有给更深的
+  头提供**滚动状态**。
+
+### 衍生: 门控显示 (零训练成本)
+
+只在 `sim found` 时上屏 (扫不到就弃权不显示):
+
+| head | 闪烁 before → after | value before → after |
+|------|--------------------|----------------------|
+| h1 | 9.4% → 0% | 30.3ms → 28.3ms |
+| h2 | 40.6% → **17.2%** | 34.0ms → 21.0ms |
+
+代价: h2 命中率本身不会超过 60% (受 found% 45% 硬约束)。
 
 ---
 
