@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iter-9 投机显示 (Speculative Display) — 原理 / 算法 / 演示 / 指标 / 结果</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#141b24; --panel2:#0f1620; --border:#232c38;
+    --text:#e6edf3; --muted:#8b949e; --dim:#6e7681;
+    --blue:#58a6ff; --green:#3fb950; --red:#f85149; --amber:#d29922; --purple:#bc8cff; --cyan:#39c5cf;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+    line-height:1.7; font-size:15px;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 96px}
+
+  /* ---------- header ---------- */
+  header.hero{border-bottom:1px solid var(--border);padding-bottom:24px;margin-bottom:28px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+  h1{font-size:30px;line-height:1.3;margin:8px 0 6px;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:15px;margin:0}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:22px}
+  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+  .kpi .v{font-family:var(--mono);font-size:20px;color:var(--blue);line-height:1.2}
+  .kpi .k{font-size:12px;color:var(--muted);margin-top:4px}
+
+  /* ---------- collapsible modules ---------- */
+  details.mod{
+    background:var(--panel);border:1px solid var(--border);border-radius:12px;
+    margin:16px 0;overflow:hidden;
+  }
+  details.mod>summary{
+    cursor:pointer;list-style:none;padding:16px 20px;font-weight:600;font-size:17px;
+    display:flex;align-items:center;gap:12px;user-select:none;
+  }
+  details.mod>summary::-webkit-details-marker{display:none}
+  details.mod>summary::before{
+    content:"▸";color:var(--blue);font-size:13px;transition:transform .18s ease;
+    display:inline-block;width:12px;flex:none;
+  }
+  details.mod[open]>summary::before{transform:rotate(90deg)}
+  details.mod>summary:hover{background:#182130}
+  details.mod>summary .tag{
+    margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:500;
+    color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:2px 10px;flex:none;
+  }
+  .body{padding:4px 20px 22px;border-top:1px solid var(--border)}
+  .body>p:first-child{margin-top:16px}
+
+  h3{font-size:15px;margin:22px 0 8px;color:var(--cyan);letter-spacing:.02em}
+  h4{font-size:14px;margin:18px 0 6px;color:var(--text)}
+  p{margin:10px 0}
+  ul,ol{margin:10px 0;padding-left:22px}
+  li{margin:6px 0}
+  code{font-family:var(--mono);font-size:13px;background:#1b2430;border:1px solid var(--border);
+       border-radius:4px;padding:1px 5px;color:#ffa657}
+  .muted{color:var(--muted)}
+  .small{font-size:13px}
+  .hl{color:var(--amber)}
+  .good{color:var(--green)}
+  .bad{color:var(--red)}
+
+  pre{background:var(--panel2);border:1px solid var(--border);border-radius:10px;
+      padding:14px 16px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:#c9d1d9}
+  pre .c{color:var(--dim)}
+  pre .k{color:var(--purple)}
+  pre .s{color:#a5d6ff}
+  pre .n{color:var(--amber)}
+
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
+  th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--muted);font-weight:600;font-size:12px;letter-spacing:.04em;
+           text-transform:uppercase;border-bottom:1px solid #303a48}
+  tbody tr:hover{background:#182130}
+  td.num{font-family:var(--mono)}
+  .tbl-win{color:var(--green)}
+  .tbl-bad{color:var(--red)}
+
+  .note{border-left:3px solid var(--blue);background:#111a26;border-radius:0 8px 8px 0;
+        padding:12px 16px;margin:16px 0;font-size:13.5px;color:#c9d1d9}
+  .note.warn{border-left-color:var(--amber);background:#1c1709}
+  .note.bad{border-left-color:var(--red);background:#1e1113}
+  .note.fix{border-left-color:var(--green);background:#0f1c13}
+  .note b{color:var(--text)}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+
+  .card{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+  .card h4{margin-top:0}
+
+  /* ---------- demo ---------- */
+  .demo{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px 0}
+  .demo-ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  button{
+    font-family:inherit;font-size:13px;color:var(--text);background:#1f2937;
+    border:1px solid #303a48;border-radius:8px;padding:7px 14px;cursor:pointer;transition:.15s;
+  }
+  button:hover{background:#2a3546;border-color:#3d4a5c}
+  button.primary{background:#1f4d2e;border-color:#2ea043;color:#d3f2dd}
+  button.primary:hover{background:#266038}
+  .clock{margin-left:auto;font-family:var(--mono);font-size:13px;color:var(--muted)}
+  .clock b{color:var(--blue)}
+
+  .screen{
+    background:#05080c;border:1px solid #1d2632;border-radius:10px;min-height:112px;
+    padding:24px 20px 18px;display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;
+  }
+  .screen .ph{color:var(--dim);font-size:13px;font-family:var(--mono)}
+  .tok{
+    font-family:var(--mono);display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:10px 16px 7px;border-radius:9px;
+    border:1.5px dashed #3d4a5c;color:#c9d1d9;background:#0d1420;position:relative;
+    min-width:64px;text-align:center;
+  }
+  .tok .ch{font-size:24px;line-height:1}
+  .tok.draft{opacity:.85}
+  .tok.hit{border-style:solid;border-color:var(--green);color:#d3f2dd;background:#0e2117;opacity:1}
+  .tok.miss{border-style:solid;border-color:var(--red);color:#ffd7d5;background:#28100f;
+            animation:shake .45s ease 2}
+  .tok.real{border-style:solid;border-color:var(--blue);color:#cfe6ff;background:#0d1c2e}
+  .tok .lead{
+    position:absolute;top:-11px;right:-8px;font-size:10px;font-family:var(--mono);
+    background:var(--green);color:#04140a;border-radius:9px;padding:1px 6px;font-weight:700;
+  }
+  .tok .lbl{font-size:10px;color:var(--dim);font-family:var(--mono);white-space:nowrap}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+  .timeline{margin-top:18px}
+  .tl-rail{display:flex;gap:4px;align-items:flex-end;height:76px;padding-bottom:2px}
+  .fr{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;min-width:0}
+  .fr .tick{width:100%;height:3px;background:#1d2632;border-radius:2px;transition:.2s}
+  .fr.now .tick{background:var(--blue);box-shadow:0 0 10px rgba(88,166,255,.6)}
+  .fr .ev{font-family:var(--mono);font-size:11px;padding:2px 5px;border-radius:5px;white-space:nowrap;
+          opacity:0;transform:translateY(4px);transition:.25s;max-width:100%;overflow:hidden}
+  .fr .ev.on{opacity:1;transform:translateY(0)}
+  .fr .ev.draft{background:#1b2430;border:1px dashed #3d4a5c;color:#a9b6c6}
+  .fr .ev.real{background:#0d1c2e;border:1px solid #1f6feb;color:#9ecbff}
+  .fr .ev.hit{background:#0e2117;border:1px solid var(--green);color:#7ee2a8}
+  .fr .ev.miss{background:#28100f;border:1px solid var(--red);color:#ff9d97}
+  .fr .n{font-family:var(--mono);font-size:10px;color:var(--dim)}
+  .fr .ms{font-family:var(--mono);font-size:9px;color:#4d5764}
+  .tl-note{margin-top:12px;font-size:13px;color:var(--muted);min-height:42px}
+  .tl-note b{color:var(--text)}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:10px;margin-top:16px}
+  .stat{background:#0d1420;border:1px solid var(--border);border-radius:9px;padding:9px 11px}
+  .stat .v{font-family:var(--mono);font-size:17px}
+  .stat .k{font-size:11px;color:var(--muted)}
+
+  /* ---------- charts ---------- */
+  .chart{margin:16px 0}
+  .chart .cap{font-size:12.5px;color:var(--muted);margin-top:6px}
+  svg{display:block;max-width:100%;height:auto}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:8px 0 0}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+
+  .formula{
+    background:#0d1420;border:1px solid var(--border);border-radius:10px;padding:16px;
+    font-family:var(--mono);font-size:14px;text-align:center;color:#c9d1d9;margin:14px 0;overflow-x:auto
+  }
+  .formula .v{color:var(--amber)} .formula .g{color:var(--green)} .formula .b{color:var(--blue)}
+
+  .calc{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center}
+  @media(max-width:760px){.calc{grid-template-columns:1fr}}
+  .calc input[type=range]{width:100%;accent-color:var(--blue)}
+  .calc .row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:13px;margin:6px 0}
+  .calc .out{font-family:var(--mono);font-size:34px;color:var(--amber);text-align:center;line-height:1.2}
+  .calc .out span{font-size:14px;color:var(--muted);display:block}
+
+  footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--border);
+         color:var(--dim);font-size:12.5px;font-family:var(--mono)}
+  a{color:var(--blue);text-decoration:none}
+  a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">conformer-rnnt-asr &nbsp;·&nbsp; iteration 9 &nbsp;·&nbsp; multihead 分支</div>
+  <h1>投机显示 Speculative Display</h1>
+  <p class="sub">
+    Medusa 草稿不再用于加速解码，而是<b>提前上屏</b>；真实 token 到达时确认或替换。
+    价值模型 = 命中率 × 提前量。本页解释其架构、计算流程、算法、指标与实测结果。
+  </p>
+  <div class="kpis">
+    <div class="kpi"><div class="v">2 头</div><div class="k">h1 / h2 链式草拟</div></div>
+    <div class="kpi"><div class="v">9 帧</div><div class="k">窗口 [t−7 … t+1]</div></div>
+    <div class="kpi"><div class="v">40 ms</div><div class="k">1 reduced 帧</div></div>
+    <div class="kpi"><div class="v">0.751</div><div class="k">iter-8h2 overall</div></div>
+    <div class="kpi"><div class="v">74.99</div><div class="k">配置 B merged value</div></div>
+    <div class="kpi"><div class="v">43%</div><div class="k">预测区命中常数</div></div>
+  </div>
+</header>
+
+<div class="note">
+  <b>一句话总结</b>：iter-9 把 Medusa 从"投机解码的加速器"改造成"投机显示的提前量来源"。
+  解码回归纯贪心（RTF 不变、零正确性风险），草稿只负责在真实 token 到达前把字先放到屏幕上。
+  实测发现：<span class="hl">瓶颈不是命中率，而是提前量</span>；且两头在"预测区"的能力完全相同（43%），
+  h1 那个 90% 的命中率是复制通道刷出来的虚高。
+</div>
+
+<!-- ═══════════════ 1. 换轨 ═══════════════ -->
+<details class="mod" open>
+<summary>1. 换轨：从「提速」到「显示」<span class="tag">价值模型</span></summary>
+<div class="body">
+  <p>iter-1 ~ iter-8 一直在优化 <b>验证器接受率</b>——草稿被接受得越多，解码跳步越多，RTF 越低。
+  但这条路的收益上限受制于 base 模型本身，且每一点接受率都要用复杂的验证器模拟（chain_sim）去换。</p>
+
+  <p>iter-9 换了一个问题：<b>如果草稿根本不参与解码，只用来提前上屏呢？</b></p>
+
+  <div class="grid2">
+    <div class="card">
+      <h4 class="bad">旧模型 · 投机解码（iter-1~8）</h4>
+      <ul class="small">
+        <li>草稿进入验证循环，接受则跳步</li>
+        <li>指标：接受率 / 跳步数 / RTF</li>
+        <li>猜错 → 验证器拒绝，<b>无副作用</b></li>
+        <li>代价：验证器模拟（逐帧扫 joiner）+ 实现复杂度</li>
+        <li>天花板：受 base 模型精度硬约束</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 class="good">新模型 · 投机显示（iter-9）</h4>
+      <ul class="small">
+        <li>解码 = <b>纯贪心 RNNT</b>，草稿用完即弃</li>
+        <li>指标：<b>命中率 × 提前量</b>（感知提前量）</li>
+        <li>猜错 → 屏幕闪烁（上屏后被改写）</li>
+        <li>代价：闪烁这一个纯感官问题</li>
+        <li>天花板：<b>窗里能看到多少未来音频</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note fix">
+    <b>为什么这次换轨是「免费」的</b>：解码路径回到纯贪心后，输出与 greedy oracle 逐 token 一致，
+    结构上不可能出错（lossless 是免费的）。RTF 不变，也不需要验证器。
+    换句话说，<span class="hl">这是一个可以随时丢弃的增量功能</span>——效果不好就关掉，零风险。
+  </div>
+
+  <h3>价值模型</h3>
+  <div class="formula">
+    value<sub>head-k</sub> &nbsp;=&nbsp; <span class="g">命中率</span> &nbsp;×&nbsp; <span class="b">平均提前量</span> &nbsp;−&nbsp; <span class="bad" style="color:var(--red)">替换（闪烁）惩罚</span>
+  </div>
+  <p class="small muted">
+    提前量以 reduced 帧计 (1 帧 = 4 mel = 40 ms)；命中 = 草稿与随后真实 emit 的 token 相同；
+    替换 = 上屏后被改写。未命中的草稿提前量记 0（观众看到的是错的，等于没提前）。
+    所以 <code>value = hit% × mean_lead × 40ms</code>，单位 ms，含义是<b>期望感知提前量</b>。
+  </p>
+
+  <h3>时序：一次显示是怎么发生的</h3>
+  <pre><span class="c"># post-emit 语义：在 emit 完第 u 个 token 的那个帧上开始草拟</span>
+
+帧 t=4   真实 emit "我"  ──►  头链从 post-emit 状态出发草拟
+                              head-1 草稿 d1  →  预测 ref[u+1]
+                              head-2 草稿 d2  →  预测 ref[u+2]
+
+帧 t=4   <span class="k">上屏</span>：把 d1 d2 立刻显示出来（此时真实 token 还没到）
+
+帧 t=7   真实 emit ref[u+1] 到达
+           ├─ 若 == d1  →  <span class="g">命中</span>：确认，提前量 = 7−4 = 3 帧 = 120 ms
+           └─ 若 != d1  →  <span class="bad">闪烁</span>：替换成真实值</pre>
+</div>
+</details>
+<!-- ═══════════════ 2. 效果演示 ═══════════════ -->
+<details class="mod" open>
+<summary>2. 效果演示：显示时间线仿真<span class="tag">可交互</span></summary>
+<div class="body">
+  <p>下面用一条 12 帧（480 ms）的合成时间线演示一次显示是怎么发生的。
+  真实语音按贪心解码在固定帧发射 token；头在<b>每个 emit 点上</b>立刻草拟后续 token 并上屏。
+  为清晰起见只画一个头，可用按钮切换到 head-2。</p>
+
+  <div class="demo">
+    <div class="demo-ctl">
+      <button class="primary" id="playBtn">▶ 播放</button>
+      <button id="stepBtn">单步 ▸</button>
+      <button id="resetBtn">↺ 重置</button>
+      <button id="headBtn">切换到 head-2</button>
+      <span class="clock">帧 <b id="clockFrame">–</b> &nbsp;|&nbsp; t = <b id="clockMs">0</b> ms</span>
+    </div>
+
+    <div class="screen" id="screen"></div>
+    <p class="small muted" style="margin:6px 0 0">
+      屏幕：<span style="color:#9ecbff">■ 真实确认</span> ·
+      <span style="color:#7ee2a8">■ 命中草稿</span> ·
+      <span style="color:#ff9d97">■ 被替换（闪烁）</span> ·
+      <span style="color:#a9b6c6">┅ 待确认草稿</span>
+    </p>
+
+    <div class="timeline">
+      <div class="tl-rail" id="rail"></div>
+    </div>
+
+    <div class="tl-note" id="note">按「播放」开始，或「单步」逐帧观察。</div>
+    <div class="stats" id="demoStats"></div>
+  </div>
+
+  <div class="note">
+    <b>从这个演示能看出什么</b>：
+    <ul class="small" style="margin-bottom:0">
+      <li><b>命中 ≠ 提前量</b>。head-1 命中的那次提前了 3 帧（120 ms）；head-2 命中那次提前了 6 帧（240 ms）——同样的"命中"，价值差一倍。</li>
+      <li><b>弃权是免费的</b>。头输出 blank 时不上屏，既不产生错误也不产生闪烁，代价只是没有提前量。</li>
+      <li><b>闪烁 = 已上屏后被改写</b>。没命中的草稿会先给观众看错的字，再改回来——这正是替换惩罚的来源。</li>
+      <li><b>链会截断</b>。head-1 弃权后，head-2 根本不会被尝试（head-2 的状态建立在 head-1 的草稿之上）。</li>
+    </ul>
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 3. 架构 ═══════════════ -->
+<details class="mod" open>
+<summary>3. 系统架构<span class="tag">数据流</span></summary>
+<div class="body">
+  <p>底座是标准的 Conformer-RNNT（transducer）：编码器把音频压成 40 ms 一帧的声学表示，
+  predictor 维护语言状态，joiner 把两者融合出下一个 token 的分布。
+  Medusa 头挂在 joiner 之上，<b>不改变底座</b>，只额外预测未来若干帧的 token。</p>
+
+  <div class="chart">
+    <svg viewBox="0 0 1000 520" role="img" aria-label="iter-9 架构图">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#3d4a5c"/>
+        </marker>
+        <marker id="arB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#58a6ff"/>
+        </marker>
+        <marker id="arG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#3fb950"/>
+        </marker>
+      </defs>
+
+      <!-- ===== 底座数据流 ===== -->
+      <text x="16" y="20" fill="#6e7681" font-size="11" font-family="ui-monospace,monospace" letter-spacing="1.5">底座 · 纯贪心 RNNT (解码路径，草稿不参与)</text>
+
+      <rect x="16" y="30" width="128" height="58" rx="9" fill="#0f1620" stroke="#232c38"/>
+      <text x="80" y="54" fill="#e6edf3" font-size="13" text-anchor="middle">音频 16 kHz</text>
+      <text x="80" y="72" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">hop 160 → 10 ms</text>
+
+      <path d="M146,59 L172,59" stroke="#3d4a5c" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="176" y="30" width="134" height="58" rx="9" fill="#0f1620" stroke="#232c38"/>
+      <text x="243" y="54" fill="#e6edf3" font-size="13" text-anchor="middle">mel 滤波器组</text>
+      <text x="243" y="72" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">80 维 × 100 帧/s</text>
+
+      <path d="M312,59 L338,59" stroke="#3d4a5c" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="342" y="30" width="150" height="58" rx="9" fill="#0f1620" stroke="#232c38"/>
+      <text x="417" y="54" fill="#e6edf3" font-size="13" text-anchor="middle">Conformer 编码器</text>
+      <text x="417" y="72" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">2 + 8 层 · d=512</text>
+
+      <path d="M494,59 L520,59" stroke="#3d4a5c" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="524" y="30" width="150" height="58" rx="9" fill="#0f1620" stroke="#232c38"/>
+      <text x="599" y="54" fill="#e6edf3" font-size="13" text-anchor="middle">4× 时间压缩</text>
+      <text x="599" y="72" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">stride 4 → 40 ms/帧</text>
+
+      <path d="M676,59 L702,59" stroke="#3d4a5c" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="706" y="30" width="132" height="58" rx="9" fill="#0f1620" stroke="#58a6ff" stroke-opacity=".5"/>
+      <text x="772" y="54" fill="#e6edf3" font-size="13" text-anchor="middle">enc 帧序列</text>
+      <text x="772" y="72" fill="#58a6ff" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">e_t ∈ R^512</text>
+
+      <rect x="852" y="30" width="132" height="58" rx="9" fill="#0f1620" stroke="#232c38"/>
+      <text x="918" y="54" fill="#e6edf3" font-size="13" text-anchor="middle">predictor</text>
+      <text x="918" y="72" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">2×LSTM · g_u</text>
+
+      <path d="M838,59 L848,59" stroke="#3d4a5c" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <!-- ===== 声学窗 ===== -->
+      <path d="M772,90 L772,112" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arB)"/>
+      <text x="784" y="106" fill="#58a6ff" font-size="11" font-family="ui-monospace,monospace">取窗</text>
+
+      <rect x="16" y="118" width="968" height="96" rx="10" fill="#0c141f" stroke="#1f6feb" stroke-opacity=".45"/>
+      <text x="34" y="142" fill="#58a6ff" font-size="12">声学窗 [t−7 … t+1]，宽 9 帧 = 360 ms</text>
+      <text x="34" y="202" fill="#6e7681" font-size="11" font-family="ui-monospace,monospace">展平 9×512 = 4608 维 → context_acoustic → MLP 投影</text>
+
+      <g font-family="ui-monospace,monospace" font-size="12">
+        <!-- 过去帧 -->
+        <g>
+          <rect x="300" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
+          <text x="326" y="174" fill="#8b949e" text-anchor="middle">t−7</text>
+        </g>
+        <g>
+          <rect x="356" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
+          <text x="382" y="174" fill="#8b949e" text-anchor="middle">t−6</text>
+        </g>
+        <g>
+          <rect x="412" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
+          <text x="438" y="174" fill="#8b949e" text-anchor="middle">t−5</text>
+        </g>
+        <g>
+          <rect x="468" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
+          <text x="494" y="174" fill="#8b949e" text-anchor="middle">t−4</text>
+        </g>
+        <g>
+          <rect x="524" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
+          <text x="550" y="174" fill="#8b949e" text-anchor="middle">t−3</text>
+        </g>
+        <g>
+          <rect x="580" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
+          <text x="606" y="174" fill="#8b949e" text-anchor="middle">t−2</text>
+        </g>
+        <g>
+          <rect x="636" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
+          <text x="662" y="174" fill="#8b949e" text-anchor="middle">t−1</text>
+        </g>
+        <!-- 当前帧 -->
+        <g>
+          <rect x="700" y="148" width="60" height="42" rx="6" fill="#0d1c2e" stroke="#58a6ff" stroke-width="2"/>
+          <text x="730" y="172" fill="#9ecbff" text-anchor="middle" font-weight="700">t</text>
+          <text x="730" y="204" fill="#58a6ff" font-size="10" text-anchor="middle" font-family="system-ui">当前帧</text>
+        </g>
+        <!-- lookahead -->
+        <g>
+          <rect x="768" y="148" width="60" height="42" rx="6" fill="#1c1709" stroke="#d29922" stroke-width="2"/>
+          <text x="798" y="172" fill="#e3b341" text-anchor="middle" font-weight="700">t+1</text>
+          <text x="798" y="204" fill="#d29922" font-size="10" text-anchor="middle" font-family="system-ui">lookahead</text>
+        </g>
+        <!-- 灰色说明 -->
+        <text x="326" y="232" fill="#4d5764" font-size="10" text-anchor="middle" font-family="system-ui">已提交 · 流式免费</text>
+        <text x="798" y="232" fill="#8a6d1f" font-size="10" text-anchor="middle" font-family="system-ui">唯一"未来"信息源</text>
+        <text x="86" y="174" fill="#6e7681" font-size="10" font-family="system-ui">past = 7</text>
+      </g>
+
+      <!-- ===== joiner ===== -->
+      <path d="M730,214 L730,244" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arB)"/>
+      <path d="M918,90 L918,258 L836,258" stroke="#58a6ff" stroke-width="1.5" fill="none" marker-end="url(#arB)"/>
+
+      <rect x="560" y="246" width="270" height="52" rx="9" fill="#0f1620" stroke="#232c38"/>
+      <text x="695" y="268" fill="#e6edf3" font-size="13" text-anchor="middle">joiner.fuse(e_t , g_u) → joint</text>
+      <text x="695" y="286" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">(1,1,1,512)</text>
+
+      <path d="M695,300 L695,318" stroke="#3d4a5c" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="560" y="322" width="270" height="46" rx="9" fill="#0f1620" stroke="#232c38"/>
+      <text x="695" y="342" fill="#e6edf3" font-size="13" text-anchor="middle">w_vocab(joint) → base logits</text>
+      <text x="695" y="358" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">detach 后作"验证器分布摘要"</text>
+
+      <!-- ===== heads ===== -->
+      <path d="M660,368 L500,388" stroke="#3fb950" stroke-width="1.5" marker-end="url(#arG)"/>
+      <path d="M800,368 L900,388" stroke="#3fb950" stroke-width="1.5" marker-end="url(#arG)"/>
+
+      <rect x="118" y="392" width="336" height="104" rx="10" fill="#0c1a12" stroke="#2ea043" stroke-opacity=".55"/>
+      <text x="138" y="414" fill="#3fb950" font-size="13" font-weight="700">head-1（k=0，无链条件）</text>
+      <text x="138" y="436" fill="#c9d1d9" font-size="10" font-family="ui-monospace,monospace">delta = MLP( norm( pred + acoustic + base ) )</text>
+      <text x="138" y="454" fill="#8b949e" font-size="10" font-family="ui-monospace,monospace">+ context_mlp_extra + context_mlp_heads[0]</text>
+      <text x="138" y="476" fill="#e6edf3" font-size="10" font-family="ui-monospace,monospace">logits = w_vocab( res_blocks[0](joint+delta) )</text>
+
+      <rect x="550" y="392" width="336" height="104" rx="10" fill="#0c1a12" stroke="#2ea043" stroke-opacity=".55"/>
+      <text x="570" y="414" fill="#3fb950" font-size="13" font-weight="700">head-2（k=1，链式条件）</text>
+      <text x="570" y="436" fill="#c9d1d9" font-size="10" font-family="ui-monospace,monospace">delta = MLP( norm( pred + acoustic + base</text>
+      <text x="570" y="454" fill="#8b949e" font-size="10" font-family="ui-monospace,monospace">+ chain_state_proj(rolled) + draft(d1) ) )</text>
+      <text x="570" y="476" fill="#e6edf3" font-size="10" font-family="ui-monospace,monospace">logits = w_vocab( res_blocks[1](joint+delta) )</text>
+
+      <!-- chain arrow -->
+      <path d="M458,444 L544,444" stroke="#bc8cff" stroke-width="1.8" marker-end="url(#ar)"/>
+      <text x="501" y="434" fill="#bc8cff" font-size="10.5" text-anchor="middle" font-family="ui-monospace,monospace">d1 → rolled state</text>
+
+      <!-- 输出 -->
+      <path d="M285,496 L285,510 L499,510" stroke="#3d4a5c" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+      <text x="506" y="514" fill="#6e7681" font-size="11" font-family="system-ui">草稿 → 上屏 → 真实 token 到达时确认 / 替换（解码不等待）</text>
+    </svg>
+    <div class="cap">图 1 · iter-9 架构。绿色部分为 Medusa 头（本次唯一训练的部分，base 冻结）；
+      蓝色为底座编码路径；紫色为链式状态传递。</div>
+  </div>
+
+  <h3>三个必须记住的尺寸</h3>
+  <table>
+    <thead><tr><th>量</th><th>值</th><th>含义</th></tr></thead>
+    <tbody>
+      <tr><td>帧时长</td><td class="num">40 ms</td><td>hop 160 / sr 16000 × 1000 × stride 4</td></tr>
+      <tr><td>窗口宽度</td><td class="num">9 帧</td><td>1 + past(7) + lookahead(1)</td></tr>
+      <tr><td>头数</td><td class="num">2</td><td>h1 / h2 链式</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note warn">
+    <b>为什么 lookahead 只能是 1</b>：<code>right_context_length: 4</code> ÷ <code>time_reduction_stride: 4</code> = 1 帧。
+    这是流式部署的硬约束——想看到 t+2，就必须等第 8 个原始帧进入压缩块，系统延迟 +40 ms。
+    而 past 帧在流式部署时<b>已经算好并提交</b>，取它们不花任何延迟，所以 past=7 是免费的。
+  </div>
+</div>
+</details>
+<!-- ═══════════════ 4. 计算流程 ═══════════════ -->
+<details class="mod" open>
+<summary>4. 计算流程：两趟模拟<span class="tag">算法</span></summary>
+<div class="body">
+  <p>评估器 <code>scripts/eval_display.py</code> 离线复现产品时间线。关键在于：
+  <b>草稿不参与解码</b>，所以贪心解码只需要跑一次，emit 点的状态顺路快照即可；草稿在快照上补算。</p>
+
+  <div class="chart">
+    <svg viewBox="0 0 1000 300" role="img" aria-label="两趟评估流程">
+      <defs>
+        <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#3d4a5c"/>
+        </marker>
+        <marker id="a2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#58a6ff"/>
+        </marker>
+      </defs>
+
+      <!-- pass 1 -->
+      <rect x="16" y="24" width="452" height="252" rx="10" fill="#0c141f" stroke="#1f6feb" stroke-opacity=".4"/>
+      <text x="36" y="48" fill="#58a6ff" font-size="13" font-weight="700">Pass 1 · 贪心解码（= 产品解码本身）</text>
+
+      <rect x="36" y="62" width="180" height="40" rx="8" fill="#0f1620" stroke="#232c38"/>
+      <text x="126" y="87" fill="#c9d1d9" font-size="12" text-anchor="middle" font-family="ui-monospace,monospace">enc = transcribe(x)</text>
+
+      <path d="M126,102 L126,120" stroke="#3d4a5c" stroke-width="1.4" marker-end="url(#a2)"/>
+
+      <rect x="36" y="124" width="180" height="60" rx="8" fill="#0f1620" stroke="#232c38"/>
+      <text x="126" y="146" fill="#c9d1d9" font-size="12" text-anchor="middle" font-family="ui-monospace,monospace">pred = argmax(join(e_t , g))</text>
+      <text x="126" y="166" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">blank → t += 1</text>
+
+      <path d="M216,154 L244,154" stroke="#3d4a5c" stroke-width="1.4" marker-end="url(#a2)"/>
+
+      <rect x="248" y="124" width="200" height="60" rx="8" fill="#0e2117" stroke="#2ea043" stroke-opacity=".5"/>
+      <text x="348" y="146" fill="#7ee2a8" font-size="12" text-anchor="middle">非 blank → 记 emit</text>
+      <text x="348" y="166" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">+ 快照 post-emit 状态</text>
+
+      <path d="M348,184 L348,204 L126,204 L126,214" stroke="#3d4a5c" stroke-width="1.4" fill="none" marker-end="url(#a2)"/>
+
+      <rect x="36" y="218" width="412" height="42" rx="8" fill="#0f1620" stroke="#232c38"/>
+      <text x="242" y="236" fill="#c9d1d9" font-size="11.5" text-anchor="middle" font-family="ui-monospace,monospace">ref_tokens[]  ref_frames[]  snaps[] = (t, g_{u+1}, state_{u+1})</text>
+      <text x="242" y="252" fill="#6e7681" font-size="11" text-anchor="middle">每个 emit 点的 post-emit 状态快照</text>
+
+      <!-- pass 2 -->
+      <rect x="500" y="24" width="484" height="252" rx="10" fill="#0c1a12" stroke="#2ea043" stroke-opacity=".4"/>
+      <text x="520" y="48" fill="#3fb950" font-size="13" font-weight="700">Pass 2 · 在快照上草拟 + 对齐打分</text>
+
+      <rect x="520" y="62" width="216" height="40" rx="8" fill="#0f1620" stroke="#232c38"/>
+      <text x="628" y="87" fill="#c9d1d9" font-size="12" text-anchor="middle" font-family="ui-monospace,monospace">for 每个 snap (u, t_u)</text>
+
+      <path d="M628,102 L628,120" stroke="#3d4a5c" stroke-width="1.4" marker-end="url(#a2)"/>
+
+      <rect x="520" y="124" width="216" height="60" rx="8" fill="#0f1620" stroke="#232c38"/>
+      <text x="628" y="146" fill="#c9d1d9" font-size="11.5" text-anchor="middle" font-family="ui-monospace,monospace">drafts = chain_draft(窗, g_{u+1})</text>
+      <text x="628" y="166" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">h1 → predictor → h2</text>
+
+      <path d="M736,154 L764,154" stroke="#3d4a5c" stroke-width="1.4" marker-end="url(#a2)"/>
+
+      <rect x="768" y="118" width="196" height="72" rx="8" fill="#0d1c2e" stroke="#1f6feb" stroke-opacity=".6"/>
+      <text x="866" y="140" fill="#9ecbff" font-size="11.5" text-anchor="middle">对齐：draft[j] ≟ ref[u+1+j]</text>
+      <text x="866" y="158" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">lead = ref_frames[u+1+j] − t_u</text>
+      <text x="866" y="176" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">blank = 弃权，链截断</text>
+
+      <path d="M866,194 L866,212" stroke="#58a6ff" stroke-width="1.4" marker-end="url(#a2b)"/>
+
+      <rect x="520" y="216" width="444" height="44" rx="8" fill="#0f1620" stroke="#232c38"/>
+      <text x="742" y="234" fill="#e6edf3" font-size="11.5" text-anchor="middle">累加 hit / displayed / abstained / leads</text>
+      <text x="742" y="252" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">→ hit% · repl% · leadP50/P90/P99 · leadAvg · value</text>
+
+      <path d="M468,150 L496,150" stroke="#3d4a5c" stroke-width="1.6" marker-end="url(#a2)" stroke-dasharray="4 3"/>
+      <text x="482" y="140" fill="#6e7681" font-size="10" text-anchor="middle" font-family="system-ui">快照</text>
+    </svg>
+    <div class="cap">图 2 · 两趟评估流程。Pass 1 完全等同产品解码，Pass 2 只读快照、不改解码路径。</div>
+  </div>
+
+  <h3>对齐规则（最容易搞错的一步）</h3>
+  <pre><span class="c"># 训练侧 shifted_ce: head-k 在列 m 预测 y_{m+k-1}</span>
+<span class="c"># post-emit 语义下 m = u+1（emit 完第 u 个 token 后的那一列），于是：</span>
+
+    head-j 的草稿  ←→  ref_tokens[ u + 1 + j ]
+
+<span class="c"># j 从 0 开始：head-1 预测"下一个"token；head-2 预测"下下个"</span>
+<span class="c"># 评估与训练逐位同构 —— 这是数字可信的前提</span></pre>
+
+  <div class="note">
+    <b>提前量的定义域</b>：只有<b>命中</b>的草稿才有提前量（观众确实提前看到了正确内容）。
+    未命中的草稿提前量记 0，因为它给观众看的是错的。所以
+    <code>value = (hit/disp) × mean_lead(hits) × 40ms</code>——两个因子都来自命中子集。
+  </div>
+
+  <h3>时间线示例</h3>
+  <pre>帧:  3        6              9
+     │        │              │
+     ●emit"我" ●emit"们"      ●emit"走"
+     │        │              │
+     └─draft"们"──────────►命中  lead = 6−3 = 3 帧 = <span class="n">120 ms</span>
+     │        └─draft"好"──►<span class="bad">未命中</span> 被"走"替换 → <span class="bad">闪烁</span>
+     │                       └─blank → <span class="muted">弃权</span>（不上屏，零代价）</pre>
+</div>
+</details>
+
+<!-- ═══════════════ 5. 算法细节 ═══════════════ -->
+<details class="mod" open>
+<summary>5. 算法细节：头内部到底算了什么<span class="tag">medusa.py</span></summary>
+<div class="body">
+  <p>Medusa 头是一个<b>加性残差</b>结构：不替换 joiner，而是在 joint 特征上加一个 context delta，再走一遍词表投影。</p>
+
+  <h3>共享项（所有头复用，只算一次）</h3>
+  <pre>predictor = context_predictor(target_enc)          <span class="c"># 语言侧</span>
+acoustic  = context_acoustic(窗展平 9×512)          <span class="c"># 声学侧</span>
+base_term = context_base_logits(base_logits.detach())  <span class="c"># 验证器分布摘要（detach 防捷径）</span></pre>
+
+  <h3>逐头 delta</h3>
+  <pre>fused = predictor + acoustic + base_term
+      + chain_state_proj(rolled_state)             <span class="c"># iter-4 滚动语言状态</span>
+      + chain_state_proj_heads[k](rolled_state)    <span class="c"># iter-7 逐头状态投影</span>
+      + chain_draft_proj(emb(d_{k-1}))             <span class="c"># k≥1：前一头草稿的 embedding</span>
+
+normalized = context_norm(fused)
+delta_k    = context_mlp(normalized)
+           + context_mlp_extra(normalized)         <span class="c"># iter-6 共享深路径</span>
+           + context_mlp_heads[k](normalized)      <span class="c"># iter-7 逐头深路径</span>
+
+logits_k   = w_vocab( res_blocks[k]( joint + delta_k ) )</pre>
+
+  <p class="small muted">
+    所有新增投影均为<b>零初始化</b>（zero-init），所以扩容在 step-0 是无扰动的——这是 warm-start 能跨迭代累加的原因。
+  </p>
+
+  <h3>链式条件：训练 / 推理同构</h3>
+  <table>
+    <thead><tr><th>环节</th><th>训练</th><th>推理</th></tr></thead>
+    <tbody>
+      <tr><td>head-k 的语言状态</td><td class="num">tgt_enc 左移 k 列（teacher forcing）</td><td class="num">predictor 在草稿上滚动 k 步</td></tr>
+      <tr><td>前一头草稿</td><td class="num">上一头 logits 的 argmax（detach）</td><td class="num">已确定的 draft id</td></tr>
+      <tr><td>对齐列</td><td class="num">m，预测 y_{m+k−1}</td><td class="num">u+1 起，预测 ref[u+1+j]</td></tr>
+    </tbody>
+  </table>
+  <p class="small muted">草稿全部被接受时，推理的状态与训练 teacher forcing 的输入逐位相同——这就是"同构"的含义，也是链式条件不引入分布偏移的保证。</p>
+
+  <h3>诊断工具：三个可选开关</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>chain_sim（验证器模拟扫描）</h4>
+      <p class="small">在可见窗内逐帧跑真 joiner，问"这个头自己的状态会在这里发射什么 token"。
+      因为问的是 oracle 自己，所以 once found，读出的 token 一定正确——<b>这是复制通道，不是预测能力</b>。</p>
+      <p class="small muted">iter-9 显示模型下已关闭（<code>chain_sim: false</code>），保留仅用于诊断。</p>
+    </div>
+    <div class="card">
+      <h4>--no-sim（纯预测模式）</h4>
+      <p class="small">扫描照跑（诊断标签照出），但<b>不注入</b>读出结果。
+      头被逼回自己的预测路径，用来分离"复制刷出的命中率"与"真实预测能力"。</p>
+      <p class="small muted">副作用：弃权行为改变会让样本集自选择，no-sim 与 sim 模式的数字不可直接比。</p>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <b>区域拆分（本轮的核心里程碑）</b>：一条草稿若 <code>sim found = True</code>，说明答案在可见窗内，
+    头只要照抄就能命中（<b>复制区</b>）；若 <code>found = False</code>，答案在窗外，头必须真预测（<b>预测区</b>）。
+    总命中率被复制区占比主导，所以 <span class="hl">h1 的 90% 与 h2 的 59% 不可直接比较</span>。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 6. 指标 ═══════════════ -->
+<details class="mod" open>
+<summary>6. 测评指标<span class="tag">定义</span></summary><div class="body">
+  <table>
+    <thead><tr><th>指标</th><th>定义</th><th>作用</th></tr></thead>
+    <tbody>
+      <tr><td><code>disp</code> 上屏数</td><td>头输出非 blank 的次数</td><td>分母</td></tr>
+      <tr><td><code>abst</code> 弃权数</td><td>头输出 blank 的次数</td><td>不上屏，零代价</td></tr>
+      <tr><td><code>hit%</code> 命中率</td><td>草稿 == 真实 token 的比例</td><td>正确性</td></tr>
+      <tr><td><code>repl%</code> 替换率</td><td>100 − hit%（上屏后被改写）</td><td><b>闪烁</b>，感官惩罚</td></tr>
+      <tr><td><code>lead</code> 提前量</td><td>真实 emit 帧 − 草稿帧（× 40 ms）</td><td>唯一真正重要的量</td></tr>
+      <tr><td><code>value</code></td><td>hit% × mean_lead(hits)</td><td><b>一级指标</b>，期望感知提前量</td></tr>
+      <tr><td><code>copyHit%</code></td><td>复制区命中率</td><td>≈100%（照抄），不反映能力</td></tr>
+      <tr><td><code>predHit%</code></td><td>预测区命中率</td><td><b>头的真实能力</b></td></tr>
+      <tr><td><code>LMhit%</code></td><td>纯语言先验基线命中率</td><td>下限参照：头 ≈ 它 → 头只是个 LM</td></tr>
+    </tbody>
+  </table>
+
+  <h3>value 计算器</h3>
+  <div class="demo">
+    <div class="calc">
+      <div>
+        <div class="row"><span>命中率 hit%</span><span id="vHitTxt">59.4%</span></div>
+        <input type="range" id="vHit" min="0" max="100" value="59.4" step="0.1">
+        <div class="row" style="margin-top:14px"><span>平均提前量 leadAvg</span><span id="vLeadTxt">34 ms</span></div>
+        <input type="range" id="vLead" min="0" max="400" value="34" step="1">
+        <p class="small muted" style="margin-bottom:0">
+          拖动滑块观察：命中率线性影响 value，但<b>提前量是更稀缺的资源</b>——
+          实测两头 leadAvg 都不到 1 帧（33 ms），这才是天花板。
+        </p>
+      </div>
+      <div>
+        <div class="out"><span>value（期望感知提前量）</span><b id="vOut">20.2</b> ms</div>
+        <div class="row" style="justify-content:center;gap:18px;color:var(--muted)">
+          <span>命中时提前 <b id="vPerHit" style="color:var(--green)">57</b> ms</span>
+          <span>闪烁率 <b id="vRepl" style="color:var(--red)">40.6</b> %</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>命中率的分解公式</h3>
+  <div class="formula">
+    hit% &nbsp;≈&nbsp; <span class="b">覆盖率</span> × <span class="g">≈100%</span> &nbsp;+&nbsp; (1 − <span class="b">覆盖率</span>) × <span class="hl">43%</span>
+  </div>
+  <p class="small muted">
+    覆盖率 = 答案落在可见窗内的概率（由 lookahead 决定）；43% 是窗外预测的命中率，
+    <b>与头深度无关</b>——实测 h1 与 h2 都精确落在 43%。
+    这个分解把"瓶颈在窗内可见的未来帧数"这件事写成了算术。
+  </p>
+</div>
+</details>
+<!-- ═══════════════ 7. 结果 ═══════════════ -->
+<details class="mod" open>
+<summary>7. 实测结果<span class="tag">100 样本 · test-clean 前 100 条</span></summary>
+<div class="body">
+
+  <h3>7.1 三组显示基线</h3>
+  <table>
+    <thead><tr><th>配置</th><th>窗口</th><th>h1 hit%</th><th>h2 hit%</th><th>h1 value</th><th>h2 value</th><th>merged</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>A</b> display_iter7 <span class="muted">(BEST_iter7)</span></td>
+        <td class="num">[t..t+8] look=8 <span class="muted">非流式</span></td>
+        <td class="num tbl-win">94.81</td><td class="num tbl-win">67.60</td>
+        <td class="num">35.1 ms</td><td class="num">45.0 ms</td><td class="num">81.21</td>
+      </tr>
+      <tr>
+        <td><b>B</b> display_iter8h2 <span class="muted">(ep07 st20400)</span></td>
+        <td class="num">[t−7..t+1] look=1 <span class="good">流式合法</span></td>
+        <td class="num">90.60</td><td class="num">59.38</td>
+        <td class="num">30.3 ms</td><td class="num">34.0 ms</td><td class="num">74.99</td>
+      </tr>
+      <tr>
+        <td><b>C</b> BEST_iter7 @ 错配</td>
+        <td class="num">[t−7..t+1]</td>
+        <td class="num tbl-bad">47.91</td><td class="num tbl-bad">14.81</td>
+        <td class="num muted">—</td><td class="num muted">—</td><td class="num muted">—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="chart" id="ch-base"></div>
+  <div class="chart" id="ch-value"></div>
+
+  <h3>7.2 提前量分布</h3>
+  <div class="chart" id="ch-lead"></div>
+  <p class="small muted">
+    P50 = 40 ms（1 帧）、P90 = 80 ms（2 帧）、P99 = 120–160 ms。两个配置分布一致 ——
+    说明提前量几乎完全由<b>发射密度</b>决定，而不是由窗口大小决定。
+  </p>
+
+  <h3>7.3 三条结论</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4 class="good">① 流式预算几乎不亏</h4>
+      <p class="small">lookahead 8 → 1，h1 只掉 4.2 pt、h2 掉 8.2 pt。
+      iter-8 曾据此怀疑"信息守恒"结论，现确认<b>流式不是主要矛盾</b>。</p>
+    </div>
+    <div class="card">
+      <h4 class="hl">② 瓶颈是提前量，不是命中率</h4>
+      <p class="small">两头 mean lead 只有 33 ms / 头 ≈ <b>不到 1 帧</b>。
+      命中率再高，观众也只提前了不到 40 ms 看到内容 —— 这是当前方案的真正天花板。</p>
+    </div>
+    <div class="card">
+      <h4>③ 重训"流式合法头"收益很小</h4>
+      <p class="small">配置 A 是<b>非流式</b>的天花板，配置 B 已经在 91% / 74% 的位置。
+      原计划的阶段 2 重训能拿回的边距很有限。</p>
+    </div>
+  </div>
+
+  <h3>7.4 h2 瓶颈诊断（chain_sim 推理端，配置 B）</h3>
+  <table>
+    <thead><tr><th>head</th><th>scan</th><th>found%</th><th>simRight%</th><th>copied%</th></tr></thead>
+    <tbody>
+      <tr><td>h1</td><td class="num">8370</td><td class="num tbl-win">85.72</td><td class="num">100.00</td><td class="num">99.79</td></tr>
+      <tr><td>h2</td><td class="num">8269</td><td class="num tbl-bad">45.02</td><td class="num">82.76</td><td class="num">99.81</td></tr>
+    </tbody>
+  </table>
+  <p class="small muted">
+    <code>found%</code> = sim 扫描在可见窗内问到了答案；<code>simRight%</code> = 问到的就是目标（问的是 oracle 自己，found 时必为 100%）；
+    <code>copied%</code> = 直注查表被点亮的比例，≈100% 说明复制电路通畅。
+  </p>
+
+  <div class="chart" id="ch-train"></div>
+  <p class="small muted">h2 训练曲线是<b>平的</b>（ep00 → ep07 只有 0.590 → 0.612），续训救不了。</p>
+
+  <div class="note bad">
+    <b>根因是物理上限，不是能力问题</b>：h2 的目标 token 中位落在 1 帧后、P90 落在 2 帧后，
+    而 lookahead=1 的窗只有 [t, t+1]。<br>
+    <span class="hl">found% = 45.02% 与 P(lead ≤ 1 帧) = 45% 精确吻合</span> —— 这不是巧合，
+    是同一件事的两种测量。
+  </div>
+
+  <h3>7.5 区域拆分：复制区 vs 预测区（配置 B）</h3>
+  <table>
+    <thead><tr><th>head</th><th>copy_n</th><th>copyHit%</th><th>pred_n</th><th>predHit%</th><th>LMhit%</th><th>LMguess%</th></tr></thead>
+    <tbody>
+      <tr><td>h1</td><td class="num">7175</td><td class="num tbl-win">99.79</td><td class="num">1195</td><td class="num hl">43.01</td><td class="num">13.19</td><td class="num">16.25</td></tr>
+      <tr><td>h2</td><td class="num">3723</td><td class="num">82.76</td><td class="num">4546</td><td class="num hl">42.85</td><td class="num">1.48</td><td class="num">1.77</td></tr>
+    </tbody>
+  </table>
+
+  <div class="chart" id="ch-region"></div>
+
+  <div class="note fix">
+    <b>43.01% vs 42.85% —— 两头的预测能力完全相同。</b>
+    h2 总命中低（59.38 vs 90.60）的唯一原因是它在预测区的时间是 h1 的 3.8 倍（55% vs 14%），
+    不是它笨。<span class="hl">h1 那个 90% 是复制通道刷出来的虚高。</span>
+  </div>
+
+  <div class="chart" id="ch-lm"></div>
+  <p class="small muted">
+    预测区 LM 只有 2.18% / 0.64%，且 84–98% 的时间直接弃权（这个 predictor 在常量声学下几乎恒输出 blank）。
+    头高出先验 <b>40+ 个点</b> → 头确实在用声学窗外推，不是在当语言模型。
+  </p>
+
+  <h3>7.6 预测能力是「窗内未来帧数」的函数（配置 A，lookahead=8）</h3>
+  <div class="chart" id="ch-look"></div>
+  <p class="small muted">
+    同一机制、同样没有复制通道，只是窗从 1 帧放宽到 8 帧：<b>43% → 96% / 69%</b>。
+    这就是"瓶颈在窗里能看到多少未来音频"的直接证据。
+  </p>
+
+  <h3>7.7 门控显示：零训练成本的改进</h3>
+  <p>只在 <code>sim found</code> 时上屏（扫不到就弃权不显示）。不改模型、不重训，直接改推理策略：</p>
+  <table>
+    <thead><tr><th>head</th><th>闪烁 before → after</th><th>value before → after</th></tr></thead>
+    <tbody>
+      <tr><td>h1</td><td class="num">9.4% → <span class="good">0%</span></td><td class="num">30.3 → <span class="bad">28.3</span> ms</td></tr>
+      <tr><td>h2</td><td class="num">40.6% → <span class="good">17.2%</span></td><td class="num">34.0 → <span class="bad">21.0</span> ms</td></tr>
+    </tbody>
+  </table>
+  <div class="chart" id="ch-gate"></div>
+  <p class="small muted">
+    代价：h2 命中率本身不会超过 60%（受 found% 45% 硬约束），value 因此下降。
+    <b>这是"用提前量换稳定"的取舍</b>，是否值得取决于产品对闪烁的容忍度。
+  </p>
+
+  <h3>7.8 杠杆估算（以 h2 为目标）</h3>
+  <table>
+    <thead><tr><th>杠杆</th><th>机制</th><th>h2 命中率估算</th><th>代价</th></tr></thead>
+    <tbody>
+      <tr><td>提覆盖率</td><td>lookahead 1 → 2</td><td class="num good">≈78%</td>
+          <td>+40 ms 系统延迟 + <b>base 重训</b></td></tr>
+      <tr><td>提那 43%</td><td>加长过去窗（外推更强）</td><td class="num">≈70% <span class="muted">(假设 43→60%)</span></td>
+          <td>零延迟，medusa 重训</td></tr>
+      <tr><td>两者都做</td><td>—</td><td class="num good">≈80%</td><td>两者代价之和</td></tr>
+    </tbody>
+  </table>
+  <p class="small muted">
+    注："提 43%" 能否成立<b>尚未验证</b>；而覆盖率杠杆有配置 A 的实测支撑，确定性高得多。
+  </p>
+
+  <h3>7.9 两个 bug 修复（影响过历史数字）</h3>
+  <div class="note bad">
+    <b>① warm-start 误删共享 MLP 权重</b>（<code>lightning_module.py:618-660</code>）<br>
+    过期头键过滤取 <code>medusa_heads.</code> 后第一个数字段，把共享 MLP 的<b>层索引</b>
+    （<code>context_mlp.2</code>、<code>context_mlp_extra.2/4</code>）误判为头索引 ≥2 而丢弃
+    （BEST_iter7 中范数 97.9 / 76.4 / 40.2 → 丢弃后回落零初始化）。
+    改为只在 per-head ModuleList 下读索引。<span class="hl">iter-8h2 与 iter-9 首次基线都中了这招。</span>
+  </div>
+  <div class="note bad">
+    <b>② 布局错配的假基线</b>：BEST_iter7 的 <code>context_acoustic</code> 是 <code>(512, 4608)</code> = 9 列，
+    但语义是 iter-2d 解除流式后的 <code>[t..t+8]</code>（past=0, lookahead=8）；
+    iter-8h2 才是 <code>[t−7..t+1]</code>。<b>同宽不同义</b> ——
+    用 iter-7 权重跑 past=7 布局实测 h1 仅 47.91%，与日志的 0.920 严重不符，
+    这就是上表里的配置 C，数字无效。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 8. 结论 ═══════════════ -->
+<details class="mod" open>
+<summary>8. 结论与下一步<span class="tag">Takeaway</span></summary>
+<div class="body">
+  <ol>
+    <li><b>投机显示是一个零风险增量功能</b>：解码不依赖草稿，猜错只影响观感，不影响正确性。RTF 不变。</li>
+    <li><b>价值模型必须看"预测区"</b>：总命中率会被复制通道污染，跨头不可比。h1 的 90% 是虚高。</li>
+    <li><b>当前瓶颈是提前量（≈33 ms/头，不到 1 帧）</b>，不是命中率。命中率已经 90%/59%。</li>
+    <li><b>提升命中率的唯一有效杠杆是"窗内可见的未来帧数"</b>：lookahead 1→8 让预测区命中率从 43% 跳到 96%/69%。</li>
+    <li><b>加长过去窗是零延迟杠杆</b>，但它能否把 43% 提上去<b>尚未验证</b>——这是下一步该做的实验。</li>
+    <li><b>门控显示（只在 found 时上屏）是免费的取舍旋钮</b>：闪烁大降，代价是提前量下降。</li>
+  </ol>
+
+  <div class="note">
+    <b>下一步建议</b>：先跑"加长过去窗"消融（零延迟、只重训 medusa），
+    验证 43% 这个常数是否随过去窗变长而上升。若不上升，再考虑付出 +40 ms 系统延迟买 lookahead=2。
+  </div>
+</div>
+</details>
+
+<footer>
+  数据来源 · <a href="experiment-log.md">docs/experiment-log.md</a> (iter-9 章节) &nbsp;|&nbsp;
+  代码 · <code>scripts/eval_display.py</code> · <code>conformer_rnnt/medusa.py</code> · <code>conformer_rnnt/model.py</code><br>
+  口径 · test-clean 前 100 条 · batch_size=1 · 与 monitor 同口径 &nbsp;|&nbsp;
+  帧 · 1 reduced frame = 4 mel = 40 ms
+</footer>
+<script>
+(function(){
+"use strict";
+
+/* ══════════════════════ 1. 显示时间线仿真 ══════════════════════ */
+const REF = [{t:3,tok:'我'},{t:6,tok:'们'},{t:9,tok:'走'}];
+const NFRAMES = 12;
+
+const SCEN = {
+  h1: {
+    chips: {
+      3:[{c:'real',x:'我'},{c:'draft',x:'⇢们'}],
+      6:[{c:'real',x:'们'},{c:'hit',x:'✓3帧'},{c:'draft',x:'⇢好'}],
+      9:[{c:'real',x:'走'},{c:'miss',x:'✗好'},{c:'abst',x:'∅'}]
+    },
+    events: {
+      3:{real:0, draft:{tok:'们',pos:1}},
+      6:{real:1, draft:{tok:'好',pos:2}},
+      9:{real:2, draft:{abstain:true}}
+    }
+  },
+  h2: {
+    chips: {
+      3:[{c:'real',x:'我'},{c:'draft',x:'⇢走'}],
+      6:[{c:'real',x:'们'},{c:'abst',x:'∅'}],
+      9:[{c:'real',x:'走'},{c:'hit',x:'✓6帧'}]
+    },
+    events: {
+      3:{real:0, draft:{tok:'走',pos:2}},
+      6:{real:1, draft:{abstain:true}},
+      9:{real:2, note:'head-1 弃权 → 链截断，head-2 本轮未被尝试'}
+    }
+  }
+};
+
+let head='h1', cur=-1, timer=null;
+let confirmed=[], pending=[], stats=null;
+const $ = id => document.getElementById(id);
+const freshStats = () => ({disp:0,hit:0,miss:0,abst:0,leads:[]});
+
+function buildRail(){
+  const rail=$('rail'); rail.innerHTML='';
+  for(let t=0;t<NFRAMES;t++){
+    const cell=document.createElement('div');
+    cell.className='fr'; cell.dataset.t=t;
+    (SCEN[head].chips[t]||[]).forEach(ch=>{
+      const e=document.createElement('div');
+      e.className='ev '+ch.c; e.textContent=ch.x;
+      cell.appendChild(e);
+    });
+    const n=document.createElement('div'); n.className='n'; n.textContent=t;
+    const tick=document.createElement('div'); tick.className='tick';
+    cell.appendChild(n); cell.appendChild(tick);
+    rail.appendChild(cell);
+  }
+}
+
+function stepFrame(t){
+  const ev = SCEN[head].events[t];
+  const notes = [];
+  if(ev && ev.real != null){
+    const r = REF[ev.real];
+    const i = pending.findIndex(p => p.pos === ev.real);
+    if(i >= 0){
+      const p = pending[i], lead = t - p.t;
+      if(p.tok === r.tok){
+        stats.hit++; stats.leads.push(lead);
+        confirmed.push({tok:r.tok, fromHit:true, lead:lead});
+        notes.push('真实 emit「'+r.tok+'」→ <b class="good">命中</b>：草稿早在 '+lead+' 帧前（'+(lead*40)+' ms）就已上屏');
+      }else{
+        stats.miss++;
+        confirmed.push({tok:r.tok, fromHit:false, flicker:t});
+        notes.push('真实 emit「'+r.tok+'」→ <b class="bad">替换</b>：上屏的草稿「'+p.tok+'」被改写 → 闪烁一次');
+      }
+      pending.splice(i,1);
+    }else{
+      confirmed.push({tok:r.tok, fromHit:false});
+      notes.push('真实 emit「'+r.tok+'」（参考序列 #'+ev.real+'）');
+    }
+  }
+  if(ev && ev.draft){
+    const d = ev.draft;
+    if(d.abstain){
+      stats.abst++;
+      notes.push('头输出 <b class="muted">blank → 弃权</b>：不上屏、零代价，链在此截断');
+    }else{
+      pending.push({tok:d.tok, pos:d.pos, t:t});
+      stats.disp++;
+      notes.push('上屏草稿「<b>'+d.tok+'</b>」→ 预测参考序列 #'+d.pos);
+    }
+  }
+  if(ev && ev.note) notes.push(ev.note);
+  if(!notes.length) notes.push('<span class="muted">空闲帧：真实解码未发射，头没有新的草拟起点</span>');
+  $('note').innerHTML = notes.join('<br>');
+}
+
+function renderStats(){
+  const s = stats, disp = s.disp;
+  const hitRate = disp ? 100*s.hit/disp : NaN;
+  const meanLead = s.leads.length ? s.leads.reduce((a,b)=>a+b,0)/s.leads.length*40 : NaN;
+  const value = (disp && s.leads.length) ? (s.hit/disp)*meanLead : NaN;
+  const f = (v,d) => isNaN(v) ? '–' : v.toFixed(d);
+  $('demoStats').innerHTML = [
+    ['上屏 disp',   disp,                       'var(--blue)'],
+    ['命中 hit',    s.hit,                      'var(--green)'],
+    ['替换 闪烁',   s.miss,                     'var(--red)'],
+    ['弃权 blank',  s.abst,                     'var(--muted)'],
+    ['hit%',        f(hitRate,1),               'var(--green)'],
+    ['leadAvg',     isNaN(meanLead)?'–':meanLead.toFixed(0)+' ms', 'var(--cyan)'],
+    ['value',       isNaN(value)?'–':value.toFixed(1)+' ms',       'var(--amber)']
+  ].map(a=>'<div class="stat"><div class="v" style="color:'+a[2]+'">'+a[1]+'</div><div class="k">'+a[0]+'</div></div>').join('');
+}
+
+function render(){
+  $('clockFrame').textContent = cur < 0 ? '–' : cur;
+  $('clockMs').textContent = cur < 0 ? 0 : cur*40;
+  document.querySelectorAll('#rail .fr').forEach(cell=>{
+    const t = +cell.dataset.t;
+    cell.classList.toggle('now', t === cur);
+    cell.querySelectorAll('.ev').forEach(e => e.classList.toggle('on', t <= cur));
+  });
+  let html='';
+  for(let i=0;i<REF.length;i++){
+    const c = confirmed[i], p = pending.find(x=>x.pos===i);
+    if(c){
+      const cls = (c.flicker === cur) ? 'miss' : (c.fromHit ? 'hit' : 'real');
+      const badge = c.fromHit ? '<span class="lead">+'+(c.lead*40)+'ms</span>' : '';
+      html += '<div class="tok '+cls+'">'+badge+'<span class="ch">'+c.tok+'</span><span class="lbl">#'+i+' 确认</span></div>';
+    }else if(p){
+      html += '<div class="tok draft"><span class="ch">'+p.tok+'</span><span class="lbl">#'+i+' 待确认</span></div>';
+    }else{
+      html += '<div class="tok" style="border-style:dotted;opacity:.3"><span class="ch">·</span><span class="lbl">#'+i+'</span></div>';
+    }
+  }
+  $('screen').innerHTML = html;
+  renderStats();
+}
+
+function stopPlay(){ if(timer){ clearInterval(timer); timer=null; } $('playBtn').textContent='▶ 播放'; }
+function nextFrame(){ if(cur >= NFRAMES-1){ stopPlay(); return false; } cur++; stepFrame(cur); render(); return true; }
+function resetDemo(){
+  stopPlay(); cur=-1; confirmed=[]; pending=[]; stats=freshStats();
+  $('note').innerHTML='按「播放」开始，或「单步」逐帧观察。';
+  buildRail(); render();
+}
+function play(){
+  if(timer) return;
+  if(cur >= NFRAMES-1) resetDemo();
+  $('playBtn').textContent='❚❚ 暂停';
+  timer=setInterval(()=>{ if(!nextFrame()) stopPlay(); }, 1100);
+}
+
+$('playBtn').onclick  = () => timer ? stopPlay() : play();
+$('stepBtn').onclick  = () => { stopPlay(); nextFrame(); };
+$('resetBtn').onclick = resetDemo;
+$('headBtn').onclick  = () => {
+  head = head === 'h1' ? 'h2' : 'h1';
+  $('headBtn').textContent = '切换到 ' + (head==='h1' ? 'head-2' : 'head-1');
+  resetDemo();
+};
+
+/* ══════════════════════ 2. 图表 ══════════════════════ */
+const NS = 'http://www.w3.org/2000/svg';
+const C = {blue:'#58a6ff', green:'#3fb950', red:'#f85149', amber:'#d29922',
+           purple:'#bc8cff', cyan:'#39c5cf', gray:'#6e7681'};
+
+function svgEl(tag, attrs, text){
+  const e = document.createElementNS(NS, tag);
+  for(const k in attrs) e.setAttribute(k, attrs[k]);
+  if(text != null) e.textContent = text;
+  return e;
+}
+function legend(sers){
+  const d = document.createElement('div'); d.className='legend';
+  d.innerHTML = sers.map(s=>'<span><i style="background:'+s.color+'"></i>'+s.name+'</span>').join('');
+  return d;
+}
+function barChart(host, cfg){
+  const W=1000, H=cfg.height||286, pad={l:70,r:24,t:28,b:58};
+  const pw=W-pad.l-pad.r, ph=H-pad.t-pad.b, max=cfg.max, ticks=cfg.ticks||5;
+  const svg = svgEl('svg',{viewBox:'0 0 '+W+' '+H});
+  for(let i=0;i<=ticks;i++){
+    const y = pad.t+ph-ph*i/ticks;
+    svg.appendChild(svgEl('line',{x1:pad.l,y1:y,x2:W-pad.r,y2:y,stroke:'#1d2632','stroke-width':1}));
+    svg.appendChild(svgEl('text',{x:pad.l-10,y:y+4,fill:'#6e7681','font-size':11,
+      'text-anchor':'end','font-family':'ui-monospace,monospace'},(max*i/ticks).toFixed(max<=5?1:0)));
+  }
+  const G=cfg.groups.length, S=cfg.series.length, gw=pw/G;
+  const bw=Math.min(54, gw*0.62/S);
+  cfg.series.forEach((ser,si)=>ser.values.forEach((v,gi)=>{
+    const h=Math.max(0, ph*v/max), x=pad.l+gw*gi+gw/2-(bw*S)/2+bw*si, y=pad.t+ph-h;
+    svg.appendChild(svgEl('rect',{x:x,y:y,width:bw,height:h,rx:4,fill:ser.color,opacity:.88}));
+    svg.appendChild(svgEl('text',{x:x+bw/2,y:y-8,fill:ser.color,'font-size':12,
+      'text-anchor':'middle','font-family':'ui-monospace,monospace'},
+      (ser.labels && ser.labels[gi]!=null) ? ser.labels[gi]
+        : v.toFixed(cfg.decimals!=null?cfg.decimals:2)));
+  }));
+  cfg.groups.forEach((g,gi)=>{
+    svg.appendChild(svgEl('text',{x:pad.l+gw*gi+gw/2,y:pad.t+ph+24,fill:'#8b949e',
+      'font-size':12.5,'text-anchor':'middle'},g));
+    if(cfg.subs && cfg.subs[gi]){
+      svg.appendChild(svgEl('text',{x:pad.l+gw*gi+gw/2,y:pad.t+ph+42,fill:'#6e7681',
+        'font-size':11,'text-anchor':'middle'},cfg.subs[gi]));
+    }
+  });
+  if(cfg.unit) svg.appendChild(svgEl('text',{x:pad.l-10,y:pad.t-12,fill:'#6e7681',
+    'font-size':11,'text-anchor':'end','font-family':'ui-monospace,monospace'},cfg.unit));
+  host.appendChild(svg);
+  host.appendChild(legend(cfg.series));
+}
+function hstack(host, cfg){
+  const W=1000, rowH=104, H=cfg.rows.length*rowH+8, x0=120, x1=W-24, bw=x1-x0;
+  const svg = svgEl('svg',{viewBox:'0 0 '+W+' '+H});
+  cfg.rows.forEach((row,ri)=>{
+    const y = ri*rowH+26;
+    svg.appendChild(svgEl('text',{x:14,y:y+24,fill:'#e6edf3','font-size':15,
+      'font-family':'ui-monospace,monospace'},row.label));
+    const total = row.parts.reduce((a,b)=>a+b.v,0);
+    let cx = x0;
+    row.parts.forEach(p=>{
+      const w = bw*p.v/total;
+      svg.appendChild(svgEl('rect',{x:cx,y:y,width:w,height:34,rx:5,fill:p.color,opacity:.85}));
+      svg.appendChild(svgEl('text',{x:cx+w/2,y:y+22,fill:'#08131c','font-size':12.5,
+        'font-weight':700,'text-anchor':'middle','font-family':'ui-monospace,monospace'},
+        (100*p.v/total).toFixed(1)+'%'));
+      svg.appendChild(svgEl('text',{x:cx+w/2,y:y+50,fill:p.color,'font-size':11.5,
+        'text-anchor':'middle','font-family':'ui-monospace,monospace'},p.label));
+      cx += w;
+    });
+    if(row.note) svg.appendChild(svgEl('text',{x:x0,y:y+72,fill:'#6e7681','font-size':11.5},row.note));
+  });
+  host.appendChild(svg);
+  host.appendChild(legend(cfg.rows[0].parts.map(p=>({name:p.legend||p.label.split(' ')[0],color:p.color}))));
+}
+function lineChart(host, cfg){
+  const W=1000, H=cfg.height||286, pad={l:70,r:24,t:28,b:58};
+  const pw=W-pad.l-pad.r, ph=H-pad.t-pad.b, ymin=cfg.ymin, ymax=cfg.ymax, ticks=4;
+  const svg = svgEl('svg',{viewBox:'0 0 '+W+' '+H});
+  for(let i=0;i<=ticks;i++){
+    const y = pad.t+ph-ph*i/ticks, val = ymin+(ymax-ymin)*i/ticks;
+    svg.appendChild(svgEl('line',{x1:pad.l,y1:y,x2:W-pad.r,y2:y,stroke:'#1d2632'}));
+    svg.appendChild(svgEl('text',{x:pad.l-10,y:y+4,fill:'#6e7681','font-size':11,
+      'text-anchor':'end','font-family':'ui-monospace,monospace'},val.toFixed(3)));
+  }
+  const n = cfg.ys.length, col = cfg.color||C.blue;
+  const pts = cfg.ys.map((v,i)=>{
+    const x = pad.l + pw*(n===1?0.5:i/(n-1));
+    const y = pad.t + ph - ph*(v-ymin)/(ymax-ymin);
+    return [x,y];
+  });
+  svg.appendChild(svgEl('polyline',{points:pts.map(p=>p.join(',')).join(' '),fill:'none',
+    stroke:col,'stroke-width':2.5,'stroke-linejoin':'round'}));
+  pts.forEach((p,i)=>{
+    svg.appendChild(svgEl('circle',{cx:p[0],cy:p[1],r:4.5,fill:col}));
+    svg.appendChild(svgEl('text',{x:p[0],y:p[1]-13,fill:col,'font-size':12,
+      'text-anchor':'middle','font-family':'ui-monospace,monospace'},cfg.ys[i].toFixed(3)));
+    svg.appendChild(svgEl('text',{x:p[0],y:pad.t+ph+24,fill:'#8b949e','font-size':12,
+      'text-anchor':'middle','font-family':'ui-monospace,monospace'},cfg.xs[i]));
+  });
+  host.appendChild(svg);
+  host.appendChild(legend([{name:cfg.name||'值', color:col}]));
+}
+
+barChart($('ch-base'), {
+  groups:['A · look=8 非流式','B · look=1 流式','C · 权重错配'],
+  subs:['iter-7 训练布局','iter-8h2 流式布局','同宽不同义 → 数字无效'],
+  series:[{name:'h1 hit%',color:C.blue,values:[94.81,90.60,47.91]},
+          {name:'h2 hit%',color:C.purple,values:[67.60,59.38,14.81]}],
+  max:100, unit:'%'
+});
+
+barChart($('ch-value'), {
+  groups:['A · look=8 非流式','B · look=1 流式'],
+  series:[{name:'h1 value',color:C.cyan,values:[35.1,30.3]},
+          {name:'h2 value',color:C.amber,values:[45.0,34.0]}],
+  max:60, unit:'ms', decimals:1, height:250
+});
+
+barChart($('ch-lead'), {
+  groups:['P50','P90','P99'],
+  subs:['1 帧','2 帧','3–4 帧'],
+  series:[{name:'提前量',color:C.green,values:[40,80,160],labels:['40','80','120–160']}],
+  max:200, unit:'ms', decimals:0, height:240
+});
+
+lineChart($('ch-train'), {
+  xs:['ep00','ep02','ep04','ep07'],
+  ys:[0.590,0.579,0.589,0.612],
+  ymin:0.50, ymax:0.70, color:C.purple, name:'h2 接受率/命中率'
+});
+
+hstack($('ch-region'), {
+  rows:[
+    {label:'h1', parts:[
+        {v:7175, color:C.blue,  label:'复制区 7175 · 命中 99.79%'},
+        {v:1195, color:C.amber, label:'预测区 1195 · 命中 43.01%'}],
+     note:'h1 的总命中 90.60% 里，绝大部分来自复制区的 99.79%（照抄）'},
+    {label:'h2', parts:[
+        {v:3723, color:C.blue,  label:'复制区 3723 · 命中 82.76%'},
+        {v:4546, color:C.amber, label:'预测区 4546 · 命中 42.85%'}],
+     note:'h2 在预测区的时间是 h1 的 3.8 倍（55% vs 14%），这才是它总命中低的唯一原因'}
+  ]
+});
+
+barChart($('ch-lm'), {
+  groups:['B · h1','B · h2','A · h1','A · h2'],
+  subs:['look=1','look=1','look=8','look=8'],
+  series:[{name:'头 predHit%',color:C.green,values:[43.01,42.85,95.94,69.22]},
+          {name:'LM 先验 LMhit%',color:C.gray,values:[2.18,0.64,14.31,1.70]}],
+  max:100, unit:'%'
+});
+
+barChart($('ch-look'), {
+  groups:['配置 B · look=1 流式','配置 A · look=8 非流式'],
+  subs:['窗口 [t−7 .. t+1]','窗口 [t .. t+8]'],
+  series:[{name:'h1 predHit%',color:C.blue,values:[43.01,95.94]},
+          {name:'h2 predHit%',color:C.purple,values:[42.85,69.22]}],
+  max:100, unit:'%', height:250
+});
+
+barChart($('ch-gate'), {
+  groups:['h1','h2'],
+  series:[{name:'闪烁 before',color:'#7d2b28',values:[9.4,40.6]},
+          {name:'闪烁 after（门控）',color:C.green,values:[0,17.2]}],
+  max:50, unit:'%', decimals:1, height:240
+});
+barChart($('ch-gate'), {
+  groups:['h1','h2'],
+  series:[{name:'value before',color:'#7a5c14',values:[30.3,34.0]},
+          {name:'value after（门控）',color:C.amber,values:[28.3,21.0]}],
+  max:40, unit:'ms', decimals:1, height:240
+});
+
+/* ══════════════════════ 3. value 计算器 ══════════════════════ */
+const vHit = $('vHit'), vLead = $('vLead');
+function updCalc(){
+  const h = +vHit.value, l = +vLead.value;
+  $('vHitTxt').textContent  = h.toFixed(1)+'%';
+  $('vLeadTxt').textContent = l+' ms';
+  $('vOut').textContent     = (h/100*l).toFixed(1);
+  $('vPerHit').textContent  = l.toFixed(0);
+  $('vRepl').textContent    = (100-h).toFixed(1);
+}
+vHit.oninput = updCalc; vLead.oninput = updCalc;
+updCalc();
+
+/* ══════════════════════ init ══════════════════════ */
+resetDemo();
+})();
+</script>
+</div>
+</body>
+</html>
