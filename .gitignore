@@ -46,6 +46,7 @@ env/
 .claude/
 
 # CodeBuddy / WorkBuddy
+.codebuddy/
 .workbuddy/
 .zcode/
 
