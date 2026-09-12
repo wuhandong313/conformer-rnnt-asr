@@ -6,177 +6,188 @@
 <title>iter-9 投机显示 (Speculative Display) — 原理 / 算法 / 演示 / 指标 / 结果</title>
 <style>
   :root{
-    --bg:#0b0f14; --panel:#141b24; --panel2:#0f1620; --border:#232c38;
-    --text:#e6edf3; --muted:#8b949e; --dim:#6e7681;
-    --blue:#58a6ff; --green:#3fb950; --red:#f85149; --amber:#d29922; --purple:#bc8cff; --cyan:#39c5cf;
+    color-scheme:light;
+    --bg:#ffffff; --panel:#ffffff; --panel2:#fafbfc; --panel3:#f6f8fa;
+    --border:#e6e8eb; --border2:#d8dee4; --border3:#eaeef2;
+    --text:#1f2328; --muted:#656d76; --dim:#8c959f; --faint:#aab2bd;
+    --blue:#0969da; --green:#1a7f37; --red:#cf222e; --amber:#9a6700; --purple:#8250df; --cyan:#1b7c83;
+    --blue-bg:#f2f8ff; --green-bg:#f2fbf4; --red-bg:#fff5f5; --amber-bg:#fffbf0;
+    --blue-bd:#a3cdf5; --green-bd:#a6dbb4; --red-bd:#f0b3b0; --amber-bd:#e8d08a;
     --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
   body{
     margin:0; background:var(--bg); color:var(--text);
     font-family:system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
-    line-height:1.7; font-size:15px;
+    line-height:1.75; font-size:15px;
   }
-  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 96px}
+  .wrap{max-width:1040px;margin:0 auto;padding:56px 24px 120px}
 
   /* ---------- header ---------- */
-  header.hero{border-bottom:1px solid var(--border);padding-bottom:24px;margin-bottom:28px}
-  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
-  h1{font-size:30px;line-height:1.3;margin:8px 0 6px;letter-spacing:-.01em}
-  .sub{color:var(--muted);font-size:15px;margin:0}
-  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:22px}
-  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
-  .kpi .v{font-family:var(--mono);font-size:20px;color:var(--blue);line-height:1.2}
-  .kpi .k{font-size:12px;color:var(--muted);margin-top:4px}
+  header.hero{border-bottom:1px solid var(--border);padding-bottom:28px;margin-bottom:36px}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+  h1{font-size:32px;line-height:1.3;margin:10px 0 8px;letter-spacing:-.018em;font-weight:650}
+  .sub{color:var(--muted);font-size:14.5px;margin:0;max-width:88ch}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:26px}
+  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:13px 15px}
+  .kpi .v{font-family:var(--mono);font-size:19px;color:var(--text);line-height:1.25;letter-spacing:-.02em}
+  .kpi .k{font-size:11.5px;color:var(--dim);margin-top:5px}
 
   /* ---------- collapsible modules ---------- */
   details.mod{
     background:var(--panel);border:1px solid var(--border);border-radius:12px;
-    margin:16px 0;overflow:hidden;
+    margin:12px 0;overflow:hidden;
   }
+  details.mod[open]{border-color:var(--border2)}
   details.mod>summary{
-    cursor:pointer;list-style:none;padding:16px 20px;font-weight:600;font-size:17px;
-    display:flex;align-items:center;gap:12px;user-select:none;
+    cursor:pointer;list-style:none;padding:17px 22px;font-weight:600;font-size:16.5px;
+    display:flex;align-items:center;gap:12px;user-select:none;letter-spacing:-.005em;
   }
   details.mod>summary::-webkit-details-marker{display:none}
   details.mod>summary::before{
-    content:"▸";color:var(--blue);font-size:13px;transition:transform .18s ease;
-    display:inline-block;width:12px;flex:none;
+    content:"›";color:var(--dim);font-size:20px;font-weight:400;line-height:1;
+    transition:transform .18s ease;display:inline-block;width:12px;flex:none;transform-origin:40% 50%;
   }
-  details.mod[open]>summary::before{transform:rotate(90deg)}
-  details.mod>summary:hover{background:#182130}
+  details.mod[open]>summary::before{transform:rotate(90deg);color:var(--blue)}
+  details.mod>summary:hover{background:var(--panel3)}
   details.mod>summary .tag{
-    margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:500;
-    color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:2px 10px;flex:none;
+    margin-left:auto;font-family:var(--mono);font-size:10.5px;font-weight:400;
+    color:var(--dim);border:1px solid var(--border2);border-radius:20px;padding:2px 10px;flex:none;
   }
-  .body{padding:4px 20px 22px;border-top:1px solid var(--border)}
-  .body>p:first-child{margin-top:16px}
+  .body{padding:2px 22px 26px;border-top:1px solid var(--border)}
+  .body>p:first-child{margin-top:18px}
 
-  h3{font-size:15px;margin:22px 0 8px;color:var(--cyan);letter-spacing:.02em}
-  h4{font-size:14px;margin:18px 0 6px;color:var(--text)}
-  p{margin:10px 0}
+  h3{font-size:12.5px;margin:28px 0 10px;color:var(--dim);font-weight:600;
+     letter-spacing:.06em;text-transform:uppercase}
+  h4{font-size:14px;margin:20px 0 6px;color:var(--text);font-weight:600}
+  p{margin:10px 0;text-wrap:pretty}
   ul,ol{margin:10px 0;padding-left:22px}
-  li{margin:6px 0}
-  code{font-family:var(--mono);font-size:13px;background:#1b2430;border:1px solid var(--border);
-       border-radius:4px;padding:1px 5px;color:#ffa657}
+  li{margin:6px 0;text-wrap:pretty}
+  code{font-family:var(--mono);font-size:12.5px;background:var(--panel3);border:1px solid var(--border);
+       border-radius:4px;padding:1px 5px;color:#bc4c00}
   .muted{color:var(--muted)}
   .small{font-size:13px}
   .hl{color:var(--amber)}
   .good{color:var(--green)}
   .bad{color:var(--red)}
 
-  pre{background:var(--panel2);border:1px solid var(--border);border-radius:10px;
-      padding:14px 16px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.6;color:#c9d1d9}
+  pre{background:var(--panel3);border:1px solid var(--border);border-radius:10px;
+      padding:16px 18px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.7;color:#424a53}
   pre .c{color:var(--dim)}
   pre .k{color:var(--purple)}
-  pre .s{color:#a5d6ff}
+  pre .s{color:#0550ae}
   pre .n{color:var(--amber)}
 
-  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px}
-  th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:right}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px}
+  th,td{padding:9px 10px;border-bottom:1px solid var(--border);text-align:right}
   th:first-child,td:first-child{text-align:left}
-  thead th{color:var(--muted);font-weight:600;font-size:12px;letter-spacing:.04em;
-           text-transform:uppercase;border-bottom:1px solid #303a48}
-  tbody tr:hover{background:#182130}
+  thead th{color:var(--dim);font-weight:600;font-size:11.5px;letter-spacing:.06em;
+           text-transform:uppercase;border-bottom:1px solid var(--border2)}
+  tbody tr:hover{background:var(--panel2)}
   td.num{font-family:var(--mono)}
   .tbl-win{color:var(--green)}
   .tbl-bad{color:var(--red)}
+  /* 数字列对齐：等宽数字，避免逐行跳动 */
+  table,.kpi .v,.stat .v,.calc .row,.calc .out,pre,footer,.legend{font-variant-numeric:tabular-nums}
 
-  .note{border-left:3px solid var(--blue);background:#111a26;border-radius:0 8px 8px 0;
-        padding:12px 16px;margin:16px 0;font-size:13.5px;color:#c9d1d9}
-  .note.warn{border-left-color:var(--amber);background:#1c1709}
-  .note.bad{border-left-color:var(--red);background:#1e1113}
-  .note.fix{border-left-color:var(--green);background:#0f1c13}
+  .note{border-left:2px solid var(--blue);background:var(--blue-bg);border-radius:0 8px 8px 0;
+        padding:13px 17px;margin:18px 0;font-size:13.5px;color:#424a53}
+  .note.warn{border-left-color:var(--amber);background:var(--amber-bg)}
+  .note.bad{border-left-color:var(--red);background:var(--red-bg)}
+  .note.fix{border-left-color:var(--green);background:var(--green-bg)}
   .note b{color:var(--text)}
 
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   @media(max-width:760px){.grid2{grid-template-columns:1fr}}
 
-  .card{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+  .card{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:15px 17px}
   .card h4{margin-top:0}
 
   /* ---------- demo ---------- */
-  .demo{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px 0}
-  .demo-ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .demo{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:18px;margin:18px 0}
+  .demo-ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
   button{
-    font-family:inherit;font-size:13px;color:var(--text);background:#1f2937;
-    border:1px solid #303a48;border-radius:8px;padding:7px 14px;cursor:pointer;transition:.15s;
+    font-family:inherit;font-size:13px;color:var(--text);background:#fff;
+    border:1px solid var(--border2);border-radius:8px;padding:7px 14px;cursor:pointer;transition:.15s;
   }
-  button:hover{background:#2a3546;border-color:#3d4a5c}
-  button.primary{background:#1f4d2e;border-color:#2ea043;color:#d3f2dd}
-  button.primary:hover{background:#266038}
-  .clock{margin-left:auto;font-family:var(--mono);font-size:13px;color:var(--muted)}
-  .clock b{color:var(--blue)}
+  button:hover{background:var(--panel3);border-color:var(--faint)}
+  button.primary{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:500}
+  button.primary:hover{background:#0860c4;border-color:#0860c4}
+  .clock{margin-left:auto;font-family:var(--mono);font-size:13px;color:var(--dim)}
+  .clock b{color:var(--text);font-weight:600}
 
   .screen{
-    background:#05080c;border:1px solid #1d2632;border-radius:10px;min-height:112px;
-    padding:24px 20px 18px;display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;
+    background:#fff;border:1px solid var(--border2);border-radius:12px;min-height:112px;
+    padding:26px 20px 18px;display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;
   }
   .screen .ph{color:var(--dim);font-size:13px;font-family:var(--mono)}
   .tok{
     font-family:var(--mono);display:flex;flex-direction:column;align-items:center;gap:3px;
     padding:10px 16px 7px;border-radius:9px;
-    border:1.5px dashed #3d4a5c;color:#c9d1d9;background:#0d1420;position:relative;
+    border:1.5px dashed var(--border2);color:var(--muted);background:#fff;position:relative;
     min-width:64px;text-align:center;
   }
   .tok .ch{font-size:24px;line-height:1}
   .tok.draft{opacity:.85}
-  .tok.hit{border-style:solid;border-color:var(--green);color:#d3f2dd;background:#0e2117;opacity:1}
-  .tok.miss{border-style:solid;border-color:var(--red);color:#ffd7d5;background:#28100f;
+  .tok.hit{border-style:solid;border-color:var(--green-bd);color:var(--green);background:var(--green-bg);opacity:1}
+  .tok.miss{border-style:solid;border-color:var(--red-bd);color:var(--red);background:var(--red-bg);
             animation:shake .45s ease 2}
-  .tok.real{border-style:solid;border-color:var(--blue);color:#cfe6ff;background:#0d1c2e}
+  .tok.real{border-style:solid;border-color:var(--blue-bd);color:var(--blue);background:var(--blue-bg)}
   .tok .lead{
     position:absolute;top:-11px;right:-8px;font-size:10px;font-family:var(--mono);
-    background:var(--green);color:#04140a;border-radius:9px;padding:1px 6px;font-weight:700;
+    background:var(--green);color:#fff;border-radius:9px;padding:1px 6px;font-weight:700;
   }
   .tok .lbl{font-size:10px;color:var(--dim);font-family:var(--mono);white-space:nowrap}
   @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 
-  .timeline{margin-top:18px}
-  .tl-rail{display:flex;gap:4px;align-items:flex-end;height:76px;padding-bottom:2px}
-  .fr{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;min-width:0}
-  .fr .tick{width:100%;height:3px;background:#1d2632;border-radius:2px;transition:.2s}
-  .fr.now .tick{background:var(--blue);box-shadow:0 0 10px rgba(88,166,255,.6)}
+  .timeline{margin-top:22px}
+  .tl-rail{display:flex;gap:4px;align-items:flex-end;height:112px;padding-bottom:2px;overflow-x:auto}
+  .tl-sep{font-family:var(--mono);font-size:10px;color:var(--dim);margin:8px 0 2px}
+  .fr{flex:0 0 72px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px}
+  .fr .tick{width:100%;height:3px;background:var(--border3);border-radius:2px;transition:.2s}
+  .fr.now .tick{background:var(--blue)}
   .fr .ev{font-family:var(--mono);font-size:11px;padding:2px 5px;border-radius:5px;white-space:nowrap;
           opacity:0;transform:translateY(4px);transition:.25s;max-width:100%;overflow:hidden}
   .fr .ev.on{opacity:1;transform:translateY(0)}
-  .fr .ev.draft{background:#1b2430;border:1px dashed #3d4a5c;color:#a9b6c6}
-  .fr .ev.real{background:#0d1c2e;border:1px solid #1f6feb;color:#9ecbff}
-  .fr .ev.hit{background:#0e2117;border:1px solid var(--green);color:#7ee2a8}
-  .fr .ev.miss{background:#28100f;border:1px solid var(--red);color:#ff9d97}
+  .fr .ev.draft{background:#fff;border:1px dashed var(--border2);color:var(--muted)}
+  .fr .ev.real{background:var(--blue-bg);border:1px solid var(--blue-bd);color:var(--blue)}
+  .fr .ev.hit{background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green)}
+  .fr .ev.miss{background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red)}
   .fr .n{font-family:var(--mono);font-size:10px;color:var(--dim)}
-  .fr .ms{font-family:var(--mono);font-size:9px;color:#4d5764}
-  .tl-note{margin-top:12px;font-size:13px;color:var(--muted);min-height:42px}
+  .fr .ms{font-family:var(--mono);font-size:9px;color:var(--faint)}
+  .tl-note{margin-top:14px;font-size:13px;color:var(--muted);min-height:42px}
   .tl-note b{color:var(--text)}
 
-  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:10px;margin-top:16px}
-  .stat{background:#0d1420;border:1px solid var(--border);border-radius:9px;padding:9px 11px}
-  .stat .v{font-family:var(--mono);font-size:17px}
-  .stat .k{font-size:11px;color:var(--muted)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:10px;margin-top:18px}
+  .stat{background:#fff;border:1px solid var(--border);border-radius:9px;padding:10px 12px}
+  .stat .v{font-family:var(--mono);font-size:17px;letter-spacing:-.02em}
+  .stat .k{font-size:11px;color:var(--dim)}
 
   /* ---------- charts ---------- */
-  .chart{margin:16px 0}
-  .chart .cap{font-size:12.5px;color:var(--muted);margin-top:6px}
+  .chart{margin:18px 0}
+  .chart .cap{font-size:12.5px;color:var(--muted);margin-top:8px}
   svg{display:block;max-width:100%;height:auto}
-  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:8px 0 0}
-  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:10px 0 0}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
 
   .formula{
-    background:#0d1420;border:1px solid var(--border);border-radius:10px;padding:16px;
-    font-family:var(--mono);font-size:14px;text-align:center;color:#c9d1d9;margin:14px 0;overflow-x:auto
+    background:var(--panel3);border:1px solid var(--border);border-radius:10px;padding:15px 18px;
+    font-family:var(--mono);font-size:13.5px;line-height:1.6;text-align:center;color:var(--text);
+    margin:16px 0;overflow-x:auto
   }
   .formula .v{color:var(--amber)} .formula .g{color:var(--green)} .formula .b{color:var(--blue)}
 
-  .calc{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center}
+  .calc{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
   @media(max-width:760px){.calc{grid-template-columns:1fr}}
   .calc input[type=range]{width:100%;accent-color:var(--blue)}
-  .calc .row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:13px;margin:6px 0}
-  .calc .out{font-family:var(--mono);font-size:34px;color:var(--amber);text-align:center;line-height:1.2}
-  .calc .out span{font-size:14px;color:var(--muted);display:block}
+  .calc .row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:13px;margin:8px 0}
+  .calc .out{font-family:var(--mono);font-size:36px;color:var(--text);text-align:center;line-height:1.2;
+             letter-spacing:-.03em}
+  .calc .out span{font-size:13px;color:var(--dim);display:block;letter-spacing:0}
 
-  footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--border);
-         color:var(--dim);font-size:12.5px;font-family:var(--mono)}
+  footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--border);
+         color:var(--dim);font-size:12px;font-family:var(--mono);line-height:1.9}
   a{color:var(--blue);text-decoration:none}
   a:hover{text-decoration:underline}
 </style>
@@ -188,7 +199,7 @@
   <div class="eyebrow">conformer-rnnt-asr &nbsp;·&nbsp; iteration 9 &nbsp;·&nbsp; multihead 分支</div>
   <h1>投机显示 Speculative Display</h1>
   <p class="sub">
-    Medusa 草稿不再用于加速解码，而是<b>提前上屏</b>；真实 token 到达时确认或替换。
+    Medusa 草稿不再用于加速解码，而是<b>提前上屏</b>；真实 token 到达时确认或替换。<br>
     价值模型 = 命中率 × 提前量。本页解释其架构、计算流程、算法、指标与实测结果。
   </p>
   <div class="kpis">
@@ -196,7 +207,7 @@
     <div class="kpi"><div class="v">9 帧</div><div class="k">窗口 [t−7 … t+1]</div></div>
     <div class="kpi"><div class="v">40 ms</div><div class="k">1 reduced 帧</div></div>
     <div class="kpi"><div class="v">0.751</div><div class="k">iter-8h2 overall</div></div>
-    <div class="kpi"><div class="v">74.99</div><div class="k">配置 B merged value</div></div>
+    <div class="kpi"><div class="v">74.99</div><div class="k">配置 B merged hit%</div></div>
     <div class="kpi"><div class="v">43%</div><div class="k">预测区命中常数</div></div>
   </div>
 </header>
@@ -257,26 +268,38 @@
   </p>
 
   <h3>时序：一次显示是怎么发生的</h3>
-  <pre><span class="c"># post-emit 语义：在 emit 完第 u 个 token 的那个帧上开始草拟</span>
+  <pre><span class="c"># post-emit 语义：在 emit 完第 u 个 token 的那个帧上开始草拟
+# token 单位 = 音素（LibriSpeech phoneme transcription，spm 74 片）</span>
 
-帧 t=4   真实 emit "我"  ──►  头链从 post-emit 状态出发草拟
-                              head-1 草稿 d1  →  预测 ref[u+1]
-                              head-2 草稿 d2  →  预测 ref[u+2]
+帧 t=2   真实 emit DH  ──►  头链从 post-emit 状态出发草拟
+                            head-1 草稿 d1 = AH0  →  预测 ref[u+1]
+                            head-2 草稿 d2 = S    →  预测 ref[u+2]
 
-帧 t=4   <span class="k">上屏</span>：把 d1 d2 立刻显示出来（此时真实 token 还没到）
+帧 t=2   <span class="k">上屏</span>：把 d1 d2 <b>立刻</b>显示出来（此时真实 token 还没到）
 
-帧 t=7   真实 emit ref[u+1] 到达
-           ├─ 若 == d1  →  <span class="g">命中</span>：确认，提前量 = 7−4 = 3 帧 = 120 ms
-           └─ 若 != d1  →  <span class="bad">闪烁</span>：替换成真实值</pre>
+帧 t=5   真实 emit ref[u+1] = AH0 到达
+           ├─ d1 == AH0   →  <span class="g">命中</span>：确认，提前量 = 5−2 = 3 帧 = 120 ms
+           └─ d1 != ...   →  <span class="bad">闪烁</span>：替换成真实值
+
+帧 t=8   真实 emit ref[u+2] = S 到达
+           └─ d2 == S     →  <span class="g">命中</span>：提前量 = 8−2 = 6 帧 = 240 ms
+
+<span class="c"># 关键：t=2 上屏的那一刻并不知道将来会不会命中。命中与否只进入评分，
+#       不改变「何时上屏、上屏什么」这些显示行为 —— 显示本身永远不会因猜错而失效。</span></pre>
 </div>
 </details>
 <!-- ═══════════════ 2. 效果演示 ═══════════════ -->
 <details class="mod" open>
 <summary>2. 效果演示：显示时间线仿真<span class="tag">可交互</span></summary>
 <div class="body">
-  <p>下面用一条 12 帧（480 ms）的合成时间线演示一次显示是怎么发生的。
-  真实语音按贪心解码在固定帧发射 token；头在<b>每个 emit 点上</b>立刻草拟后续 token 并上屏。
-  为清晰起见只画一个头，可用按钮切换到 head-2。</p>
+  <p>下面用一条 23 帧（920 ms）的合成时间线演示一次显示是怎么发生的。音素串是
+  <code>/DH AH0 S AH1 N IH1 Z/</code>（"the sun is"，7 次真实 emit）。真实语音按贪心解码在固定帧发射音素；
+  头在<b>每个 emit 点上</b>立刻草拟后续音素并上屏。为清晰起见只显示一个头，
+  可用按钮切换到 head-2——它草拟的是 ref[u+2]，提前量更长，但更容易猜错。</p>
+
+  <p class="small muted">合成时间线为便于观察做了稀疏化：真实语料的 emit 间隔比这里密，
+  实测每头平均提前量只有 33 ms（h1）/ 57 ms（h2），都不到 1.5 帧。这里把 emit 间隔放大到 2–4 帧，
+  是为了让「上屏 → 确认 / 替换」的过程肉眼可见；<b>上屏时机与评分的逻辑与真实系统一致</b>。</p>
 
   <div class="demo">
     <div class="demo-ctl">
@@ -289,14 +312,16 @@
 
     <div class="screen" id="screen"></div>
     <p class="small muted" style="margin:6px 0 0">
-      屏幕：<span style="color:#9ecbff">■ 真实确认</span> ·
-      <span style="color:#7ee2a8">■ 命中草稿</span> ·
-      <span style="color:#ff9d97">■ 被替换（闪烁）</span> ·
-      <span style="color:#a9b6c6">┅ 待确认草稿</span>
+      屏幕：<span style="color:#0969da">■ 真实确认</span> ·
+      <span style="color:#1a7f37">■ 命中草稿</span> ·
+      <span style="color:#cf222e">■ 被替换（闪烁）</span> ·
+      <span style="color:#656d76">┅ 待确认草稿</span>
     </p>
 
     <div class="timeline">
       <div class="tl-rail" id="rail"></div>
+      <div class="tl-sep">↳ 时间线续 · 帧 12 – 22</div>
+      <div class="tl-rail" id="rail2"></div>
     </div>
 
     <div class="tl-note" id="note">按「播放」开始，或「单步」逐帧观察。</div>
@@ -306,10 +331,15 @@
   <div class="note">
     <b>从这个演示能看出什么</b>：
     <ul class="small" style="margin-bottom:0">
-      <li><b>命中 ≠ 提前量</b>。head-1 命中的那次提前了 3 帧（120 ms）；head-2 命中那次提前了 6 帧（240 ms）——同样的"命中"，价值差一倍。</li>
-      <li><b>弃权是免费的</b>。头输出 blank 时不上屏，既不产生错误也不产生闪烁，代价只是没有提前量。</li>
-      <li><b>闪烁 = 已上屏后被改写</b>。没命中的草稿会先给观众看错的字，再改回来——这正是替换惩罚的来源。</li>
-      <li><b>链会截断</b>。head-1 弃权后，head-2 根本不会被尝试（head-2 的状态建立在 head-1 的草稿之上）。</li>
+      <li><b>上屏与命中无关</b>。草稿在生成的那一刻（如 t=2）就上屏了；是否命中要等真实 token 到达（t=5 / t=8）才判定。
+      命中率只影响<b>评分</b>，不影响<b>显示行为</b>——所以显示逻辑本身不会因为猜错而失效。</li>
+      <li><b>命中 ≠ 提前量</b>。同样是 t=2 上屏的草稿，head-1 在 t=5 被确认（提前 3 帧 = 120 ms），
+      head-2 要到 t=8 才被确认（提前 6 帧 = 240 ms）——同样的"命中"，价值差一倍。</li>
+      <li><b>命中率高的头，价值不一定高</b>。head-1 命中率 83%（5/6），head-2 只有 60%（3/5），
+      但 head-2 每次命中都提前更久，于是 value 是 93 ms vs 136 ms。</li>
+      <li><b>弃权是免费的</b>。头输出 blank 时不上屏，既不产生错误也不产生闪烁，代价只是没有提前量。
+      反过来，没命中的草稿会先给观众看错的音素再改回来——<b>这就是闪烁</b>，也是替换惩罚的来源。</li>
+      <li><b>链会截断</b>。head-1 在句尾弃权后，head-2 根本不会被尝试（head-2 的状态建立在 head-1 的草稿之上）。</li>
     </ul>
   </div>
 </div>
@@ -327,146 +357,148 @@
     <svg viewBox="0 0 1000 520" role="img" aria-label="iter-9 架构图">
       <defs>
         <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" fill="#3d4a5c"/>
+          <path d="M0,0 L10,5 L0,10 z" fill="#b1bac4"/>
         </marker>
         <marker id="arB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" fill="#58a6ff"/>
+          <path d="M0,0 L10,5 L0,10 z" fill="#0969da"/>
         </marker>
         <marker id="arG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" fill="#3fb950"/>
+          <path d="M0,0 L10,5 L0,10 z" fill="#1a7f37"/>
         </marker>
       </defs>
 
       <!-- ===== 底座数据流 ===== -->
-      <text x="16" y="20" fill="#6e7681" font-size="11" font-family="ui-monospace,monospace" letter-spacing="1.5">底座 · 纯贪心 RNNT (解码路径，草稿不参与)</text>
+      <text x="16" y="20" fill="#8c959f" font-size="11" font-family="ui-monospace,monospace" letter-spacing="1.5">底座 · 纯贪心 RNNT (解码路径，草稿不参与)</text>
 
-      <rect x="16" y="30" width="128" height="58" rx="9" fill="#0f1620" stroke="#232c38"/>
-      <text x="80" y="54" fill="#e6edf3" font-size="13" text-anchor="middle">音频 16 kHz</text>
-      <text x="80" y="72" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">hop 160 → 10 ms</text>
+      <rect x="16" y="30" width="128" height="58" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="80" y="54" fill="#1f2328" font-size="13" text-anchor="middle">音频 16 kHz</text>
+      <text x="80" y="72" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">hop 160 → 10 ms</text>
 
-      <path d="M146,59 L172,59" stroke="#3d4a5c" stroke-width="1.5" marker-end="url(#ar)"/>
+      <path d="M146,59 L172,59" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
 
-      <rect x="176" y="30" width="134" height="58" rx="9" fill="#0f1620" stroke="#232c38"/>
-      <text x="243" y="54" fill="#e6edf3" font-size="13" text-anchor="middle">mel 滤波器组</text>
-      <text x="243" y="72" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">80 维 × 100 帧/s</text>
+      <rect x="176" y="30" width="134" height="58" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="243" y="54" fill="#1f2328" font-size="13" text-anchor="middle">mel 滤波器组</text>
+      <text x="243" y="72" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">80 维 × 100 帧/s</text>
 
-      <path d="M312,59 L338,59" stroke="#3d4a5c" stroke-width="1.5" marker-end="url(#ar)"/>
+      <path d="M312,59 L338,59" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
 
-      <rect x="342" y="30" width="150" height="58" rx="9" fill="#0f1620" stroke="#232c38"/>
-      <text x="417" y="54" fill="#e6edf3" font-size="13" text-anchor="middle">Conformer 编码器</text>
-      <text x="417" y="72" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">2 + 8 层 · d=512</text>
+      <rect x="342" y="30" width="150" height="58" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="417" y="54" fill="#1f2328" font-size="13" text-anchor="middle">Conformer 编码器</text>
+      <text x="417" y="72" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">2 + 8 层 · d=512</text>
 
-      <path d="M494,59 L520,59" stroke="#3d4a5c" stroke-width="1.5" marker-end="url(#ar)"/>
+      <path d="M494,59 L520,59" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
 
-      <rect x="524" y="30" width="150" height="58" rx="9" fill="#0f1620" stroke="#232c38"/>
-      <text x="599" y="54" fill="#e6edf3" font-size="13" text-anchor="middle">4× 时间压缩</text>
-      <text x="599" y="72" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">stride 4 → 40 ms/帧</text>
+      <rect x="524" y="30" width="150" height="58" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="599" y="54" fill="#1f2328" font-size="13" text-anchor="middle">4× 时间压缩</text>
+      <text x="599" y="72" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">stride 4 → 40 ms/帧</text>
 
-      <path d="M676,59 L702,59" stroke="#3d4a5c" stroke-width="1.5" marker-end="url(#ar)"/>
+      <path d="M676,59 L702,59" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
 
-      <rect x="706" y="30" width="132" height="58" rx="9" fill="#0f1620" stroke="#58a6ff" stroke-opacity=".5"/>
-      <text x="772" y="54" fill="#e6edf3" font-size="13" text-anchor="middle">enc 帧序列</text>
-      <text x="772" y="72" fill="#58a6ff" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">e_t ∈ R^512</text>
+      <rect x="706" y="30" width="132" height="58" rx="9" fill="#fafbfc" stroke="#0969da" stroke-opacity=".5"/>
+      <text x="772" y="54" fill="#1f2328" font-size="13" text-anchor="middle">enc 帧序列</text>
+      <text x="772" y="72" fill="#0969da" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">e_t ∈ R^512</text>
 
-      <rect x="852" y="30" width="132" height="58" rx="9" fill="#0f1620" stroke="#232c38"/>
-      <text x="918" y="54" fill="#e6edf3" font-size="13" text-anchor="middle">predictor</text>
-      <text x="918" y="72" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">2×LSTM · g_u</text>
+      <rect x="852" y="30" width="132" height="58" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="918" y="54" fill="#1f2328" font-size="13" text-anchor="middle">predictor</text>
+      <text x="918" y="72" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">2×LSTM · g_u</text>
 
-      <path d="M838,59 L848,59" stroke="#3d4a5c" stroke-width="1.5" marker-end="url(#ar)"/>
+      <path d="M838,59 L848,59" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
 
       <!-- ===== 声学窗 ===== -->
-      <path d="M772,90 L772,112" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arB)"/>
-      <text x="784" y="106" fill="#58a6ff" font-size="11" font-family="ui-monospace,monospace">取窗</text>
+      <path d="M772,90 L772,112" stroke="#0969da" stroke-width="1.5" marker-end="url(#arB)"/>
+      <text x="784" y="106" fill="#0969da" font-size="11" font-family="ui-monospace,monospace">取窗</text>
 
-      <rect x="16" y="118" width="968" height="96" rx="10" fill="#0c141f" stroke="#1f6feb" stroke-opacity=".45"/>
-      <text x="34" y="142" fill="#58a6ff" font-size="12">声学窗 [t−7 … t+1]，宽 9 帧 = 360 ms</text>
-      <text x="34" y="202" fill="#6e7681" font-size="11" font-family="ui-monospace,monospace">展平 9×512 = 4608 维 → context_acoustic → MLP 投影</text>
+      <rect x="16" y="118" width="844" height="96" rx="10" fill="#f6f8fa" stroke="#0969da" stroke-opacity=".45"/>
+      <text x="34" y="142" fill="#0969da" font-size="12">声学窗 [t−7 … t+1]，宽 9 帧 = 360 ms</text>
+      <text x="34" y="202" fill="#8c959f" font-size="11" font-family="ui-monospace,monospace">展平 9×512 = 4608 维 → context_acoustic → MLP 投影</text>
 
       <g font-family="ui-monospace,monospace" font-size="12">
         <!-- 过去帧 -->
         <g>
-          <rect x="300" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
-          <text x="326" y="174" fill="#8b949e" text-anchor="middle">t−7</text>
+          <rect x="300" y="152" width="52" height="34" rx="6" fill="#f6f8fa" stroke="#dfe3e8"/>
+          <text x="326" y="174" fill="#656d76" text-anchor="middle">t−7</text>
         </g>
         <g>
-          <rect x="356" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
-          <text x="382" y="174" fill="#8b949e" text-anchor="middle">t−6</text>
+          <rect x="356" y="152" width="52" height="34" rx="6" fill="#f6f8fa" stroke="#dfe3e8"/>
+          <text x="382" y="174" fill="#656d76" text-anchor="middle">t−6</text>
         </g>
         <g>
-          <rect x="412" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
-          <text x="438" y="174" fill="#8b949e" text-anchor="middle">t−5</text>
+          <rect x="412" y="152" width="52" height="34" rx="6" fill="#f6f8fa" stroke="#dfe3e8"/>
+          <text x="438" y="174" fill="#656d76" text-anchor="middle">t−5</text>
         </g>
         <g>
-          <rect x="468" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
-          <text x="494" y="174" fill="#8b949e" text-anchor="middle">t−4</text>
+          <rect x="468" y="152" width="52" height="34" rx="6" fill="#f6f8fa" stroke="#dfe3e8"/>
+          <text x="494" y="174" fill="#656d76" text-anchor="middle">t−4</text>
         </g>
         <g>
-          <rect x="524" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
-          <text x="550" y="174" fill="#8b949e" text-anchor="middle">t−3</text>
+          <rect x="524" y="152" width="52" height="34" rx="6" fill="#f6f8fa" stroke="#dfe3e8"/>
+          <text x="550" y="174" fill="#656d76" text-anchor="middle">t−3</text>
         </g>
         <g>
-          <rect x="580" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
-          <text x="606" y="174" fill="#8b949e" text-anchor="middle">t−2</text>
+          <rect x="580" y="152" width="52" height="34" rx="6" fill="#f6f8fa" stroke="#dfe3e8"/>
+          <text x="606" y="174" fill="#656d76" text-anchor="middle">t−2</text>
         </g>
         <g>
-          <rect x="636" y="152" width="52" height="34" rx="6" fill="#141b24" stroke="#232c38"/>
-          <text x="662" y="174" fill="#8b949e" text-anchor="middle">t−1</text>
+          <rect x="636" y="152" width="52" height="34" rx="6" fill="#f6f8fa" stroke="#dfe3e8"/>
+          <text x="662" y="174" fill="#656d76" text-anchor="middle">t−1</text>
         </g>
         <!-- 当前帧 -->
         <g>
-          <rect x="700" y="148" width="60" height="42" rx="6" fill="#0d1c2e" stroke="#58a6ff" stroke-width="2"/>
-          <text x="730" y="172" fill="#9ecbff" text-anchor="middle" font-weight="700">t</text>
-          <text x="730" y="204" fill="#58a6ff" font-size="10" text-anchor="middle" font-family="system-ui">当前帧</text>
+          <rect x="700" y="148" width="60" height="42" rx="6" fill="#f2f8ff" stroke="#0969da" stroke-width="2"/>
+          <text x="730" y="172" fill="#0969da" text-anchor="middle" font-weight="700">t</text>
+          <text x="730" y="204" fill="#0969da" font-size="10" text-anchor="middle" font-family="system-ui">当前帧</text>
         </g>
         <!-- lookahead -->
         <g>
-          <rect x="768" y="148" width="60" height="42" rx="6" fill="#1c1709" stroke="#d29922" stroke-width="2"/>
-          <text x="798" y="172" fill="#e3b341" text-anchor="middle" font-weight="700">t+1</text>
-          <text x="798" y="204" fill="#d29922" font-size="10" text-anchor="middle" font-family="system-ui">lookahead</text>
+          <rect x="768" y="148" width="60" height="42" rx="6" fill="#fffbf0" stroke="#9a6700" stroke-width="2"/>
+          <text x="798" y="172" fill="#9a6700" text-anchor="middle" font-weight="700">t+1</text>
+          <text x="798" y="204" fill="#9a6700" font-size="10" text-anchor="middle" font-family="system-ui">lookahead</text>
         </g>
         <!-- 灰色说明 -->
-        <text x="326" y="232" fill="#4d5764" font-size="10" text-anchor="middle" font-family="system-ui">已提交 · 流式免费</text>
-        <text x="798" y="232" fill="#8a6d1f" font-size="10" text-anchor="middle" font-family="system-ui">唯一"未来"信息源</text>
-        <text x="86" y="174" fill="#6e7681" font-size="10" font-family="system-ui">past = 7</text>
+        <text x="494" y="232" fill="#8c959f" font-size="10" text-anchor="middle" font-family="system-ui">已提交 · 流式免费</text>
+        <text x="798" y="232" fill="#9a6700" font-size="10" text-anchor="middle" font-family="system-ui">唯一"未来"信息源</text>
+        <text x="86" y="174" fill="#8c959f" font-size="10" font-family="system-ui">past = 7</text>
       </g>
 
       <!-- ===== joiner ===== -->
-      <path d="M730,214 L730,244" stroke="#58a6ff" stroke-width="1.5" marker-end="url(#arB)"/>
-      <path d="M918,90 L918,258 L836,258" stroke="#58a6ff" stroke-width="1.5" fill="none" marker-end="url(#arB)"/>
+      <path d="M730,214 L730,244" stroke="#0969da" stroke-width="1.5" marker-end="url(#arB)"/>
+      <path d="M918,90 L918,258 L836,258" stroke="#0969da" stroke-width="1.5" fill="none" marker-end="url(#arB)"/>
 
-      <rect x="560" y="246" width="270" height="52" rx="9" fill="#0f1620" stroke="#232c38"/>
-      <text x="695" y="268" fill="#e6edf3" font-size="13" text-anchor="middle">joiner.fuse(e_t , g_u) → joint</text>
-      <text x="695" y="286" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">(1,1,1,512)</text>
+      <rect x="560" y="246" width="270" height="52" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="695" y="268" fill="#1f2328" font-size="13" text-anchor="middle">joiner.fuse(e_t , g_u) → joint</text>
+      <text x="695" y="286" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">(1,1,1,512)</text>
 
-      <path d="M695,300 L695,318" stroke="#3d4a5c" stroke-width="1.5" marker-end="url(#ar)"/>
+      <path d="M695,300 L695,318" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
 
-      <rect x="560" y="322" width="270" height="46" rx="9" fill="#0f1620" stroke="#232c38"/>
-      <text x="695" y="342" fill="#e6edf3" font-size="13" text-anchor="middle">w_vocab(joint) → base logits</text>
-      <text x="695" y="358" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">detach 后作"验证器分布摘要"</text>
+      <rect x="560" y="322" width="270" height="46" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="695" y="342" fill="#1f2328" font-size="13" text-anchor="middle">w_vocab(joint) → base logits</text>
+      <text x="695" y="358" fill="#656d76" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">detach 后作"验证器分布摘要"</text>
 
       <!-- ===== heads ===== -->
-      <path d="M660,368 L500,388" stroke="#3fb950" stroke-width="1.5" marker-end="url(#arG)"/>
-      <path d="M800,368 L900,388" stroke="#3fb950" stroke-width="1.5" marker-end="url(#arG)"/>
+      <path d="M695,368 L695,379" stroke="#1a7f37" stroke-width="1.5" fill="none"/>
+      <path d="M286,379 L718,379" stroke="#1a7f37" stroke-width="1.5" fill="none"/>
+      <path d="M286,379 L286,392" stroke="#1a7f37" stroke-width="1.5" fill="none" marker-end="url(#arG)"/>
+      <path d="M718,379 L718,392" stroke="#1a7f37" stroke-width="1.5" fill="none" marker-end="url(#arG)"/>
 
-      <rect x="118" y="392" width="336" height="104" rx="10" fill="#0c1a12" stroke="#2ea043" stroke-opacity=".55"/>
-      <text x="138" y="414" fill="#3fb950" font-size="13" font-weight="700">head-1（k=0，无链条件）</text>
-      <text x="138" y="436" fill="#c9d1d9" font-size="10" font-family="ui-monospace,monospace">delta = MLP( norm( pred + acoustic + base ) )</text>
-      <text x="138" y="454" fill="#8b949e" font-size="10" font-family="ui-monospace,monospace">+ context_mlp_extra + context_mlp_heads[0]</text>
-      <text x="138" y="476" fill="#e6edf3" font-size="10" font-family="ui-monospace,monospace">logits = w_vocab( res_blocks[0](joint+delta) )</text>
+      <rect x="118" y="392" width="336" height="104" rx="10" fill="#f6f8fa" stroke="#1a7f37" stroke-opacity=".55"/>
+      <text x="138" y="414" fill="#1a7f37" font-size="13" font-weight="700">head-1（k=0，无链条件）</text>
+      <text x="138" y="436" fill="#424a53" font-size="10" font-family="ui-monospace,monospace">delta = MLP( norm( pred + acoustic + base ) )</text>
+      <text x="138" y="454" fill="#656d76" font-size="10" font-family="ui-monospace,monospace">+ context_mlp_extra + context_mlp_heads[0]</text>
+      <text x="138" y="476" fill="#1f2328" font-size="10" font-family="ui-monospace,monospace">logits = w_vocab( res_blocks[0](joint+delta) )</text>
 
-      <rect x="550" y="392" width="336" height="104" rx="10" fill="#0c1a12" stroke="#2ea043" stroke-opacity=".55"/>
-      <text x="570" y="414" fill="#3fb950" font-size="13" font-weight="700">head-2（k=1，链式条件）</text>
-      <text x="570" y="436" fill="#c9d1d9" font-size="10" font-family="ui-monospace,monospace">delta = MLP( norm( pred + acoustic + base</text>
-      <text x="570" y="454" fill="#8b949e" font-size="10" font-family="ui-monospace,monospace">+ chain_state_proj(rolled) + draft(d1) ) )</text>
-      <text x="570" y="476" fill="#e6edf3" font-size="10" font-family="ui-monospace,monospace">logits = w_vocab( res_blocks[1](joint+delta) )</text>
+      <rect x="550" y="392" width="336" height="104" rx="10" fill="#f6f8fa" stroke="#1a7f37" stroke-opacity=".55"/>
+      <text x="570" y="414" fill="#1a7f37" font-size="13" font-weight="700">head-2（k=1，链式条件）</text>
+      <text x="570" y="436" fill="#424a53" font-size="10" font-family="ui-monospace,monospace">delta = MLP( norm( pred + acoustic + base</text>
+      <text x="570" y="454" fill="#656d76" font-size="10" font-family="ui-monospace,monospace">+ chain_state_proj(rolled) + draft(d1) ) )</text>
+      <text x="570" y="476" fill="#1f2328" font-size="10" font-family="ui-monospace,monospace">logits = w_vocab( res_blocks[1](joint+delta) )</text>
 
       <!-- chain arrow -->
-      <path d="M458,444 L544,444" stroke="#bc8cff" stroke-width="1.8" marker-end="url(#ar)"/>
-      <text x="501" y="434" fill="#bc8cff" font-size="10.5" text-anchor="middle" font-family="ui-monospace,monospace">d1 → rolled state</text>
+      <path d="M456,444 L546,444" stroke="#8250df" stroke-width="1.8" marker-end="url(#ar)"/>
+      <text x="501" y="434" fill="#8250df" font-size="10.5" text-anchor="middle" font-family="ui-monospace,monospace">d1 → rolled</text>
 
       <!-- 输出 -->
-      <path d="M285,496 L285,510 L499,510" stroke="#3d4a5c" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
-      <text x="506" y="514" fill="#6e7681" font-size="11" font-family="system-ui">草稿 → 上屏 → 真实 token 到达时确认 / 替换（解码不等待）</text>
+      <path d="M285,496 L285,510 L499,510" stroke="#b1bac4" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+      <text x="506" y="514" fill="#8c959f" font-size="11" font-family="system-ui">草稿 → 上屏 → 真实 token 到达时确认 / 替换（解码不等待）</text>
     </svg>
     <div class="cap">图 1 · iter-9 架构。绿色部分为 Medusa 头（本次唯一训练的部分，base 冻结）；
       蓝色为底座编码路径；紫色为链式状态传递。</div>
@@ -500,66 +532,66 @@
     <svg viewBox="0 0 1000 300" role="img" aria-label="两趟评估流程">
       <defs>
         <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" fill="#3d4a5c"/>
+          <path d="M0,0 L10,5 L0,10 z" fill="#b1bac4"/>
         </marker>
         <marker id="a2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" fill="#58a6ff"/>
+          <path d="M0,0 L10,5 L0,10 z" fill="#0969da"/>
         </marker>
       </defs>
 
       <!-- pass 1 -->
-      <rect x="16" y="24" width="452" height="252" rx="10" fill="#0c141f" stroke="#1f6feb" stroke-opacity=".4"/>
-      <text x="36" y="48" fill="#58a6ff" font-size="13" font-weight="700">Pass 1 · 贪心解码（= 产品解码本身）</text>
+      <rect x="16" y="24" width="452" height="252" rx="10" fill="#f6f8fa" stroke="#0969da" stroke-opacity=".4"/>
+      <text x="36" y="48" fill="#0969da" font-size="13" font-weight="700">Pass 1 · 贪心解码（= 产品解码本身）</text>
 
-      <rect x="36" y="62" width="180" height="40" rx="8" fill="#0f1620" stroke="#232c38"/>
-      <text x="126" y="87" fill="#c9d1d9" font-size="12" text-anchor="middle" font-family="ui-monospace,monospace">enc = transcribe(x)</text>
+      <rect x="36" y="62" width="180" height="40" rx="8" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="126" y="87" fill="#424a53" font-size="12" text-anchor="middle" font-family="ui-monospace,monospace">enc = transcribe(x)</text>
 
-      <path d="M126,102 L126,120" stroke="#3d4a5c" stroke-width="1.4" marker-end="url(#a2)"/>
+      <path d="M126,102 L126,120" stroke="#b1bac4" stroke-width="1.4" marker-end="url(#a2)"/>
 
-      <rect x="36" y="124" width="180" height="60" rx="8" fill="#0f1620" stroke="#232c38"/>
-      <text x="126" y="146" fill="#c9d1d9" font-size="12" text-anchor="middle" font-family="ui-monospace,monospace">pred = argmax(join(e_t , g))</text>
-      <text x="126" y="166" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">blank → t += 1</text>
+      <rect x="36" y="124" width="180" height="60" rx="8" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="126" y="146" fill="#424a53" font-size="12" text-anchor="middle" font-family="ui-monospace,monospace">pred = argmax(join(e_t , g))</text>
+      <text x="126" y="166" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">blank → t += 1</text>
 
-      <path d="M216,154 L244,154" stroke="#3d4a5c" stroke-width="1.4" marker-end="url(#a2)"/>
+      <path d="M216,154 L244,154" stroke="#b1bac4" stroke-width="1.4" marker-end="url(#a2)"/>
 
-      <rect x="248" y="124" width="200" height="60" rx="8" fill="#0e2117" stroke="#2ea043" stroke-opacity=".5"/>
-      <text x="348" y="146" fill="#7ee2a8" font-size="12" text-anchor="middle">非 blank → 记 emit</text>
-      <text x="348" y="166" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">+ 快照 post-emit 状态</text>
+      <rect x="248" y="124" width="200" height="60" rx="8" fill="#f2fbf4" stroke="#1a7f37" stroke-opacity=".5"/>
+      <text x="348" y="146" fill="#1a7f37" font-size="12" text-anchor="middle">非 blank → 记 emit</text>
+      <text x="348" y="166" fill="#656d76" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">+ 快照 post-emit 状态</text>
 
-      <path d="M348,184 L348,204 L126,204 L126,214" stroke="#3d4a5c" stroke-width="1.4" fill="none" marker-end="url(#a2)"/>
+      <path d="M348,184 L348,204 L126,204 L126,214" stroke="#b1bac4" stroke-width="1.4" fill="none" marker-end="url(#a2)"/>
 
-      <rect x="36" y="218" width="412" height="42" rx="8" fill="#0f1620" stroke="#232c38"/>
-      <text x="242" y="236" fill="#c9d1d9" font-size="11.5" text-anchor="middle" font-family="ui-monospace,monospace">ref_tokens[]  ref_frames[]  snaps[] = (t, g_{u+1}, state_{u+1})</text>
-      <text x="242" y="252" fill="#6e7681" font-size="11" text-anchor="middle">每个 emit 点的 post-emit 状态快照</text>
+      <rect x="36" y="218" width="412" height="42" rx="8" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="242" y="236" fill="#424a53" font-size="11.5" text-anchor="middle" font-family="ui-monospace,monospace">ref_tokens[]  ref_frames[]  snaps[] = (t, g_{u+1}, state_{u+1})</text>
+      <text x="242" y="252" fill="#8c959f" font-size="11" text-anchor="middle">每个 emit 点的 post-emit 状态快照</text>
 
       <!-- pass 2 -->
-      <rect x="500" y="24" width="484" height="252" rx="10" fill="#0c1a12" stroke="#2ea043" stroke-opacity=".4"/>
-      <text x="520" y="48" fill="#3fb950" font-size="13" font-weight="700">Pass 2 · 在快照上草拟 + 对齐打分</text>
+      <rect x="500" y="24" width="484" height="252" rx="10" fill="#f6f8fa" stroke="#1a7f37" stroke-opacity=".4"/>
+      <text x="520" y="48" fill="#1a7f37" font-size="13" font-weight="700">Pass 2 · 在快照上草拟 + 对齐打分</text>
 
-      <rect x="520" y="62" width="216" height="40" rx="8" fill="#0f1620" stroke="#232c38"/>
-      <text x="628" y="87" fill="#c9d1d9" font-size="12" text-anchor="middle" font-family="ui-monospace,monospace">for 每个 snap (u, t_u)</text>
+      <rect x="520" y="62" width="216" height="40" rx="8" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="628" y="87" fill="#424a53" font-size="12" text-anchor="middle" font-family="ui-monospace,monospace">for 每个 snap (u, t_u)</text>
 
-      <path d="M628,102 L628,120" stroke="#3d4a5c" stroke-width="1.4" marker-end="url(#a2)"/>
+      <path d="M628,102 L628,120" stroke="#b1bac4" stroke-width="1.4" marker-end="url(#a2)"/>
 
-      <rect x="520" y="124" width="216" height="60" rx="8" fill="#0f1620" stroke="#232c38"/>
-      <text x="628" y="146" fill="#c9d1d9" font-size="11.5" text-anchor="middle" font-family="ui-monospace,monospace">drafts = chain_draft(窗, g_{u+1})</text>
-      <text x="628" y="166" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">h1 → predictor → h2</text>
+      <rect x="520" y="124" width="216" height="60" rx="8" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="628" y="146" fill="#424a53" font-size="11.5" text-anchor="middle" font-family="ui-monospace,monospace">drafts = chain_draft(窗, g_{u+1})</text>
+      <text x="628" y="166" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">h1 → predictor → h2</text>
 
-      <path d="M736,154 L764,154" stroke="#3d4a5c" stroke-width="1.4" marker-end="url(#a2)"/>
+      <path d="M736,154 L764,154" stroke="#b1bac4" stroke-width="1.4" marker-end="url(#a2)"/>
 
-      <rect x="768" y="118" width="196" height="72" rx="8" fill="#0d1c2e" stroke="#1f6feb" stroke-opacity=".6"/>
-      <text x="866" y="140" fill="#9ecbff" font-size="11.5" text-anchor="middle">对齐：draft[j] ≟ ref[u+1+j]</text>
-      <text x="866" y="158" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">lead = ref_frames[u+1+j] − t_u</text>
-      <text x="866" y="176" fill="#8b949e" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">blank = 弃权，链截断</text>
+      <rect x="768" y="118" width="196" height="72" rx="8" fill="#f2f8ff" stroke="#0969da" stroke-opacity=".6"/>
+      <text x="866" y="140" fill="#0969da" font-size="11.5" text-anchor="middle">对齐：draft[j] ≟ ref[u+1+j]</text>
+      <text x="866" y="158" fill="#656d76" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">lead = ref_frames[u+1+j] − t_u</text>
+      <text x="866" y="176" fill="#656d76" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">blank = 弃权，链截断</text>
 
-      <path d="M866,194 L866,212" stroke="#58a6ff" stroke-width="1.4" marker-end="url(#a2b)"/>
+      <path d="M866,194 L866,212" stroke="#0969da" stroke-width="1.4" marker-end="url(#a2b)"/>
 
-      <rect x="520" y="216" width="444" height="44" rx="8" fill="#0f1620" stroke="#232c38"/>
-      <text x="742" y="234" fill="#e6edf3" font-size="11.5" text-anchor="middle">累加 hit / displayed / abstained / leads</text>
-      <text x="742" y="252" fill="#6e7681" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">→ hit% · repl% · leadP50/P90/P99 · leadAvg · value</text>
+      <rect x="520" y="216" width="444" height="44" rx="8" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="742" y="234" fill="#1f2328" font-size="11.5" text-anchor="middle">累加 hit / displayed / abstained / leads</text>
+      <text x="742" y="252" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">→ hit% · repl% · leadP50/P90/P99 · leadAvg · value</text>
 
-      <path d="M468,150 L496,150" stroke="#3d4a5c" stroke-width="1.6" marker-end="url(#a2)" stroke-dasharray="4 3"/>
-      <text x="482" y="140" fill="#6e7681" font-size="10" text-anchor="middle" font-family="system-ui">快照</text>
+      <path d="M468,150 L496,150" stroke="#b1bac4" stroke-width="1.6" marker-end="url(#a2)" stroke-dasharray="4 3"/>
+      <text x="482" y="140" fill="#8c959f" font-size="10" text-anchor="middle" font-family="system-ui">快照</text>
     </svg>
     <div class="cap">图 2 · 两趟评估流程。Pass 1 完全等同产品解码，Pass 2 只读快照、不改解码路径。</div>
   </div>
@@ -580,13 +612,20 @@
   </div>
 
   <h3>时间线示例</h3>
-  <pre>帧:  3        6              9
-     │        │              │
-     ●emit"我" ●emit"们"      ●emit"走"
-     │        │              │
-     └─draft"们"──────────►命中  lead = 6−3 = 3 帧 = <span class="n">120 ms</span>
-     │        └─draft"好"──►<span class="bad">未命中</span> 被"走"替换 → <span class="bad">闪烁</span>
-     │                       └─blank → <span class="muted">弃权</span>（不上屏，零代价）</pre>
+  <pre><span class="c"># 与 §2 交互演示同一条时间线（音素串 /DH AH0 S AH1 N IH1 Z/）</span>
+帧:   2         5         8          10        12        16          20
+      │         │         │          │         │         │           │
+      ●DH       ●AH0      ●S        ●AH1      ●N        ●IH1      ●Z
+
+head-1（预测 ref[u+1]）
+  t=2   └─draft AH0 ──────────►<span class="g">命中</span>  lead = 5−2 = 3 帧 = <span class="n">120 ms</span>
+  t=10  └─draft N ──►<span class="g">命中</span>  lead = 12−10 = 2 帧 = <span class="n">80 ms</span>
+  t=12  └─draft IY1 ────────────────────►<span class="bad">未命中</span> 被 IH1 替换 → <span class="bad">闪烁</span>
+
+head-2（预测 ref[u+2]）
+  t=2   └─draft S ────────────────────►<span class="g">命中</span>  lead = 8−2 = 6 帧 = <span class="n">240 ms</span>
+  t=8   └─draft M ──────────────►<span class="bad">未命中</span> 被 N 替换 → <span class="bad">闪烁</span>
+  t=16  └─blank ──►<span class="muted">弃权</span>（已无 ref[u+2] 可预测；t=20 head-1 弃权后链同样截断）</pre>
 </div>
 </details>
 
@@ -688,7 +727,7 @@ logits_k   = w_vocab( res_blocks[k]( joint + delta_k ) )</pre>
         <div class="out"><span>value（期望感知提前量）</span><b id="vOut">20.2</b> ms</div>
         <div class="row" style="justify-content:center;gap:18px;color:var(--muted)">
           <span>命中时提前 <b id="vPerHit" style="color:var(--green)">57</b> ms</span>
-          <span>闪烁率 <b id="vRepl" style="color:var(--red)">40.6</b> %</span>
+          <span>闪烁率 <b id="vRepl" style="color:var(--red)">40.6</b>%</span>
         </div>
       </div>
     </div>
@@ -896,32 +935,54 @@ logits_k   = w_vocab( res_blocks[k]( joint + delta_k ) )</pre>
 "use strict";
 
 /* ══════════════════════ 1. 显示时间线仿真 ══════════════════════ */
-const REF = [{t:3,tok:'我'},{t:6,tok:'们'},{t:9,tok:'走'}];
-const NFRAMES = 12;
+/* 合成时间线：音素串 /DH AH0 S AH1 N IH1 Z/ ("the sun is") —— 7 次真实 emit。
+   注意上屏发生在"草拟的那一刻"，与将来是否命中无关；命中/替换只在真实 token
+   到达时才判定，且只进入评分。head-k 草拟 ref[u+k]。 */
+const REF = [
+  {t:2,  tok:'DH'},  {t:5,  tok:'AH0'}, {t:8,  tok:'S'},   {t:10, tok:'AH1'},
+  {t:12, tok:'N'},   {t:16, tok:'IH1'}, {t:20, tok:'Z'}
+];
+const NFRAMES = 23;
 
 const SCEN = {
   h1: {
     chips: {
-      3:[{c:'real',x:'我'},{c:'draft',x:'⇢们'}],
-      6:[{c:'real',x:'们'},{c:'hit',x:'✓3帧'},{c:'draft',x:'⇢好'}],
-      9:[{c:'real',x:'走'},{c:'miss',x:'✗好'},{c:'abst',x:'∅'}]
+      2: [{c:'real',x:'DH'},  {c:'draft',x:'⇢AH0'}],
+      5: [{c:'real',x:'AH0'}, {c:'hit',x:'✓3帧'},  {c:'draft',x:'⇢S'}],
+      8: [{c:'real',x:'S'},   {c:'hit',x:'✓3帧'},  {c:'draft',x:'⇢AH1'}],
+      10:[{c:'real',x:'AH1'}, {c:'hit',x:'✓2帧'},  {c:'draft',x:'⇢N'}],
+      12:[{c:'real',x:'N'},   {c:'hit',x:'✓2帧'},  {c:'draft',x:'⇢IY1'}],
+      16:[{c:'real',x:'IH1'}, {c:'miss',x:'✗IY1'},{c:'draft',x:'⇢Z'}],
+      20:[{c:'real',x:'Z'},   {c:'hit',x:'✓4帧'},  {c:'abst',x:'∅'}]
     },
     events: {
-      3:{real:0, draft:{tok:'们',pos:1}},
-      6:{real:1, draft:{tok:'好',pos:2}},
-      9:{real:2, draft:{abstain:true}}
+      2: {real:0, draft:{tok:'AH0', pos:1}},
+      5: {real:1, draft:{tok:'S',   pos:2}},
+      8: {real:2, draft:{tok:'AH1', pos:3}},
+      10:{real:3, draft:{tok:'N',   pos:4}},
+      12:{real:4, draft:{tok:'IY1', pos:5}},
+      16:{real:5, draft:{tok:'Z',   pos:6}},
+      20:{real:6, draft:{abstain:true}}
     }
   },
   h2: {
     chips: {
-      3:[{c:'real',x:'我'},{c:'draft',x:'⇢走'}],
-      6:[{c:'real',x:'们'},{c:'abst',x:'∅'}],
-      9:[{c:'real',x:'走'},{c:'hit',x:'✓6帧'}]
+      2: [{c:'real',x:'DH'},  {c:'draft',x:'⇢S'}],
+      5: [{c:'real',x:'AH0'}, {c:'draft',x:'⇢AH1'}],
+      8: [{c:'real',x:'S'},   {c:'hit',x:'✓6帧'},  {c:'draft',x:'⇢M'}],
+      10:[{c:'real',x:'AH1'}, {c:'hit',x:'✓5帧'},  {c:'draft',x:'⇢IH1'}],
+      12:[{c:'real',x:'N'},   {c:'miss',x:'✗M'},   {c:'draft',x:'⇢S'}],
+      16:[{c:'real',x:'IH1'}, {c:'hit',x:'✓6帧'},  {c:'abst',x:'∅'}],
+      20:[{c:'real',x:'Z'},   {c:'miss',x:'✗S'}]
     },
     events: {
-      3:{real:0, draft:{tok:'走',pos:2}},
-      6:{real:1, draft:{abstain:true}},
-      9:{real:2, note:'head-1 弃权 → 链截断，head-2 本轮未被尝试'}
+      2: {real:0, draft:{tok:'S',   pos:2}},
+      5: {real:1, draft:{tok:'AH1', pos:3}},
+      8: {real:2, draft:{tok:'M',   pos:4}},
+      10:{real:3, draft:{tok:'IH1', pos:5}},
+      12:{real:4, draft:{tok:'S',   pos:6}},
+      16:{real:5, draft:{abstain:true}},
+      20:{real:6, note:'head-1 弃权 → 链截断，head-2 本轮未被尝试'}
     }
   }
 };
@@ -932,7 +993,8 @@ const $ = id => document.getElementById(id);
 const freshStats = () => ({disp:0,hit:0,miss:0,abst:0,leads:[]});
 
 function buildRail(){
-  const rail=$('rail'); rail.innerHTML='';
+  const rows=[$('rail'), $('rail2')];
+  rows.forEach(r => r.innerHTML = '');
   for(let t=0;t<NFRAMES;t++){
     const cell=document.createElement('div');
     cell.className='fr'; cell.dataset.t=t;
@@ -944,7 +1006,7 @@ function buildRail(){
     const n=document.createElement('div'); n.className='n'; n.textContent=t;
     const tick=document.createElement('div'); tick.className='tick';
     cell.appendChild(n); cell.appendChild(tick);
-    rail.appendChild(cell);
+    rows[t < 12 ? 0 : 1].appendChild(cell);
   }
 }
 
@@ -1001,13 +1063,13 @@ function renderStats(){
     ['hit%',        f(hitRate,1),               'var(--green)'],
     ['leadAvg',     isNaN(meanLead)?'–':meanLead.toFixed(0)+' ms', 'var(--cyan)'],
     ['value',       isNaN(value)?'–':value.toFixed(1)+' ms',       'var(--amber)']
-  ].map(a=>'<div class="stat"><div class="v" style="color:'+a[2]+'">'+a[1]+'</div><div class="k">'+a[0]+'</div></div>').join('');
+  ].map(a=>'<div class="stat"><div class="v" style="color:'+(a[1]==='–'?'var(--faint)':a[2])+'">'+a[1]+'</div><div class="k">'+a[0]+'</div></div>').join('');
 }
 
 function render(){
   $('clockFrame').textContent = cur < 0 ? '–' : cur;
   $('clockMs').textContent = cur < 0 ? 0 : cur*40;
-  document.querySelectorAll('#rail .fr').forEach(cell=>{
+  document.querySelectorAll('.tl-rail .fr').forEach(cell=>{
     const t = +cell.dataset.t;
     cell.classList.toggle('now', t === cur);
     cell.querySelectorAll('.ev').forEach(e => e.classList.toggle('on', t <= cur));
@@ -1018,7 +1080,11 @@ function render(){
     if(c){
       const cls = (c.flicker === cur) ? 'miss' : (c.fromHit ? 'hit' : 'real');
       const badge = c.fromHit ? '<span class="lead">+'+(c.lead*40)+'ms</span>' : '';
-      html += '<div class="tok '+cls+'">'+badge+'<span class="ch">'+c.tok+'</span><span class="lbl">#'+i+' 确认</span></div>';
+      // 被替换过的 token 在终态仍标出来，避免"蓝色=确认"掩盖曾发生过的闪烁
+      const lbl = (c.flicker != null)
+        ? '<span class="lbl" style="color:var(--red)">#'+i+' 替换</span>'
+        : '<span class="lbl">#'+i+' 确认</span>';
+      html += '<div class="tok '+cls+'">'+badge+'<span class="ch">'+c.tok+'</span>'+lbl+'</div>';
     }else if(p){
       html += '<div class="tok draft"><span class="ch">'+p.tok+'</span><span class="lbl">#'+i+' 待确认</span></div>';
     }else{
@@ -1054,8 +1120,8 @@ $('headBtn').onclick  = () => {
 
 /* ══════════════════════ 2. 图表 ══════════════════════ */
 const NS = 'http://www.w3.org/2000/svg';
-const C = {blue:'#58a6ff', green:'#3fb950', red:'#f85149', amber:'#d29922',
-           purple:'#bc8cff', cyan:'#39c5cf', gray:'#6e7681'};
+const C = {blue:'#0969da', green:'#1a7f37', red:'#cf222e', amber:'#9a6700',
+           purple:'#8250df', cyan:'#1b7c83', gray:'#656d76'};
 
 function svgEl(tag, attrs, text){
   const e = document.createElementNS(NS, tag);
@@ -1074,8 +1140,8 @@ function barChart(host, cfg){
   const svg = svgEl('svg',{viewBox:'0 0 '+W+' '+H});
   for(let i=0;i<=ticks;i++){
     const y = pad.t+ph-ph*i/ticks;
-    svg.appendChild(svgEl('line',{x1:pad.l,y1:y,x2:W-pad.r,y2:y,stroke:'#1d2632','stroke-width':1}));
-    svg.appendChild(svgEl('text',{x:pad.l-10,y:y+4,fill:'#6e7681','font-size':11,
+    svg.appendChild(svgEl('line',{x1:pad.l,y1:y,x2:W-pad.r,y2:y,stroke:'#eaeef2','stroke-width':1}));
+    svg.appendChild(svgEl('text',{x:pad.l-10,y:y+4,fill:'#8c959f','font-size':11,
       'text-anchor':'end','font-family':'ui-monospace,monospace'},(max*i/ticks).toFixed(max<=5?1:0)));
   }
   const G=cfg.groups.length, S=cfg.series.length, gw=pw/G;
@@ -1089,14 +1155,14 @@ function barChart(host, cfg){
         : v.toFixed(cfg.decimals!=null?cfg.decimals:2)));
   }));
   cfg.groups.forEach((g,gi)=>{
-    svg.appendChild(svgEl('text',{x:pad.l+gw*gi+gw/2,y:pad.t+ph+24,fill:'#8b949e',
+    svg.appendChild(svgEl('text',{x:pad.l+gw*gi+gw/2,y:pad.t+ph+24,fill:'#656d76',
       'font-size':12.5,'text-anchor':'middle'},g));
     if(cfg.subs && cfg.subs[gi]){
-      svg.appendChild(svgEl('text',{x:pad.l+gw*gi+gw/2,y:pad.t+ph+42,fill:'#6e7681',
+      svg.appendChild(svgEl('text',{x:pad.l+gw*gi+gw/2,y:pad.t+ph+42,fill:'#8c959f',
         'font-size':11,'text-anchor':'middle'},cfg.subs[gi]));
     }
   });
-  if(cfg.unit) svg.appendChild(svgEl('text',{x:pad.l-10,y:pad.t-12,fill:'#6e7681',
+  if(cfg.unit) svg.appendChild(svgEl('text',{x:pad.l-10,y:pad.t-12,fill:'#8c959f',
     'font-size':11,'text-anchor':'end','font-family':'ui-monospace,monospace'},cfg.unit));
   host.appendChild(svg);
   host.appendChild(legend(cfg.series));
@@ -1106,21 +1172,21 @@ function hstack(host, cfg){
   const svg = svgEl('svg',{viewBox:'0 0 '+W+' '+H});
   cfg.rows.forEach((row,ri)=>{
     const y = ri*rowH+26;
-    svg.appendChild(svgEl('text',{x:14,y:y+24,fill:'#e6edf3','font-size':15,
+    svg.appendChild(svgEl('text',{x:14,y:y+24,fill:'#1f2328','font-size':15,
       'font-family':'ui-monospace,monospace'},row.label));
     const total = row.parts.reduce((a,b)=>a+b.v,0);
     let cx = x0;
     row.parts.forEach(p=>{
       const w = bw*p.v/total;
       svg.appendChild(svgEl('rect',{x:cx,y:y,width:w,height:34,rx:5,fill:p.color,opacity:.85}));
-      svg.appendChild(svgEl('text',{x:cx+w/2,y:y+22,fill:'#08131c','font-size':12.5,
+      svg.appendChild(svgEl('text',{x:cx+w/2,y:y+22,fill:'#ffffff','font-size':12.5,
         'font-weight':700,'text-anchor':'middle','font-family':'ui-monospace,monospace'},
         (100*p.v/total).toFixed(1)+'%'));
       svg.appendChild(svgEl('text',{x:cx+w/2,y:y+50,fill:p.color,'font-size':11.5,
         'text-anchor':'middle','font-family':'ui-monospace,monospace'},p.label));
       cx += w;
     });
-    if(row.note) svg.appendChild(svgEl('text',{x:x0,y:y+72,fill:'#6e7681','font-size':11.5},row.note));
+    if(row.note) svg.appendChild(svgEl('text',{x:x0,y:y+72,fill:'#8c959f','font-size':11.5},row.note));
   });
   host.appendChild(svg);
   host.appendChild(legend(cfg.rows[0].parts.map(p=>({name:p.legend||p.label.split(' ')[0],color:p.color}))));
@@ -1131,8 +1197,8 @@ function lineChart(host, cfg){
   const svg = svgEl('svg',{viewBox:'0 0 '+W+' '+H});
   for(let i=0;i<=ticks;i++){
     const y = pad.t+ph-ph*i/ticks, val = ymin+(ymax-ymin)*i/ticks;
-    svg.appendChild(svgEl('line',{x1:pad.l,y1:y,x2:W-pad.r,y2:y,stroke:'#1d2632'}));
-    svg.appendChild(svgEl('text',{x:pad.l-10,y:y+4,fill:'#6e7681','font-size':11,
+    svg.appendChild(svgEl('line',{x1:pad.l,y1:y,x2:W-pad.r,y2:y,stroke:'#eaeef2'}));
+    svg.appendChild(svgEl('text',{x:pad.l-10,y:y+4,fill:'#8c959f','font-size':11,
       'text-anchor':'end','font-family':'ui-monospace,monospace'},val.toFixed(3)));
   }
   const n = cfg.ys.length, col = cfg.color||C.blue;
@@ -1144,10 +1210,13 @@ function lineChart(host, cfg){
   svg.appendChild(svgEl('polyline',{points:pts.map(p=>p.join(',')).join(' '),fill:'none',
     stroke:col,'stroke-width':2.5,'stroke-linejoin':'round'}));
   pts.forEach((p,i)=>{
+    // 首尾点的数值标签向内挪，避免压到 y 轴刻度 / 右侧留白
+    const edge = i===0 ? {x:p[0]+7,anchor:'start'} : i===n-1 ? {x:p[0]-7,anchor:'end'}
+                                                        : {x:p[0],anchor:'middle'};
     svg.appendChild(svgEl('circle',{cx:p[0],cy:p[1],r:4.5,fill:col}));
-    svg.appendChild(svgEl('text',{x:p[0],y:p[1]-13,fill:col,'font-size':12,
-      'text-anchor':'middle','font-family':'ui-monospace,monospace'},cfg.ys[i].toFixed(3)));
-    svg.appendChild(svgEl('text',{x:p[0],y:pad.t+ph+24,fill:'#8b949e','font-size':12,
+    svg.appendChild(svgEl('text',{x:edge.x,y:p[1]-13,fill:col,'font-size':12,
+      'text-anchor':edge.anchor,'font-family':'ui-monospace,monospace'},cfg.ys[i].toFixed(3)));
+    svg.appendChild(svgEl('text',{x:p[0],y:pad.t+ph+24,fill:'#656d76','font-size':12,
       'text-anchor':'middle','font-family':'ui-monospace,monospace'},cfg.xs[i]));
   });
   host.appendChild(svg);
@@ -1213,13 +1282,13 @@ barChart($('ch-look'), {
 
 barChart($('ch-gate'), {
   groups:['h1','h2'],
-  series:[{name:'闪烁 before',color:'#7d2b28',values:[9.4,40.6]},
+  series:[{name:'闪烁 before',color:'#656d76',values:[9.4,40.6]},
           {name:'闪烁 after（门控）',color:C.green,values:[0,17.2]}],
   max:50, unit:'%', decimals:1, height:240
 });
 barChart($('ch-gate'), {
   groups:['h1','h2'],
-  series:[{name:'value before',color:'#7a5c14',values:[30.3,34.0]},
+  series:[{name:'value before',color:'#656d76',values:[30.3,34.0]},
           {name:'value after（门控）',color:C.amber,values:[28.3,21.0]}],
   max:40, unit:'ms', decimals:1, height:240
 });
