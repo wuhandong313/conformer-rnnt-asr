@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "Bash(ssh internal:*)",
-      "Bash(cat ~/.ssh/config 2>/dev/null | head -40; echo '==='; ls ~/.ssh/ 2>/dev/null)"
+      "Bash(cat ~/.ssh/config 2>/dev/null | head -40; echo '==='; ls ~/.ssh/ 2>/dev/null)",
+      "Bash(python:*)",
+      "Bash(python -c \"import torch; print\\('torch', torch.__version__, 'mps', torch.backends.mps.is_available\\(\\)\\)\" 2>&1; which python; pip list 2>/dev/null | grep -iE '^\\(torch|diffusers|transformers|accelerate|huggingface\\)')",
+      "Bash(pip install -q diffusers 2>&1 | tail -3; python -c \"import diffusers; print\\('diffusers', diffusers.__version__\\)\")",
+      "Bash(sysctl hw.memsize hw.model 2>/dev/null; python -c \"\nfrom diffusers import ZImagePipeline, ZImageTransformer2DModel\nimport inspect\nprint\\('pipeline ok:', ZImagePipeline.__name__\\)\nsig = inspect.signature\\(ZImageTransformer2DModel.from_gguf\\)\nprint\\('from_gguf params:', list\\(sig.parameters\\)[:8]\\)\n\")",
+      "WebFetch(*)",
+      "Bash(python -c \"\nfrom diffusers import ZImageTransformer2DModel\nmethods = [m for m in dir\\(ZImageTransformer2DModel\\) if m.startswith\\('from_'\\)]\nprint\\('loaders:', methods\\)\n\" ; grep -rl \"gguf\" /opt/anaconda3/lib/python3.12/site-packages/diffusers/models/transformers/ 2>/dev/null | head)",
+      "Bash(SNAP=~/.cache/huggingface/hub/models--Tongyi-MAI--Z-Image-Turbo/snapshots/f332072aa78be7aecdf3ee76d5c247082da564a6; mkdir -p ~/Downloads/Z-Image-Turbo && cp -RL \"$SNAP/vae\" \"$SNAP/text_encoder\" ~/Downloads/Z-Image-Turbo/ && du -sh ~/Downloads/Z-Image-Turbo/* && ls ~/Downloads/Z-Image-Turbo/text_encoder ~/Downloads/Z-Image-Turbo/vae)",
+      "Bash(ls /Applications/ | grep -i rustdesk; ls ~/Applications/ 2>/dev/null | grep -i rustdesk)",
+      "Read(//Applications/**)"
     ]
   }
 }
