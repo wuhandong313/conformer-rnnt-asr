@@ -60,11 +60,7 @@ model:
     past_frames: 0
     draft_after_emit: true
     chain_states: true
-    # iter-7 无 iter-8 的验证器模拟特征
-    chain_sim: false
-    delay_decompose: false
-    accept_ce_weight: 0.0
-    delay_ce_weight: 0.0
+    # iter-7 无 iter-8 的验证器模拟特征 (iter-9 起该通道已从代码移除)
     freeze_base: true
     ce_loss_weights: [0.8, 0.64]
     kl_weight: 0.0

@@ -50,29 +50,35 @@ class ConformerRNNT(torch.nn.Module):
         source_lengths: Tensor,
         targets: Tensor,
         target_lengths: Tensor,
-    ) -> Tuple[Tensor, Tensor, Tensor, Optional[Tensor], Optional[List[Tensor]]]:
+    ) -> Tuple[Tensor, Tensor, Tensor, Optional[Tensor], Optional[List[Tensor]], Optional[Tensor]]:
         """Training forward producing RNNT logits + Medusa head logits.
 
         Joint fusion is computed once and shared by the joiner and the Medusa
         heads (head 0's logits are the joiner's own logits — same projection).
 
+        Args:
+            targets: BOS-prepended raw target ids ``(B, U+1)`` — consumed by
+                the draft-side sequence model (iter-10 teacher forcing).
+
         Returns:
-            (logits, src_len, tgt_len, logits_base, logits_future)
-            logits_base/future are None when medusa_heads is None.
+            (logits, src_len, tgt_len, logits_base, logits_future, logits_lm)
+            logits_base/future/lm are None when medusa_heads is absent or the
+            heads carry no draft sequence model.
         """
         src_enc, src_len = self.transcriber(sources, source_lengths)
         tgt_enc, tgt_len, _ = self.predictor(targets, target_lengths, None)
         joint = self.joiner.fuse(src_enc, tgt_enc)
         logits = self.joiner.project(joint)
         if self.medusa_heads is not None:
-            logits_base, logits_future = self.medusa_heads(
+            logits_base, logits_future, logits_lm = self.medusa_heads(
                 joint,
                 source_encodings=src_enc,
                 target_encodings=tgt_enc,
+                chain_tokens=targets,
             )
         else:
-            logits_base, logits_future = None, None
-        return logits, src_len, tgt_len, logits_base, logits_future
+            logits_base, logits_future, logits_lm = None, None, None
+        return logits, src_len, tgt_len, logits_base, logits_future, logits_lm
 
     # ── Component-level APIs (for beam search) ──────────────────────────
     @torch.jit.export
@@ -102,59 +108,42 @@ class ConformerRNNT(torch.nn.Module):
         target_encodings: Tensor,
         chain_drafts: Optional[List[int]] = None,
         chain_states: Optional[List[Tensor]] = None,
-        sim_window: Optional[Tensor] = None,
-    ) -> Tuple[Optional[Tensor], List[Tensor]]:
+        chain_hiddens: Optional[List[Tensor]] = None,
+    ) -> Tuple[Optional[Tensor], List[Tensor], Optional[Tensor]]:
         """Apply Medusa heads to joiner-fused features (for spec decode).
 
         Args:
-            source_encodings: (B, T, D) encoder output. In ``stream_local``
-                mode this is the window consumed by the heads (iter-8:
-                past-anchored ``[t-past..t, t+1..t+lookahead]``); only the
-                anchor frame is scored. Must be exactly
-                ``1 + past_frames + lookahead_frames`` frames wide — it is
-                used verbatim as the acoustic window (iter-9).
+            source_encodings: ``(B, 1, D)`` — exactly the current frame being
+                decoded (iter-10: heads have no acoustic window; sequence
+                context is the encoder chunk attention's responsibility).
             target_encodings: (B, L, D) from ``predict`` (L=1 at inference).
-            chain_drafts: chain 模式推理时使用 — 已确定的前序 draft id;
+            chain_drafts: chain 模式推理 — 已确定的前序 draft id;
                 head-k 消费 chain_drafts[k-1] 的 embedding。
-            chain_states: chain 模式推理时使用 (iter-4) — K 个 (B,1,D)
-                predictor 滚动状态; head-k 消费 chain_states[k]。
-            sim_window: iter-8 — (B, W+1, D) 真 encoder 帧 ``[t..t+W]``,
-                chain_sim 开启时逐 head 与其 rolled state 过 joiner 得到
-                验证器模拟扫描的窗口 logits, 传给 medusa forward。
+            chain_states: chain 模式推理 (iter-4) — K 个 (B,1,D) predictor
+                滚动状态; head-k 消费 chain_states[k]。
+            chain_hiddens: chain 模式推理 (iter-10) — 逐 head 的 draft 序列
+                模型隐藏态 (B,1,D); head-k 消费 chain_hiddens[k]。
 
         Returns:
-            (logits_base, logits_future) — both empty/None when no heads.
+            (logits_base, logits_future, logits_lm) — logits_lm 在推理恒为
+            None; logits_base/future 为 None/[] when no heads.
         """
         if self.medusa_heads is None:
-            return None, []
-        if source_encodings.size(1) == 0:
-            raise ValueError("predict_heads requires at least one source frame")
-        # The verifier is always anchored at the current frame. iter-8: the
-        # past-anchored window [t-past..t+lookahead] places that frame at
-        # offset ``past`` (legacy layout: offset 0).
-        past = getattr(self.medusa_heads, "past_frames", 0)
-        current = source_encodings[:, past : past + 1]
-        joint = self.joiner.fuse(current, target_encodings)
-        sim_window_logits: Optional[List[Tensor]] = None
-        if sim_window is not None and getattr(self.medusa_heads, "chain_sim_enabled", False):
-            sim_window_logits = []
-            states = chain_states or [target_encodings]
-            for k in range(self.medusa_heads.num_heads):
-                state_k = states[k] if k < len(states) else target_encodings
-                win_joint = self.joiner.fuse(sim_window, state_k)  # (B,W+1,1,D)
-                sim_window_logits.append(
-                    self.joiner.project(win_joint.squeeze(2))
-                )
+            return None, [], None
+        if source_encodings.size(1) != 1:
+            raise ValueError(
+                "predict_heads expects exactly the current frame (B,1,D), got "
+                f"width {source_encodings.size(1)} — heads have no acoustic "
+                "window (iter-10)"
+            )
+        joint = self.joiner.fuse(source_encodings, target_encodings)
         return self.medusa_heads(
             joint,
             source_encodings=source_encodings,
             target_encodings=target_encodings,
             chain_drafts=chain_drafts,
             chain_states=chain_states,
-            sim_window_logits=sim_window_logits,
-            # iter-9: source_encodings is already the (B, W, D) window; do not
-            # let MedusaHeads re-anchor it (T == 1 there would zero it out).
-            window_prebuilt=True,
+            chain_hiddens=chain_hiddens,
         )
 
 
@@ -194,14 +183,9 @@ def conformer_rnnt_model(
     # Medusa
     medusa_num_heads: int = 0,
     medusa_input_mode: str = "stream_local",
-    medusa_lookahead_frames: Optional[int] = None,
     medusa_draft_after_emit: bool = False,
     medusa_chain_states: bool = False,
-    medusa_past_frames: int = 0,
-    medusa_chain_sim: bool = False,
-    medusa_delay_decompose: bool = False,
-    medusa_rhythm_feature: bool = False,
-    medusa_per_token_blank: int = 4,
+    medusa_draft_seq_model: Optional[dict] = None,
 ) -> ConformerRNNT:
     """Build a Conformer-RNNT model from explicit keyword arguments.
 
@@ -225,13 +209,6 @@ def conformer_rnnt_model(
     medusa_heads = None
     if medusa_num_heads > 0:
         from conformer_rnnt.medusa import MedusaHeads
-        max_lookahead = max(0, right_context_length // time_reduction_stride)
-        if medusa_lookahead_frames is None:
-            medusa_lookahead_frames = max_lookahead
-        # Offline (non-streaming) decoding encodes the full utterance up
-        # front, so a wider draft-side acoustic window is legitimate — the
-        # clamp to right-context only applies to streaming constraints.
-        medusa_lookahead_frames = max(0, int(medusa_lookahead_frames))
         # 共享 joiner 的输出投影: head 0 ≡ joiner 精确一致,draft 与验证器
         # 用同一个打分标准 (对应原版 Medusa 的共享 output_proj)。
         medusa_heads = MedusaHeads(
@@ -240,14 +217,9 @@ def conformer_rnnt_model(
             num_heads=medusa_num_heads,
             w_vocab=joiner.linear,
             input_mode=medusa_input_mode,
-            lookahead_frames=medusa_lookahead_frames,
             draft_after_emit=medusa_draft_after_emit,
             chain_states=medusa_chain_states,
-            past_frames=medusa_past_frames,
-            chain_sim=medusa_chain_sim,
-            delay_decompose=medusa_delay_decompose,
-            rhythm_feature=medusa_rhythm_feature,
-            per_token_blank=medusa_per_token_blank,
+            draft_seq_model=medusa_draft_seq_model,
         )
 
     return ConformerRNNT(

@@ -32,10 +32,10 @@ from common import (
 )
 from conformer_rnnt.model import conformer_rnnt_model
 from conformer_rnnt.medusa import (
-    delay_ce_loss,
+    base_next_token_ce_loss,
     kl_to_base_loss,
+    lm_aux_loss,
     shifted_ce_loss,
-    verifier_distillation_loss,
 )
 from conformer_rnnt.spec_decode import speculative_greedy_decode
 
@@ -350,20 +350,16 @@ class LibriSpeechRNNTModule(LightningModule):
         # Medusa
         medusa_num_heads: int = 0,
         medusa_input_mode: str = "stream_local",
-        medusa_lookahead_frames: Optional[int] = None,
         medusa_draft_after_emit: bool = False,
         medusa_chain_states: bool = False,
-        medusa_past_frames: int = 0,
-        medusa_chain_sim: bool = False,
-        medusa_delay_decompose: bool = False,
-        medusa_rhythm_feature: bool = False,
-        medusa_accept_ce_weight: float = 1.0,
-        medusa_delay_ce_weight: float = 0.5,
-        medusa_sim_bias_lr_mult: float = 1.0,
-        medusa_sim_bias_rezero: bool = False,
+        medusa_draft_seq_model: Optional[dict] = None,
         medusa_ce_weights: tuple = (0.8, 0.64, 0.512, 0.4096),
         medusa_kl_weight: float = 0.05,
+        medusa_lm_weight: float = 0.0,
+        medusa_bnt_weight: float = 0.0,
+        medusa_bnt_max_blank: int = 4,
         medusa_freeze_base: bool = False,
+        medusa_seq_lr_scale: float = 0.5,
         # Decoding
         beam_width: int = 20,
         decoding_mode: str = "beam",
@@ -422,14 +418,9 @@ class LibriSpeechRNNTModule(LightningModule):
             joiner_activation=joiner_activation,
             medusa_num_heads=medusa_num_heads,
             medusa_input_mode=medusa_input_mode,
-            medusa_lookahead_frames=medusa_lookahead_frames,
             medusa_draft_after_emit=medusa_draft_after_emit,
             medusa_chain_states=medusa_chain_states,
-            medusa_past_frames=medusa_past_frames,
-            medusa_chain_sim=medusa_chain_sim,
-            medusa_delay_decompose=medusa_delay_decompose,
-            medusa_rhythm_feature=medusa_rhythm_feature,
-            medusa_per_token_blank=spec_per_token_blank,
+            medusa_draft_seq_model=medusa_draft_seq_model,
         )
 
         # ---- Freeze base model when training only Medusa heads ----
@@ -442,12 +433,6 @@ class LibriSpeechRNNTModule(LightningModule):
                 for name, param in self.model.medusa_heads.named_parameters():
                     if not name.startswith("w_vocab."):
                         param.requires_grad = True
-        # iter-8b: 从学歪的直注偏置重启时清零重学 (warm-start 加载后执行)
-        if medusa_sim_bias_rezero and self.model.medusa_heads is not None:
-            heads = self.model.medusa_heads
-            for bias in getattr(heads, "sim_bias_heads", []):
-                torch.nn.init.zeros_(bias.weight)
-            logging.info("Re-zeroed sim_bias_heads weights on load")
 
         # ---- Mel spectrogram params (not a submodule — stays on CPU) ----
         self._mel_kwargs = dict(
@@ -471,27 +456,22 @@ class LibriSpeechRNNTModule(LightningModule):
         )
 
         # ---- Optimizer & scheduler ----
-        # iter-8b: sim 偏查表用独立学习率组 — 行范数需要达到 3-5 才能翻转
-        # head argmax, 基础 lr 下增长太慢 (实测 ~5e-4/步线性); 专用倍率
-        # 只影响 draft 头 logits, 对 verifier/greedy 路径零风险。
-        sim_bias_params, other_params = [], []
-        for name, p in self.model.named_parameters():
-            if not p.requires_grad:
+        # iter-10: draft 侧序列模型用缩放 LR (默认 0.5×) 单独参数组 —
+        # 新模块冷启动 + 大参数量，WarmupLR 对每个组按各自 base_lr 缩放。
+        seq_params, other_params = [], []
+        for name, param in self.model.named_parameters():
+            if not param.requires_grad:
                 continue
-            if "sim_bias_heads" in name:
-                sim_bias_params.append(p)
-            else:
-                other_params.append(p)
-        group_list = [{"params": other_params, "lr": learning_rate}]
-        if sim_bias_params:
-            group_list.append(
-                {
-                    "params": sim_bias_params,
-                    "lr": learning_rate * medusa_sim_bias_lr_mult,
-                }
+            (seq_params if ".seq_model." in name else other_params).append(param)
+        param_groups = [
+            {"params": other_params, "lr": learning_rate},
+        ]
+        if seq_params:
+            param_groups.append(
+                {"params": seq_params, "lr": learning_rate * medusa_seq_lr_scale}
             )
         self.optimizer = torch.optim.Adam(
-            group_list,
+            param_groups,
             lr=learning_rate,
             betas=adam_betas,
             eps=adam_eps,
@@ -547,11 +527,11 @@ class LibriSpeechRNNTModule(LightningModule):
         # ---- Medusa aux loss config ----
         self.medusa_ce_weights = list(medusa_ce_weights)
         self.medusa_kl_weight = medusa_kl_weight
+        self.medusa_lm_weight = medusa_lm_weight
+        self.medusa_bnt_weight = medusa_bnt_weight
+        self.medusa_bnt_max_blank = medusa_bnt_max_blank
         self.medusa_draft_after_emit = bool(medusa_draft_after_emit)
         self.medusa_chain_states = bool(medusa_chain_states)
-        self.medusa_accept_ce_weight = float(medusa_accept_ce_weight)
-        self.medusa_delay_ce_weight = float(medusa_delay_ce_weight)
-        self.sim_bias_lr_mult = float(medusa_sim_bias_lr_mult)
 
     # ------------------------------------------------------------------
     # Checkpoint loading — prefix fix + shared w_vocab alias + strict guard
@@ -618,12 +598,14 @@ class LibriSpeechRNNTModule(LightningModule):
             # Head-count changes (e.g. warm-start a 2-head model from a
             # 3-head checkpoint) leave stale per-head keys. Per-head params
             # live in ModuleLists (`res_blocks.<i>.*`, `context_mlp_heads.
-            # <i>.*`, `chain_state_proj_heads.<i>`, `sim_bias_heads.<i>.*`,
-            # `delay_heads.<i>.*`), so the head index is the first numeric
-            # segment after one of those module names. Drop keys whose head
-            # index is >= the model's head count; kept heads load
-            # bit-identically and anything else unexpected still fails loudly
-            # below.
+            # <i>.*`, `chain_state_proj_heads.<i>`), so the head index is the
+            # first numeric segment after one of those module names. Drop
+            # keys whose head index is >= the model's head count; kept heads
+            # load bit-identically and anything else unexpected still fails
+            # loudly below. (iter-9 sim removal: `sim_bias_heads` /
+            # `delay_heads` keys in pre-iter-9 ckpts no longer exist on the
+            # module — they fall through as unexpected keys and are dropped
+            # by the unexpected-key guard below.)
             #
             # iter-9 fix: the index must be read *only* under a per-head
             # module name. Scanning for the first numeric segment anywhere
@@ -639,8 +621,6 @@ class LibriSpeechRNNTModule(LightningModule):
                     "res_blocks",
                     "context_mlp_heads",
                     "chain_state_proj_heads",
-                    "sim_bias_heads",
-                    "delay_heads",
                 )
 
                 def _stale_head_key(key: str) -> bool:
@@ -673,7 +653,21 @@ class LibriSpeechRNNTModule(LightningModule):
                 k for k in result.missing_keys
                 if not k.startswith("model.medusa_heads.")
             ]
-            bad_unexpected = list(result.unexpected_keys)
+            # iter-9 sim removal: pre-iter-9 ckpts carry `sim_bias_heads` /
+            # `delay_heads` weights whose modules no longer exist — drop
+            # them silently. iter-10 window removal: `context_acoustic` /
+            # `win_attn_*` (disabled iter-5 attention) likewise. Any other
+            # unexpected key still fails loudly.
+            removed_prefixes = (
+                "model.medusa_heads.sim_bias_heads.",
+                "model.medusa_heads.delay_heads.",
+                "model.medusa_heads.context_acoustic.",
+                "model.medusa_heads.win_attn_",
+            )
+            bad_unexpected = [
+                k for k in result.unexpected_keys
+                if not k.startswith(removed_prefixes)
+            ]
             if bad_missing or bad_unexpected:
                 raise RuntimeError(
                     "load_state_dict mismatch: "
@@ -735,20 +729,16 @@ class LibriSpeechRNNTModule(LightningModule):
             # Medusa
             medusa_num_heads=medusa_cfg.get("num_heads", 0),
             medusa_input_mode=medusa_cfg.get("input_mode", "stream_local"),
-            medusa_lookahead_frames=medusa_cfg.get("lookahead_frames"),
             medusa_draft_after_emit=medusa_cfg.get("draft_after_emit", False),
             medusa_chain_states=medusa_cfg.get("chain_states", False),
-            medusa_past_frames=medusa_cfg.get("past_frames", 0),
-            medusa_chain_sim=medusa_cfg.get("chain_sim", False),
-            medusa_delay_decompose=medusa_cfg.get("delay_decompose", False),
-            medusa_rhythm_feature=medusa_cfg.get("rhythm_feature", False),
-            medusa_accept_ce_weight=medusa_cfg.get("accept_ce_weight", 1.0),
-            medusa_delay_ce_weight=medusa_cfg.get("delay_ce_weight", 0.5),
-            medusa_sim_bias_lr_mult=medusa_cfg.get("sim_bias_lr_mult", 1.0),
-            medusa_sim_bias_rezero=medusa_cfg.get("sim_bias_rezero", False),
+            medusa_draft_seq_model=medusa_cfg.get("draft_seq_model"),
             medusa_ce_weights=tuple(medusa_cfg.get("ce_loss_weights", [0.8, 0.64, 0.512, 0.4096])),
             medusa_kl_weight=medusa_cfg.get("kl_weight", 0.05),
+            medusa_lm_weight=medusa_cfg.get("lm_weight", 0.0),
+            medusa_bnt_weight=medusa_cfg.get("bnt_weight", 0.0),
+            medusa_bnt_max_blank=medusa_cfg.get("bnt_max_blank", 4),
             medusa_freeze_base=medusa_cfg.get("freeze_base", False),
+            medusa_seq_lr_scale=medusa_cfg.get("seq_lr_scale", 0.5),
             # Training
             learning_rate=training_cfg.get("learning_rate", 5e-4),
             adam_betas=tuple(training_cfg.get("adam_betas", [0.9, 0.999])),
@@ -858,11 +848,13 @@ class LibriSpeechRNNTModule(LightningModule):
         prepended_targets[:, 0] = self.blank_idx
         prepended_target_lengths = batch.target_lengths + 1
 
-        output, src_lengths, _, logits_base, logits_future = self.model.forward_train_aux(
-            batch.features,
-            batch.feature_lengths,
-            prepended_targets,
-            prepended_target_lengths,
+        output, src_lengths, _, logits_base, logits_future, logits_lm = (
+            self.model.forward_train_aux(
+                batch.features,
+                batch.feature_lengths,
+                prepended_targets,
+                prepended_target_lengths,
+            )
         )
 
         # Clamp source lengths to output time dimension
@@ -888,6 +880,8 @@ class LibriSpeechRNNTModule(LightningModule):
                 blank_idx=self.blank_idx,
                 future_state_offset=1 if self.medusa_draft_after_emit else 0,
             )
+            # iter-10 修正: chain 模式下 KL 对齐必须显式 chain_align=True
+            # (head-k@l 条件于 tgt_enc[l+k-1]，对齐 base@l+k-1 而非 l+k)。
             kl_aux = kl_to_base_loss(
                 logits_future,
                 logits_base,
@@ -895,51 +889,43 @@ class LibriSpeechRNNTModule(LightningModule):
                 src_lengths,
                 target_lengths,
                 future_state_offset=1 if self.medusa_draft_after_emit else 0,
+                chain_align=self.medusa_chain_states,
             )
-            accept_aux = output.new_zeros(())
-            delay_aux = output.new_zeros(())
-            aux = getattr(self.model.medusa_heads, "last_train_aux", None)
-            scans = aux.get("sim_scans") if aux else None
-            if self.medusa_draft_after_emit and self.medusa_accept_ce_weight > 0:
-                # iter-8: 验证器软目标蒸馏 (替代硬 argmax accept_ce) —
-                # accept_ce_weight 配置键复用为蒸馏权重。
-                accept_aux = verifier_distillation_loss(
-                    logits_future,
-                    logits_base,
-                    scans,
-                    weights,
-                    target_lengths,
-                    src_lengths,
-                    future_state_offset=1,
-                )
-                if aux and aux.get("delay_logits"):
-                    delay_aux = delay_ce_loss(
-                        aux["delay_logits"],
-                        scans,
-                        weights,
-                        target_lengths,
-                        src_lengths,
-                        future_state_offset=1,
-                    )
-            loss = (
-                loss + ce_aux + kl_aux
-                + self.medusa_accept_ce_weight * accept_aux
-                + self.medusa_delay_ce_weight * delay_aux
-            )
+            loss = loss + ce_aux + kl_aux
             self.log(f"Losses/{step_type}_medusa_ce", ce_aux, on_step=True, on_epoch=True)
             self.log(f"Losses/{step_type}_medusa_kl", kl_aux, on_step=True, on_epoch=True)
-            self.log(
-                f"Losses/{step_type}_medusa_accept_ce",
-                accept_aux,
-                on_step=True,
-                on_epoch=True,
-            )
-            self.log(
-                f"Losses/{step_type}_medusa_delay_ce",
-                delay_aux,
-                on_step=True,
-                on_epoch=True,
-            )
+
+            # iter-10: LM_aux — draft 序列模型纯 token 侧 next-token CE
+            # (logits_lm 列 l 预测 prep[l+1]，w_vocab 冻结)。
+            if logits_lm is not None and self.medusa_lm_weight > 0:
+                lm_aux = self.medusa_lm_weight * lm_aux_loss(
+                    logits_lm, prepended_targets, prepended_target_lengths
+                )
+                loss = loss + lm_aux
+                self.log(
+                    f"Losses/{step_type}_medusa_lm", lm_aux,
+                    on_step=True, on_epoch=True,
+                )
+
+            # iter-10: BNT — base_next_token 蒸馏 (标签 = base_ids[t..t+max_blank,
+            # l+k-1] 首个 non-blank argmax = 验证器的发射决策 = 接受事件)。
+            if self.medusa_bnt_weight > 0:
+                bnt_aux = base_next_token_ce_loss(
+                    logits_future,
+                    logits_base,
+                    [self.medusa_bnt_weight] * K,
+                    target_lengths,
+                    src_lengths,
+                    blank_idx=self.blank_idx,
+                    future_state_offset=1 if self.medusa_draft_after_emit else 0,
+                    max_blank=self.medusa_bnt_max_blank,
+                    chain_align=self.medusa_chain_states,
+                )
+                loss = loss + bnt_aux
+                self.log(
+                    f"Losses/{step_type}_medusa_bnt", bnt_aux,
+                    on_step=True, on_epoch=True,
+                )
 
         self.log(f"Losses/{step_type}_loss", loss, on_step=True, on_epoch=True)
         return loss

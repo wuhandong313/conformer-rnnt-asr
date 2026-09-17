@@ -1,30 +1,30 @@
 # ===========================================================================
-# iter-9: 投机显示 (speculative display) — 纯显示价值模型 + 流式合法头重训
+# iter-10: 删窗 + draft 侧因果序列模型 + BNT 蒸馏 (投机显示主轮全量)
 # ===========================================================================
-# 价值模型转向: Medusa 草稿只上屏 (用完即弃), 解码回归纯贪心 RNNT。
-# 真实 token 到达时确认或替换上屏猜测; 猜错代价 = 屏幕闪烁, 无正确性风险。
-# 明示放弃真实提速 (RTF 不变); iter-1..8 的验证器/接受率机制代码保留但闲置。
+# 价值模型不变: Medusa 草稿只上屏 (用完即弃), 解码回归纯贪心 RNNT。
+# 一级指标 = 提前量 × 命中率 (− 替换率), 由 scripts/eval_display.py 度量。
 #
-# 新的一级指标 = 提前量 × 命中率 (− 替换率), 由 scripts/eval_display.py 度量。
+# iter-10 架构改动 (详见 docs/experiment-log.md iter-10):
+# 1. 头侧声学窗整体删除 (past_frames/lookahead_frames/context_acoustic/
+#    _anchor_window/win_attn 全移除)。解码到哪一帧就条件于哪一帧的 enc[t]
+#    (零初始化 acoustic_frame_proj 加性注入); 序列上下文感知是 encoder
+#    chunk 注意力的职责。
+# 2. 序列建模增强转向 draft 侧因果序列模型 draft_seq_model (本配置:
+#    3 层因果 transformer, d=512, 8 头, ffn 1024; 可换 type: lstm =
+#    4 层×256 LayerNorm LSTM)。经零初始化 draft_state_proj 注入 fused;
+#    另有 draft_lm_proj 零初始化通道支撑 LM_aux。seq 模型参数组用
+#    seq_lr_scale (默认 0.5×) 单独 LR。
+# 3. 损失 = RNNT + shifted_ce[0.8,0.64] + lm_weight*LM_aux
+#    + bnt_weight*BNT(蒸馏验证器 ≤bnt_max_blank 帧内的发射决策)。
+#    kl_weight 保持 0 (chain_align 接线已修正, 启用时口径正确)。
 #
-# 阶段 1 (基线, 零训练): 只换价值模型, 不改架构 — 窗保持 iter-7/8 的
-# [t-7..t+1] (past=7, lookahead=1, 宽 9)。关键事实: 过去帧在流式部署时
-# 已提交 → past=7 同样流式合法 (spec_decode.py:161 取已算好的 enc), 所以
-# 缩窗换不来合法性, 只会丢上下文并让 context_acoustic 冷启动。
-# 收缩与否待基线数据决定 (见 docs/experiment-log.md iter-9)。
-# context_acoustic 形状与 BEST_iter7 一致 (9*512) → 权重原样加载, 无冷启动。
-# chain_sim / delay_decompose / sim_bias 全部关闭 (验证器模拟特征, 显示模型
-# 下无意义; 模块不创建, 与 iter-7 ckpt 键集合完全兼容)。
-# 训练目标 = shifted_ce (head-k 在 post-emit 列 m 预测 y_{m+k-1}), 即
-# 「草稿 head-j 预测第 u+1+j 个 token」— 与显示任务逐位对齐。
-# accept_ce / delay_ce 置 0: 二者依赖 chain_sim 的扫描标签, 本配置下恒 0。
-# 链条件 (draft embedding + rolled states) 保留 (显示序列连贯性)。
-#
-# warm-start: BEST_iter7.ckpt (2 头加载自动丢 medusa_heads.2.*)。
+# warm-start: BEST_iter10.ckpt (= iter-9 ep07, 见实验文档的准备节)。
+# 新模块 (seq_model/draft_state_proj/acoustic_frame_proj/draft_lm_proj)
+# 冷启动零初始化, 旧模块 (res_blocks/context_mlp*/chain_*) 热载;
+# ckpt 中 context_acoustic/win_attn/sim 键加载时自动丢弃。
 #
 # 用法:
-#   python scripts/eval_display.py configs/server_display.yaml 100 \
-#       /test21/conformer-rnnt-asr/exp_iter2/BEST_iter7.ckpt
+#   python scripts/eval_display.py configs/server_display.yaml 100
 #   python train.py configs/server_display.yaml
 # ===========================================================================
 
@@ -33,7 +33,7 @@ paths:
   sp_model_path: "/test21/medusa/spm_bpe_74.model"
   global_stats_path: "/test21/medusa/global_stats.json"
   exp_dir: "/test21/conformer-rnnt-asr/exp_iter2"
-  from_checkpoint: "/test21/conformer-rnnt-asr/exp_iter2/BEST_iter7.ckpt"
+  from_checkpoint: "/test21/conformer-rnnt-asr/exp_iter2/BEST_iter10.ckpt"
 
 model:
   input_dim: 80
@@ -69,27 +69,40 @@ model:
     # 固定 2 头 (h1/h2); ckpt 中 medusa_heads.2.* 加载时自动丢弃
     num_heads: 2
     input_mode: "stream_local"
-    # iter-9 阶段 1: 窗与 BEST_iter7 同形 [t-7..t+1] (宽 9), 权重原样加载。
-    # lookahead=1 是流式硬约束 (right_ctx(4)//stride(4)=1); past 帧免费。
-    lookahead_frames: 1
-    past_frames: 7
+    # iter-10: 头侧声学窗已删除 — 草拟只条件于当前帧 enc[t]。
+    # (past_frames/lookahead_frames 键不再存在; encoder 感知范围由其
+    # right_context_length 决定, 见上方注释。)
     draft_after_emit: true
     chain_states: true
-    # iter-9: 验证器模拟特征全关 (纯显示价值模型下无验证器)
-    chain_sim: false
-    delay_decompose: false
-    # 二者的标签来自 chain_sim 扫描, 关闭后恒 0 — 显式置 0 避免误读日志
-    accept_ce_weight: 0.0
-    delay_ce_weight: 0.0
+
+    # iter-10: draft 侧因果序列模型 (transformer 首测; 训练不稳或收益
+    # 不足时换 type: lstm 4 层×256 对比)。
+    draft_seq_model:
+      type: "transformer"
+      num_layers: 3
+      d_model: 512
+      nhead: 8
+      ffn_dim: 1024
+      dropout: 0.1
+    # seq 模型参数组 LR 缩放 (相对 learning_rate), 冷启动稳训练用
+    seq_lr_scale: 0.5
+
     # tag 附加后缀: 区分历史同参数 ckpt 文件名 (避免 monitor 缓存串档)
-    tag_suffix: "disp"
+    tag_suffix: "disp10"
 
     # 冻结 base (encoder + predictor + joiner), 只训 Medusa heads
     freeze_base: true
 
     ce_loss_weights: [0.8, 0.64]
-    # iter-1 实验筛选出 KL=0 是最优; chain 对齐下 KL 与 CE 目标冲突
+    # iter-1 实验筛选出 KL=0 是最优; chain 对齐下 KL 与 CE 目标冲突。
+    # (iter-10 已修正 chain_align 接线, 如启用口径正确。)
     kl_weight: 0.0
+    # iter-10 新损失: LM_aux (draft 序列模型纯 token 侧 next-token CE)
+    lm_weight: 0.1
+    # BNT 蒸馏: 标签 = 验证器 ≤bnt_max_blank 帧内的首个 non-blank argmax
+    # (= 接受事件本身); bnt_max_blank 与 decoding.spec.per_token_blank 对齐
+    bnt_weight: 0.2
+    bnt_max_blank: 4
 
   joiner:
     activation: "relu"

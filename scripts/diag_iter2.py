@@ -4,7 +4,7 @@
 用途: 定位「CE 下降但接受率不升」的原因 —
   A. 训练条件 (TF) 上 head argmax 就不准 → 目标/容量问题
   B. TF 准但 draft 条件不准 → exposure bias
-  C. 损失分量失衡 (kl/accept_ce 压制 ce)
+  C. 损失分量失衡 (kl 压制 ce)
 """
 
 from __future__ import annotations
@@ -56,7 +56,7 @@ def main() -> None:
             prep = tgts.new_empty((tgts.size(0), tgts.size(1) + 1))
             prep[:, 1:] = tgts
             prep[:, 0] = blank
-            logits, src_len, _, base, future = model.model.forward_train_aux(
+            logits, src_len, _, base, future, _ = model.model.forward_train_aux(
                 feats, fl, prep, tl + 1
             )
             src_len = torch.clamp(src_len, max=logits.size(1))
@@ -113,26 +113,7 @@ def main() -> None:
                     model.model, _make_tok(pred0, "cuda"), state, one
                 )
                 # chain drafts with GT check against future oracle tokens
-                heads_m = model.model.medusa_heads
-                lookahead = heads_m.lookahead_frames
-                past = getattr(heads_m, "past_frames", 0)
-                win_len = past + 1 + lookahead
-                if past > 0:
-                    if t < past:
-                        src_full = F.pad(enc, (0, 0, past - t, 0))
-                        w0 = 0
-                    else:
-                        src_full = enc
-                        w0 = t - past
-                    src_win = src_full[:, w0 : w0 + win_len]
-                else:
-                    src_win = enc[:, t : t + win_len]
-                sim_on = getattr(heads_m, "chain_sim_enabled", False)
-                sim_win = enc[:, t : t + 1 + lookahead]
-                if sim_win.size(1) < 1 + lookahead:
-                    sim_win = F.pad(
-                        sim_win, (0, 0, 0, 1 + lookahead - sim_win.size(1))
-                    )
+                # (iter-10: 头无声学窗, 草拟只条件于当前帧 enc[t])
                 chain_rolls = [g_last]
                 g_cur, st_cur = g_last, state
                 drafts = []
@@ -140,11 +121,10 @@ def main() -> None:
                     model.model, enc, t, g_last, state, one, blank, 3
                 )
                 for j in range(3):
-                    _, flog = model.model.predict_heads(
-                        src_win, g_last,
+                    _, flog, _ = model.model.predict_heads(
+                        enc[:, t : t + 1], g_last,
                         chain_drafts=list(drafts),
                         chain_states=list(chain_rolls),
-                        sim_window=sim_win if sim_on else None,
                     )
                     d = int(flog[j].argmax(dim=-1).item())
                     if d == blank:

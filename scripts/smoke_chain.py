@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
-"""iter-2 链式 Medusa 冒烟测试 — 小随机模型, CPU, 无需数据集。
+"""iter-10 冒烟测试 — 小随机模型, CPU, 无需数据集。
 
 验证:
-  1. MedusaHeads(chain_states) 训练前向形状 + 初始零 delta (head ≈ base)。
-  2. shifted_ce / kl_to_base / base_next_token_ce 在 chain_align 下可反传。
-  3. 链式投机解码 speculative_greedy_decode 与 greedy_decode 逐 token
-     一致 (无损) — 随机权重下 draft 几乎必错, 走 fallback 路径; 再用
-     「oracle draft」注入验证接受路径也无损。
-  4. 链式训练状态对齐: head-k 的条件状态 == 推理时 draft 全对的滚动状态。
-  5..8. iter-8 零初始化 / 窗布局 / sim 扫描双路径 / 损失反传 + 无损。
-  9. iter-9: 推理声学窗 == 训练声学窗 (T==1 二次开窗会清零 lookahead 列)。
-  10. iter-9: 3 头 ckpt → 2 头 warm-start 只丢 per-head 索引 >= 2 的键,
-      共享 MLP 的*层*索引 (context_mlp.2 / context_mlp_extra.2,4) 须保留。
+  1. 训练前向 + 三条新损失 (shifted_ce / KL(chain_align) / LM_aux / BNT)
+     反传; 零初始化注入 ⇒ 初始 head logits == base; freeze_base 下梯度
+     只落头侧参数 (encoder/predictor/joiner/w_vocab 无梯度); seq 模型
+     梯度在注入投影非零后可达 (零初始化 bootstrap 两步验证)。
+  2. 链式投机解码与 greedy oracle 逐 token 一致 (无损) — 随机权重下
+     draft 几乎必错, 走 fallback + cache 回滚重放路径 (含/不含 seq 模型)。
+  3. oracle replay 状态推进不变量。
+  4. 接受率统计健全性。
+  5. TF/推理同构: 全网格 head logits@(t,l) == 单点 predict_heads
+     (KV/状态 cache 吃同前缀 token) — transformer 与 lstm 两种 seq 模型。
+  6. seq 模型 cache: 增量 == 全序列; 快照回滚 == 全新 cache。
+  7. predict_heads 拒绝宽度 > 1 输入 (头无声学窗)。
+  8. iter-9: 3 头 ckpt → 2 头 warm-start 只丢 per-head 索引 >= 2 的键;
+     iter-10: 旧 ckpt 的 context_acoustic / win_attn 键静默丢弃。
 """
 
 from __future__ import annotations
@@ -25,16 +29,21 @@ import torch
 
 from conformer_rnnt.medusa import (
     MedusaHeads,
-    shifted_ce_loss,
-    kl_to_base_loss,
     base_next_token_ce_loss,
+    build_draft_seq_model,
+    kl_to_base_loss,
+    lm_aux_loss,
+    shifted_ce_loss,
 )
 from conformer_rnnt.spec_decode import greedy_decode, speculative_greedy_decode
 
+SEQ_TF = {"type": "transformer", "num_layers": 2, "d_model": 16, "nhead": 2,
+          "ffn_dim": 32, "dropout": 0.0, "emb_dim": 8}
+SEQ_LSTM = {"type": "lstm", "num_layers": 2, "hidden_dim": 8, "dropout": 0.0,
+            "emb_dim": 8}
 
-def build_tiny_model(
-    K: int, chain: bool, lookahead: int = 2, iter8: bool = False,
-):
+
+def build_tiny_model(K: int, chain: bool, seq_spec=None):
     from conformer_rnnt.model import conformer_rnnt_model
 
     torch.manual_seed(0)
@@ -60,18 +69,14 @@ def build_tiny_model(
         joiner_activation="relu",
         medusa_num_heads=K,
         medusa_input_mode="stream_local",
-        medusa_lookahead_frames=lookahead,
         medusa_draft_after_emit=True,
         medusa_chain_states=chain,
-        medusa_past_frames=3 if iter8 else 0,
-        medusa_chain_sim=iter8,
-        medusa_delay_decompose=iter8,
-        medusa_per_token_blank=4,
+        medusa_draft_seq_model=seq_spec,
     )
     return model
 
 
-# 测试 10 需要构造 LightningModule, 而它构造时就加载 sp 模型 / 全局统计量。
+# 测试 8 需要构造 LightningModule, 而它构造时就加载 sp 模型 / 全局统计量。
 # 二者只在数据集侧存在 (本地无数据集时跳过该测试)。
 LIT_SP_MODEL = os.environ.get("SP_MODEL_PATH", "/test21/medusa/spm_bpe_74.model")
 LIT_GLOBAL_STATS = os.environ.get(
@@ -114,8 +119,6 @@ def build_tiny_lit(K: int):
                 "medusa": {
                     "num_heads": K,
                     "input_mode": "stream_local",
-                    "lookahead_frames": 1,
-                    "past_frames": 0,
                     "draft_after_emit": True,
                     "chain_states": True,
                 },
@@ -134,85 +137,132 @@ def fake_batch(B=1, T=12, L=6, V=6):
     return feats, feat_lens, targets, tgt_lens
 
 
+def freeze_base(model):
+    """复刻 lightning freeze_base: 冻结全部, 只解冻头侧 (w_vocab 除外)。"""
+    for p in model.parameters():
+        p.requires_grad = False
+    for n, p in model.medusa_heads.named_parameters():
+        if not n.startswith("w_vocab."):
+            p.requires_grad = True
+
+
+def head_grads(model):
+    return {
+        n: (p.grad is not None and p.grad.abs().sum().item() > 0)
+        for n, p in model.medusa_heads.named_parameters()
+        if "w_vocab" not in n
+    }
+
+
 def main():
     K = 3
     V = 6
     blank = V - 1
-    print("=== 1. training forward + losses ===")
-    model = build_tiny_model(K, chain=True)
+    print("=== 1. training forward + losses + zero-init + grad scope ===")
+    model = build_tiny_model(K, chain=True, seq_spec=SEQ_TF)
+    freeze_base(model)
+    model.eval()
     feats, feat_lens, targets, tgt_lens = fake_batch(V=V)
     prep = targets.new_empty((targets.size(0), targets.size(1) + 1))
     prep[:, 1:] = targets
     prep[:, 0] = blank
-    logits, src_len, _, base, future = model.forward_train_aux(
+    logits, src_len, _, base, future, logits_lm = model.forward_train_aux(
         feats, feat_lens, prep, tgt_lens + 1
     )
     assert base.shape == logits.shape
     assert len(future) == K
-    # 初始零 delta: context_mlp 最后一层零初始化 ⇒ future[0] logits == base
-    # (在 head 输入完全等于 joint 时)。chain 模式 head-1 的 delta 来自
-    # g_last 状态, 仍应零初始化 ⇒ future[0] == base。
-    assert torch.allclose(future[0], base, atol=1e-5), (
-        "head-1 initial logits must equal base (zero-init delta)"
-    )
-    print(f"  shapes OK; base {tuple(base.shape)}; head-1 ≈ base at init: OK")
-
-    # 零 delta ⇒ 所有 head 初始 == base (只对 head-1 严格; head-2/3 同理,
-    # 因为 delta 零初始化作用于每个 head 的输入)
+    assert logits_lm is not None, "seq model configured → lm logits required"
+    # 零初始化注入 (acoustic_frame_proj/draft_state_proj/chain_state_proj/
+    # context_mlp 输出层) ⇒ 每个 head 初始 logits == base。
     for k in range(K):
-        assert torch.allclose(future[k], base, atol=1e-5), f"head-{k+1} != base at init"
-    print(f"  all {K} heads ≈ base at init: OK")
+        assert torch.allclose(future[k], base, atol=1e-5), (
+            f"head-{k+1} must equal base at init (zero-init injection)"
+        )
+    print(f"  shapes OK; base {tuple(base.shape)}; all {K} heads ≈ base at init: OK")
 
     ce = shifted_ce_loss(future, targets, [0.8] * K, tgt_lens, src_len,
                          blank_idx=blank, future_state_offset=1)
     kl = kl_to_base_loss(future, base, 0.05, src_len, tgt_lens,
                          future_state_offset=1, chain_align=True)
+    lm = lm_aux_loss(logits_lm, prep, tgt_lens + 1)
     acc = base_next_token_ce_loss(future, base, [0.8] * K, tgt_lens, src_len,
                                   blank_idx=blank, future_state_offset=1,
                                   max_blank=4, chain_align=True)
-    total = ce + kl + acc
+    total = ce + kl + lm + acc
     total.backward()
-    grads = [
-        p.grad is not None and p.grad.abs().sum().item() > 0
-        for n, p in model.medusa_heads.named_parameters()
-        if "w_vocab" not in n
-    ]
-    assert any(grads), "medusa head params received no gradient"
-    print(f"  losses ce={ce:.4f} kl={kl:.4f} acc={acc:.4f}; grads flow: OK")
+    # 反传范围: 头侧参数有梯度; encoder/predictor/joiner(w_vocab) 无梯度。
+    # step-0 语义: 零初始化的*输出*投影 (context_mlp[-1]/res_blocks[..].linear2/
+    # chain_draft_proj/...) 有梯度 (bootstrap 起点); 上游模块 (acoustic_frame_
+    # proj / draft_state_proj / seq 模型) 的梯度此时被零输出层挡住, 在下一节
+    # bootstrap 步后可达。
+    grads = head_grads(model)
+    assert any(grads.values()), "medusa head params received no gradient"
+    assert grads.get("context_mlp.2.weight"), (
+        "context_mlp output layer got no gradient (bootstrap entry broken)"
+    )
+    assert grads.get("res_blocks.0.linear2.weight"), (
+        "res_block output projection got no gradient"
+    )
+    for p in model.transcriber.parameters():
+        assert p.grad is None, "encoder received gradient (freeze broken)"
+    for p in model.predictor.parameters():
+        assert p.grad is None, "predictor received gradient (freeze broken)"
+    assert model.joiner.linear.weight.grad is None, "w_vocab received gradient"
+    print(f"  ce={ce:.4f} kl={kl:.4f} lm={lm:.4f} acc={acc:.4f}; "
+          "grads stay head-side: OK")
 
-    print("=== 2. chain decode lossless (random weights → fallback path) ===")
+    # Bootstrap 步: 零初始化投影更新为非零后, 梯度应可达注入通道与 seq 模型。
+    with torch.no_grad():
+        model.medusa_heads.context_mlp[-1].weight.normal_(0, 0.1)
+        model.medusa_heads.context_mlp[-1].bias.normal_(0, 0.1)
+        model.medusa_heads.draft_state_proj.weight.normal_(0, 0.1)
+        model.medusa_heads.draft_lm_proj.weight.normal_(0, 0.1)
     model.zero_grad()
+    _, _, _, base2, future2, lm2 = model.forward_train_aux(
+        feats, feat_lens, prep, tgt_lens + 1
+    )
+    (shifted_ce_loss(future2, targets, [0.8] * K, tgt_lens, src_len,
+                     blank_idx=blank, future_state_offset=1)
+     + lm_aux_loss(lm2, prep, tgt_lens + 1)).backward()
+    grads2 = head_grads(model)
+    for name in ("acoustic_frame_proj.weight", "draft_state_proj.weight",
+                 "draft_lm_proj.weight", "chain_state_proj.weight"):
+        assert grads2.get(name), f"{name} got no gradient after bootstrap"
+    assert any(g for n, g in grads2.items() if n.startswith("seq_model.")), (
+        "seq model received no gradient after bootstrap step"
+    )
+    print("  injection channels + seq model gradients reachable after "
+          "bootstrap: OK")
+    model.zero_grad()
+
+    print("=== 2. chain decode lossless (random weights → fallback/replay) ===")
     # 随机权重模型会幻觉 (同帧无限 emit), 用 max_steps 把两者截到可比长度。
     MAX = 200
-    oracle = greedy_decode(model, feats, feat_lens, blank, max_steps=MAX)
-    spec, stats = speculative_greedy_decode(
-        model, feats, feat_lens, blank,
-        max_draft=K, per_token_blank=4, max_steps=MAX * 4, return_stats=True,
+    for label, m in (("with-seq", model), ("no-seq", build_tiny_model(K, chain=True))):
+        oracle = greedy_decode(m, feats, feat_lens, blank, max_steps=MAX)
+        spec, stats = speculative_greedy_decode(
+            m, feats, feat_lens, blank,
+            max_draft=K, per_token_blank=4, max_steps=MAX * 4, return_stats=True,
+        )
+        # spec 每步最多产出 1+K 个 token; 两者按公共前缀比较 (幻觉截断点不同
+        # 不影响无损性判断 — 前 MAX 步的 oracle 输出必须是 spec 的前缀)。
+        assert spec[: len(oracle)] == oracle, (
+            f"chain spec decode ({label}) must equal greedy oracle"
+        )
+        print(f"  [{label}] tokens={len(spec)} drafts={stats['total_drafts']} "
+              f"accepted={stats['total_accepted']} lossless: OK")
+
+    print("=== 3. oracle replay state advancement ===")
+    from conformer_rnnt.spec_decode import (
+        _advance_predictor,
+        _init_decode,
+        _join_argmax,
+        _make_tok,
     )
-    # spec 每步最多产出 1+K 个 token; 两者按公共前缀比较 (幻觉截断点不同
-    # 不影响无损性判断 — 前 MAX 步的 oracle 输出必须是 spec 的前缀)。
-    assert spec[: len(oracle)] == oracle, "chain spec decode must equal greedy oracle"
-    print(f"  tokens={len(spec)} drafts={stats['total_drafts']} "
-          f"accepted={stats['total_accepted']} lossless: OK")
-
-    print("=== 3. chain decode with strong heads (accept path) ===")
-    # 把 head 前的 ResBlock 与 delta 保持, 但直接把 w_vocab 换成能抄 base 的?
-    # 更简单: 用足够小的模型重跑 — 无法保证 draft 命中。改为结构验证:
-    # 强制 drafts == oracle 未来 token, 通过 monkey-patch predict_heads
-    # 逐 token 预测 (oracle drafting)。这验证「接受路径」的状态推进无损。
-    real_predict_heads = model.predict_heads
-
-    def oracle_predict_heads(source_encodings, target_encodings,
-                             chain_drafts=None):
-        return real_predict_heads(source_encodings, target_encodings,
-                                  chain_drafts)
-
-    # 链式草拟状态推进结构验证: draft 全对时, 滚动状态 == greedy 状态。
-    # 直接验证核心不变量: 用 greedy 序列逐 token 重放。
-    from conformer_rnnt.spec_decode import _init_decode, _join_argmax, _make_tok, _advance_predictor
 
     enc, _ = model.transcribe(feats, feat_lens)
     T = enc.size(1)
+    oracle = greedy_decode(model, feats, feat_lens, blank, max_steps=MAX)
     g, st, one = _init_decode(model, blank, feats.device)
     t = 0
     consumed = 0
@@ -221,7 +271,6 @@ def main():
         if p == blank:
             t += 1
             continue
-        # 模拟链式滚动: predictor 吃 p, 状态应与重新 _init+重放一致
         g, st = _advance_predictor(model, _make_tok(p, feats.device), st, one)
         consumed += 1
     assert consumed == len(oracle), f"replay consumed {consumed} != {len(oracle)}"
@@ -235,220 +284,91 @@ def main():
         if ph["drafts"] == 0 and ph["accepted"] == 0:
             print(f"  head-{j+1}: no drafts (early stop)")
 
-    # ═══════════════════════════════════════════════════════════════════
-    print("=== 5. iter-8 zero-init with sim + delay on ===")
-    m8 = build_tiny_model(K, chain=True, iter8=True)
-    f8, fl8, tg8, tl8 = fake_batch(V=V)
-    prep8 = tg8.new_empty((tg8.size(0), tg8.size(1) + 1))
-    prep8[:, 1:] = tg8
-    prep8[:, 0] = blank
-    _, sl8, _, base8, fut8 = m8.forward_train_aux(f8, fl8, prep8, tl8 + 1)
-    for k in range(K):
-        assert torch.allclose(fut8[k], base8, atol=1e-5), (
-            f"iter-8 head-{k+1} must equal base at init (zero-init paths)"
-        )
-    aux = getattr(m8.medusa_heads, "last_train_aux", None)
-    assert aux is not None and aux.get("sim_scans") is not None, (
-        "last_train_aux must carry sim scans in training"
-    )
-    assert len(aux["delay_logits"]) == K and aux["delay_logits"][0] is not None, (
-        "delay logits must be present when delay_decompose=True"
-    )
-    print(f"  all {K} heads ≈ base at init (sim+delay on): OK; aux populated")
-
-    print("=== 6. anchor window layout (past swap) ===")
-    heads8 = m8.medusa_heads
-    enc8, _ = m8.transcribe(f8, fl8)
-    T8 = enc8.size(1)
-    win = heads8._anchor_window(enc8, T8)          # (B,T,W,D)
-    W = 1 + heads8.past_frames + heads8.lookahead_frames
-    assert win.shape == (1, T8, W, enc8.size(2)), f"anchor window shape {win.shape}"
-    past, look = heads8.past_frames, heads8.lookahead_frames
-    t_probe = min(4, T8 - 1)
-    # [t-p .. t-1 | t | t+1 .. t+look]
-    for p in range(past):
-        col = win[0, t_probe, p]
-        if t_probe - (past - p) >= 0:
-            assert torch.allclose(col, enc8[0, t_probe - (past - p)], atol=1e-6), (
-                f"past col {p} mismatch"
-            )
-        else:
-            assert torch.allclose(col, torch.zeros_like(col), atol=1e-6), (
-                f"past col {p} should be zero-padded at sequence start"
-            )
-    assert torch.allclose(win[0, t_probe, past], enc8[0, t_probe], atol=1e-6), (
-        "current frame column mismatch"
-    )
-    for fcol in range(look):
-        idx = t_probe + 1 + fcol
-        col = win[0, t_probe, past + 1 + fcol]
-        if idx < T8:
-            assert torch.allclose(col, enc8[0, idx], atol=1e-6), "future col mismatch"
-        else:
-            assert torch.allclose(col, torch.zeros_like(col), atol=1e-6), (
-                "future col past sequence end should be zero"
-            )
-    print(f"  window layout [t-{past}..t, t, t+1..t+{look}]: OK")
-
-    print("=== 7. sim scan invariants + dual-path consistency ===")
-    scans = aux["sim_scans"]
-    joint8 = m8.joiner.fuse(enc8, m8.predictor(prep8, tl8 + 1, None)[0])
-    base_ids = base8.argmax(dim=-1).detach()       # (B,T,L)
-    pb = heads8.per_token_blank
-    B, T, L = base_ids.shape
-    for b in (0,):
-        for t in range(0, T, 3):
-            for l in range(L):
-                prev_emit = t  # head-0 从网格点自身帧起扫 (绝对坐标)
-                for k in range(K):
-                    sc = scans[k]
-                    found = bool(sc["found"][b, t, l])
-                    d = int(sc["sim_delta"][b, t, l])
-                    sid = int(sc["sim_id"][b, t, l])
-                    state_col = min(l + k, L - 1)
-                    if found:
-                        assert sid != blank, "found sim_id must be non-blank"
-                        assert 0 <= d <= pb, f"delta {d} out of range"
-                        assert int(base_ids[b, prev_emit + d, state_col]) == sid, (
-                            "sim_id must equal base_ids at (start+delta, l+k)"
-                        )
-                        for dd in range(d):
-                            assert int(base_ids[b, prev_emit + dd, state_col]) == blank, (
-                                "frames before resolved emit must be blank"
-                            )
-                        prev_emit = prev_emit + d  # 验证器同帧可连发
-                    else:
-                        assert sid == blank
-    print("  grid scan invariants (recursion start / blank prefix / L-shift): OK")
-    # 双路径一致性: 推理侧 predict_heads(sim_window) 的单点扫描 == 训练网格扫描。
-    # 取一个确定的 draft 点 (t0, l0), 用网格解析出的前序 draft 驱动推理。
-    t0 = min(5, T - 2)
-    l0 = min(2, L - K - 1)
-    g_states = [
-        m8.predictor(prep8[:, : l0 + k + 1], None, None)[0][:, l0 + k : l0 + k + 1]
-        for k in range(K + 1)
-    ]
-    chain_states8 = [g_states[k] for k in range(K)]
-    grid_drafts = [
-        int(scans[k]["sim_id"][0, t0, l0]) for k in range(K - 1)
-    ]
-    if all(d != blank for d in grid_drafts):
-        past8, look8 = heads8.past_frames, heads8.lookahead_frames
-        win_len = past8 + 1 + look8
-        w_start = t0 - past8 if t0 >= past8 else 0
-        raw_win = enc8[:, w_start : w_start + win_len]
-        if raw_win.size(1) < win_len:
-            raw_win = torch.nn.functional.pad(
-                raw_win, (0, 0, 0, win_len - raw_win.size(1))
-            )
-        sim_win = enc8[:, t0 : t0 + 1 + look8]
-        _, fut_inf = m8.predict_heads(
-            raw_win, g_states[0],
-            chain_drafts=grid_drafts,
-            chain_states=chain_states8,
-            sim_window=sim_win,
-        )
-        inf_scans = getattr(m8.medusa_heads, "last_infer_scan", None)
-        assert inf_scans is not None, "inference scan must be stashed"
-        for k in range(K):
-            inf_id = int(inf_scans[k]["sim_id"][0])
-            grid_id = int(scans[k]["sim_id"][0, t0, l0])
-            inf_d = int(inf_scans[k]["sim_delta"][0])
-            grid_d = int(scans[k]["sim_delta"][0, t0, l0])
-            assert inf_id == grid_id and inf_d == grid_d, (
-                f"dual-path mismatch head-{k+1}: infer=({inf_id},{inf_d}) "
-                f"grid=({grid_id},{grid_d})"
-            )
-        print(f"  dual-path (grid vs joiner-window) scan id @({t0},{l0}): OK")
-    else:
-        print("  (grid drafts blank at probe point — dual-path skipped)")
-
-    print("=== 8. iter-8 losses backprop + lossless ===")
-    from conformer_rnnt.medusa import delay_ce_loss, verifier_distillation_loss
-    w8 = [0.8] * K
-    distill = verifier_distillation_loss(
-        fut8, base8, scans, w8, tl8, sl8, future_state_offset=1,
-    )
-    dce = delay_ce_loss(
-        aux["delay_logits"], scans, w8, tl8, sl8, future_state_offset=1,
-    )
-    ce8 = shifted_ce_loss(fut8, tg8, w8, tl8, sl8, blank_idx=blank,
-                          future_state_offset=1)
-    total8 = ce8 + distill + dce
-    total8.backward()
-    named = dict(m8.medusa_heads.named_parameters())
-    for pname in ("chain_sim_proj.weight", "delay_heads.0.weight",
-                  "delay_proj.weight", "sim_bias_heads.0.weight"):
-        assert pname in named and named[pname].grad is not None, (
-            f"{pname} received no gradient"
-        )
-    gvals = {p: float(named[p].grad.abs().sum()) for p in
-             ("chain_sim_proj.weight", "delay_proj.weight")}
-    print(f"  distill={float(distill):.4f} delay_ce={float(dce):.4f}; "
-          f"grads sim={gvals['chain_sim_proj.weight']:.4f} "
-          f"delay={gvals['delay_proj.weight']:.4f}: OK")
-    m8.zero_grad()
-    oracle8 = greedy_decode(m8, f8, fl8, blank, max_steps=MAX)
-    spec8, stats8 = speculative_greedy_decode(
-        m8, f8, fl8, blank,
-        max_draft=K, per_token_blank=4, max_steps=MAX * 4, return_stats=True,
-    )
-    assert spec8[: len(oracle8)] == oracle8, "iter-8 spec decode must stay lossless"
-    print(f"  iter-8 chain decode lossless: OK (drafts={stats8['total_drafts']})")
-
-    print("=== 9. iter-9: inference acoustic window == training window ===")
-    # Regression test for the bug where _anchor_window was re-applied at
-    # inference with T == 1, zeroing every lookahead column (and, with
-    # past_frames > 0, putting enc[t-past] in the "current" slot).
-    for label, past, look in (("past=0,look=8", 0, 8), ("past=3,look=1", 3, 1)):
-        mw = build_tiny_model(K, chain=True, lookahead=look, iter8=(past > 0))
-        mw.medusa_heads.past_frames = past
-        mw.medusa_heads.lookahead_frames = look
-        fw, flw, tgw, tlw = fake_batch(B=1, T=12, L=6, V=6)
-        encw, _ = mw.transcriber(fw, flw)
-        encw = encw.detach()
-        W = past + 1 + look
-
-        t_probe = 6
-        ref = mw.medusa_heads._anchor_window(encw, encw.size(1))[0, t_probe]
-
-        captured = {}
-        hook = mw.medusa_heads.context_acoustic.register_forward_pre_hook(
-            lambda mod, inp: captured.__setitem__(
-                "x", inp[0].detach().clone())
-        )
-        w_start = t_probe - past if past > 0 else t_probe
-        win = encw[:, w_start : w_start + W]
-        if win.size(1) < W:
-            win = torch.nn.functional.pad(win, (0, 0, 0, W - win.size(1)))
-        gw, _, _ = mw.predict(tgw, tlw, None)
-        g_last = gw[:, -1:, :].detach()
+    print("=== 5. TF/inference isomorphism (transformer + lstm seq) ===")
+    # 全网格 head-k logits@(t,l) 必须等于单点 predict_heads:
+    #   chain_states[k] = tgt_enc 列 l+k, chain_hiddens[k] = h_seq 列 l+k,
+    #   chain_drafts = 前序 head 在 (t,l) 的 argmax (与训练 prev_logits 同构)。
+    for label, seq_spec in (("transformer", SEQ_TF), ("lstm", SEQ_LSTM)):
+        m = build_tiny_model(K, chain=True, seq_spec=seq_spec)
+        m.eval()
+        fw, flw, tgw, tlw = fake_batch(B=1, T=12, L=6, V=V)
+        prepw = tgw.new_empty((tgw.size(0), tgw.size(1) + 1))
+        prepw[:, 1:] = tgw
+        prepw[:, 0] = blank
         with torch.no_grad():
-            mw.predict_heads(win, g_last, chain_drafts=[1] * (K - 1),
-                             chain_states=[g_last] * K)
-        hook.remove()
-
-        got = captured["x"].reshape(1, 1, W, -1)[0, 0]
-        assert got.shape == ref.shape, (
-            f"{label}: window shape {tuple(got.shape)} != {tuple(ref.shape)}"
-        )
-        assert torch.allclose(got, ref, atol=1e-5), (
-            f"{label}: inference acoustic window differs from training "
-            f"window (max abs diff {float((got - ref).abs().max()):.6f})"
-        )
-        # The current-frame slot must hold enc[t_probe] exactly, and at least
-        # one lookahead column must be non-zero (the bug zeroed all of them).
-        cur = got[past]
-        assert torch.allclose(cur, encw[0, t_probe], atol=1e-5), (
-            f"{label}: current-frame slot does not hold enc[{t_probe}]"
-        )
-        if look > 0 and t_probe + 1 < encw.size(1):
-            assert got[past + 1].norm().item() > 1e-5, (
-                f"{label}: lookahead column 1 is zero — window was re-anchored"
+            _, _, _, base_g, fut_g, _ = m.forward_train_aux(
+                fw, flw, prepw, tlw + 1
             )
-        print(f"  window train==infer, current=enc[{t_probe}] ({label}): OK")
+            encw, _ = m.transcribe(fw, flw)
+            tgt_enc, _, _ = m.predict(prepw, tlw + 1, None)
+            h_seq = m.medusa_heads.seq_model.forward_full(prepw)
+            t_probe, l_probe = 5, 1
+            assert l_probe + K - 1 <= tgt_enc.size(1) - 1
+            drafts = [
+                int(fut_g[j][0, t_probe, l_probe].argmax(dim=-1).item())
+                for j in range(K - 1)
+            ]
+            chain_states = [
+                tgt_enc[:, l_probe + k, :].unsqueeze(1) for k in range(K)
+            ]
+            chain_hiddens = [
+                h_seq[:, l_probe + k, :].unsqueeze(1) for k in range(K)
+            ]
+            _, fut_inf, _ = m.predict_heads(
+                encw[:, t_probe : t_probe + 1], tgt_enc[:, l_probe : l_probe + 1],
+                chain_drafts=drafts, chain_states=chain_states,
+                chain_hiddens=chain_hiddens,
+            )
+            for k in range(K):
+                grid = fut_g[k][0, t_probe, l_probe]
+                point = fut_inf[k][0, 0, 0]
+                assert torch.allclose(grid, point, atol=1e-4), (
+                    f"{label}: head-{k+1} grid vs point mismatch "
+                    f"(max {float((grid - point).abs().max()):.6f})"
+                )
+        print(f"  [{label}] grid == point at (t={t_probe}, l={l_probe}): OK")
 
-    print("=== 10. iter-9: 3-head ckpt -> 2-head warm-start key filter ===")
+    print("=== 6. seq cache: incremental == full; rollback == fresh ===")
+    for label, spec in (("transformer", SEQ_TF), ("lstm", SEQ_LSTM)):
+        seq = build_draft_seq_model(num_vocab=V, output_dim=16, spec=spec)
+        tokens = torch.randint(0, V - 1, (1, 7))
+        h_full = seq.forward_full(tokens)
+        h, cache = seq.init_cache(tokens[:, :5])
+        h, cache = seq.forward_step(tokens[:, 5:6], cache)
+        assert torch.allclose(h[0, 0], h_full[0, 5], atol=1e-5), (
+            f"{label}: incremental step 5 != full-sequence hidden"
+        )
+        # 回滚: 快照于消费 0..5 之后; 走错一步; 恢复; 再走错误 token ==
+        # 全新 cache 走同一步。
+        snapshot = seq.clone_cache(cache)  # after tokens 0..5
+        h, cache = seq.forward_step(tokens[:, 6:7], cache)
+        assert torch.allclose(h[0, 0], h_full[0, 6], atol=1e-5), (
+            f"{label}: incremental step 6 != full-sequence hidden"
+        )
+        cache = seq.restore_cache(snapshot)
+        wrong_tok = (tokens[:, 6:7] + 1) % (V - 1)
+        h_rb, cache_rb = seq.forward_step(wrong_tok, cache)
+        h_fresh, cache_fresh = seq.init_cache(tokens[:, :6])
+        h_fresh, cache_fresh = seq.forward_step(wrong_tok, cache_fresh)
+        assert seq.cache_length(cache_rb) == seq.cache_length(cache_fresh), (
+            f"{label}: rollback cache len {seq.cache_length(cache_rb)} != "
+            f"fresh cache len {seq.cache_length(cache_fresh)}"
+        )
+        assert torch.allclose(h_rb[0, 0], h_fresh[0, 0], atol=1e-6), (
+            f"{label}: rollback cache != fresh cache"
+        )
+        print(f"  [{label}] incremental==full & rollback==fresh: OK")
+
+    print("=== 7. predict_heads rejects window width > 1 ===")
+    g0, _, _ = _init_decode(model, blank, feats.device)
+    try:
+        model.predict_heads(enc[:, :2], g0)
+    except ValueError:
+        print("  width-2 input rejected: OK")
+    else:
+        raise AssertionError("predict_heads accepted a multi-frame window")
+
+    print("=== 8. warm-start key filter (3→2 heads) + stale module keys ===")
     if not (
         os.path.exists(LIT_SP_MODEL) and os.path.exists(LIT_GLOBAL_STATS)
     ):
@@ -476,6 +396,13 @@ def main():
         k: (torch.full_like(v, sentinels[k]) if k in sentinels else v.clone())
         for k, v in sd3.items()
     }
+    # iter-10: 旧 ckpt 携带的已删模块键 (窗投影 / iter-5 attention) 须被
+    # 静默丢弃, 不得报 unexpected key。
+    stale_modules = {
+        "model.medusa_heads.context_acoustic.weight": torch.zeros(512, 4608),
+        "model.medusa_heads.win_attn_key.weight": torch.zeros(128, 16),
+    }
+    sd3.update(stale_modules)
     dst2 = build_tiny_lit(2)
     dst2.load_state_dict(sd3, strict=True)
     got = dst2.state_dict()
@@ -502,7 +429,9 @@ def main():
             "dropped (or the head count is wrong)"
         )
         assert key in sd3, f"test setup: {key} missing from the 3-head source"
-    print("  kept shared MLP layers + dropped stale head-2 keys: OK")
+    for key in stale_modules:
+        assert key not in got, f"{key} must not exist on the iter-10 module"
+    print("  kept shared MLP layers + dropped stale head/module keys: OK")
 
     print("ALL SMOKE TESTS PASSED")
 

@@ -74,7 +74,6 @@ def make_config(
             "input_mode": "stream_local",
             "lookahead_frames": 0,
             "draft_after_emit": False,
-            "accept_ce_weight": 0.0,
             "freeze_base": False,
             "kl_weight": 0.0,
         })
@@ -84,7 +83,6 @@ def make_config(
             "input_mode": stage["mode"],
             "lookahead_frames": stage["lookahead"],
             "draft_after_emit": True,
-            "accept_ce_weight": 1.0,
             "freeze_base": stage["freeze"],
             "kl_weight": stage["kl"],
         })

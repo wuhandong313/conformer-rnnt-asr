@@ -47,9 +47,6 @@ def analyze_sample(model, features, feature_lengths, blank_idx, K, pb):
     """对单样本返回 (sim 统计, oracle 统计) 两个 per-head dict 列表。"""
     enc, enc_len = model.transcribe(features, feature_lengths)
     T = enc.size(1)
-    heads = model.medusa_heads
-    lookahead = getattr(heads, "lookahead_frames", 0)
-    past = getattr(heads, "past_frames", 0)
 
     sim_stats = [
         {"drafts": 0, "found": 0, "accepted": 0} for _ in range(K)

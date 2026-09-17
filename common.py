@@ -202,14 +202,11 @@ def model_ckpt_tag(config: Dict[str, Any]) -> str:
         lookahead_tag += "-post"
     if medusa.get("chain_states", False):
         lookahead_tag += "-chain"
-    # iter-8 标记: 过去帧锚定 / 验证器模拟扫描 / 时延分解
+    # iter-8 标记: 过去帧锚定; iter-9: sim/dl 通道已移除 (历史 ckpt 名里的
+    # "-sim"/"-dl" 后缀不再生成)
     past = medusa.get("past_frames", 0)
     if past:
         lookahead_tag += f"-p{past}"
-    if medusa.get("chain_sim", False):
-        lookahead_tag += "-sim"
-    if medusa.get("delay_decompose", False):
-        lookahead_tag += "-dl"
     # iter-9 标记: 配置驱动的自由后缀 (如 "disp" → "-disp"), 区分参数相同
     # 但价值模型不同的 checkpoint 文件名 — 避免同名 ckpt 触发 monitor 缓存串档
     suffix = medusa.get("tag_suffix")

@@ -122,9 +122,16 @@ model:
     # 头数 K (head 1..K 做 aux CE); 0 = 关闭 (单头消融, 仅验 trunk)
     num_heads: 2
     input_mode: "stream_local"
-    lookahead_frames: 1
+    # iter-10: 头侧声学窗已删除; 评 iter-10 ckpt 需与服务端训练配置同参
     draft_after_emit: true
-    accept_ce_weight: 1.0
+    chain_states: true
+    draft_seq_model:
+      type: "transformer"
+      num_layers: 3
+      d_model: 512
+      nhead: 8
+      ffn_dim: 1024
+      dropout: 0.1
 
     # 冻结 base model (encoder + predictor + joiner)，仅训练 Medusa heads
     freeze_base: true

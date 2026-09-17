@@ -4,14 +4,11 @@
 # 仅用于 scripts/eval_display.py, 不用于训练。
 #
 # iter-8h2 = 修复推理窗后的 2 头重训 (configs/server_chain.yaml): 窗
-# [t-7..t+1] (past=7, lookahead=1 — 流式合法), chain_sim + delay_decompose
-# 开启。这是目前手上唯一「权重与流式布局同构」的模型, 因此它是 iter-9
-# 显示基线的正主。
+# [t-7..t+1] (past=7, lookahead=1 — 流式合法)。这是目前手上唯一「权重与
+# 流式布局同构」的模型, 因此它是 iter-9 显示基线的正主。
 #
-# chain_sim 必须留 true: 否则 sim_bias_heads / chain_sim_proj / delay_*
-# 参数在模型里不存在, ckpt 的这些键会变成 unexpected 而报加载失败。
-# eval_display 在 chain_sim 开启时会把 [t..t+1] 真 joiner 窗喂给头 —
-# 该窗在流式预算内可得, 属于合法信息, 显示评估应当计入。
+# iter-9: sim 通道 (chain_sim/sim_bias/delay) 已从代码整体移除 — 加载
+# iter-8h2 ckpt 时这些键按 unexpected-key 守卫自动丢弃, 无需任何开关。
 #
 # monitor 口径 (epoch=07/step=20400, 100 样本): h1=0.889 / h2=0.612 /
 # overall=0.751 / PER=0.0733 / lossless_fail=0 (那是接受率; 本脚本量的是
@@ -65,11 +62,6 @@ model:
     past_frames: 7
     draft_after_emit: true
     chain_states: true
-    # 与训练配置一致 (模块必须存在才能加载 ckpt 键)
-    chain_sim: true
-    delay_decompose: true
-    accept_ce_weight: 3.0
-    delay_ce_weight: 1.0
     freeze_base: true
     ce_loss_weights: [0.8, 0.64]
     kl_weight: 0.0

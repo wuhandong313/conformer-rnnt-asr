@@ -17,7 +17,6 @@ helper，保证「状态推进严格复刻」是结构性事实而非复制粘�
 from typing import Dict, List, Optional
 
 import torch
-import torch.nn.functional as F
 from torch import Tensor
 
 
@@ -95,6 +94,11 @@ def speculative_greedy_decode(
     blank 步到下一次 emit)，命中即连续提交；失配或遇 blank 则本步用标准
     贪心推进。因验证器 == head-0 argmax == oracle argmax ⇒ 逐 token 一致。
 
+    iter-10: 头无声学窗 — 草拟只条件于当前帧 ``enc[:, t:t+1]``。draft 侧
+    序列模型 (``seq_model``，可配 transformer|lstm) 通过 KV/状态 cache 增量
+    滚动：emit/接受 draft 后 append；draft 被拒或弃权时回滚到快照并重放
+    已提交 token（纯 token 侧，cache 与已提交历史严格一致）。
+
     Args:
         max_tokens: 单样本 token 数上限 (幻觉防御)。超限截断并置
             ``truncated`` 供调用方报告；None = 不限制 (仅靠 max_steps)。
@@ -109,6 +113,14 @@ def speculative_greedy_decode(
     assert model.medusa_heads is not None, "spec_decode 需 medusa_heads"
     K = min(max_draft, model.medusa_heads.num_heads)
     g_last, state, one = _init_decode(model, blank_idx, dev)
+
+    # ---- draft 侧序列模型 cache (iter-10): BOS 约定与 _init_decode 对齐 ----
+    seq = getattr(model.medusa_heads, "seq_model", None)
+    h_draft: Optional[Tensor] = None
+    draft_cache = None
+    if seq is not None:
+        bos = torch.tensor([[blank_idx]], device=dev, dtype=torch.long)
+        h_draft, draft_cache = seq.init_cache(bos)
 
     total_drafts: List[int] = [0] * K  # per head: every proposed token
     accepted: List[int] = [0] * K      # per head: accepted by joiner
@@ -136,7 +148,18 @@ def speculative_greedy_decode(
             continue
 
         # ---- emit y*=pred0 ----
+        n_out_start = len(out)
         out.append(pred0)
+
+        # seq cache 快照: 回滚点 (本轮任何 commit 失败都恢复到这里重放)。
+        cache_snapshot = None
+        cache_appended: List[int] = []
+        if seq is not None:
+            cache_snapshot = seq.clone_cache(draft_cache)
+            h_draft, draft_cache = seq.forward_step(
+                _make_tok(pred0, dev), draft_cache
+            )
+            cache_appended.append(pred0)
 
         draft_after_emit = getattr(model.medusa_heads, "draft_after_emit", False)
 
@@ -148,55 +171,24 @@ def speculative_greedy_decode(
                 model, _make_tok(pred0, dev), state, one
             )
 
-        # ---- 草拟 d_1..d_K ----
-        # Legacy mode drafts from g_u; post-emit mode drafts from g_{u+1}.
+        # ---- 草拟 d_1..d_K (条件于当前帧 enc[t]，无窗) ----
         draft_rounds += 1
         heads = model.medusa_heads
-        lookahead = getattr(heads, "lookahead_frames", 0)
-        past = getattr(heads, "past_frames", 0)
-        chain_sim_on = getattr(heads, "chain_sim_enabled", False)
-        # iter-8: past-anchored window [t-past .. t+lookahead] (零 pad 兜底
-        # 序列两端), 宽度 past+1+lookahead — 与训练 _anchor_window 一致。
-        win_len = past + 1 + lookahead
-        if past > 0:
-            if t < past:
-                src = F.pad(enc, (0, 0, past - t, 0))
-                w_start = 0
-            else:
-                src = enc
-                w_start = t - past
-            source_window = src[:, w_start : w_start + win_len]
-        else:
-            source_window = enc[:, t : t + win_len]
-        if source_window.size(1) < win_len:
-            source_window = F.pad(
-                source_window, (0, 0, 0, win_len - source_window.size(1))
-            )
-        # iter-8: chain_sim 的验证器模拟扫描窗 [t .. t+lookahead] —
-        # 流式合法的未来帧预算内。
-        if chain_sim_on:
-            sim_window = enc[:, t : t + 1 + lookahead]
-            if sim_window.size(1) < 1 + lookahead:
-                sim_window = F.pad(
-                    sim_window, (0, 0, 0, 1 + lookahead - sim_window.size(1))
-                )
-        else:
-            sim_window = None
-        chain_mode = getattr(model.medusa_heads, "chain_states", False)
+        chain_mode = getattr(heads, "chain_states", False)
         drafts: List[int] = []
+        chain_hiddens: List[Tensor] = [h_draft] if h_draft is not None else []
         if chain_mode:
             # Draft-conditioned chaining (iter-3) + rolled language states
-            # (iter-4): head-k consumes embed(d_{k-1}) and the predictor
-            # state rolled on accepted drafts. Heads are drafted
-            # incrementally with fixed drafts/states passed back in.
+            # (iter-4) + draft 侧序列模型隐藏态 (iter-10)。Heads are drafted
+            # incrementally with fixed drafts/states/hiddens passed back in.
             chain_rolls: List[Tensor] = [g_last]  # head-1 state: draft point
             g_cur, st_cur = g_last, state
             for j in range(K):
-                _, future_logits = model.predict_heads(
-                    source_window, g_last,
+                _, future_logits, _ = model.predict_heads(
+                    enc[:, t : t + 1], g_last,
                     chain_drafts=list(drafts),
                     chain_states=list(chain_rolls),
-                    sim_window=sim_window,
+                    chain_hiddens=list(chain_hiddens) if chain_hiddens else None,
                 )
                 d_j = int(future_logits[j].argmax(dim=-1).item())
                 total_drafts[j] += 1
@@ -204,15 +196,24 @@ def speculative_greedy_decode(
                     blank_drafts[j] += 1
                     break
                 drafts.append(d_j)
+                # roll the predictor and seq cache on the draft for the next
+                # head (seq cache always advances so that all-accept needs no
+                # rollback replay below).
                 if j + 1 < K:
-                    # roll the predictor on the accepted draft for head j+2
                     g_cur, st_cur = _advance_predictor(
                         model, _make_tok(d_j, dev), st_cur, one
                     )
                     chain_rolls.append(g_cur)
+                if seq is not None:
+                    h_draft, draft_cache = seq.forward_step(
+                        _make_tok(d_j, dev), draft_cache
+                    )
+                    chain_hiddens.append(h_draft)
+                    cache_appended.append(d_j)
         else:
-            _, future_logits = model.predict_heads(
-                source_window, g_last, sim_window=sim_window
+            _, future_logits, _ = model.predict_heads(
+                enc[:, t : t + 1], g_last,
+                chain_hiddens=list(chain_hiddens) if chain_hiddens else None,
             )
             drafts = [int(future_logits[k].argmax(dim=-1).item()) for k in range(K)]
             for j, draft in enumerate(drafts):
@@ -258,6 +259,17 @@ def speculative_greedy_decode(
             accepted[j] += 1
             out.append(d_j)
             g_last, state = _advance_predictor(model, _make_tok(d_j, dev), state, one)
+
+        # ---- seq cache 与已提交历史对齐 (iter-10) ----
+        # 全接受时 cache 已随草拟滚动到位；否则回滚快照并重放已提交 token。
+        if seq is not None:
+            committed = out[n_out_start:]
+            if committed != cache_appended:
+                draft_cache = seq.restore_cache(cache_snapshot)
+                for tok_id in committed:
+                    h_draft, draft_cache = seq.forward_step(
+                        _make_tok(tok_id, dev), draft_cache
+                    )
 
     if return_stats:
         stats: Dict = {

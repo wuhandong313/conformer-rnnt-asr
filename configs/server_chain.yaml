@@ -5,7 +5,8 @@
 # 推理在 _anchor_window 处把 (B,W,D) 窗整体清零, 0.521 是坏推理测出 —
 # "信息守恒"结论存疑, 用修复后的推理重训一次。2 头 (h3 依既定决策舍弃,
 # ckpt 加载时 medusa_heads.2.* 权重自动丢弃), warm-start 沿用 8b''' 重启
-# 点 (epoch=01-step=5200-v1), sim_bias_rezero 清零重学。
+# 点 (epoch=01-step=5200-v1)。
+# iter-9: sim 通道 (chain_sim/sim_bias/delay/蒸馏) 已整体移除。
 # 预期: 冷启动 PER/接受率瞬态 (窗重排分布 shift), 自愈。
 #
 # 用法: python train.py configs/server_chain.yaml
@@ -57,18 +58,6 @@ model:
     past_frames: 7
     draft_after_emit: true
     chain_states: true
-    chain_sim: true
-    delay_decompose: true
-    # iter-8b: epoch0-2 平台在 overall~0.50 (sim 上限 0.92), 蒸馏压力不足
-    # — accept_ce 1.0→3.0, delay_ce 0.5→1.0, 从 epoch=02 ckpt warm-start
-    accept_ce_weight: 3.0
-    delay_ce_weight: 1.0
-    # iter-8b'': 直注偏置行范数增长 ~5e-4/步 (Adam 基础步长), 翻转需 3-5 —
-    # 专用 10x lr 组加速 (只影响 draft 头)
-    sim_bias_lr_mult: 10.0
-    # iter-8b''': 偏置只在 sim found 位置应用 (稠密网格上 blank 位置曾把
-    # 偏置带歪); 从学歪状态重启, 清零重学
-    sim_bias_rezero: true
 
     # 冻结 base (encoder + predictor + joiner), 只训 Medusa heads
     freeze_base: true
