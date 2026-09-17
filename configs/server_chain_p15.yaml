@@ -1,0 +1,139 @@
+# ===========================================================================
+# iter-9 消融: 加长过去窗 (past 7 → 15) — 预测区命中率能否从 43% 上升
+# ===========================================================================
+# 假设 (docs/iter9-speculative-display.html §7.8, experiment-log iter-9):
+# 头的「预测区」命中率 (~43%, 与头深度无关) 是窗外外推能力的函数; 加长
+# 过去窗 → 更强外推 → 命中率上升。过去帧在流式部署时已算好并提交, 取它们
+# 零延迟 (past=7 免费, past=15 同样免费), 所以这是零延迟杠杆。
+#
+# 单一变量: 只把 past_frames 7 → 15 (窗 [t-15..t+1], 宽 17), 其余与
+# iter-8h2 (configs/server_chain.yaml) 完全一致。
+# 对照数字 (同 recipe, eval_display 配置 B, 100 样本, ckpt=ep07-st20400):
+#   h1 predHit 43.01% / h2 predHit 42.85%; 总 hit h1 90.60 / h2 59.38;
+#   found% 85.72 / 45.02 (见 experiment-log iter-9「通道拆分诊断」)。
+#
+# warm-start: iter-8h2 ep07 (配置 B 的同一 ckpt)。注意 context_acoustic 的
+# 形状随窗宽改变 (9*512 → 17*512), 加载时按 shape-mismatch 自动丢弃 →
+# 声学投影冷启动 (预期瞬态, 其余权重照常载入, 同 iter-8 冷启动模式自愈)。
+# iter-9: sim 通道 (chain_sim/sim_bias/delay/蒸馏) 已整体移除, 历史对照里
+# 的 found% / copied% 口径随之退役 — predHit 语义并回总 hit%。
+#
+# 观测: monitor 接受率 (与历史同口径) + 平台后跑
+#   python scripts/eval_display.py configs/display_chain_p15.yaml 100
+# 看 predHit% 相对 43% 的变化 (eval 配置在 ckpt 出现后创建)。
+#
+# 用法: python train.py configs/server_chain_p15.yaml
+# ===========================================================================
+
+paths:
+  dataset_path: "/test21/medusa"
+  sp_model_path: "/test21/medusa/spm_bpe_74.model"
+  global_stats_path: "/test21/medusa/global_stats.json"
+  exp_dir: "/test21/conformer-rnnt-asr/exp_iter2"
+  from_checkpoint: "/test21/conformer-rnnt-asr/exp_iter2/checkpoints/val-naive-h2-frz-sl1-post-chain-p7-sim-dl-epoch=07-step=20400.ckpt"
+
+model:
+  input_dim: 80
+  encoding_dim: 512
+  num_symbols: 74
+
+  time_reduction_input_dim: 128
+  time_reduction_stride: 4
+  right_context_length: 4
+
+  num_heads: 8
+  ffn_dim: 1024
+  num_layers_block1: 2
+  num_layers_block2: 8
+  depthwise_conv_kernel_size: 31
+  dropout: 0.1
+
+  compression:
+    # 必须与 base checkpoint (val-none-epoch=34-step=21600, 实际 naive 训练) 一致
+    filter: "naive"
+    hanning_window_size: 5
+    weight_predictor_mode: "diff5"
+
+  predictor:
+    symbol_embedding_dim: 128
+    num_lstm_layers: 2
+    lstm_hidden_dim: 128
+    lstm_layer_norm: true
+    lstm_layer_norm_epsilon: 0.001
+    lstm_dropout: 0.3
+
+  medusa:
+    # 固定 2 头 (h1/h2)
+    num_heads: 2
+    input_mode: "stream_local"
+    # iter-9 消融: 过去窗 7 → 15 (唯一的变量), 未来窗保持 1
+    lookahead_frames: 1
+    past_frames: 15
+    draft_after_emit: true
+    chain_states: true
+
+    # 冻结 base (encoder + predictor + joiner), 只训 Medusa heads
+    freeze_base: true
+
+    ce_loss_weights: [0.8, 0.64]
+    kl_weight: 0.0
+
+  joiner:
+    activation: "relu"
+
+training:
+  learning_rate: 0.0005
+  adam_betas: [0.9, 0.999]
+  adam_eps: 1.0e-8
+  warmup_steps: 1000
+  rnnt_loss_reduction: "mean"
+  rnnt_loss_clamp: 1.0
+  gradient_clip_val: 10.0
+  epochs: 20
+
+data:
+  sample_rate: 16000
+  n_fft: 400
+  n_mels: 80
+  hop_length: 160
+
+  spec_augment:
+    freq_mask_param: 27
+    time_mask_param: 100
+    time_mask_prob: 0.2
+
+  max_token_limit: 4000
+  num_workers: 20
+  prefetch_factor: 2
+
+  train_subset: "train-clean-100"
+  val_subset: "dev-clean"
+  test_subset: "test-clean"
+
+trainer:
+  accelerator: "cuda"
+  strategy: "auto"
+  devices: 1
+  num_nodes: 1
+  log_every_n_steps: 10
+  val_check_interval: 200
+  num_sanity_val_steps: 0
+  fast_dev_run: false
+  matmul_precision: "high"
+  accumulate_grad_batches: 1
+
+  checkpoint:
+    save_top_k: 2
+    save_weights_only: true
+    val_checkpoint_interval: 200
+    train_checkpoint_interval: 100
+
+decoding:
+  beam_width: 0
+  mode: "spec_greedy"
+  spec:
+    max_draft: 2
+    per_token_blank: 4
+
+debug: false
+seed: 42

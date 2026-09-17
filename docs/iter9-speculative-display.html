@@ -196,27 +196,27 @@
 <div class="wrap">
 
 <header class="hero">
-  <div class="eyebrow">conformer-rnnt-asr &nbsp;·&nbsp; iteration 9 &nbsp;·&nbsp; multihead 分支</div>
+  <div class="eyebrow">conformer-rnnt-asr &nbsp;·&nbsp; iteration 9 &nbsp;·&nbsp; speculative display</div>
   <h1>投机显示 Speculative Display</h1>
   <p class="sub">
     Medusa 草稿不再用于加速解码，而是<b>提前上屏</b>；真实 token 到达时确认或替换。<br>
     价值模型 = 命中率 × 提前量。本页解释其架构、计算流程、算法、指标与实测结果。
   </p>
   <div class="kpis">
-    <div class="kpi"><div class="v">2 头</div><div class="k">h1 / h2 链式草拟</div></div>
     <div class="kpi"><div class="v">9 帧</div><div class="k">窗口 [t−7 … t+1]</div></div>
     <div class="kpi"><div class="v">40 ms</div><div class="k">1 reduced 帧</div></div>
-    <div class="kpi"><div class="v">0.751</div><div class="k">iter-8h2 overall</div></div>
-    <div class="kpi"><div class="v">74.99</div><div class="k">配置 B merged hit%</div></div>
+    <div class="kpi"><div class="v">90.60</div><div class="k">配置 B 命中率</div></div>
+    <div class="kpi"><div class="v">30.3 ms</div><div class="k">平均感知提前量</div></div>
     <div class="kpi"><div class="v">43%</div><div class="k">预测区命中常数</div></div>
+    <div class="kpi"><div class="v">0%</div><div class="k">门控后闪烁</div></div>
   </div>
 </header>
 
 <div class="note">
   <b>一句话总结</b>：iter-9 把 Medusa 从"投机解码的加速器"改造成"投机显示的提前量来源"。
   解码回归纯贪心（RTF 不变、零正确性风险），草稿只负责在真实 token 到达前把字先放到屏幕上。
-  实测发现：<span class="hl">瓶颈不是命中率，而是提前量</span>；且两头在"预测区"的能力完全相同（43%），
-  h1 那个 90% 的命中率是复制通道刷出来的虚高。
+  实测发现：<span class="hl">瓶颈不是命中率，而是提前量</span>；
+  而且总命中 90% 里绝大部分来自复制通道（照抄即中）——真正反映能力的是预测区的 43%。
 </div>
 
 <!-- ═══════════════ 1. 换轨 ═══════════════ -->
@@ -259,7 +259,7 @@
 
   <h3>价值模型</h3>
   <div class="formula">
-    value<sub>head-k</sub> &nbsp;=&nbsp; <span class="g">命中率</span> &nbsp;×&nbsp; <span class="b">平均提前量</span> &nbsp;−&nbsp; <span class="bad" style="color:var(--red)">替换（闪烁）惩罚</span>
+    value<sub>草稿头</sub> &nbsp;=&nbsp; <span class="g">命中率</span> &nbsp;×&nbsp; <span class="b">平均提前量</span> &nbsp;−&nbsp; <span class="bad" style="color:var(--red)">替换（闪烁）惩罚</span>
   </div>
   <p class="small muted">
     提前量以 reduced 帧计 (1 帧 = 4 mel = 40 ms)；命中 = 草稿与随后真实 emit 的 token 相同；
@@ -271,18 +271,14 @@
   <pre><span class="c"># post-emit 语义：在 emit 完第 u 个 token 的那个帧上开始草拟
 # token 单位 = 音素（LibriSpeech phoneme transcription，spm 74 片）</span>
 
-帧 t=2   真实 emit DH  ──►  头链从 post-emit 状态出发草拟
-                            head-1 草稿 d1 = AH0  →  预测 ref[u+1]
-                            head-2 草稿 d2 = S    →  预测 ref[u+2]
+帧 t=2   真实 emit DH  ──►  头从 post-emit 状态出发草拟
+                            草稿 d = AH0  →  预测 ref[u+1]
 
-帧 t=2   <span class="k">上屏</span>：把 d1 d2 <b>立刻</b>显示出来（此时真实 token 还没到）
+帧 t=2   <span class="k">上屏</span>：把 d <b>立刻</b>显示出来（此时真实 token 还没到）
 
 帧 t=5   真实 emit ref[u+1] = AH0 到达
-           ├─ d1 == AH0   →  <span class="g">命中</span>：确认，提前量 = 5−2 = 3 帧 = 120 ms
-           └─ d1 != ...   →  <span class="bad">闪烁</span>：替换成真实值
-
-帧 t=8   真实 emit ref[u+2] = S 到达
-           └─ d2 == S     →  <span class="g">命中</span>：提前量 = 8−2 = 6 帧 = 240 ms
+           ├─ d == AH0    →  <span class="g">命中</span>：确认，提前量 = 5−2 = 3 帧 = 120 ms
+           └─ d != ...    →  <span class="bad">闪烁</span>：替换成真实值
 
 <span class="c"># 关键：t=2 上屏的那一刻并不知道将来会不会命中。命中与否只进入评分，
 #       不改变「何时上屏、上屏什么」这些显示行为 —— 显示本身永远不会因猜错而失效。</span></pre>
@@ -294,11 +290,10 @@
 <div class="body">
   <p>下面用一条 23 帧（920 ms）的合成时间线演示一次显示是怎么发生的。音素串是
   <code>/DH AH0 S AH1 N IH1 Z/</code>（"the sun is"，7 次真实 emit）。真实语音按贪心解码在固定帧发射音素；
-  头在<b>每个 emit 点上</b>立刻草拟后续音素并上屏。为清晰起见只显示一个头，
-  可用按钮切换到 head-2——它草拟的是 ref[u+2]，提前量更长，但更容易猜错。</p>
+  头在<b>每个 emit 点上</b>立刻草拟下一个音素并上屏。</p>
 
   <p class="small muted">合成时间线为便于观察做了稀疏化：真实语料的 emit 间隔比这里密，
-  实测每头平均提前量只有 33 ms（h1）/ 57 ms（h2），都不到 1.5 帧。这里把 emit 间隔放大到 2–4 帧，
+  实测平均提前量只有 33 ms（不到 1 帧）。这里把 emit 间隔放大到 2–4 帧，
   是为了让「上屏 → 确认 / 替换」的过程肉眼可见；<b>上屏时机与评分的逻辑与真实系统一致</b>。</p>
 
   <div class="demo">
@@ -306,7 +301,6 @@
       <button class="primary" id="playBtn">▶ 播放</button>
       <button id="stepBtn">单步 ▸</button>
       <button id="resetBtn">↺ 重置</button>
-      <button id="headBtn">切换到 head-2</button>
       <span class="clock">帧 <b id="clockFrame">–</b> &nbsp;|&nbsp; t = <b id="clockMs">0</b> ms</span>
     </div>
 
@@ -333,13 +327,10 @@
     <ul class="small" style="margin-bottom:0">
       <li><b>上屏与命中无关</b>。草稿在生成的那一刻（如 t=2）就上屏了；是否命中要等真实 token 到达（t=5 / t=8）才判定。
       命中率只影响<b>评分</b>，不影响<b>显示行为</b>——所以显示逻辑本身不会因为猜错而失效。</li>
-      <li><b>命中 ≠ 提前量</b>。同样是 t=2 上屏的草稿，head-1 在 t=5 被确认（提前 3 帧 = 120 ms），
-      head-2 要到 t=8 才被确认（提前 6 帧 = 240 ms）——同样的"命中"，价值差一倍。</li>
-      <li><b>命中率高的头，价值不一定高</b>。head-1 命中率 83%（5/6），head-2 只有 60%（3/5），
-      但 head-2 每次命中都提前更久，于是 value 是 93 ms vs 136 ms。</li>
+      <li><b>命中 ≠ 提前量</b>。同样是命中，提前量由真实 token 的发射时刻决定：
+      t=2 上屏的草稿在 t=5 被确认，提前量 = 3 帧 = 120 ms。</li>
       <li><b>弃权是免费的</b>。头输出 blank 时不上屏，既不产生错误也不产生闪烁，代价只是没有提前量。
       反过来，没命中的草稿会先给观众看错的音素再改回来——<b>这就是闪烁</b>，也是替换惩罚的来源。</li>
-      <li><b>链会截断</b>。head-1 在句尾弃权后，head-2 根本不会被尝试（head-2 的状态建立在 head-1 的草稿之上）。</li>
     </ul>
   </div>
 </div>
@@ -474,34 +465,21 @@
       <text x="695" y="342" fill="#1f2328" font-size="13" text-anchor="middle">w_vocab(joint) → base logits</text>
       <text x="695" y="358" fill="#656d76" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">detach 后作"验证器分布摘要"</text>
 
-      <!-- ===== heads ===== -->
-      <path d="M695,368 L695,379" stroke="#1a7f37" stroke-width="1.5" fill="none"/>
-      <path d="M286,379 L718,379" stroke="#1a7f37" stroke-width="1.5" fill="none"/>
-      <path d="M286,379 L286,392" stroke="#1a7f37" stroke-width="1.5" fill="none" marker-end="url(#arG)"/>
-      <path d="M718,379 L718,392" stroke="#1a7f37" stroke-width="1.5" fill="none" marker-end="url(#arG)"/>
+      <!-- ===== head ===== -->
+      <path d="M695,368 L695,392" stroke="#1a7f37" stroke-width="1.5" fill="none" marker-end="url(#arG)"/>
 
-      <rect x="118" y="392" width="336" height="104" rx="10" fill="#f6f8fa" stroke="#1a7f37" stroke-opacity=".55"/>
-      <text x="138" y="414" fill="#1a7f37" font-size="13" font-weight="700">head-1（k=0，无链条件）</text>
-      <text x="138" y="436" fill="#424a53" font-size="10" font-family="ui-monospace,monospace">delta = MLP( norm( pred + acoustic + base ) )</text>
-      <text x="138" y="454" fill="#656d76" font-size="10" font-family="ui-monospace,monospace">+ context_mlp_extra + context_mlp_heads[0]</text>
-      <text x="138" y="476" fill="#1f2328" font-size="10" font-family="ui-monospace,monospace">logits = w_vocab( res_blocks[0](joint+delta) )</text>
-
-      <rect x="550" y="392" width="336" height="104" rx="10" fill="#f6f8fa" stroke="#1a7f37" stroke-opacity=".55"/>
-      <text x="570" y="414" fill="#1a7f37" font-size="13" font-weight="700">head-2（k=1，链式条件）</text>
-      <text x="570" y="436" fill="#424a53" font-size="10" font-family="ui-monospace,monospace">delta = MLP( norm( pred + acoustic + base</text>
-      <text x="570" y="454" fill="#656d76" font-size="10" font-family="ui-monospace,monospace">+ chain_state_proj(rolled) + draft(d1) ) )</text>
-      <text x="570" y="476" fill="#1f2328" font-size="10" font-family="ui-monospace,monospace">logits = w_vocab( res_blocks[1](joint+delta) )</text>
-
-      <!-- chain arrow -->
-      <path d="M456,444 L546,444" stroke="#8250df" stroke-width="1.8" marker-end="url(#ar)"/>
-      <text x="501" y="434" fill="#8250df" font-size="10.5" text-anchor="middle" font-family="ui-monospace,monospace">d1 → rolled</text>
+      <rect x="118" y="392" width="768" height="104" rx="10" fill="#f6f8fa" stroke="#1a7f37" stroke-opacity=".55"/>
+      <text x="138" y="414" fill="#1a7f37" font-size="13" font-weight="700">Medusa 草稿头</text>
+      <text x="138" y="436" fill="#424a53" font-size="10" font-family="ui-monospace,monospace">fused = norm( predictor + acoustic + base_term )</text>
+      <text x="138" y="454" fill="#656d76" font-size="10" font-family="ui-monospace,monospace">delta = context_mlp(fused) + context_mlp_extra(fused)</text>
+      <text x="138" y="476" fill="#1f2328" font-size="10" font-family="ui-monospace,monospace">logits = w_vocab( res_block( joint + delta ) )</text>
 
       <!-- 输出 -->
       <path d="M285,496 L285,510 L499,510" stroke="#b1bac4" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
       <text x="506" y="514" fill="#8c959f" font-size="11" font-family="system-ui">草稿 → 上屏 → 真实 token 到达时确认 / 替换（解码不等待）</text>
     </svg>
-    <div class="cap">图 1 · iter-9 架构。绿色部分为 Medusa 头（本次唯一训练的部分，base 冻结）；
-      蓝色为底座编码路径；紫色为链式状态传递。</div>
+    <div class="cap">图 1 · iter-9 架构。绿色部分为 Medusa 草稿头（本次唯一训练的部分，base 冻结）；
+      蓝色为底座编码路径。</div>
   </div>
 
   <h3>三个必须记住的尺寸</h3>
@@ -510,14 +488,19 @@
     <tbody>
       <tr><td>帧时长</td><td class="num">40 ms</td><td>hop 160 / sr 16000 × 1000 × stride 4</td></tr>
       <tr><td>窗口宽度</td><td class="num">9 帧</td><td>1 + past(7) + lookahead(1)</td></tr>
-      <tr><td>头数</td><td class="num">2</td><td>h1 / h2 链式</td></tr>
+      <tr><td>头数</td><td class="num">1</td><td>Medusa 草稿头</td></tr>
     </tbody>
   </table>
 
   <div class="note warn">
-    <b>为什么 lookahead 只能是 1</b>：<code>right_context_length: 4</code> ÷ <code>time_reduction_stride: 4</code> = 1 帧。
-    这是流式部署的硬约束——想看到 t+2，就必须等第 8 个原始帧进入压缩块，系统延迟 +40 ms。
-    而 past 帧在流式部署时<b>已经算好并提交</b>，取它们不花任何延迟，所以 past=7 是免费的。
+    <b>lookahead 取 1 是保守值，不是物理硬约束</b>：流式块 = 左 64 mel + chunk 16 mel + 右 4 mel，
+    <code>stride 4</code> ⇒ 一个 chunk 同时产出 <b>4 个 reduced 帧</b>（右上下文不单独压缩，其信息落在 chunk 末帧里）。
+    因此帧 t 处的零延迟未来预算 = <code>3 − (t mod 4)</code> ∈ {3,2,1,0}，<b>最多 3 帧、均值 1.5 帧</b>；
+    只有跨到下一个 chunk 才付真实延迟（≈16 mel ≈ 160 ms）。<br>
+    当前 <code>[t−7..t+1]</code> 的 look=1 是现有权重训过的保守布局，
+    <span class="hl">chunk 对齐的实现可免费用到最多 3 帧未来</span>——代价只是 medusa 要按新窗布局重训。
+    past 帧在流式部署时<b>已经算好并提交</b>，取它们不花任何延迟，所以 past=7 是免费的。
+    <span class="muted">(注：动态压缩下 mel→reduced 非严格 4:1，3 为标称值，实际延迟按 ms 校核。)</span>
   </div>
 </div>
 </details>
@@ -574,15 +557,15 @@
       <path d="M628,102 L628,120" stroke="#b1bac4" stroke-width="1.4" marker-end="url(#a2)"/>
 
       <rect x="520" y="124" width="216" height="60" rx="8" fill="#fafbfc" stroke="#dfe3e8"/>
-      <text x="628" y="146" fill="#424a53" font-size="11.5" text-anchor="middle" font-family="ui-monospace,monospace">drafts = chain_draft(窗, g_{u+1})</text>
-      <text x="628" y="166" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">h1 → predictor → h2</text>
+      <text x="628" y="146" fill="#424a53" font-size="11.5" text-anchor="middle" font-family="ui-monospace,monospace">drafts = draft_chain(窗, g_{u+1})</text>
+      <text x="628" y="166" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">头读取窗 + 语言状态，草拟 ref[u+1]</text>
 
       <path d="M736,154 L764,154" stroke="#b1bac4" stroke-width="1.4" marker-end="url(#a2)"/>
 
       <rect x="768" y="118" width="196" height="72" rx="8" fill="#f2f8ff" stroke="#0969da" stroke-opacity=".6"/>
       <text x="866" y="140" fill="#0969da" font-size="11.5" text-anchor="middle">对齐：draft[j] ≟ ref[u+1+j]</text>
       <text x="866" y="158" fill="#656d76" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">lead = ref_frames[u+1+j] − t_u</text>
-      <text x="866" y="176" fill="#656d76" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">blank = 弃权，链截断</text>
+      <text x="866" y="176" fill="#656d76" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">blank = 弃权，本轮不上屏</text>
 
       <path d="M866,194 L866,212" stroke="#0969da" stroke-width="1.4" marker-end="url(#a2b)"/>
 
@@ -597,13 +580,11 @@
   </div>
 
   <h3>对齐规则（最容易搞错的一步）</h3>
-  <pre><span class="c"># 训练侧 shifted_ce: head-k 在列 m 预测 y_{m+k-1}</span>
-<span class="c"># post-emit 语义下 m = u+1（emit 完第 u 个 token 后的那一列），于是：</span>
+  <pre><span class="c"># post-emit 语义：emit 完第 u 个 token 后，头从状态 g_{u+1} 出发草拟下一个 token</span>
 
-    head-j 的草稿  ←→  ref_tokens[ u + 1 + j ]
+    头的草稿  ←→  ref_tokens[ u + 1 ]
 
-<span class="c"># j 从 0 开始：head-1 预测"下一个"token；head-2 预测"下下个"</span>
-<span class="c"># 评估与训练逐位同构 —— 这是数字可信的前提</span></pre>
+<span class="c"># 评估与训练逐位同构（shifted_ce 对齐同一列）—— 这是数字可信的前提</span></pre>
 
   <div class="note">
     <b>提前量的定义域</b>：只有<b>命中</b>的草稿才有提前量（观众确实提前看到了正确内容）。
@@ -617,15 +598,10 @@
       │         │         │          │         │         │           │
       ●DH       ●AH0      ●S        ●AH1      ●N        ●IH1      ●Z
 
-head-1（预测 ref[u+1]）
+头（预测 ref[u+1]）
   t=2   └─draft AH0 ──────────►<span class="g">命中</span>  lead = 5−2 = 3 帧 = <span class="n">120 ms</span>
   t=10  └─draft N ──►<span class="g">命中</span>  lead = 12−10 = 2 帧 = <span class="n">80 ms</span>
-  t=12  └─draft IY1 ────────────────────►<span class="bad">未命中</span> 被 IH1 替换 → <span class="bad">闪烁</span>
-
-head-2（预测 ref[u+2]）
-  t=2   └─draft S ────────────────────►<span class="g">命中</span>  lead = 8−2 = 6 帧 = <span class="n">240 ms</span>
-  t=8   └─draft M ──────────────►<span class="bad">未命中</span> 被 N 替换 → <span class="bad">闪烁</span>
-  t=16  └─blank ──►<span class="muted">弃权</span>（已无 ref[u+2] 可预测；t=20 head-1 弃权后链同样截断）</pre>
+  t=12  └─draft IY1 ────────────────────►<span class="bad">未命中</span> 被 IH1 替换 → <span class="bad">闪烁</span></pre>
 </div>
 </details>
 
@@ -635,40 +611,25 @@ head-2（预测 ref[u+2]）
 <div class="body">
   <p>Medusa 头是一个<b>加性残差</b>结构：不替换 joiner，而是在 joint 特征上加一个 context delta，再走一遍词表投影。</p>
 
-  <h3>共享项（所有头复用，只算一次）</h3>
+  <h3>输入项</h3>
   <pre>predictor = context_predictor(target_enc)          <span class="c"># 语言侧</span>
 acoustic  = context_acoustic(窗展平 9×512)          <span class="c"># 声学侧</span>
 base_term = context_base_logits(base_logits.detach())  <span class="c"># 验证器分布摘要（detach 防捷径）</span></pre>
 
-  <h3>逐头 delta</h3>
+  <h3>草稿 delta</h3>
   <pre>fused = predictor + acoustic + base_term
-      + chain_state_proj(rolled_state)             <span class="c"># iter-4 滚动语言状态</span>
-      + chain_state_proj_heads[k](rolled_state)    <span class="c"># iter-7 逐头状态投影</span>
-      + chain_draft_proj(emb(d_{k-1}))             <span class="c"># k≥1：前一头草稿的 embedding</span>
 
 normalized = context_norm(fused)
-delta_k    = context_mlp(normalized)
+delta      = context_mlp(normalized)
            + context_mlp_extra(normalized)         <span class="c"># iter-6 共享深路径</span>
-           + context_mlp_heads[k](normalized)      <span class="c"># iter-7 逐头深路径</span>
 
-logits_k   = w_vocab( res_blocks[k]( joint + delta_k ) )</pre>
+logits     = w_vocab( res_block( joint + delta ) )</pre>
 
   <p class="small muted">
     所有新增投影均为<b>零初始化</b>（zero-init），所以扩容在 step-0 是无扰动的——这是 warm-start 能跨迭代累加的原因。
   </p>
 
-  <h3>链式条件：训练 / 推理同构</h3>
-  <table>
-    <thead><tr><th>环节</th><th>训练</th><th>推理</th></tr></thead>
-    <tbody>
-      <tr><td>head-k 的语言状态</td><td class="num">tgt_enc 左移 k 列（teacher forcing）</td><td class="num">predictor 在草稿上滚动 k 步</td></tr>
-      <tr><td>前一头草稿</td><td class="num">上一头 logits 的 argmax（detach）</td><td class="num">已确定的 draft id</td></tr>
-      <tr><td>对齐列</td><td class="num">m，预测 y_{m+k−1}</td><td class="num">u+1 起，预测 ref[u+1+j]</td></tr>
-    </tbody>
-  </table>
-  <p class="small muted">草稿全部被接受时，推理的状态与训练 teacher forcing 的输入逐位相同——这就是"同构"的含义，也是链式条件不引入分布偏移的保证。</p>
-
-  <h3>诊断工具：三个可选开关</h3>
+  <h3>诊断工具：两个可选开关</h3>
   <div class="grid2">
     <div class="card">
       <h4>chain_sim（验证器模拟扫描）</h4>
@@ -687,7 +648,7 @@ logits_k   = w_vocab( res_blocks[k]( joint + delta_k ) )</pre>
   <div class="note warn">
     <b>区域拆分（本轮的核心里程碑）</b>：一条草稿若 <code>sim found = True</code>，说明答案在可见窗内，
     头只要照抄就能命中（<b>复制区</b>）；若 <code>found = False</code>，答案在窗外，头必须真预测（<b>预测区</b>）。
-    总命中率被复制区占比主导，所以 <span class="hl">h1 的 90% 与 h2 的 59% 不可直接比较</span>。
+    总命中率被复制区占比主导，所以 <span class="hl">90% 这个数字是虚高的——看能力必须看预测区</span>。
   </div>
 </div>
 </details>
@@ -714,20 +675,20 @@ logits_k   = w_vocab( res_blocks[k]( joint + delta_k ) )</pre>
   <div class="demo">
     <div class="calc">
       <div>
-        <div class="row"><span>命中率 hit%</span><span id="vHitTxt">59.4%</span></div>
-        <input type="range" id="vHit" min="0" max="100" value="59.4" step="0.1">
-        <div class="row" style="margin-top:14px"><span>平均提前量 leadAvg</span><span id="vLeadTxt">34 ms</span></div>
-        <input type="range" id="vLead" min="0" max="400" value="34" step="1">
+        <div class="row"><span>命中率 hit%</span><span id="vHitTxt">90.6%</span></div>
+        <input type="range" id="vHit" min="0" max="100" value="90.6" step="0.1">
+        <div class="row" style="margin-top:14px"><span>平均提前量 leadAvg</span><span id="vLeadTxt">33.4 ms</span></div>
+        <input type="range" id="vLead" min="0" max="400" value="33.4" step="0.1">
         <p class="small muted" style="margin-bottom:0">
           拖动滑块观察：命中率线性影响 value，但<b>提前量是更稀缺的资源</b>——
-          实测两头 leadAvg 都不到 1 帧（33 ms），这才是天花板。
+          实测 leadAvg 不到 1 帧（33 ms），这才是天花板。
         </p>
       </div>
       <div>
-        <div class="out"><span>value（期望感知提前量）</span><b id="vOut">20.2</b> ms</div>
+        <div class="out"><span>value（期望感知提前量）</span><b id="vOut">29.9</b> ms</div>
         <div class="row" style="justify-content:center;gap:18px;color:var(--muted)">
-          <span>命中时提前 <b id="vPerHit" style="color:var(--green)">57</b> ms</span>
-          <span>闪烁率 <b id="vRepl" style="color:var(--red)">40.6</b>%</span>
+          <span>命中时提前 <b id="vPerHit" style="color:var(--green)">33</b> ms</span>
+          <span>闪烁率 <b id="vRepl" style="color:var(--red)">9.4</b>%</span>
         </div>
       </div>
     </div>
@@ -738,8 +699,7 @@ logits_k   = w_vocab( res_blocks[k]( joint + delta_k ) )</pre>
     hit% &nbsp;≈&nbsp; <span class="b">覆盖率</span> × <span class="g">≈100%</span> &nbsp;+&nbsp; (1 − <span class="b">覆盖率</span>) × <span class="hl">43%</span>
   </div>
   <p class="small muted">
-    覆盖率 = 答案落在可见窗内的概率（由 lookahead 决定）；43% 是窗外预测的命中率，
-    <b>与头深度无关</b>——实测 h1 与 h2 都精确落在 43%。
+    覆盖率 = 答案落在可见窗内的概率（由 lookahead 决定）；43% 是窗外预测的命中率。
     这个分解把"瓶颈在窗内可见的未来帧数"这件事写成了算术。
   </p>
 </div>
@@ -751,25 +711,25 @@ logits_k   = w_vocab( res_blocks[k]( joint + delta_k ) )</pre>
 
   <h3>7.1 三组显示基线</h3>
   <table>
-    <thead><tr><th>配置</th><th>窗口</th><th>h1 hit%</th><th>h2 hit%</th><th>h1 value</th><th>h2 value</th><th>merged</th></tr></thead>
+    <thead><tr><th>配置</th><th>窗口</th><th>hit%</th><th>value</th></tr></thead>
     <tbody>
       <tr>
         <td><b>A</b> display_iter7 <span class="muted">(BEST_iter7)</span></td>
         <td class="num">[t..t+8] look=8 <span class="muted">非流式</span></td>
-        <td class="num tbl-win">94.81</td><td class="num tbl-win">67.60</td>
-        <td class="num">35.1 ms</td><td class="num">45.0 ms</td><td class="num">81.21</td>
+        <td class="num tbl-win">94.81</td>
+        <td class="num">35.1 ms</td>
       </tr>
       <tr>
-        <td><b>B</b> display_iter8h2 <span class="muted">(ep07 st20400)</span></td>
+        <td><b>B</b> iter-8 流式配置 <span class="muted">(ep07 st20400)</span></td>
         <td class="num">[t−7..t+1] look=1 <span class="good">流式合法</span></td>
-        <td class="num">90.60</td><td class="num">59.38</td>
-        <td class="num">30.3 ms</td><td class="num">34.0 ms</td><td class="num">74.99</td>
+        <td class="num">90.60</td>
+        <td class="num">30.3 ms</td>
       </tr>
       <tr>
         <td><b>C</b> BEST_iter7 @ 错配</td>
         <td class="num">[t−7..t+1]</td>
-        <td class="num tbl-bad">47.91</td><td class="num tbl-bad">14.81</td>
-        <td class="num muted">—</td><td class="num muted">—</td><td class="num muted">—</td>
+        <td class="num tbl-bad">47.91</td>
+        <td class="num muted">—</td>
       </tr>
     </tbody>
   </table>
@@ -788,117 +748,111 @@ logits_k   = w_vocab( res_blocks[k]( joint + delta_k ) )</pre>
   <div class="grid2">
     <div class="card">
       <h4 class="good">① 流式预算几乎不亏</h4>
-      <p class="small">lookahead 8 → 1，h1 只掉 4.2 pt、h2 掉 8.2 pt。
+      <p class="small">lookahead 8 → 1，命中率只掉 4.2 pt。
       iter-8 曾据此怀疑"信息守恒"结论，现确认<b>流式不是主要矛盾</b>。</p>
     </div>
     <div class="card">
       <h4 class="hl">② 瓶颈是提前量，不是命中率</h4>
-      <p class="small">两头 mean lead 只有 33 ms / 头 ≈ <b>不到 1 帧</b>。
+      <p class="small">mean lead 只有 33 ms ≈ <b>不到 1 帧</b>。
       命中率再高，观众也只提前了不到 40 ms 看到内容 —— 这是当前方案的真正天花板。</p>
     </div>
     <div class="card">
       <h4>③ 重训"流式合法头"收益很小</h4>
-      <p class="small">配置 A 是<b>非流式</b>的天花板，配置 B 已经在 91% / 74% 的位置。
+      <p class="small">配置 A 是<b>非流式</b>的天花板（94.81），配置 B 已经在 90.60 的位置。
       原计划的阶段 2 重训能拿回的边距很有限。</p>
     </div>
   </div>
 
-  <h3>7.4 h2 瓶颈诊断（chain_sim 推理端，配置 B）</h3>
+  <h3>7.4 扫描诊断（chain_sim 推理端，配置 B）</h3>
   <table>
-    <thead><tr><th>head</th><th>scan</th><th>found%</th><th>simRight%</th><th>copied%</th></tr></thead>
+    <thead><tr><th>scan</th><th>found%</th><th>simRight%</th><th>copied%</th></tr></thead>
     <tbody>
-      <tr><td>h1</td><td class="num">8370</td><td class="num tbl-win">85.72</td><td class="num">100.00</td><td class="num">99.79</td></tr>
-      <tr><td>h2</td><td class="num">8269</td><td class="num tbl-bad">45.02</td><td class="num">82.76</td><td class="num">99.81</td></tr>
+      <tr><td class="num">8370</td><td class="num tbl-win">85.72</td><td class="num">100.00</td><td class="num">99.79</td></tr>
     </tbody>
   </table>
   <p class="small muted">
-    <code>found%</code> = sim 扫描在可见窗内问到了答案；<code>simRight%</code> = 问到的就是目标（问的是 oracle 自己，found 时必为 100%）；
+    <code>found%</code> = sim 扫描在可见窗内问到了答案（= 覆盖率）；<code>simRight%</code> = 问到的就是目标（问的是 oracle 自己，found 时必为 100%）；
     <code>copied%</code> = 直注查表被点亮的比例，≈100% 说明复制电路通畅。
   </p>
 
-  <div class="chart" id="ch-train"></div>
-  <p class="small muted">h2 训练曲线是<b>平的</b>（ep00 → ep07 只有 0.590 → 0.612），续训救不了。</p>
-
-  <div class="note bad">
-    <b>根因是物理上限，不是能力问题</b>：h2 的目标 token 中位落在 1 帧后、P90 落在 2 帧后，
-    而 lookahead=1 的窗只有 [t, t+1]。<br>
-    <span class="hl">found% = 45.02% 与 P(lead ≤ 1 帧) = 45% 精确吻合</span> —— 这不是巧合，
-    是同一件事的两种测量。
+  <div class="note">
+    <b>命中率上限由覆盖率锁定</b>：按 <code>hit% ≈ found% × ≈100% + (1 − found%) × 43%</code> 估算，
+    上限 ≈ 85.72 + 14.28 × 0.43 ≈ <span class="hl">91.9%</span>（实测 90.60，已接近饱和）。
+    想再往上，只能扩大覆盖率或提高窗外的 43%。
   </div>
 
   <h3>7.5 区域拆分：复制区 vs 预测区（配置 B）</h3>
   <table>
-    <thead><tr><th>head</th><th>copy_n</th><th>copyHit%</th><th>pred_n</th><th>predHit%</th><th>LMhit%</th><th>LMguess%</th></tr></thead>
+    <thead><tr><th>copy_n</th><th>copyHit%</th><th>pred_n</th><th>predHit%</th><th>LMhit%</th><th>LMguess%</th></tr></thead>
     <tbody>
-      <tr><td>h1</td><td class="num">7175</td><td class="num tbl-win">99.79</td><td class="num">1195</td><td class="num hl">43.01</td><td class="num">13.19</td><td class="num">16.25</td></tr>
-      <tr><td>h2</td><td class="num">3723</td><td class="num">82.76</td><td class="num">4546</td><td class="num hl">42.85</td><td class="num">1.48</td><td class="num">1.77</td></tr>
+      <tr><td class="num">7175</td><td class="num tbl-win">99.79</td><td class="num">1195</td><td class="num hl">43.01</td><td class="num">13.19</td><td class="num">16.25</td></tr>
     </tbody>
   </table>
 
   <div class="chart" id="ch-region"></div>
 
   <div class="note fix">
-    <b>43.01% vs 42.85% —— 两头的预测能力完全相同。</b>
-    h2 总命中低（59.38 vs 90.60）的唯一原因是它在预测区的时间是 h1 的 3.8 倍（55% vs 14%），
-    不是它笨。<span class="hl">h1 那个 90% 是复制通道刷出来的虚高。</span>
+    <b>总命中 90.60% 里，绝大部分来自复制区（7175 条，命中 99.79%——照抄即中）。</b>
+    真正反映能力的是预测区：1195 条草稿、命中 <b>43.01%</b>。
+    <span class="hl">90% 这个数字是复制通道刷出来的虚高。</span>
   </div>
 
   <div class="chart" id="ch-lm"></div>
   <p class="small muted">
-    预测区 LM 只有 2.18% / 0.64%，且 84–98% 的时间直接弃权（这个 predictor 在常量声学下几乎恒输出 blank）。
+    预测区 LM 先验只有 2.18%，且 84–98% 的时间直接弃权（这个 predictor 在常量声学下几乎恒输出 blank）。
     头高出先验 <b>40+ 个点</b> → 头确实在用声学窗外推，不是在当语言模型。
   </p>
 
   <h3>7.6 预测能力是「窗内未来帧数」的函数（配置 A，lookahead=8）</h3>
   <div class="chart" id="ch-look"></div>
   <p class="small muted">
-    同一机制、同样没有复制通道，只是窗从 1 帧放宽到 8 帧：<b>43% → 96% / 69%</b>。
+    同一机制、同样没有复制通道，只是窗从 1 帧放宽到 8 帧：<b>43% → 95.94%</b>。
     这就是"瓶颈在窗里能看到多少未来音频"的直接证据。
   </p>
 
   <h3>7.7 门控显示：零训练成本的改进</h3>
   <p>只在 <code>sim found</code> 时上屏（扫不到就弃权不显示）。不改模型、不重训，直接改推理策略：</p>
   <table>
-    <thead><tr><th>head</th><th>闪烁 before → after</th><th>value before → after</th></tr></thead>
+    <thead><tr><th>闪烁 before → after</th><th>value before → after</th></tr></thead>
     <tbody>
-      <tr><td>h1</td><td class="num">9.4% → <span class="good">0%</span></td><td class="num">30.3 → <span class="bad">28.3</span> ms</td></tr>
-      <tr><td>h2</td><td class="num">40.6% → <span class="good">17.2%</span></td><td class="num">34.0 → <span class="bad">21.0</span> ms</td></tr>
+      <tr><td class="num">9.4% → <span class="good">0%</span></td><td class="num">30.3 → <span class="bad">28.3</span> ms</td></tr>
     </tbody>
   </table>
   <div class="chart" id="ch-gate"></div>
   <p class="small muted">
-    代价：h2 命中率本身不会超过 60%（受 found% 45% 硬约束），value 因此下降。
+    代价：弃权比例提高（found 之外一律不显示），value 从 30.3 降到 28.3 ms。
     <b>这是"用提前量换稳定"的取舍</b>，是否值得取决于产品对闪烁的容忍度。
   </p>
 
-  <h3>7.8 杠杆估算（以 h2 为目标）</h3>
+  <h3>7.8 杠杆估算（命中率还能再涨多少）</h3>
   <table>
-    <thead><tr><th>杠杆</th><th>机制</th><th>h2 命中率估算</th><th>代价</th></tr></thead>
+    <thead><tr><th>杠杆</th><th>机制</th><th>命中率估算</th><th>代价</th></tr></thead>
     <tbody>
-      <tr><td>提覆盖率</td><td>lookahead 1 → 2</td><td class="num good">≈78%</td>
-          <td>+40 ms 系统延迟 + <b>base 重训</b></td></tr>
-      <tr><td>提那 43%</td><td>加长过去窗（外推更强）</td><td class="num">≈70% <span class="muted">(假设 43→60%)</span></td>
+      <tr><td>提覆盖率</td><td>lookahead 1 → 2/3 <span class="muted">(chunk 对齐)</span></td><td class="num good">90.6 → ≈92–94</td>
+          <td>chunk 内<b>零延迟</b>（最多 3 帧）；跨 chunk ≈+160 ms；medusa 重训</td></tr>
+      <tr><td>提那 43%</td><td>加长过去窗（外推更强）</td><td class="num">90.6 → ≈93 <span class="muted">(假设 43→60%；预测区仅占 14%)</span></td>
           <td>零延迟，medusa 重训</td></tr>
-      <tr><td>两者都做</td><td>—</td><td class="num good">≈80%</td><td>两者代价之和</td></tr>
+      <tr><td>两者都做</td><td>—</td><td class="num good">≈94–95 <span class="muted">(≈ 配置 A 的非流式上限)</span></td><td>两者代价之和</td></tr>
     </tbody>
   </table>
   <p class="small muted">
-    注："提 43%" 能否成立<b>尚未验证</b>；而覆盖率杠杆有配置 A 的实测支撑，确定性高得多。
+    注：覆盖率杠杆的上限有配置 A 的实测支撑（look=8 时 94.81 / predHit 95.94）；
+    "提 43%" 能否成立<b>尚未验证</b>，且受预测区占比（14%）限制，收益只有约 +2.4 pt。
   </p>
 
   <h3>7.9 两个 bug 修复（影响过历史数字）</h3>
   <div class="note bad">
     <b>① warm-start 误删共享 MLP 权重</b>（<code>lightning_module.py:618-660</code>）<br>
     过期头键过滤取 <code>medusa_heads.</code> 后第一个数字段，把共享 MLP 的<b>层索引</b>
-    （<code>context_mlp.2</code>、<code>context_mlp_extra.2/4</code>）误判为头索引 ≥2 而丢弃
+    （<code>context_mlp.2</code>、<code>context_mlp_extra.2/4</code>）误判为过期头索引而丢弃
     （BEST_iter7 中范数 97.9 / 76.4 / 40.2 → 丢弃后回落零初始化）。
-    改为只在 per-head ModuleList 下读索引。<span class="hl">iter-8h2 与 iter-9 首次基线都中了这招。</span>
+    改为只在 per-head ModuleList 下读索引。<span class="hl">iter-8 与 iter-9 首次基线都中了这招。</span>
   </div>
   <div class="note bad">
     <b>② 布局错配的假基线</b>：BEST_iter7 的 <code>context_acoustic</code> 是 <code>(512, 4608)</code> = 9 列，
     但语义是 iter-2d 解除流式后的 <code>[t..t+8]</code>（past=0, lookahead=8）；
-    iter-8h2 才是 <code>[t−7..t+1]</code>。<b>同宽不同义</b> ——
-    用 iter-7 权重跑 past=7 布局实测 h1 仅 47.91%，与日志的 0.920 严重不符，
+    iter-8 的流式布局才是 <code>[t−7..t+1]</code>。<b>同宽不同义</b> ——
+    用 iter-7 权重跑 past=7 布局实测仅 47.91%，与日志的 0.920 严重不符，
     这就是上表里的配置 C，数字无效。
   </div>
 </div>
@@ -910,16 +864,16 @@ logits_k   = w_vocab( res_blocks[k]( joint + delta_k ) )</pre>
 <div class="body">
   <ol>
     <li><b>投机显示是一个零风险增量功能</b>：解码不依赖草稿，猜错只影响观感，不影响正确性。RTF 不变。</li>
-    <li><b>价值模型必须看"预测区"</b>：总命中率会被复制通道污染，跨头不可比。h1 的 90% 是虚高。</li>
-    <li><b>当前瓶颈是提前量（≈33 ms/头，不到 1 帧）</b>，不是命中率。命中率已经 90%/59%。</li>
-    <li><b>提升命中率的唯一有效杠杆是"窗内可见的未来帧数"</b>：lookahead 1→8 让预测区命中率从 43% 跳到 96%/69%。</li>
+    <li><b>价值模型必须看"预测区"</b>：总命中率会被复制通道污染；90% 是虚高。</li>
+    <li><b>当前瓶颈是提前量（≈33 ms，不到 1 帧）</b>，不是命中率。命中率已经 90.6%。</li>
+    <li><b>提升命中率的唯一有效杠杆是"窗内可见的未来帧数"</b>：lookahead 1→8 让预测区命中率从 43% 跳到 95.94%。</li>
     <li><b>加长过去窗是零延迟杠杆</b>，但它能否把 43% 提上去<b>尚未验证</b>——这是下一步该做的实验。</li>
     <li><b>门控显示（只在 found 时上屏）是免费的取舍旋钮</b>：闪烁大降，代价是提前量下降。</li>
   </ol>
 
   <div class="note">
     <b>下一步建议</b>：先跑"加长过去窗"消融（零延迟、只重训 medusa），
-    验证 43% 这个常数是否随过去窗变长而上升。若不上升，再考虑付出 +40 ms 系统延迟买 lookahead=2。
+    验证 43% 这个常数是否随过去窗变长而上升。若不上升，再用 chunk 内零延迟预算把 lookahead 扩到最多 3 帧（按新窗重训 medusa）。
   </div>
 </div>
 </details>
@@ -937,7 +891,7 @@ logits_k   = w_vocab( res_blocks[k]( joint + delta_k ) )</pre>
 /* ══════════════════════ 1. 显示时间线仿真 ══════════════════════ */
 /* 合成时间线：音素串 /DH AH0 S AH1 N IH1 Z/ ("the sun is") —— 7 次真实 emit。
    注意上屏发生在"草拟的那一刻"，与将来是否命中无关；命中/替换只在真实 token
-   到达时才判定，且只进入评分。head-k 草拟 ref[u+k]。 */
+   到达时才判定，且只进入评分。头草拟 ref[u+1]。 */
 const REF = [
   {t:2,  tok:'DH'},  {t:5,  tok:'AH0'}, {t:8,  tok:'S'},   {t:10, tok:'AH1'},
   {t:12, tok:'N'},   {t:16, tok:'IH1'}, {t:20, tok:'Z'}
@@ -945,49 +899,27 @@ const REF = [
 const NFRAMES = 23;
 
 const SCEN = {
-  h1: {
-    chips: {
-      2: [{c:'real',x:'DH'},  {c:'draft',x:'⇢AH0'}],
-      5: [{c:'real',x:'AH0'}, {c:'hit',x:'✓3帧'},  {c:'draft',x:'⇢S'}],
-      8: [{c:'real',x:'S'},   {c:'hit',x:'✓3帧'},  {c:'draft',x:'⇢AH1'}],
-      10:[{c:'real',x:'AH1'}, {c:'hit',x:'✓2帧'},  {c:'draft',x:'⇢N'}],
-      12:[{c:'real',x:'N'},   {c:'hit',x:'✓2帧'},  {c:'draft',x:'⇢IY1'}],
-      16:[{c:'real',x:'IH1'}, {c:'miss',x:'✗IY1'},{c:'draft',x:'⇢Z'}],
-      20:[{c:'real',x:'Z'},   {c:'hit',x:'✓4帧'},  {c:'abst',x:'∅'}]
-    },
-    events: {
-      2: {real:0, draft:{tok:'AH0', pos:1}},
-      5: {real:1, draft:{tok:'S',   pos:2}},
-      8: {real:2, draft:{tok:'AH1', pos:3}},
-      10:{real:3, draft:{tok:'N',   pos:4}},
-      12:{real:4, draft:{tok:'IY1', pos:5}},
-      16:{real:5, draft:{tok:'Z',   pos:6}},
-      20:{real:6, draft:{abstain:true}}
-    }
+  chips: {
+    2: [{c:'real',x:'DH'},  {c:'draft',x:'⇢AH0'}],
+    5: [{c:'real',x:'AH0'}, {c:'hit',x:'✓3帧'},  {c:'draft',x:'⇢S'}],
+    8: [{c:'real',x:'S'},   {c:'hit',x:'✓3帧'},  {c:'draft',x:'⇢AH1'}],
+    10:[{c:'real',x:'AH1'}, {c:'hit',x:'✓2帧'},  {c:'draft',x:'⇢N'}],
+    12:[{c:'real',x:'N'},   {c:'hit',x:'✓2帧'},  {c:'draft',x:'⇢IY1'}],
+    16:[{c:'real',x:'IH1'}, {c:'miss',x:'✗IY1'},{c:'draft',x:'⇢Z'}],
+    20:[{c:'real',x:'Z'},   {c:'hit',x:'✓4帧'},  {c:'abst',x:'∅'}]
   },
-  h2: {
-    chips: {
-      2: [{c:'real',x:'DH'},  {c:'draft',x:'⇢S'}],
-      5: [{c:'real',x:'AH0'}, {c:'draft',x:'⇢AH1'}],
-      8: [{c:'real',x:'S'},   {c:'hit',x:'✓6帧'},  {c:'draft',x:'⇢M'}],
-      10:[{c:'real',x:'AH1'}, {c:'hit',x:'✓5帧'},  {c:'draft',x:'⇢IH1'}],
-      12:[{c:'real',x:'N'},   {c:'miss',x:'✗M'},   {c:'draft',x:'⇢S'}],
-      16:[{c:'real',x:'IH1'}, {c:'hit',x:'✓6帧'},  {c:'abst',x:'∅'}],
-      20:[{c:'real',x:'Z'},   {c:'miss',x:'✗S'}]
-    },
-    events: {
-      2: {real:0, draft:{tok:'S',   pos:2}},
-      5: {real:1, draft:{tok:'AH1', pos:3}},
-      8: {real:2, draft:{tok:'M',   pos:4}},
-      10:{real:3, draft:{tok:'IH1', pos:5}},
-      12:{real:4, draft:{tok:'S',   pos:6}},
-      16:{real:5, draft:{abstain:true}},
-      20:{real:6, note:'head-1 弃权 → 链截断，head-2 本轮未被尝试'}
-    }
+  events: {
+    2: {real:0, draft:{tok:'AH0', pos:1}},
+    5: {real:1, draft:{tok:'S',   pos:2}},
+    8: {real:2, draft:{tok:'AH1', pos:3}},
+    10:{real:3, draft:{tok:'N',   pos:4}},
+    12:{real:4, draft:{tok:'IY1', pos:5}},
+    16:{real:5, draft:{tok:'Z',   pos:6}},
+    20:{real:6, draft:{abstain:true}}
   }
 };
 
-let head='h1', cur=-1, timer=null;
+let cur=-1, timer=null;
 let confirmed=[], pending=[], stats=null;
 const $ = id => document.getElementById(id);
 const freshStats = () => ({disp:0,hit:0,miss:0,abst:0,leads:[]});
@@ -998,7 +930,7 @@ function buildRail(){
   for(let t=0;t<NFRAMES;t++){
     const cell=document.createElement('div');
     cell.className='fr'; cell.dataset.t=t;
-    (SCEN[head].chips[t]||[]).forEach(ch=>{
+    (SCEN.chips[t]||[]).forEach(ch=>{
       const e=document.createElement('div');
       e.className='ev '+ch.c; e.textContent=ch.x;
       cell.appendChild(e);
@@ -1011,7 +943,7 @@ function buildRail(){
 }
 
 function stepFrame(t){
-  const ev = SCEN[head].events[t];
+  const ev = SCEN.events[t];
   const notes = [];
   if(ev && ev.real != null){
     const r = REF[ev.real];
@@ -1037,7 +969,7 @@ function stepFrame(t){
     const d = ev.draft;
     if(d.abstain){
       stats.abst++;
-      notes.push('头输出 <b class="muted">blank → 弃权</b>：不上屏、零代价，链在此截断');
+      notes.push('头输出 <b class="muted">blank → 弃权</b>：不上屏、零代价');
     }else{
       pending.push({tok:d.tok, pos:d.pos, t:t});
       stats.disp++;
@@ -1112,11 +1044,6 @@ function play(){
 $('playBtn').onclick  = () => timer ? stopPlay() : play();
 $('stepBtn').onclick  = () => { stopPlay(); nextFrame(); };
 $('resetBtn').onclick = resetDemo;
-$('headBtn').onclick  = () => {
-  head = head === 'h1' ? 'h2' : 'h1';
-  $('headBtn').textContent = '切换到 ' + (head==='h1' ? 'head-2' : 'head-1');
-  resetDemo();
-};
 
 /* ══════════════════════ 2. 图表 ══════════════════════ */
 const NS = 'http://www.w3.org/2000/svg';
@@ -1225,16 +1152,14 @@ function lineChart(host, cfg){
 
 barChart($('ch-base'), {
   groups:['A · look=8 非流式','B · look=1 流式','C · 权重错配'],
-  subs:['iter-7 训练布局','iter-8h2 流式布局','同宽不同义 → 数字无效'],
-  series:[{name:'h1 hit%',color:C.blue,values:[94.81,90.60,47.91]},
-          {name:'h2 hit%',color:C.purple,values:[67.60,59.38,14.81]}],
+  subs:['iter-7 训练布局','iter-8 流式布局','同宽不同义 → 数字无效'],
+  series:[{name:'hit%',color:C.blue,values:[94.81,90.60,47.91]}],
   max:100, unit:'%'
 });
 
 barChart($('ch-value'), {
   groups:['A · look=8 非流式','B · look=1 流式'],
-  series:[{name:'h1 value',color:C.cyan,values:[35.1,30.3]},
-          {name:'h2 value',color:C.amber,values:[45.0,34.0]}],
+  series:[{name:'value',color:C.cyan,values:[35.1,30.3]}],
   max:60, unit:'ms', decimals:1, height:250
 });
 
@@ -1245,51 +1170,38 @@ barChart($('ch-lead'), {
   max:200, unit:'ms', decimals:0, height:240
 });
 
-lineChart($('ch-train'), {
-  xs:['ep00','ep02','ep04','ep07'],
-  ys:[0.590,0.579,0.589,0.612],
-  ymin:0.50, ymax:0.70, color:C.purple, name:'h2 接受率/命中率'
-});
-
 hstack($('ch-region'), {
   rows:[
-    {label:'h1', parts:[
+    {label:'头', parts:[
         {v:7175, color:C.blue,  label:'复制区 7175 · 命中 99.79%'},
         {v:1195, color:C.amber, label:'预测区 1195 · 命中 43.01%'}],
-     note:'h1 的总命中 90.60% 里，绝大部分来自复制区的 99.79%（照抄）'},
-    {label:'h2', parts:[
-        {v:3723, color:C.blue,  label:'复制区 3723 · 命中 82.76%'},
-        {v:4546, color:C.amber, label:'预测区 4546 · 命中 42.85%'}],
-     note:'h2 在预测区的时间是 h1 的 3.8 倍（55% vs 14%），这才是它总命中低的唯一原因'}
+     note:'总命中 90.60% 里，绝大部分来自复制区的 99.79%（照抄）'}
   ]
 });
 
 barChart($('ch-lm'), {
-  groups:['B · h1','B · h2','A · h1','A · h2'],
-  subs:['look=1','look=1','look=8','look=8'],
-  series:[{name:'头 predHit%',color:C.green,values:[43.01,42.85,95.94,69.22]},
-          {name:'LM 先验 LMhit%',color:C.gray,values:[2.18,0.64,14.31,1.70]}],
+  groups:['B · look=1','A · look=8'],
+  subs:['窗口 [t−7 .. t+1]','窗口 [t .. t+8]'],
+  series:[{name:'头 predHit%',color:C.green,values:[43.01,95.94]},
+          {name:'LM 先验 LMhit%',color:C.gray,values:[2.18,14.31]}],
   max:100, unit:'%'
 });
 
 barChart($('ch-look'), {
   groups:['配置 B · look=1 流式','配置 A · look=8 非流式'],
   subs:['窗口 [t−7 .. t+1]','窗口 [t .. t+8]'],
-  series:[{name:'h1 predHit%',color:C.blue,values:[43.01,95.94]},
-          {name:'h2 predHit%',color:C.purple,values:[42.85,69.22]}],
+  series:[{name:'predHit%',color:C.blue,values:[43.01,95.94]}],
   max:100, unit:'%', height:250
 });
 
 barChart($('ch-gate'), {
-  groups:['h1','h2'],
-  series:[{name:'闪烁 before',color:'#656d76',values:[9.4,40.6]},
-          {name:'闪烁 after（门控）',color:C.green,values:[0,17.2]}],
+  groups:['门控前','门控后'],
+  series:[{name:'闪烁率',color:C.green,values:[9.4,0]}],
   max:50, unit:'%', decimals:1, height:240
 });
 barChart($('ch-gate'), {
-  groups:['h1','h2'],
-  series:[{name:'value before',color:'#656d76',values:[30.3,34.0]},
-          {name:'value after（门控）',color:C.amber,values:[28.3,21.0]}],
+  groups:['门控前','门控后'],
+  series:[{name:'value',color:C.amber,values:[30.3,28.3]}],
   max:40, unit:'ms', decimals:1, height:240
 });
 
