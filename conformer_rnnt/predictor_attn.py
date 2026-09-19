@@ -197,10 +197,15 @@ class PredictorAttn(torch.nn.Module):
         self.left_context = left_context
 
     # ------------------------------------------------------------------
-    def _embed(self, tokens: Tensor, start_pos: int) -> Tensor:
-        """token ids (B,U) + 绝对位置 start_pos..start_pos+U-1 → (B,U,d_model)。"""
+    def _embed(self, tokens: Tensor, start_pos: Tensor) -> Tensor:
+        """token ids (B,U) + 绝对位置 start_pos..start_pos+U-1 → (B,U,d_model)。
+
+        start_pos: 1-elem long tensor（state 里的 P），避免逐 token 的 .item()
+        GPU 同步。位置超过 max_len-1 时 clamp 饱和——流式长序列的受控退化；
+        训练路径由 forward 的 _assert 挡住，不会静默触达。
+        """
         U = tokens.size(1)
-        positions = torch.arange(start_pos, start_pos + U, device=tokens.device)
+        positions = torch.arange(U, device=tokens.device) + start_pos
         positions = torch.clamp(positions, max=self.max_len - 1)
         h = self.input_proj(self.embedding(tokens)) + self.pos(positions).unsqueeze(0)
         return self.input_layer_norm(h)
@@ -222,11 +227,22 @@ class PredictorAttn(torch.nn.Module):
         """训练/批量前向：完整序列并行算，受限因果 mask。
 
         Args:
-            input: (B, U) int token ids。
+            input: (B, U) int token ids。U 必须 ≤ max_len（_assert 显式拦截）。
             lengths: (B,) 有效长度(原样返回，beam-search 逐 token 不用它做 mask)。
             state: 忽略(批量前向不接 cache)；返回空 cache 供后续增量起点。
+
+        注意（隐式契约）：本层不做 padding mask。其安全性依赖两点——
+        padding 只出现在序列尾部，且因果 mask 保证 query 看不到右侧 key，
+        故 padded 位置的输出是垃圾但不会被非 padded query 读到；loss 侧
+        必须按 lengths 屏蔽 padded 位置。若改变这两点任一，需补 padding mask。
         """
-        x = self._embed(input, 0)  # (B, U, d_model)
+        torch._assert(
+            input.size(1) <= self.max_len,
+            "PredictorAttn: 序列长度超过 max_len 位置编码表；请调大 attn.max_len",
+        )
+        x = self._embed(
+            input, torch.zeros(1, dtype=torch.long, device=input.device)
+        )  # (B, U, d_model)
         for layer in self.layers:
             x = layer.forward_full(x)
         x = self.dropout(self.final_norm(x))
@@ -248,8 +264,10 @@ class PredictorAttn(torch.nn.Module):
         返回 (out:(B,1,output_dim), lengths, new_state)。
         """
         if state is None:
-            state = self._empty_cache(input.size(0), input.device, torch.float32)
-        start_pos = int(state[0][2].item())
+            state = self._empty_cache(
+                input.size(0), input.device, self.pos.weight.dtype
+            )
+        start_pos = state[0][2]  # 1-elem long tensor，避免逐 token .item() GPU 同步
 
         x = self._embed(input, start_pos)  # (B,1,d_model)
         new_state: List[List[Tensor]] = []

@@ -93,5 +93,15 @@ try:
 except Exception as e:  # noqa: BLE001
     ok &= check("torch.jit.script(predict) 可编译且与 eager 一致", False, repr(e))
 
+# ── 5. 超 max_len 训练路径显式报错（不允许静默 clamp） ──
+m = build(16)  # max_len=64
+tokens = torch.randint(0, V, (1, 100))
+try:
+    with torch.no_grad():
+        m(tokens, None, None)
+    ok &= check("forward 超 max_len 显式报错", False, "未触发 _assert")
+except (AssertionError, RuntimeError):
+    ok &= check("forward 超 max_len 显式报错", True)
+
 print("\nSMOKE_ATTN:", "ALL PASSED" if ok else "FAILED")
 sys.exit(0 if ok else 1)
