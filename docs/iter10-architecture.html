@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iter-10 架构讲解 — 删窗 / draft 侧序列模型 / BNT 蒸馏 / cache 回滚</title>
+<style>
+  :root{
+    color-scheme:light;
+    --bg:#ffffff; --panel:#ffffff; --panel2:#fafbfc; --panel3:#f6f8fa;
+    --border:#e6e8eb; --border2:#d8dee4; --border3:#eaeef2;
+    --text:#1f2328; --muted:#656d76; --dim:#8c959f; --faint:#aab2bd;
+    --blue:#0969da; --green:#1a7f37; --red:#cf222e; --amber:#9a6700; --purple:#8250df; --cyan:#1b7c83;
+    --blue-bg:#f2f8ff; --green-bg:#f2fbf4; --red-bg:#fff5f5; --amber-bg:#fffbf0;
+    --blue-bd:#a3cdf5; --green-bd:#a6dbb4; --red-bd:#f0b3b0; --amber-bd:#e8d08a;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+    line-height:1.75; font-size:15px;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:56px 24px 120px}
+
+  header.hero{border-bottom:1px solid var(--border);padding-bottom:28px;margin-bottom:36px}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+  h1{font-size:32px;line-height:1.3;margin:10px 0 8px;letter-spacing:-.018em;font-weight:650}
+  .sub{color:var(--muted);font-size:14.5px;margin:0;max-width:88ch}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:26px}
+  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:13px 15px}
+  .kpi .v{font-family:var(--mono);font-size:19px;color:var(--text);line-height:1.25;letter-spacing:-.02em}
+  .kpi .k{font-size:11.5px;color:var(--dim);margin-top:5px}
+
+  details.mod{
+    background:var(--panel);border:1px solid var(--border);border-radius:12px;
+    margin:12px 0;overflow:hidden;
+  }
+  details.mod[open]{border-color:var(--border2)}
+  details.mod>summary{
+    cursor:pointer;list-style:none;padding:17px 22px;font-weight:600;font-size:16.5px;
+    display:flex;align-items:center;gap:12px;user-select:none;letter-spacing:-.005em;
+  }
+  details.mod>summary::-webkit-details-marker{display:none}
+  details.mod>summary::before{
+    content:"›";color:var(--dim);font-size:20px;font-weight:400;line-height:1;
+    transition:transform .18s ease;display:inline-block;width:12px;flex:none;transform-origin:40% 50%;
+  }
+  details.mod[open]>summary::before{transform:rotate(90deg);color:var(--blue)}
+  details.mod>summary:hover{background:var(--panel3)}
+  details.mod>summary .tag{
+    margin-left:auto;font-family:var(--mono);font-size:10.5px;font-weight:400;
+    color:var(--dim);border:1px solid var(--border2);border-radius:20px;padding:2px 10px;flex:none;
+  }
+  .body{padding:2px 22px 26px;border-top:1px solid var(--border)}
+  .body>p:first-child{margin-top:18px}
+
+  h3{font-size:12.5px;margin:28px 0 10px;color:var(--dim);font-weight:600;
+     letter-spacing:.06em;text-transform:uppercase}
+  h4{font-size:14px;margin:20px 0 6px;color:var(--text);font-weight:600}
+  p{margin:10px 0;text-wrap:pretty}
+  ul,ol{margin:10px 0;padding-left:22px}
+  li{margin:6px 0;text-wrap:pretty}
+  code{font-family:var(--mono);font-size:12.5px;background:var(--panel3);border:1px solid var(--border);
+       border-radius:4px;padding:1px 5px;color:#bc4c00}
+  .muted{color:var(--muted)}
+  .small{font-size:13px}
+  .hl{color:var(--amber)}
+  .good{color:var(--green)}
+  .bad{color:var(--red)}
+
+  pre{background:var(--panel3);border:1px solid var(--border);border-radius:10px;
+      padding:16px 18px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.7;color:#424a53}
+  pre .c{color:var(--dim)}
+  pre .k{color:var(--purple)}
+  pre .s{color:#0550ae}
+  pre .n{color:var(--amber)}
+
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px}
+  th,td{padding:9px 10px;border-bottom:1px solid var(--border);text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--dim);font-weight:600;font-size:11.5px;letter-spacing:.06em;
+           text-transform:uppercase;border-bottom:1px solid var(--border2)}
+  tbody tr:hover{background:var(--panel2)}
+  td.num{font-family:var(--mono)}
+  .tbl-win{color:var(--green)}
+  .tbl-bad{color:var(--red)}
+  table,.kpi .v,.stat .v,.calc .row,.calc .out,pre,footer,.legend{font-variant-numeric:tabular-nums}
+
+  .note{border-left:2px solid var(--blue);background:var(--blue-bg);border-radius:0 8px 8px 0;
+        padding:13px 17px;margin:18px 0;font-size:13.5px;color:#424a53}
+  .note.warn{border-left-color:var(--amber);background:var(--amber-bg)}
+  .note.bad{border-left-color:var(--red);background:var(--red-bg)}
+  .note.fix{border-left-color:var(--green);background:var(--green-bg)}
+  .note b{color:var(--text)}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid3{grid-template-columns:1fr}}
+
+  .card{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:15px 17px}
+  .card h4{margin-top:0}
+
+  .demo{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:18px;margin:18px 0}
+  .demo-ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  button{
+    font-family:inherit;font-size:13px;color:var(--text);background:#fff;
+    border:1px solid var(--border2);border-radius:8px;padding:7px 14px;cursor:pointer;transition:.15s;
+  }
+  button:hover{background:var(--panel3);border-color:var(--faint)}
+  button.primary{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:500}
+  button.primary:hover{background:#0860c4;border-color:#0860c4}
+  .clock{margin-left:auto;font-family:var(--mono);font-size:13px;color:var(--dim)}
+  .clock b{color:var(--text);font-weight:600}
+
+  .formula{
+    background:var(--panel3);border:1px solid var(--border);border-radius:10px;padding:15px 18px;
+    font-family:var(--mono);font-size:13.5px;line-height:1.6;text-align:center;color:var(--text);
+    margin:16px 0;overflow-x:auto
+  }
+  .formula .v{color:var(--amber)} .formula .g{color:var(--green)} .formula .b{color:var(--blue)}
+
+  .chart{margin:18px 0}
+  .chart .cap{font-size:12.5px;color:var(--muted);margin-top:8px}
+  svg{display:block;max-width:100%;height:auto}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:10px 0 0}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+
+  /* ---------- cache 演示 ---------- */
+  .cachebox{background:#fff;border:1px solid var(--border2);border-radius:12px;min-height:96px;
+            padding:20px 18px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .tokc{
+    font-family:var(--mono);font-size:17px;padding:9px 14px;border-radius:9px;
+    border:1.5px solid var(--border2);color:var(--text);background:#fff;text-align:center;
+    position:relative;transition:.25s;
+  }
+  .tokc .lbl{display:block;font-size:9.5px;color:var(--dim);margin-top:2px;white-space:nowrap}
+  .tokc.bos{color:var(--faint);border-style:dashed}
+  .tokc.snap{outline:2px dashed var(--amber-bd);outline-offset:3px}
+  .tokc.append{border-color:var(--green-bd);background:var(--green-bg);color:var(--green);
+               animation:pop .4s ease}
+  .tokc.replay{border-color:var(--amber-bd);background:var(--amber-bg);color:var(--amber);
+               animation:pop .4s ease}
+  .tokc.rollback{border-color:var(--red-bd);background:var(--red-bg);color:var(--red)}
+  @keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+  .arrow{color:var(--faint);font-family:var(--mono);font-size:15px}
+  .stepnote{margin-top:16px;font-size:13.5px;color:var(--muted);min-height:46px;
+            border-left:2px solid var(--border2);padding:8px 14px;background:var(--panel3);border-radius:0 8px 8px 0}
+  .stepnote b{color:var(--text)}
+  .steplist{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+  .steplist .dot{
+    width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:11px;border:1px solid var(--border2);color:var(--dim);background:#fff;
+  }
+  .steplist .dot.cur{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+  .steplist .dot.done{border-color:var(--blue-bd);color:var(--blue)}
+
+  footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--border);
+         color:var(--dim);font-size:12px;font-family:var(--mono);line-height:1.9}
+  a{color:var(--blue);text-decoration:none}
+  a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">conformer-rnnt-asr &nbsp;·&nbsp; iteration 10 &nbsp;·&nbsp; architecture</div>
+  <h1>删掉声学窗，把序列建模搬进草稿头</h1>
+  <p class="sub">
+    头不再拥有自己的声学窗——解码到哪一帧就条件于哪一帧的 <code>enc[t]</code>；
+    序列上下文是 encoder 注意力的职责。能力增强转向 draft 侧可训练的
+    <b>因果序列模型</b>（transformer），并用 <b>BNT 蒸馏</b>直接蒸馏验证器的发射决策。
+    本页解释动机、架构、对齐律、损失、推理 cache 与观测锚点。
+  </p>
+  <div class="kpis">
+    <div class="kpi"><div class="v">1 帧</div><div class="k">头看到的声学信息 enc[t]（窗已删除）</div></div>
+    <div class="kpi"><div class="v">3 层</div><div class="k">draft 侧因果 transformer · ≈9.5M 参数</div></div>
+    <div class="kpi"><div class="v">5 项</div><div class="k">加性融合通道（2 项新增，均零初始化）</div></div>
+    <div class="kpi"><div class="v">0.1 / 0.2</div><div class="k">lm_weight / bnt_weight</div></div>
+    <div class="kpi"><div class="v">43%</div><div class="k">预测区命中常数（本轮要打破的锚点）</div></div>
+    <div class="kpi"><div class="v">59%</div><div class="k">弃权率（BNT 的 δ=0 监督要攻的数）</div></div>
+  </div>
+</header>
+
+<div class="note">
+  <b>一句话总结</b>：iter-9 诊断出三个数字——预测区命中 <span class="hl">43% 常数</span>（与头容量无关）、
+  LM 先验仅 <span class="hl">2.18%</span>、弃权率 <span class="hl">59%</span>。iter-10 的回答：
+  ① 声学窗是 iter-8 的补丁，删掉，让头直读 <code>enc[t]</code>（上下文感知还给 encoder 的 chunk 注意力）；
+  ② 序列建模搬进 draft 侧（3 层因果 transformer，token 历史 → 因果隐藏态，零初始化注入）；
+  ③ 用 BNT 蒸馏把「验证器 ≤4 帧内会发射什么」直接教给头——训练目标即接受事件本身。
+</div>
+
+<!-- ═══════════════ 1. 动机 ═══════════════ -->
+<details class="mod" open>
+<summary>1. 动机：三个诊断数字与一个架构反思<span class="tag">iter-9 → iter-10</span></summary>
+<div class="body">
+  <p>iter-9 的 100 样本 eval_display（tag <code>disp</code>）给出三个关键诊断：</p>
+
+  <div class="grid3">
+    <div class="card">
+      <h4 class="hl">① 命中率是常数</h4>
+      <p class="small">预测区命中率 h1 <b>43.01%</b> / h2 <b>42.85%</b>——两个头几乎一样。
+      说明瓶颈不在头容量，加多少参数都无效；必须换信息源或换序列建模方式。</p>
+    </div>
+    <div class="card">
+      <h4 class="bad">② LM 先验几乎不可用</h4>
+      <p class="small">纯语言先验基线只有 <b>2.18% / 0.64%</b>。头依赖的 frozen predictor
+      只有 2 层×128 LSTM，从未被训练成好 LM——头的「语言外推」地基是软的。</p>
+    </div>
+    <div class="card">
+      <h4 class="bad">③ 弃权率高达 59%</h4>
+      <p class="small">头没学会「何时开口」：59% 的草拟轮直接输出 blank 弃权。
+      弃权免费但零收益——<b>敢不敢说</b>和<b>说得对不对</b>同样重要。</p>
+    </div>
+  </div>
+
+  <h3>架构反思：头不该有窗</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4 class="bad">旧架构 · 9 帧锚定窗（iter-8）</h4>
+      <ul class="small">
+        <li>头自带 <code>[t−7 … t+1]</code> 锚定窗，展平 9×512 后投影</li>
+        <li>窗是 iter-8 的补丁：为了流式合法，用过去帧换未来帧</li>
+        <li>训练/推理双路径开窗，曾是 bug 温床（T=1 二次开窗清零 lookahead 列）</li>
+        <li><code>context_acoustic</code> 输入 4608 维，冷启动笨重</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 class="good">新架构 · 单帧直读（iter-10）</h4>
+      <ul class="small">
+        <li>解码到哪一帧就条件于哪一帧的 <code>enc[t]</code>，宽度 1</li>
+        <li><b>窗是 encoder 注意力的事</b>：上下文感知是 Conformer chunk 注意力
+        （left/segment/right context）的职责，不该在头上复制一份</li>
+        <li><code>_anchor_window</code> / <code>context_acoustic</code> / <code>win_attn</code> 整体删除</li>
+        <li>腾出的预算投给 <b>draft 侧可训练序列模型</b>（表达力上限更高）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note fix">
+    <b>范围约束</b>：base（encoder + predictor + joiner）完全不动、只训头（<code>freeze_base: true</code>）。
+    加性规则保证注入通道不碰 base 数值；零初始化保证 warm-start 的 step-0 与旧头逐位等价。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 2. 架构 ═══════════════ -->
+<details class="mod" open>
+<summary>2. 系统架构：五项加性融合<span class="tag">数据流</span></summary>
+<div class="body">
+  <p>底座不变。变化全部发生在绿色的 Medusa 头内部：声学侧从 9 帧窗换成单帧直读，
+  新增一条 draft 侧因果 transformer 通道吃完整 token 历史，最终与原有通道<b>加性融合</b>。</p>
+
+  <div class="chart">
+    <svg viewBox="0 0 1000 620" role="img" aria-label="iter-10 架构图">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#b1bac4"/>
+        </marker>
+        <marker id="arB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#0969da"/>
+        </marker>
+        <marker id="arG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#1a7f37"/>
+        </marker>
+        <marker id="arA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#9a6700"/>
+        </marker>
+      </defs>
+
+      <!-- ===== 底座 ===== -->
+      <text x="16" y="20" fill="#8c959f" font-size="11" font-family="ui-monospace,monospace" letter-spacing="1.5">底座 · 冻结 (freeze_base)，纯贪心解码路径</text>
+
+      <rect x="16" y="30" width="120" height="56" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="76" y="53" fill="#1f2328" font-size="13" text-anchor="middle">音频 16 kHz</text>
+      <text x="76" y="70" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">hop 160 → 10 ms</text>
+
+      <path d="M138,58 L160,58" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="164" y="30" width="128" height="56" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="228" y="53" fill="#1f2328" font-size="13" text-anchor="middle">mel 80 维</text>
+      <text x="228" y="70" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">100 帧/s</text>
+
+      <path d="M294,58 L316,58" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="320" y="30" width="158" height="56" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="399" y="53" fill="#1f2328" font-size="13" text-anchor="middle">Conformer 编码器</text>
+      <text x="399" y="70" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">2+8 层 · chunk 注意力</text>
+
+      <path d="M480,58 L502,58" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="506" y="30" width="140" height="56" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="576" y="53" fill="#1f2328" font-size="13" text-anchor="middle">4× 时间压缩</text>
+      <text x="576" y="70" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">40 ms / reduced 帧</text>
+
+      <path d="M648,58 L670,58" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="674" y="30" width="130" height="56" rx="9" fill="#fafbfc" stroke="#0969da" stroke-opacity=".5"/>
+      <text x="739" y="53" fill="#1f2328" font-size="13" text-anchor="middle">enc 帧序列</text>
+      <text x="739" y="70" fill="#0969da" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">e_t ∈ R^512</text>
+
+      <rect x="850" y="30" width="134" height="56" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="917" y="53" fill="#1f2328" font-size="13" text-anchor="middle">predictor</text>
+      <text x="917" y="70" fill="#8c959f" font-size="11" text-anchor="middle" font-family="ui-monospace,monospace">2×LSTM · g_u</text>
+
+      <!-- ===== 上游输入区 ===== -->
+      <text x="16" y="122" fill="#8c959f" font-size="11" font-family="ui-monospace,monospace" letter-spacing="1.5">头的三个输入源</text>
+
+      <!-- 左: token 历史 -> transformer -->
+      <rect x="16" y="136" width="236" height="120" rx="10" fill="#f6f8fa" stroke="#9a6700" stroke-opacity=".55"/>
+      <text x="34" y="158" fill="#9a6700" font-size="12.5" font-weight="700">① token 历史（完整前缀）</text>
+      <text x="34" y="180" fill="#424a53" font-size="11" font-family="ui-monospace,monospace">训练: [BOS, y_1..y_U] 全序列 TF</text>
+      <text x="34" y="198" fill="#424a53" font-size="11" font-family="ui-monospace,monospace">推理: 已提交 token + KV cache 单步</text>
+      <text x="34" y="220" fill="#9a6700" font-size="11" font-family="ui-monospace,monospace">→ DraftCausalTransformer (新)</text>
+      <text x="34" y="240" fill="#8c959f" font-size="10.5" font-family="ui-monospace,monospace">3 层因果 self-attn · d=512 · 8 头</text>
+
+      <!-- 中: enc[t] 单帧 -->
+      <rect x="286" y="136" width="226" height="120" rx="10" fill="#f6f8fa" stroke="#0969da" stroke-opacity=".55"/>
+      <text x="304" y="158" fill="#0969da" font-size="12.5" font-weight="700">② 当前帧 enc[t]</text>
+      <g font-family="ui-monospace,monospace" font-size="12">
+        <rect x="312" y="172" width="44" height="32" rx="6" fill="#f6f8fa" stroke="#dfe3e8"/>
+        <text x="334" y="193" fill="#656d76" text-anchor="middle">t−1</text>
+        <rect x="360" y="168" width="52" height="40" rx="6" fill="#f2f8ff" stroke="#0969da" stroke-width="2"/>
+        <text x="386" y="193" fill="#0969da" text-anchor="middle" font-weight="700">t</text>
+        <rect x="416" y="172" width="44" height="32" rx="6" fill="#f6f8fa" stroke="#dfe3e8"/>
+        <text x="438" y="193" fill="#aab2bd" text-anchor="middle">t+1</text>
+      </g>
+      <text x="399" y="230" fill="#0969da" font-size="10.5" text-anchor="middle" font-family="system-ui">只有当前帧进入头</text>
+      <text x="399" y="248" fill="#0969da" font-size="10.5" text-anchor="middle" font-family="system-ui">未来上下文是 encoder 注意力的职责</text>
+
+      <!-- 右: 语言状态 -->
+      <rect x="546" y="136" width="220" height="120" rx="10" fill="#f6f8fa" stroke="#dfe3e8"/>
+      <text x="564" y="158" fill="#1f2328" font-size="12.5" font-weight="700">③ 语言状态（原通道保留）</text>
+      <text x="564" y="182" fill="#424a53" font-size="11" font-family="ui-monospace,monospace">context_predictor(tgt_enc)</text>
+      <text x="564" y="202" fill="#424a53" font-size="11" font-family="ui-monospace,monospace">chain_state_proj(rolled g)</text>
+      <text x="564" y="226" fill="#8c959f" font-size="10.5" font-family="ui-monospace,monospace">LSTM rolled 状态: g_{l+k−1}</text>
+      <text x="564" y="244" fill="#8c959f" font-size="10.5" font-family="ui-monospace,monospace">base_term (detached)</text>
+
+      <!-- 右侧: joiner -->
+      <path d="M739,88 L739,108 L399,108 L399,134" stroke="#0969da" stroke-width="1.5" fill="none" marker-end="url(#arB)"/>
+      <path d="M917,88 L917,116 L656,116 L656,134" stroke="#b1bac4" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+
+      <!-- ===== 融合 ===== -->
+      <path d="M134,258 L134,274" stroke="#9a6700" stroke-width="1.5" fill="none" marker-end="url(#arA)"/>
+      <path d="M399,258 L399,280 L237,280" stroke="#0969da" stroke-width="1.5" fill="none" marker-end="url(#arB)"/>
+      <path d="M656,258 L656,285 L237,285" stroke="#b1bac4" stroke-width="1.5" fill="none" marker-end="url(#ar)"/>
+
+      <rect x="16" y="276" width="220" height="204" rx="10" fill="#fffbe9" stroke="#e8d08a"/>
+      <text x="34" y="300" fill="#9a6700" font-size="12.5" font-weight="700">加性融合（可训部分）</text>
+      <g font-family="ui-monospace,monospace" font-size="11">
+        <text x="34" y="324" fill="#424a53">fused =</text>
+        <text x="34" y="344" fill="#1a7f37">  + draft_state_proj(h_seq)</text>
+        <text x="34" y="360" fill="#8c959f">    ↑ 零初始化 (新)</text>
+        <text x="34" y="380" fill="#1a7f37">  + acoustic_frame_proj(e_t)</text>
+        <text x="34" y="396" fill="#8c959f">    ↑ 零初始化 (新, 替代窗)</text>
+        <text x="34" y="416" fill="#424a53">  + chain_state_proj(rolled)</text>
+        <text x="34" y="432" fill="#424a53">  + predictor + base_term</text>
+        <text x="34" y="456" fill="#424a53">→ context_norm → context_mlp*</text>
+        <text x="34" y="472" fill="#424a53">→ res_blocks → + joint</text>
+      </g>
+
+      <!-- ===== 输出 ===== -->
+      <path d="M238,378 L286,378" stroke="#1a7f37" stroke-width="1.5" marker-end="url(#arG)"/>
+
+      <rect x="290" y="290" width="494" height="176" rx="10" fill="#f6f8fa" stroke="#1a7f37" stroke-opacity=".55"/>
+      <text x="310" y="314" fill="#1a7f37" font-size="13" font-weight="700">Medusa 草稿头 (head-k, k = 1..2)</text>
+      <g font-family="ui-monospace,monospace" font-size="11">
+        <text x="310" y="340" fill="#424a53">delta_k = context_mlp(normalized)</text>
+        <text x="310" y="358" fill="#424a53">        + context_mlp_extra(normalized)</text>
+        <text x="310" y="380" fill="#1f2328">logits_k = w_vocab( res_block( joint + delta_k ) )</text>
+        <text x="310" y="402" fill="#8c959f">w_vocab 与 joiner 共享且冻结 (head-0 ≡ 验证器)</text>
+      </g>
+
+      <!-- 损失 -->
+      <path d="M537,468 L537,500" stroke="#1a7f37" stroke-width="1.5" marker-end="url(#arG)"/>
+
+      <rect x="290" y="504" width="494" height="96" rx="10" fill="#f2fbf4" stroke="#1a7f37" stroke-opacity=".45"/>
+      <text x="310" y="526" fill="#1a7f37" font-size="12" font-weight="700">损失（base 不经头，RNNT 不变）</text>
+      <g font-family="ui-monospace,monospace" font-size="11">
+        <text x="310" y="548" fill="#424a53">shifted_ce [0.8, 0.64] · LM_aux ×0.1 (w_vocab 冻结)</text>
+        <text x="310" y="566" fill="#424a53">BNT × 0.2  = 蒸馏「验证器 ≤4 帧内的发射决策」</text>
+        <text x="310" y="584" fill="#8c959f">KL 权重 0 (保留接口, chain_align 接线已修正)</text>
+      </g>
+
+      <!-- LM 辅助通道: 见损失框 LM_aux 说明 -->
+    </svg>
+    <div class="cap">图 1 · iter-10 架构。黄色为加性融合的可训部分；绿色为头与损失；
+      蓝色为底座编码路径。两个新增注入通道（draft_state_proj / acoustic_frame_proj）均零初始化，
+      step-0 与旧头逐位等价。</div>
+  </div>
+
+  <h3>三个必须记住的尺寸</h3>
+  <table>
+    <thead><tr><th>量</th><th>值</th><th>含义</th></tr></thead>
+    <tbody>
+      <tr><td>头输入宽度</td><td class="num">1 帧</td><td>enc[t:t+1]，宽度 &gt;1 直接 raise（窗概念已删除）</td></tr>
+      <tr><td>transformer</td><td class="num">3 层 · 9.5M</td><td>d=512 / 8 头 / FFN 1024 / pos ≤4096；可切 4 层×256 LSTM（2.4M）</td></tr>
+      <tr><td>头数</td><td class="num">2</td><td>h1/h2 链式草拟，warm-start 自动丢 medusa_heads.2.*</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note warn">
+    <b>为什么声学信息用加性注入而不是 cross-attn</b>：训练网格是 (B, T帧, L语言位) 的三维张量，
+    时间轴与语言轴之间没有 t↔l 对齐，对 enc 全序列做 cross-attn 会泄露未来帧。
+    <code>acoustic_frame_proj(enc[t])</code> 按帧对齐加性注入，既无泄露又零初始化安全。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 3. 对齐律 ═══════════════ -->
+<details class="mod" open>
+<summary>3. 对齐律：三条通道共享的不变量<span class="tag">最易错处</span></summary>
+<div class="body">
+  <p>整页最关键的一张卡。所有条件/对齐通道都落在同一条律上，错一列训练就静默失效：</p>
+
+  <div class="formula">
+    <b>head-k</b>（k = 1..K）在网格列 l 条件于「消费完 <span class="b">y<sub>l+k−1</sub></span> 的状态」，
+    预测 <span class="g">y<sub>l+k</sub></span>
+  </div>
+  <p class="small muted">
+    记号：TF 网格列 l 对应 predictor 状态 g_l（<code>prep = [BOS, y_1..y_U]</code>，
+    <code>g_0</code> = 仅 BOS）；post-emit 语义下验证器从状态 g<sub>l+k−1</sub> 出发发射的下一个真实 token。
+  </p>
+
+  <h3>三条通道逐一核对（同构移位切片）</h3>
+  <pre><span class="c"># ① LSTM 通道 (原有): rolled 状态切片</span>
+rolled[k_idx] = pad(tgt_enc, K)[:, k_idx : k_idx+L]     <span class="c"># k_idx = k−1, 0-based</span>
+
+<span class="c"># ② transformer 通道 (新): 因果隐藏态的同构切片</span>
+h_seq = seq_model.forward_full(prep)                     <span class="c"># h_seq[m] = 消费完 prep[m] 的状态</span>
+rolled_hidden = pad(h_seq, K)[:, k−1 : k−1+L]            <span class="c"># 与 ① 完全同构</span>
+
+<span class="c"># ③ 推理: emit y_u 后 head-1 吃 u+1 个 token (含 BOS) 的隐藏态起草 y_{u+1};
+#       head-k 吃 y_u + 已接受 d_1..d_{k−1} (共 u+k 个)  ⇒ 恰为 TF 列 l=u 的条件</span>
+chain_hiddens[k] = seq.forward_step(d_{k−1})             <span class="c"># KV cache 增量, 与 TF 全序列逐位一致</span></pre>
+
+  <div class="note">
+    <b>同构性是结构保证，不是约定</b>：冒烟测试 5 在随机权重下断言「全网格某 (t,l) 的输出 ==
+    单点推理（cache 吃同前缀）」，transformer 与 LSTM 两条实现都过（atol 1e-4）；
+    测试 6 断言「cache 增量 == 全序列、回滚后 == 全新 cache」。
+    TF/推理不同构的 bug 在这条测试下无处藏身。
+  </div>
+
+  <div class="note warn">
+    <b>历史教训</b>：iter-9 里 <code>kl_to_base_loss</code> 调用漏传 <code>chain_align=True</code>，
+    默认 False 会把 head-k@l 对到 base 列 l+k——<b>错一列</b>。权重为 0 所以当时无影响，
+    iter-10 接线时已修正（即使权重 0 也用正确口径）。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 4. 损失设计 ═══════════════ -->
+<details class="mod" open>
+<summary>4. 损失设计：蒸馏「接受事件」本身<span class="tag">BNT</span></summary>
+<div class="body">
+
+  <div class="formula">
+    loss = RNNT <span class="c">(1.0, 不经头)</span> + Σ<sub>k</sub> w<sub>k</sub>·CE<sub>k</sub> <span class="c">[0.8, 0.64]</span>
+         + <span class="b">0.1</span>·LM_aux + <span class="g">0.2</span>·BNT <span class="c">(+ 0·KL)</span>
+  </div>
+
+  <table>
+    <thead><tr><th>损失</th><th>权重</th><th>监督什么</th><th>攻击哪个诊断数字</th></tr></thead>
+    <tbody>
+      <tr><td><code>shifted_ce</code></td><td class="num">[0.8, 0.64]</td><td>head-k 在列 l 预测 y_{l+k}（ground truth）</td><td>43% 常数（主头损失）</td></tr>
+      <tr><td><code>LM_aux</code> <span class="muted">新</span></td><td class="num">0.1</td><td>纯 token 侧 next-token CE：<code>w_vocab(draft_lm_proj(h_seq[l]))</code> → y_{l+1}，w_vocab 冻结</td><td>LM 先验 2.18%（给 transformer 独立于声学的监督）</td></tr>
+      <tr><td><code>BNT</code> <span class="muted">接线</span></td><td class="num">0.2</td><td>蒸馏「验证器从这个状态出发 ≤4 帧内的发射决策」</td><td>弃权 59% + 提前量</td></tr>
+      <tr><td><code>KL</code></td><td class="num">0</td><td>保留不启用（与 CE 目标冲突，iter-1 结论）</td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <h3>BNT 的监督时机分布（与 shifted_ce 的关键差别）</h3>
+  <pre><span class="c"># BNT 标签 = base_ids[t..t+4, l+k−1] 中首个 non-blank argmax  (= 验证器的实际决策)</span>
+
+δ=0 帧  验证器立即发射     → 教头「现在就说这个」        → <span class="g">治弃权 (59%)</span>
+δ=1..4  验证器先走 blank   → 标签穿透 blank 看到未来的 token
+                            → 头学会「快到了, 提前上屏」   → <span class="g">提前量来源</span>
+found=False (句尾)         → 无损失、无 NaN               → 监督自动集中在 emit 事件附近</pre>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>与 shifted_ce 的互补</h4>
+      <p class="small">shifted_ce 在所有 t 帧均匀监督——包括 token 很远的帧，头被迫永远在猜；
+      BNT 只在「验证器 ≤4 帧内真的会发射」的位置产生监督。<b>监督分布自动对齐草拟发生的时刻</b>。</p>
+    </div>
+    <div class="card">
+      <h4 class="warn">潜在冲突与缓解</h4>
+      <p class="small">BNT 的标签是 base 的实际 argmax（含 base 的错误），shifted_ce 是 ground truth——
+      两者可能打架。缓解：权重从小起（0.2），观察两条 loss 曲线；冲突则降权（扫描 0.1 / 0.5）。</p>
+    </div>
+  </div>
+
+  <div class="note fix">
+    <b>梯度流审核（加性规则）</b>：base_term detach、k≥1 的 draft embed detach、
+    encoder/predictor/w_vocab 冻结、RNNT 不经头 ⇒ 梯度只落头侧。
+    LM_aux 经冻结 w_vocab 只回传 proj + transformer；
+    零初始化输出投影（context_mlp[-1]、res_blocks.linear2）是 step-0 的 bootstrap 入口，
+    一步更新后上游（acoustic_frame_proj / draft_state_proj / seq 模型）梯度可达——
+    这是标准零初始化 bootstrap 语义，冒烟测试 1 显式验证。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 5. cache 生命周期演示 ═══════════════ -->
+<details class="mod" open>
+<summary>5. 推理时序：seq cache 的快照与回滚<span class="tag">可交互</span></summary>
+<div class="body">
+  <p>草拟时 seq cache <b>总是</b>随 draft 推进（这样全接受时零开销）；验证结束后对账——
+  committed 与 appended 不一致才回滚到快照并重放已提交 token（纯 token 侧，回滚 = 截断，O(1)）。
+  下面一步步走一遍两个典型回合：</p>
+
+  <div class="demo">
+    <div class="demo-ctl">
+      <button class="primary" id="playBtn">▶ 播放</button>
+      <button id="stepBtn">单步 ▸</button>
+      <button id="resetBtn">↺ 重置</button>
+      <span class="clock">步骤 <b id="stepNum">0</b> / <b id="stepTotal">0</b></span>
+    </div>
+
+    <div class="cachebox" id="cachebox"></div>
+    <p class="small muted" style="margin:6px 0 0">
+      <span style="color:#1a7f37">■ 本步 append</span> ·
+      <span style="color:#9a6700">■ 回滚后重放</span> ·
+      <span style="color:#cf222e">■ 被丢弃的分支</span> ·
+      <span style="color:#9a6700">┄ 黄框 = 快照边界</span>
+    </p>
+    <div class="stepnote" id="note">按「播放」或「单步」开始。</div>
+    <div class="steplist" id="dots"></div>
+  </div>
+
+  <div class="note">
+    <b>无损性没有被破坏</b>：回滚重放的只是 seq cache（草稿侧记忆），验证器的状态推进
+    （predictor rolled 状态）仍严格复刻 greedy oracle——投机输出与贪心输出逐 token 一致
+    （冒烟测试 2 / eval.py 双重验证）。回滚只在部分接受/失配时发生；
+    <b>全接受（committed == appended）直接免回滚</b>，这是设计的快路径。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 6. 保留 / 删除 ═══════════════ -->
+<details class="mod" open>
+<summary>6. 保留与删除清单<span class="tag">warm-start</span></summary>
+<div class="body">
+  <div class="grid2">
+    <div class="card">
+      <h4 class="good">保留（ep07 热载）</h4>
+      <ul class="small">
+        <li>res_blocks / context_mlp / context_mlp_extra / context_mlp_heads</li>
+        <li>context_predictor / context_base_logits</li>
+        <li>chain_draft_embed / chain_draft_proj（draft 条件链）</li>
+        <li>chain_state_proj(+heads)（LSTM rolled 通道保留为并行项）</li>
+        <li>w_vocab 与 joiner 共享（冻结）</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 class="bad">删除（ckpt 旧键加载时静默丢弃）</h4>
+      <ul class="small">
+        <li><code>_anchor_window</code> 与 9 帧窗布局</li>
+        <li><code>context_acoustic</code>（4608→512 投影）</li>
+        <li><code>window_prebuilt</code> / <code>past_frames</code> / <code>lookahead_frames</code></li>
+        <li><code>win_attn_*</code>（iter-5 占位）、rhythm 占位</li>
+        <li>spec_decode 推理侧窗拼装；<code>predict_heads</code> 只收 (B,1,D)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note fix">
+    <b>新增（冷启动零初始化）</b>：<code>seq_model</code>（transformer 或 lstm）、
+    <code>draft_state_proj</code>、<code>acoustic_frame_proj</code>、<code>draft_lm_proj</code>。
+    warm-start 从 iter-9 ep07：旧模块热载、新模块零 init ⇒ step-0 与旧头逐位等价（冒烟测试 1），
+    然后经历标准 bootstrap（一步后注入通道梯度可达）。
+  </div>
+
+  <h3>冒烟测试清单（scripts/smoke_chain.py，8 节全绿）</h3>
+  <table>
+    <thead><tr><th>#</th><th>验证内容</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>训练前向 + 四损失反传 + 零 init 等价 + 梯度只落头侧 + bootstrap 可达性</td></tr>
+      <tr><td class="num">2</td><td>投机解码无损（with-seq / no-seq 双模型，输出 == 贪心 oracle 前缀）</td></tr>
+      <tr><td class="num">5</td><td>TF 全网格 vs 单点推理同构（transformer + lstm）</td></tr>
+      <tr><td class="num">6</td><td>cache 增量 == 全序列；回滚后 == 全新 cache</td></tr>
+      <tr><td class="num">7</td><td><code>predict_heads</code> 拒绝宽度 &gt;1（窗已死）</td></tr>
+      <tr><td class="num">8</td><td>3→2 头 warm-start 键过滤 + 旧窗模块键静默丢弃</td></tr>
+    </tbody>
+  </table>
+</div>
+</details>
+
+<!-- ═══════════════ 7. 观测锚点 ═══════════════ -->
+<details class="mod" open>
+<summary>7. 观测锚点：训练后看哪些数<span class="tag">eval_display</span></summary>
+<div class="body">
+  <p>主轮配置：删窗 + transformer + LM_aux 0.1 + BNT 0.2，warm-start ep07，
+  单轮全量（不做 A 归因轮）。eval 口径与 iter-9 相同（test-clean 前 100 条）：</p>
+
+  <table>
+    <thead><tr><th>指标</th><th>iter-9 基线</th><th>iter-10 目标 / 判读</th></tr></thead>
+    <tbody>
+      <tr><td>预测区 hit%（h1 / h2）</td><td class="num hl">43.01 / 42.85</td><td><b>主杠杆</b>：transformer + BNT 应显著抬升；若不动 ⇒ 信息源不足，启用 enc[t+1] 应急补丁</td></tr>
+      <tr><td>LM gap（头 − LM 先验）</td><td class="num">+40.84 / +42.21</td><td><b>不应收窄</b>：gap≈0 ⇒ 头退化成纯 LM，降 lm_weight → 0.05</td></tr>
+      <tr><td>弃权率</td><td class="num bad">~59%</td><td>BNT 的 δ=0 监督应显著压低；仍 &gt;40% ⇒ bnt_weight → 0.5</td></tr>
+      <tr><td>overall hit%</td><td class="num">75.1</td><td>现实目标 80–85；<b>90% 留给 iter-11 叠加 lookahead 杠杆</b></td></tr>
+      <tr><td>value（期望感知提前量）</td><td class="num">30.3 ms</td><td>hit% × lead 双因子抬升</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note warn">
+    <b>调参决策表</b>（详见 <a href="iter10-experiment.md">docs/iter10-experiment.md</a>）：
+    lm/bnt 曲线一升一降 ⇒ 目标冲突，降 bnt → 0.1；transformer loss 震荡 ⇒ seq_lr_scale 0.25
+    或换 <code>type: lstm</code>（4 层×256，同位替换）；扫描顺序 bnt 0.1/0.5 → lm 0.05/0.2。
+  </div>
+
+  <div class="note">
+    <b>90% 的账</b>：overall ≥90 ⇒ h1 ~95+ / h2 ~85。蒸馏 + transformer 攻「43% 预测常数」
+    与弃权时机；h2 的另一半瓶颈是覆盖率（token 落在 1 帧窗外比例 ~55%），其杠杆是
+    lookahead 2–3（chunk 内零延迟合法，均值 1.5 帧未来预算）——那是 iter-11 的牌。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 8. 结论 ═══════════════ -->
+<details class="mod" open>
+<summary>8. 结论与下一步<span class="tag">Takeaway</span></summary>
+<div class="body">
+  <ol>
+    <li><b>窗死了</b>：头的声学输入收敛到单帧 enc[t]；上下文感知回归 encoder 注意力的职责。
+    推理路径变简单（无窗拼装），一类历史 bug（T=1 二次开窗）从结构上消失。</li>
+    <li><b>序列建模搬进 draft 侧</b>：3 层因果 transformer 吃完整 token 历史，经零初始化
+    draft_state_proj 注入——加性规则下 base 数值零扰动，warm-start 安全。</li>
+    <li><b>BNT 蒸馏 = 训练目标即接受事件</b>：监督时机自动集中在 emit 附近，
+    δ=0 治弃权、δ&gt;0 给提前量；与 shifted_ce 互补且有权重旋钮。</li>
+    <li><b>对齐律是唯一不变量</b>：三通道同构移位切片，冒烟测试逐位断言；错一列即静默失效（kl 的历史教训）。</li>
+    <li><b>cache 回滚是 O(1) 纯 token 侧操作</b>，无损性由对账机制保证；全接受走免回滚快路径。</li>
+    <li><b>下一张牌</b>：overall 逼近 85 后，iter-11 叠加 chunk 对齐 lookahead 2–3（零延迟预算
+    3−(t mod 4)）冲 90%。</li>
+  </ol>
+</div>
+</details>
+
+<footer>
+  数据来源 · <a href="experiment-log.md">docs/experiment-log.md</a> (iter-9 诊断) ·
+  <a href="iter10-experiment.md">docs/iter10-experiment.md</a> (实验手册) &nbsp;|&nbsp;
+  代码 · <code>conformer_rnnt/medusa.py</code> · <code>conformer_rnnt/spec_decode.py</code> ·
+  <code>scripts/smoke_chain.py</code><br>
+  口径 · 观测锚点为 test-clean 前 100 条 · batch_size=1 &nbsp;|&nbsp;
+  帧 · 1 reduced frame = 4 mel = 40 ms
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ══════════════ cache 生命周期演示 ══════════════ */
+/* 语义与 conformer_rnnt/spec_decode.py 逐条对应:
+   - cache 随所有 draft 推进 (含未验证)
+   - 验证后对账: committed != appended ⇒ restore snapshot + 重放 committed
+   - 全接受 ⇒ 免回滚 */
+const STEPS = [
+  { cache:['BOS'], snap:null, cls:{0:'bos'}, note:'<b>解码开始</b>：BOS(blank) 进入 seq cache——与 <code>_init_decode</code> 的 BOS 约定对齐。' },
+  { cache:['BOS','DH'], snap:1, cls:{1:'append'},
+    note:'<b>帧 t=2 emit DH</b>：先拍快照（黄框 = 快照边界 [BOS]），再 append DH。快照是回滚点——本轮任何对账失败都恢复到这里。' },
+  { cache:['BOS','DH','S','AH0'], snap:1, cls:{2:'append',3:'append'},
+    note:'<b>草拟</b>：h1 草 S、h2 草 AH0。seq cache <b>总是</b>随所有 draft 推进（即便未验证）——这样「全接受」时零开销。' },
+  { cache:['BOS','DH','S','AH0'], snap:1, cls:{3:'rollback'},
+    note:'<b>验证</b>：S 被接受（✓）；AH0 被拒，验证器实际发射 N（与贪心 oracle 严格一致）。此时 committed = [DH,S,N]，appended = [DH,S,AH0] —— <b class="bad">不一致</b>。' },
+  { cache:['BOS','DH','S','N'], snap:null, cls:{3:'replay'},
+    note:'<b>回滚 + 重放</b>：恢复快照 [BOS]，重放 committed [DH,S,N]（琥珀色）。回滚 = 截断 list，O(1)；重放只过 seq 模型，不碰验证器。' },
+  { cache:['BOS','DH','S','N','AH0'], snap:4, cls:{4:'append'},
+    note:'<b>帧 t=5 emit AH0</b>：新快照 = 上轮终态 [BOS,DH,S,N]，append AH0。' },
+  { cache:['BOS','DH','S','N','AH0','S','AH1'], snap:4, cls:{5:'append',6:'append'},
+    note:'<b>草拟</b>：h1 草 S、h2 草 AH1。' },
+  { cache:['BOS','DH','S','N','AH0','S','AH1'], snap:4, cls:{},
+    note:'<b>验证</b>：S ✓、AH1 ✓ —— <b class="good">全接受</b>：committed == appended，<b>免回滚</b>，快照直接丢弃。这是设计的快路径。' },
+];
+
+let cur = -1, timer = null;
+const $ = id => document.getElementById(id);
+$('stepTotal').textContent = STEPS.length;
+
+function render(){
+  const st = STEPS[Math.max(0, cur)];
+  $('stepNum').textContent = cur < 0 ? 0 : cur + 1;
+  let html = '';
+  (st ? st.cache : []).forEach((tok, i) => {
+    const isSnap = st.snap != null && i < st.snap;
+    const cls = ['tokc'];
+    if (i === 0) cls.push('bos');
+    if (st.cls && st.cls[i]) cls.push(st.cls[i]);
+    if (isSnap) cls.push('snap');
+    const lbl = i === 0 ? 'BOS' : isSnap ? '快照前' : (st.cls && st.cls[i]) ? '' : '已提交';
+    html += '<div class="' + cls.join(' ') + '">' + tok +
+            '<span class="lbl">' + lbl + '</span></div>';
+    if (i < st.cache.length - 1) html += '<span class="arrow">→</span>';
+  });
+  if (st && st.snap != null) {
+    html += '<span class="arrow" style="margin-left:10px;color:var(--amber)">┊快照→ ' +
+            st.cache.slice(0, st.snap).join(',') + '</span>';
+  }
+  $('cachebox').innerHTML = cur < 0
+    ? '<span class="muted" style="font-size:13px;font-family:var(--mono)">cache 为空 —— 按播放开始</span>'
+    : html;
+  $('note').innerHTML = cur < 0 ? '按「播放」或「单步」开始。' : st.note;
+  $('dots').innerHTML = STEPS.map((_, i) =>
+    '<span class="dot' + (i === cur ? ' cur' : i < cur ? ' done' : '') + '">' + (i + 1) + '</span>'
+  ).join('');
+}
+
+function next(){ if(cur >= STEPS.length - 1){ stop(); return false; } cur++; render(); return true; }
+function stop(){ if(timer){ clearInterval(timer); timer = null; } $('playBtn').textContent = '▶ 播放'; }
+function play(){
+  if(timer) return;
+  if(cur >= STEPS.length - 1){ cur = -1; }
+  $('playBtn').textContent = '❚❚ 暂停';
+  timer = setInterval(() => { if(!next()) stop(); }, 2400);
+}
+$('playBtn').onclick = () => timer ? stop() : play();
+$('stepBtn').onclick = () => { stop(); next(); };
+$('resetBtn').onclick = () => { stop(); cur = -1; render(); };
+render();
+})();
+</script>
+</div>
+</body>
+</html>
