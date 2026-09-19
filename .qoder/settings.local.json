@@ -11,7 +11,12 @@
       "Bash(python -c \"\nfrom diffusers import ZImageTransformer2DModel\nmethods = [m for m in dir\\(ZImageTransformer2DModel\\) if m.startswith\\('from_'\\)]\nprint\\('loaders:', methods\\)\n\" ; grep -rl \"gguf\" /opt/anaconda3/lib/python3.12/site-packages/diffusers/models/transformers/ 2>/dev/null | head)",
       "Bash(SNAP=~/.cache/huggingface/hub/models--Tongyi-MAI--Z-Image-Turbo/snapshots/f332072aa78be7aecdf3ee76d5c247082da564a6; mkdir -p ~/Downloads/Z-Image-Turbo && cp -RL \"$SNAP/vae\" \"$SNAP/text_encoder\" ~/Downloads/Z-Image-Turbo/ && du -sh ~/Downloads/Z-Image-Turbo/* && ls ~/Downloads/Z-Image-Turbo/text_encoder ~/Downloads/Z-Image-Turbo/vae)",
       "Bash(ls /Applications/ | grep -i rustdesk; ls ~/Applications/ 2>/dev/null | grep -i rustdesk)",
-      "Read(//Applications/**)"
+      "Read(//Applications/**)",
+      "Bash(git checkout multihead && git pull)",
+      "Bash(git pull:*)",
+      "Bash(du -sh /tmp 2>/dev/null; df -h /tmp | tail -1)",
+      "Bash(df -h / /tmp /test21 2>/dev/null | head -8; echo ---; tmux ls 2>&1; echo ---; tr '\\\\r' '\\\\n' < exp_iter10_train.log | tail -2; echo ---; tail -8 iter10_watch.log)",
+      "Bash(tr '\\\\r' '\\\\n' < iter10_full_eval.log | grep -oE \"\\\\[ *[0-9]+\\\\] PER: [0-9.]+ \\\\\\(cum: [0-9.]+\\\\\\)\" | tail -1; ls -la iter10_full_eval.json 2>/dev/null; tail -c 600 iter10_full_eval.log | tr '\\\\r' '\\\\n' | tail -2; ls iter10_full_display.log 2>/dev/null && tail -8 iter10_full_display.log)"
     ]
   }
 }

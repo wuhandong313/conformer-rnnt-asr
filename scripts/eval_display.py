@@ -51,6 +51,10 @@ from conformer_rnnt.spec_decode import (
 )
 
 MAX_STEPS = 100000
+# 单帧连续发射上限: 正常贪心解码 RNNT 每帧至多个位数 emit; 超过该值说明
+# predictor 进入重复循环 (from-scratch 模型已知病理, 如 idx33 z-loop)。
+# 该句整条剔除 (循环区命中率≈0, 单句可贡献 ~1e5 假 token 稀释全部指标)。
+MAX_EMITS_PER_FRAME = 64
 
 
 def _draft_chain(
@@ -219,6 +223,7 @@ def main() -> None:
     lm_hit = [0] * K
     n_utts = 0
     n_ref_tokens = 0
+    n_looped = 0  # 贪心重复循环退化句 (整条剔除)
 
     with torch.no_grad():
         for _batch_idx, (batch, _transcripts) in enumerate(model.test_dataloader()):
@@ -246,20 +251,31 @@ def main() -> None:
                         torch.tensor([[blank_idx]], device=device, dtype=torch.long)
                     )
 
-                # pass 1: 纯贪心参考序列 + 每个 emit 点的 post-emit 状态快照。
-                # 草稿不参与解码 (用完即弃), 所以这次解码就是产品解码本身。
+                # pass 1: 纯贪心参考序列 + 每个 emit 点现场草拟。
+                # 草拟的 seq.forward_step 产生新 cache 张量、不污染主 cache,
+                # 因此无需按 emit 点存 KV 快照 (按点存快照是 O(n^2) 内存,
+                # 长/重复循环序列会 OOM)。draft 侧 cache 随贪心 pass-1 逐
+                # emit token 滚动 (post-emit 语义: 消费完 y_u 之后)。
                 ref_tokens: List[int] = []
                 ref_frames: List[int] = []
-                snaps: List[Tuple[int, torch.Tensor, List[torch.Tensor],
-                                   Optional[torch.Tensor], object]] = []
+                emit_results: List[Tuple[int, List[int], int,
+                                         List[Optional[int]]]] = []
+                enc_mean = enc.mean(dim=1, keepdim=True)  # (1,1,D) 句级常量
                 t = 0
                 steps = 0
+                emits_at_frame = 0  # 当前帧的连续 emit 计数 (blank 才清零)
+                looped = False
                 while t < T and steps < MAX_STEPS:
                     steps += 1
                     pred = _join_argmax(model.model, enc, t, g_last, one)
                     if pred == blank_idx:
                         t += 1
+                        emits_at_frame = 0
                         continue
+                    emits_at_frame += 1
+                    if emits_at_frame > MAX_EMITS_PER_FRAME:
+                        looped = True
+                        break
                     ref_tokens.append(pred)
                     ref_frames.append(t)
                     g_last, state = _advance_predictor(
@@ -269,20 +285,23 @@ def main() -> None:
                         h_draft, draft_cache = seq.forward_step(
                             _make_tok(pred, device), draft_cache
                         )
-                    snaps.append((t, g_last, state, h_draft, draft_cache))
-
-                enc_mean = enc.mean(dim=1, keepdim=True)  # (1,1,D) 句级常量
-
-                # pass 2: 在每个 emit 点上屏草稿 (对齐到完整参考序列)。
-                for u, (t_emit, g_disp, st_disp, h_disp, cache_disp) in enumerate(snaps):
                     drafts, att = _draft_chain(
-                        model.model, enc, t_emit, g_disp, st_disp,
-                        one, blank_idx, device, h_disp, cache_disp,
+                        model.model, enc, t, g_last, state,
+                        one, blank_idx, device, h_draft, draft_cache,
                     )
                     lm_drafts = _lm_free_run(
-                        model.model, enc_mean, g_disp, st_disp,
+                        model.model, enc_mean, g_last, state,
                         one, K, blank_idx, device,
                     )
+                    emit_results.append((t, drafts, att, lm_drafts))
+
+                # pass 2: 对齐到完整参考序列, 累计每头指标。
+                # 循环退化句整条剔除 (ref_tokens 是发射循环的垃圾序列,
+                # 计入会稀释命中率/提前量等全部指标)。
+                if looped:
+                    n_looped += 1
+                    continue
+                for u, (t_emit, drafts, att, lm_drafts) in enumerate(emit_results):
                     for j in range(K):
                         if j >= att:
                             break  # 链在前一头弃权处截断, 更深头未尝试
@@ -307,7 +326,10 @@ def main() -> None:
                 n_ref_tokens += len(ref_tokens)
 
     # ---- 汇总 ----
-    print(f"\nutterances={n_utts} ref_tokens={n_ref_tokens}")
+    print(
+        f"\nutterances={n_utts} ref_tokens={n_ref_tokens} "
+        f"loop_skipped={n_looped}"
+    )
     total_displayed = sum(displayed)
     total_hits = sum(hits)
     header = (

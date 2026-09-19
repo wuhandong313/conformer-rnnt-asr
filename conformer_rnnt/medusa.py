@@ -158,9 +158,11 @@ class DraftCausalTransformer(torch.nn.Module):
         self.norm = torch.nn.LayerNorm(d_model)
 
     def _embed(self, tokens: Tensor, start_pos: int) -> Tensor:
+        # 位置 clamp: 推理侧重复循环类退化序列可超过 max_len, 查表越界直接
+        # device assert; 训练 TF 路径序列远短于 max_len, 不受影响。
         positions = torch.arange(
             start_pos, start_pos + tokens.size(1), device=tokens.device
-        )
+        ).clamp_(max=self.pos.num_embeddings - 1)
         return self.proj(self.embed(tokens)) + self.pos(positions).unsqueeze(0)
 
     def forward_full(self, tokens: Tensor) -> Tensor:

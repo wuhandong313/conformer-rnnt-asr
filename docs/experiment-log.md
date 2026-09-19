@@ -19,6 +19,7 @@
 | iter-8 | 1 帧预算: sim 扫描+时延分解+直注 | 0.841 | 0.494 | 0.228 | 0.521 | 0.0756 | **未超 iter-7, 舍弃** (见教训) |
 | iter-8h2 | 推理窗修复 (a56ab42) + 2 头重训 | 0.889 | 0.612 | — | 0.751 | 0.0733 | 超 iter-7 同头口径, 已停 |
 | iter-9 | **投机显示 (Speculative Display)** | — | — | — | — | — | 价值模型换轨, 见下 |
+| iter-10 | 删窗 + draft seq model + BNT 蒸馏 (**从头训练**) | 0.551 | 0.261 | — | 0.406 | 0.1077 | 全 test-clean, ep32; h1 仍上升中 |
 
 ## 评估约定
 
@@ -343,6 +344,48 @@ iter-8 章节「每帧 1 帧未来预算」的框架自此作废 (其接受率�
 再引用其预算表述)。影响: 上表「提覆盖率」杠杆代价由「+40ms 系统延迟 + base 重训」
 修正为「chunk 内零延迟 (最多 3 帧); 跨 chunk ≈+160ms; medusa 重训」。
 注: 动态压缩下 mel→reduced 非严格 4:1, 3 为标称值, 实际延迟按 ms 校核。
+
+---
+
+## iter-10 — 删头的声学窗 + draft 侧因果序列模型 + BNT 蒸馏 (从头训练, 进行中)
+
+设计文档: `docs/iter10-experiment.md`。架构改动 (6fd9176): 头侧声学窗整体删除
+(`predict_heads` 只接受 (B,1,D) 单帧), 新增 draft 侧 3 层因果 transformer
+seq_model (d=512, 零初始化 draft_state_proj 注入 + LM_aux), BNT 蒸馏
+(标签 = 验证器 ≤4 帧内首个 non-blank, δ=0 治弃权)。
+
+**运行口径变更**: 按用户指示**从头训练** (`configs/server_display_scratch.yaml`,
+`from_checkpoint: null` + `freeze_base: false`, epochs 120 / warmup 10000,
+lm_weight 0.1 / bnt_weight 0.2 / seq_lr_scale 0.5), 不复用 iter-9 warm-start。
+冒烟测试 8 节全绿后启动 (tmux `iter10-train`)。
+
+**事故记录** (2026-09-18):
+1. 第一次运行死于 ep24: 宿主机层 (docker overlay, 928G/932G) 写满, ckpt 保存
+   mkstemp ENOSPC。本容器可见文件仅 ~25G, 需宿主机清理。
+2. `exp_iter2/` 整目录 (含 iter-2~9 全部历史 ckpt) 在 NFS 上被外部删除, 非
+   本会话所为; 历史最优 warm-start 源不可恢复 (从头训练路线下影响有限)。
+3. 从头重启后监控两次被 tmux server 重启打断; monitor 修复两处:
+   只匹配 `val-*disp10*` ckpt; 评估前快照 ckpt 到 `monitor_eval/` (防
+   save_top_k 轮换删除引发 FileNotFoundError)。
+
+**训练轨迹** (monitor 100 样本, tag disp10):
+- h1 接受率: 0.27 (ep0) → 0.45 (ep12) → 0.50 (ep22) → 0.532 (ep26) →
+  0.592 (ep32, step 86600, val ckpt) — 持续上升, 未平台。
+- val_loss: ep18 起 ~20 平台 (19.5–21.5 震荡), medusa_ce 微升 (3.14→3.4)。
+- PER (eval.py 100 样本): ep18–25 稳定 0.063–0.070。
+
+**PER 假高诊断** (重要, 防误读): ep26 起 100 样本均值 PER 跳到 0.38–0.39,
+但逐样本核查: idx=33 一条在贪心解码陷入**单 token 重复循环** (句尾无限发射
+`z`, hyp 长 ~32 倍, 该条 PER=32.15), 中位数 PER 仅 0.041–0.052。模型整体
+正常, 是 RNN-T 贪心解码鲁棒性问题 (predictor 进环不吐 blank), 后续可加
+重复守卫; 不影响接受率结论的有效性。
+
+**全量 test-clean 评估** (2620 样本, ckpt = ep32 val snapshot
+`val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600`):
+- PER **0.1077**; RTF 0.0705; 投机解码无损校验 0 失败。
+- 接受率: h1 **0.5509**, h2 0.2614, overall 0.4062 (drafts h1=76814)。
+- 对照: 从头 44 epoch 即达 iter-1 (0.41 overall) 水平; 距 90% h1 目标尚远,
+  h1 曲线仍在上升, 训练停于 ep44 (用户叫停), 后续可续训观察。
 
 ---
 

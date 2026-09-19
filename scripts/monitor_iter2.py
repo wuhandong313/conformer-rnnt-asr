@@ -21,14 +21,14 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 REPO = "/test21/conformer-rnnt-asr"
 PY = "/root/anaconda3/envs/whd/bin/python"
-CONFIG = os.path.join(REPO, "configs/server_chain.yaml")
+CONFIG = os.path.join(REPO, "configs/server_display_scratch.yaml")
 CKPT_DIR = os.path.join(REPO, "exp_iter2/checkpoints")
 EVAL_DIR = os.path.join(REPO, "exp_iter2/monitor_eval")
-TRAIN_LOG = os.path.join(REPO, "exp_iter8h2_train.log")
+TRAIN_LOG = os.path.join(REPO, "exp_iter10_train.log")
 
 
 def latest_ckpt() -> str | None:
-    files = glob.glob(os.path.join(CKPT_DIR, "val-*.ckpt"))
+    files = glob.glob(os.path.join(CKPT_DIR, "val-*disp10*.ckpt"))
     if not files:
         return None
     newest = max(files, key=os.path.getmtime)
@@ -55,9 +55,22 @@ def eval_ckpt(ckpt: str) -> dict | None:
                 return json.load(f)
         except Exception:
             pass
+    # save_top_k 轮换会在训练推进时删除旧 ckpt — 先复制快照再评,
+    # 避免评估途中文件被轮换删除 (FileNotFoundError)。
+    import shutil
+    for old in glob.glob(os.path.join(EVAL_DIR, "*.ckpt")):
+        try:
+            os.remove(old)
+        except OSError:
+            pass
+    snapshot = os.path.join(EVAL_DIR, base + ".ckpt")
+    try:
+        shutil.copyfile(ckpt, snapshot)
+    except OSError:
+        return None
     cmd = [
         PY, os.path.join(REPO, "eval.py"), CONFIG,
-        "--checkpoint", ckpt, "--max-samples", "100",
+        "--checkpoint", snapshot, "--max-samples", "100",
         "--output-json", out_json,
         "--per-sample-file", os.path.join(EVAL_DIR, base + ".csv"),
     ]
@@ -71,9 +84,9 @@ def eval_ckpt(ckpt: str) -> dict | None:
 def train_status() -> tuple[str, str]:
     """Return (alive?, last-step) from screen session + log tail."""
     r = subprocess.run(
-        ["screen", "-ls"], capture_output=True, text=True,
+        ["tmux", "ls"], capture_output=True, text=True,
     )
-    alive = "iter2-train" in (r.stdout + r.stderr)
+    alive = "iter10-train" in (r.stdout + r.stderr)
     step = "?"
     loss = "?"
     try:

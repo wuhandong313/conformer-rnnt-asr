@@ -1,0 +1,172 @@
+# ===========================================================================
+# iter-10 scratch: 删窗 + draft 侧因果序列模型 + BNT 蒸馏 — 从头训练版
+# ===========================================================================
+# 与 configs/server_display.yaml 的唯一差异: 不加载任何 checkpoint
+# (from_checkpoint: null), base 与 Medusa 头联合从头训练
+# (freeze_base: false, epochs/warmup 对齐 server_scratch_h2.yaml)。
+#
+# 价值模型不变: Medusa 草稿只上屏 (用完即弃), 解码回归纯贪心 RNNT。
+# 一级指标 = 提前量 × 命中率 (− 替换率), 由 scripts/eval_display.py 度量。
+#
+# iter-10 架构改动 (详见 docs/experiment-log.md iter-10):
+# 1. 头侧声学窗整体删除 (past_frames/lookahead_frames/context_acoustic/
+#    _anchor_window/win_attn 全移除)。解码到哪一帧就条件于哪一帧的 enc[t]
+#    (零初始化 acoustic_frame_proj 加性注入); 序列上下文感知是 encoder
+#    chunk 注意力的职责。
+# 2. 序列建模增强转向 draft 侧因果序列模型 draft_seq_model (本配置:
+#    3 层因果 transformer, d=512, 8 头, ffn 1024; 可换 type: lstm =
+#    4 层×256 LayerNorm LSTM)。经零初始化 draft_state_proj 注入 fused;
+#    另有 draft_lm_proj 零初始化通道支撑 LM_aux。seq 模型参数组用
+#    seq_lr_scale (默认 0.5×) 单独 LR。
+# 3. 损失 = RNNT + shifted_ce[0.8,0.64] + lm_weight*LM_aux
+#    + bnt_weight*BNT(蒸馏验证器 ≤bnt_max_blank 帧内的发射决策)。
+#    kl_weight 保持 0 (chain_align 接线已修正, 启用时口径正确)。
+#
+# warm-start: BEST_iter10.ckpt (= iter-9 ep07, 见实验文档的准备节)。
+# 新模块 (seq_model/draft_state_proj/acoustic_frame_proj/draft_lm_proj)
+# 冷启动零初始化, 旧模块 (res_blocks/context_mlp*/chain_*) 热载;
+# ckpt 中 context_acoustic/win_attn/sim 键加载时自动丢弃。
+#
+# 用法:
+#   python scripts/eval_display.py configs/server_display.yaml 100
+#   python train.py configs/server_display.yaml
+# ===========================================================================
+
+paths:
+  dataset_path: "/test21/medusa"
+  sp_model_path: "/test21/medusa/spm_bpe_74.model"
+  global_stats_path: "/test21/medusa/global_stats.json"
+  exp_dir: "/test21/conformer-rnnt-asr/exp_iter2"
+  # 从头训练: 不加载任何 checkpoint
+  from_checkpoint: null
+
+model:
+  input_dim: 80
+  encoding_dim: 512
+  num_symbols: 74
+
+  time_reduction_input_dim: 128
+  time_reduction_stride: 4
+  right_context_length: 4
+
+  num_heads: 8
+  ffn_dim: 1024
+  num_layers_block1: 2
+  num_layers_block2: 8
+  depthwise_conv_kernel_size: 31
+  dropout: 0.1
+
+  compression:
+    # 必须与 base checkpoint (val-none-epoch=34-step=21600, 实际 naive 训练) 一致
+    filter: "naive"
+    hanning_window_size: 5
+    weight_predictor_mode: "diff5"
+
+  predictor:
+    symbol_embedding_dim: 128
+    num_lstm_layers: 2
+    lstm_hidden_dim: 128
+    lstm_layer_norm: true
+    lstm_layer_norm_epsilon: 0.001
+    lstm_dropout: 0.3
+
+  medusa:
+    # 固定 2 头 (h1/h2); ckpt 中 medusa_heads.2.* 加载时自动丢弃
+    num_heads: 2
+    input_mode: "stream_local"
+    # iter-10: 头侧声学窗已删除 — 草拟只条件于当前帧 enc[t]。
+    # (past_frames/lookahead_frames 键不再存在; encoder 感知范围由其
+    # right_context_length 决定, 见上方注释。)
+    draft_after_emit: true
+    chain_states: true
+
+    # iter-10: draft 侧因果序列模型 (transformer 首测; 训练不稳或收益
+    # 不足时换 type: lstm 4 层×256 对比)。
+    draft_seq_model:
+      type: "transformer"
+      num_layers: 3
+      d_model: 512
+      nhead: 8
+      ffn_dim: 1024
+      dropout: 0.1
+    # seq 模型参数组 LR 缩放 (相对 learning_rate), 冷启动稳训练用
+    seq_lr_scale: 0.5
+
+    # tag 附加后缀: 区分历史同参数 ckpt 文件名 (避免 monitor 缓存串档)
+    tag_suffix: "disp10"
+
+    # 从头训练: base (encoder + predictor + joiner) 与 Medusa heads 联合训练
+    freeze_base: false
+
+    ce_loss_weights: [0.8, 0.64]
+    # iter-1 实验筛选出 KL=0 是最优; chain 对齐下 KL 与 CE 目标冲突。
+    # (iter-10 已修正 chain_align 接线, 如启用口径正确。)
+    kl_weight: 0.0
+    # iter-10 新损失: LM_aux (draft 序列模型纯 token 侧 next-token CE)
+    lm_weight: 0.1
+    # BNT 蒸馏: 标签 = 验证器 ≤bnt_max_blank 帧内的首个 non-blank argmax
+    # (= 接受事件本身); bnt_max_blank 与 decoding.spec.per_token_blank 对齐
+    bnt_weight: 0.2
+    bnt_max_blank: 4
+
+  joiner:
+    activation: "relu"
+
+training:
+  learning_rate: 0.0005
+  adam_betas: [0.9, 0.999]
+  adam_eps: 1.0e-8
+  warmup_steps: 10000
+  rnnt_loss_reduction: "mean"
+  rnnt_loss_clamp: 1.0
+  gradient_clip_val: 10.0
+  epochs: 120
+
+data:
+  sample_rate: 16000
+  n_fft: 400
+  n_mels: 80
+  hop_length: 160
+
+  spec_augment:
+    freq_mask_param: 27
+    time_mask_param: 100
+    time_mask_prob: 0.2
+
+  max_token_limit: 4000
+  num_workers: 20
+  prefetch_factor: 2
+
+  train_subset: "train-clean-100"
+  val_subset: "dev-clean"
+  test_subset: "test-clean"
+
+trainer:
+  accelerator: "cuda"
+  strategy: "auto"
+  devices: 1
+  num_nodes: 1
+  log_every_n_steps: 10
+  val_check_interval: 200
+  num_sanity_val_steps: 0
+  fast_dev_run: false
+  matmul_precision: "high"
+  accumulate_grad_batches: 1
+
+  checkpoint:
+    save_top_k: 2
+    save_weights_only: true
+    val_checkpoint_interval: 200
+    train_checkpoint_interval: 100
+
+decoding:
+  # spec_greedy 保留用于 monitor 接受率观测 (与历史口径可比);
+  # 产品形态的显示评估走 scripts/eval_display.py (贪心 + 头草稿时间线)
+  beam_width: 0
+  mode: "spec_greedy"
+  spec:
+    max_draft: 2
+    per_token_blank: 4
+
+debug: false
+seed: 42
