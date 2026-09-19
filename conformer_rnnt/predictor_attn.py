@@ -9,9 +9,10 @@ v2 修复（针对首轮训练失败的诊断，见探针实验）：
   1. 补 learned positional embedding——无位置编码的因果 attention 无法区分
      「最近一次出现的同 id token」，重复音素发射能力显著弱于 LSTM。
   2. post-norm → pre-norm + 出口 final_norm——post-norm 从零训练收敛慢且不稳。
-  3. 绝对位置随 state 走：每层 state = [K, V, P]，P = 已消费 token 数（1-elem
-     long tensor）。KV 按 left_context 截断后 cache 长度 ≠ 绝对位置，
-     位置必须独立携带，才能保证增量路径与全序列路径逐位等价。
+  3. 绝对位置随 state 走：每层 state = [K, V, P]，P (batch,) = 已消费 token
+     数。KV cache 定长 left_context（循环写槽位 p % left_context），
+     保证 torchaudio beam-search 批处理 (cat/index_select) 对「同帧内不同
+     hypo 消费不同 token 数」的场景仍成立，且 P 逐行携带绝对位置。
 
 受限因果：因果 mask + 可配左上下文窗 `left_context`。非流式评测用大窗(≈全因果)；
 流式收紧。对应 Luo 2021 MSA-Transducer (2102.11594)。
@@ -32,11 +33,11 @@ from torch import Tensor
 
 
 class _CausalAttnLayer(torch.nn.Module):
-    """受限因果自注意力 + FFN，带 KV cache 支持逐 token 增量解码。
+    """受限因果自注意力 + FFN，带定长循环 KV cache 支持逐 token 增量解码。
 
     训练/批量前向：full sequence，对每个 query 位置 q 只 attend [q-left_context, q]。
-    增量解码 (beam-search predict)：传入 prior KV cache，仅算新 token 一步，
-        append 进 cache 返回。left_context 限制 cache 长度(超出的左截断)。
+    增量解码 (beam-search predict)：cache 恒为 left_context 长，新 token 写入
+    槽位 p % left_context，p 为该行已消费 token 数 (绝对位置)。
     """
 
     def __init__(
@@ -90,28 +91,31 @@ class _CausalAttnLayer(torch.nn.Module):
         return self.out_proj(out)
 
     def _mha_increment(
-        self, x_new: Tensor, k_cache: Tensor, v_cache: Tensor
+        self, x_new: Tensor, k_cache: Tensor, v_cache: Tensor, p: Tensor
     ) -> Tuple[Tensor, Tensor, Tensor]:
-        """单步增量。x_new: (B, 1, D)。返回 (out, new_k_cache, new_v_cache)。
+        """单步增量 (定长循环 KV cache)。x_new: (B,1,D), p: (B,) 已消费 token 数
+        (新 token 的绝对位置)。返回 (out, new_k_cache, new_v_cache)。
 
-        prior cache 长度若已达 left_context-1，左截断 1 帧保持窗内。
+        cache 恒为 left_context 长, 新 token 写入槽位 p % left_context;
+        槽位 s 上 token 的"年龄" age = (p - s) % left_context, 仅当 age ≤ p
+        (对应绝对位置 ≥ 0, 未被首次写入) 时参与 attention — 等价于
+        [p-left_context+1, p] 的受限因果窗, 与 _mha_full 逐位一致。
+        定长 cache 保证不同 hypo 消费不同 token 数时 _batch_state 仍可 cat。
         """
-        B = x_new.size(0)
+        B, L = x_new.size(0), k_cache.size(2)
         q = self.q_proj(x_new).view(B, 1, self.num_heads, self.head_dim).transpose(1, 2)
         k_new = self.k_proj(x_new).view(B, 1, self.num_heads, self.head_dim).transpose(1, 2)
         v_new = self.v_proj(x_new).view(B, 1, self.num_heads, self.head_dim).transpose(1, 2)
 
-        # append + 受限窗截断
-        new_k = torch.cat([k_cache, k_new], dim=2)
-        new_v = torch.cat([v_cache, v_new], dim=2)
-        if new_k.size(2) > self.left_context:
-            new_k = new_k[:, :, -self.left_context:, :]
-            new_v = new_v[:, :, -self.left_context:, :]
+        slot = (p % L).view(B, 1, 1, 1).expand(B, self.num_heads, 1, self.head_dim)
+        new_k = k_cache.scatter(2, slot, k_new)
+        new_v = v_cache.scatter(2, slot, v_new)
 
-        # q (位置 p) attend 全部 cache（cache 已被窗截断到 ≤ left_context），
-        # 即 attend [p-left_context+1 .. p]，等价受限因果。
+        s = torch.arange(L, device=x_new.device)
+        delta = (p.view(B, 1) - s.view(1, L)) % L  # (B, L) 槽位 token 年龄
+        valid = (delta <= p.view(B, 1))  # (B, L) bool
         out = torch.nn.functional.scaled_dot_product_attention(
-            q, new_k, new_v, dropout_p=0.0
+            q, new_k, new_v, attn_mask=valid.view(B, 1, 1, L), dropout_p=0.0
         )
         out = out.transpose(1, 2).contiguous().view(B, 1, self.d_model)
         return self.out_proj(out), new_k, new_v
@@ -124,10 +128,10 @@ class _CausalAttnLayer(torch.nn.Module):
         return x
 
     def forward_inc(
-        self, x_new: Tensor, k_cache: Tensor, v_cache: Tensor
+        self, x_new: Tensor, k_cache: Tensor, v_cache: Tensor, p: Tensor
     ) -> Tuple[Tensor, Tensor, Tensor]:
-        """单步增量残差前向（pre-norm）。x_new: (B,1,D) → (out, new_k, new_v)。"""
-        attn_out, new_k, new_v = self._mha_increment(self.norm1(x_new), k_cache, v_cache)
+        """单步增量残差前向（pre-norm）。x_new: (B,1,D), p: (B,) → (out, new_k, new_v)。"""
+        attn_out, new_k, new_v = self._mha_increment(self.norm1(x_new), k_cache, v_cache, p)
         x = x_new + self.dropout(attn_out)
         x = x + self.ffn(self.norm2(x))
         return x, new_k, new_v
@@ -197,25 +201,32 @@ class PredictorAttn(torch.nn.Module):
         self.left_context = left_context
 
     # ------------------------------------------------------------------
-    def _embed(self, tokens: Tensor, start_pos: Tensor) -> Tensor:
-        """token ids (B,U) + 绝对位置 start_pos..start_pos+U-1 → (B,U,d_model)。
-
-        start_pos: 1-elem long tensor（state 里的 P），避免逐 token 的 .item()
-        GPU 同步。位置超过 max_len-1 时 clamp 饱和——流式长序列的受控退化；
-        训练路径由 forward 的 _assert 挡住，不会静默触达。
-        """
+    def _embed(self, tokens: Tensor, positions: Tensor) -> Tensor:
+        """token ids (B,U) + 每行起始绝对位置 positions (B,) → (B,U,d_model)。"""
         U = tokens.size(1)
-        positions = torch.arange(U, device=tokens.device) + start_pos
-        positions = torch.clamp(positions, max=self.max_len - 1)
-        h = self.input_proj(self.embedding(tokens)) + self.pos(positions).unsqueeze(0)
+        pos = positions.view(-1, 1) + torch.arange(U, device=tokens.device)
+        pos = torch.clamp(pos, max=self.max_len - 1)
+        h = self.input_proj(self.embedding(tokens)) + self.pos(pos)
         return self.input_layer_norm(h)
 
     # ------------------------------------------------------------------
     def _empty_cache(self, batch: int, device: torch.device, dtype: torch.dtype) -> List[List[Tensor]]:
-        """空 cache：每层 [K(0 dim), V(0 dim), P(绝对位置计数, 1-elem long)]。"""
-        zero = torch.zeros(batch, self.num_heads, 0, self.head_dim).to(device=device, dtype=dtype)
-        p0 = torch.zeros(1, dtype=torch.long, device=device)
-        return [[zero, zero, p0] for _ in self.layers]
+        """空 cache：每层 [K, V, P]，全部定长 — K/V 恒为 left_context 长
+        (循环写槽位 p % left_context)，P (batch,) = 已消费 token 数。
+
+        定长 cache 是 torchaudio beam-search 批处理 (_batch_state 沿 batch
+        维 cat) 的前提: 不同 hypo 在同一帧内消费的 token 数可以不同
+        (A-hypo 同帧续扩), 变长 KV cache 无法 cat。
+        """
+        L = self.left_context
+        return [
+            [
+                torch.zeros(batch, self.num_heads, L, self.head_dim, device=device, dtype=dtype),
+                torch.zeros(batch, self.num_heads, L, self.head_dim, device=device, dtype=dtype),
+                torch.zeros(batch, dtype=torch.long, device=device),
+            ]
+            for _ in self.layers
+        ]
 
     # ------------------------------------------------------------------
     def forward(
@@ -229,7 +240,11 @@ class PredictorAttn(torch.nn.Module):
         Args:
             input: (B, U) int token ids。U 必须 ≤ max_len（_assert 显式拦截）。
             lengths: (B,) 有效长度(原样返回，beam-search 逐 token 不用它做 mask)。
-            state: 忽略(批量前向不接 cache)；返回空 cache 供后续增量起点。
+            state: None → 全序列路径(训练)；非 None 且 input 为单步 (B,1)
+                → 委托 predict() 走增量路径(torchaudio RNNTBeamSearch 的
+                decode 契约: model.predict → predictor.forward 带状态单步)。
+                若 multi-token 且带 state，退回全序列路径并忽略 state
+                (当前无此调用点)。
 
         注意（隐式契约）：本层不做 padding mask。其安全性依赖两点——
         padding 只出现在序列尾部，且因果 mask 保证 query 看不到右侧 key，
@@ -240,14 +255,16 @@ class PredictorAttn(torch.nn.Module):
             input.size(1) <= self.max_len,
             "PredictorAttn: 序列长度超过 max_len 位置编码表；请调大 attn.max_len",
         )
-        x = self._embed(
-            input, torch.zeros(1, dtype=torch.long, device=input.device)
-        )  # (B, U, d_model)
+        if state is not None and input.size(1) == 1:
+            return self.predict(input, lengths, state)
+        B = input.size(0)
+        positions = torch.zeros(B, dtype=torch.long, device=input.device)
+        x = self._embed(input, positions)  # (B, U, d_model)
         for layer in self.layers:
             x = layer.forward_full(x)
         x = self.dropout(self.final_norm(x))
         out = self.output_layer_norm(self.linear(x))  # (B, U, output_dim)
-        return out, lengths, self._empty_cache(input.size(0), input.device, x.dtype)
+        return out, lengths, self._empty_cache(B, input.device, x.dtype)
 
     # ------------------------------------------------------------------
     @torch.jit.export
@@ -260,25 +277,24 @@ class PredictorAttn(torch.nn.Module):
         """增量逐 token 前向(被 RNNTBeamSearch 调用)。
 
         input: (B, 1) 单 token。state: 每层 [K_cache, V_cache, P] 或 None；
-        P = 已消费 token 数(绝对位置)，KV 截断不影响它。
+        K/V 定长 left_context (循环写槽位 P % left_context)；P (batch,)
+        = 各行已消费 token 数(绝对位置) — beam search 中不同 hypo 的 P
+        可以不同，逐行取位。
         返回 (out:(B,1,output_dim), lengths, new_state)。
         """
         if state is None:
             state = self._empty_cache(
                 input.size(0), input.device, self.pos.weight.dtype
             )
-        start_pos = state[0][2]  # 1-elem long tensor，避免逐 token .item() GPU 同步
+        p = state[0][2]  # (B,) long, 逐行绝对位置
 
-        x = self._embed(input, start_pos)  # (B,1,d_model)
+        x = self._embed(input, p)  # (B,1,d_model)
         new_state: List[List[Tensor]] = []
-        layer_idx = 0
-        for layer in self.layers:
+        p_new = p + input.size(1)
+        for layer_idx, layer in enumerate(self.layers):
             st = state[layer_idx]
-            k_cache = st[0]
-            v_cache = st[1]
-            x, new_k, new_v = layer.forward_inc(x, k_cache, v_cache)
-            new_state.append([new_k, new_v, st[2] + input.size(1)])
-            layer_idx += 1
+            x, new_k, new_v = layer.forward_inc(x, st[0], st[1], p)
+            new_state.append([new_k, new_v, p_new])
         x = self.dropout(self.final_norm(x))
         out = self.output_layer_norm(self.linear(x))  # (B,1,output_dim)
         return out, lengths, new_state

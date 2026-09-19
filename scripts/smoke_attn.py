@@ -55,11 +55,47 @@ for lc, U in [(16, 10), (8, 20)]:
         inc, state = incremental(m, tokens)
     diff = (full - inc).abs().max().item()
     ok &= check(f"等价性 full==incremental (left_context={lc}, U={U})", diff < 1e-5, f"max|Δ|={diff:.2e}")
-    # P 追踪: 即使 KV 被截断，绝对位置仍 = U
-    p_val = int(state[0][2].item())
+    # P 追踪: 即使 KV 是循环定长, 绝对位置仍 = U
+    p_val = state[0][2].max().item()
     ok &= check(f"绝对位置 P=={U} (left_context={lc})", p_val == U, f"P={p_val}")
     kv_len = state[0][0].size(2)
-    ok &= check(f"KV 截断到 ≤ left_context (kv_len={kv_len} ≤ {lc})", kv_len <= lc)
+    ok &= check(f"KV cache 定长 == left_context (kv_len={kv_len})", kv_len == lc)
+
+# ── 2b. beam-search 批处理契约: 不同 hypo 消费不同 token 数后可 cat/index_select ──
+# 模拟 torchaudio RNNTBeamSearch: 同帧内 a-hypo 续扩, hypo0 消费 6 token、
+# hypo1 消费 4 token, 各自 state cat 成 batch → predict → index_select 切片,
+# 且切片后单独 predict 的输出与 batch 内该行输出一致。
+m = build(16)
+with torch.no_grad():
+    lengths = torch.ones(1, dtype=torch.long)
+    # hypo0: 6 步
+    s_a = None
+    for _ in range(6):
+        _, _, s_a = m.predict(torch.randint(0, V, (1, 1)), lengths, s_a)
+    # hypo1: 4 步
+    s_b = None
+    for _ in range(4):
+        _, _, s_b = m.predict(torch.randint(0, V, (1, 1)), lengths, s_b)
+    nxt = torch.randint(0, V, (2, 1))
+    # cat 成 batch (torchaudio _batch_state 语义)
+    batched = [[torch.cat([s_a[li][j], s_b[li][j]], dim=0) for j in range(3)]
+               for li in range(len(s_a))]
+    out_b, _, s_out = m.predict(nxt, torch.ones(2, dtype=torch.long), batched)
+    ok &= check("混合 token 数 hypo 批处理: P 逐行 [7,5]",
+                s_out[0][2].tolist() == [7, 5], f"P={s_out[0][2].tolist()}")
+    ok &= check("混合 token 数 hypo 批处理: cache 定长 (B=2, L=16)",
+                s_out[0][0].size(0) == 2 and s_out[0][0].size(2) == 16)
+    # 逐行一致性: 单独喂各 hypo 的 state 应得到与 batch 中该行相同的输出
+    out_a, _, _ = m.predict(nxt[0:1], lengths, s_a)
+    out_c, _, _ = m.predict(nxt[1:2], lengths, s_b)
+    d0 = (out_b[0:1] - out_a).abs().max().item()
+    d1 = (out_b[1:2] - out_c).abs().max().item()
+    ok &= check("批处理输出与逐 hypo 输出一致", max(d0, d1) < 1e-5, f"Δ={max(d0, d1):.2e}")
+    # _slice_state 语义: index_select 切出第 1 行后继续 predict
+    sliced = [[t.index_select(0, torch.tensor([1])) for t in layer] for layer in s_out]
+    out_s, _, s_s = m.predict(torch.randint(0, V, (1, 1)), lengths, sliced)
+    ok &= check("index_select 切片后 predict 正常且 P=6",
+                s_s[0][2].tolist() == [6] and out_s.shape == (1, 1, 512))
 
 # ── 3. 位置编码可训练 ──
 m = build(16)
