@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PredictorAttn v2 架构讲解 — 受限因果注意力 predictor：定位 / 根因 / 修复</title>
+<style>
+  :root{
+    color-scheme:light;
+    --bg:#ffffff; --panel:#ffffff; --panel2:#fafbfc; --panel3:#f6f8fa;
+    --border:#e6e8eb; --border2:#d8dee4; --border3:#eaeef2;
+    --text:#1f2328; --muted:#656d76; --dim:#8c959f; --faint:#aab2bd;
+    --blue:#0969da; --green:#1a7f37; --red:#cf222e; --amber:#9a6700; --purple:#8250df; --cyan:#1b7c83;
+    --blue-bg:#f2f8ff; --green-bg:#f2fbf4; --red-bg:#fff5f5; --amber-bg:#fffbf0;
+    --blue-bd:#a3cdf5; --green-bd:#a6dbb4; --red-bd:#f0b3b0; --amber-bd:#e8d08a;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:system-ui,-apple-system,"PingFang SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+    line-height:1.75; font-size:15px;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:56px 24px 120px}
+
+  header.hero{border-bottom:1px solid var(--border);padding-bottom:28px;margin-bottom:36px}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+  h1{font-size:32px;line-height:1.3;margin:10px 0 8px;letter-spacing:-.018em;font-weight:650}
+  .sub{color:var(--muted);font-size:14.5px;margin:0;max-width:88ch}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:26px}
+  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:13px 15px}
+  .kpi .v{font-family:var(--mono);font-size:19px;color:var(--text);line-height:1.25;letter-spacing:-.02em}
+  .kpi .k{font-size:11.5px;color:var(--dim);margin-top:5px}
+
+  details.mod{
+    background:var(--panel);border:1px solid var(--border);border-radius:12px;
+    margin:12px 0;overflow:hidden;
+  }
+  details.mod[open]{border-color:var(--border2)}
+  details.mod>summary{
+    cursor:pointer;list-style:none;padding:17px 22px;font-weight:600;font-size:16.5px;
+    display:flex;align-items:center;gap:12px;user-select:none;letter-spacing:-.005em;
+  }
+  details.mod>summary::-webkit-details-marker{display:none}
+  details.mod>summary::before{
+    content:"›";color:var(--dim);font-size:20px;font-weight:400;line-height:1;
+    transition:transform .18s ease;display:inline-block;width:12px;flex:none;transform-origin:40% 50%;
+  }
+  details.mod[open]>summary::before{transform:rotate(90deg);color:var(--blue)}
+  details.mod>summary:hover{background:var(--panel3)}
+  details.mod>summary .tag{
+    margin-left:auto;font-family:var(--mono);font-size:10.5px;font-weight:400;
+    color:var(--dim);border:1px solid var(--border2);border-radius:20px;padding:2px 10px;flex:none;
+  }
+  .body{padding:2px 22px 26px;border-top:1px solid var(--border)}
+  .body>p:first-child{margin-top:18px}
+
+  h3{font-size:12.5px;margin:28px 0 10px;color:var(--dim);font-weight:600;
+     letter-spacing:.06em;text-transform:uppercase}
+  h4{font-size:14px;margin:20px 0 6px;color:var(--text);font-weight:600}
+  p{margin:10px 0;text-wrap:pretty}
+  ul,ol{margin:10px 0;padding-left:22px}
+  li{margin:6px 0;text-wrap:pretty}
+  code{font-family:var(--mono);font-size:12.5px;background:var(--panel3);border:1px solid var(--border);
+       border-radius:4px;padding:1px 5px;color:#bc4c00}
+  .muted{color:var(--muted)}
+  .small{font-size:13px}
+  .hl{color:var(--amber)}
+  .good{color:var(--green)}
+  .bad{color:var(--red)}
+
+  pre{background:var(--panel3);border:1px solid var(--border);border-radius:10px;
+      padding:16px 18px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.7;color:#424a53}
+  pre .c{color:var(--dim)}
+  pre .k{color:var(--purple)}
+  pre .s{color:#0550ae}
+  pre .n{color:var(--amber)}
+
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px}
+  th,td{padding:9px 10px;border-bottom:1px solid var(--border);text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--dim);font-weight:600;font-size:11.5px;letter-spacing:.06em;
+           text-transform:uppercase;border-bottom:1px solid var(--border2)}
+  tbody tr:hover{background:var(--panel2)}
+  td.num{font-family:var(--mono)}
+  .tbl-win{color:var(--green)}
+  .tbl-bad{color:var(--red)}
+  table,.kpi .v,.stat .v,.calc .row,.calc .out,pre,footer,.legend{font-variant-numeric:tabular-nums}
+
+  .note{border-left:2px solid var(--blue);background:var(--blue-bg);border-radius:0 8px 8px 0;
+        padding:13px 17px;margin:18px 0;font-size:13.5px;color:#424a53}
+  .note.warn{border-left-color:var(--amber);background:var(--amber-bg)}
+  .note.bad{border-left-color:var(--red);background:var(--red-bg)}
+  .note.fix{border-left-color:var(--green);background:var(--green-bg)}
+  .note b{color:var(--text)}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid3{grid-template-columns:1fr}}
+
+  .card{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:15px 17px}
+  .card h4{margin-top:0}
+
+  .demo{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:18px;margin:18px 0}
+  .demo-ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  button{
+    font-family:inherit;font-size:13px;color:var(--text);background:#fff;
+    border:1px solid var(--border2);border-radius:8px;padding:7px 14px;cursor:pointer;transition:.15s;
+  }
+  button:hover{background:var(--panel3);border-color:var(--faint)}
+  button.primary{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:500}
+  button.primary:hover{background:#0860c4;border-color:#0860c4}
+  .clock{margin-left:auto;font-family:var(--mono);font-size:13px;color:var(--dim)}
+  .clock b{color:var(--text);font-weight:600}
+
+  .chart{margin:18px 0}
+  .chart .cap{font-size:12.5px;color:var(--muted);margin-top:8px}
+  svg{display:block;max-width:100%;height:auto}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:10px 0 0}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+
+  /* ---------- cache 演示 ---------- */
+  .cachebox{background:#fff;border:1px solid var(--border2);border-radius:12px;min-height:96px;
+            padding:20px 18px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .tokc{
+    font-family:var(--mono);font-size:17px;padding:9px 14px;border-radius:9px;
+    border:1.5px solid var(--border2);color:var(--text);background:#fff;text-align:center;
+    position:relative;transition:.25s;
+  }
+  .tokc .lbl{display:block;font-size:9.5px;color:var(--dim);margin-top:2px;white-space:nowrap}
+  .tokc.bos{color:var(--faint);border-style:dashed}
+  .tokc.snap{outline:2px dashed var(--amber-bd);outline-offset:3px}
+  .tokc.append{border-color:var(--green-bd);background:var(--green-bg);color:var(--green);
+               animation:pop .4s ease}
+  .tokc.replay{border-color:var(--amber-bd);background:var(--amber-bg);color:var(--amber);
+               animation:pop .4s ease}
+  .tokc.trunc{border-color:var(--red-bd);background:var(--red-bg);color:var(--red);
+              opacity:.55;text-decoration:line-through}
+  @keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+  .arrow{color:var(--faint);font-family:var(--mono);font-size:15px}
+  .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .chip{
+    font-family:var(--mono);font-size:12.5px;color:var(--muted);
+    background:#fff;border:1px solid var(--border2);border-radius:8px;padding:6px 12px;
+  }
+  .chip b{color:var(--text);font-weight:600}
+  .chip.hot b{color:var(--blue)}
+  .stepnote{margin-top:16px;font-size:13.5px;color:var(--muted);min-height:46px;
+            border-left:2px solid var(--border2);padding:8px 14px;background:var(--panel3);border-radius:0 8px 8px 0}
+  .stepnote b{color:var(--text)}
+  .steplist{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+  .steplist .dot{
+    width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:11px;border:1px solid var(--border2);color:var(--dim);background:#fff;
+  }
+  .steplist .dot.cur{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+  .steplist .dot.done{border-color:var(--blue-bd);color:var(--blue)}
+
+  footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--border);
+         color:var(--dim);font-size:12px;font-family:var(--mono);line-height:1.9}
+  a{color:var(--blue);text-decoration:none}
+  a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="eyebrow">conformer-rnnt-asr &nbsp;·&nbsp; branch attn-predictor &nbsp;·&nbsp; architecture</div>
+  <h1>受限因果注意力 Predictor（v2）：定位、根因与修复</h1>
+  <p class="sub">
+    把 RNN-T 的 LSTM predictor 换成受限因果自注意力 trunk（Family A · MSA-Transducer 风格，
+    arXiv:2102.11594）。原版（8 月初）从头训练两天即弃——本页先讲清<b>为什么训不动</b>
+    （探针实测定位到三个叠加根因），再讲 v2 怎么修：位置编码、pre-norm、
+    绝对位置入 state、独立 LR 组。
+  </p>
+  <div class="kpis">
+    <div class="kpi"><div class="v">4.38M / 0.34M</div><div class="k">predictor 参数（attn v2 / LSTM 基线）</div></div>
+    <div class="kpi"><div class="v">0.39 → 0.45</div><div class="k">repeat 命中（探针；修复前 → 修复后，LSTM 0.54）</div></div>
+    <div class="kpi"><div class="v">[K,V,P]</div><div class="k">每层 state 三元组（beam-search 契约不变）</div></div>
+    <div class="kpi"><div class="v">0.5×</div><div class="k">predictor 独立 LR（predictor_lr_scale）</div></div>
+    <div class="kpi"><div class="v">1024</div><div class="k">left_context 受限因果窗（≈全因果）</div></div>
+    <div class="kpi"><div class="v">8 项</div><div class="k">smoke_attn 全绿（等价性 / 梯度 / JIT）</div></div>
+  </div>
+</header>
+
+<div class="note">
+  <b>一句话总结</b>：RNN-T 的 predictor 是<b>纯语言侧</b>模块（无声学输入），原版注意力 trunk
+  训不动不是「注意力不行」，而是三个叠加根因——<span class="hl">无位置编码</span>（分不清同 token
+  最近一次出现）、<span class="hl">post-norm 从头训练收敛慢</span>、<span class="hl">13× 参数与
+  0.34M 的 LSTM 同一配方</span>。v2 逐一修复，并保证 full 前向与 KV 增量解码逐位等价。
+</div>
+
+<!-- ═══════════════ 1. 定位与契约 ═══════════════ -->
+<details class="mod" open>
+<summary>1. 定位与契约：predictor 是什么、不是什么<span class="tag">Family A</span></summary>
+<div class="body">
+  <p><code>PredictorAttn</code> 替代原 LSTM <code>Predictor</code>，作为 RNN-T 验证器的
+  <b>自回归语言 trunk</b>。它没有、也不该有声学输入——上下文感知是 encoder（Conformer
+  chunk 注意力）的职责；声学与语言只在 Joiner 处加性相遇。</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h4 class="good">保持不变的契约</h4>
+      <ul class="small">
+        <li><code>forward(input:(B,U), lengths, state) → (out, lengths, state)</code>，输出 <code>(B,U,512)</code>，与 Joiner 加性融合兼容</li>
+        <li><code>predict(input:(B,1), lengths, state)</code> 逐 token 增量——<code>torchaudio 2.6 RNNTBeamSearch</code> 把 state 当不透明对象穿线、不查内部结构（已核对源码）</li>
+        <li>embedding 行数 = num_symbols+1（blank 挂末位），与原 Predictor 一致</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4 class="hl">本迭代唯一变化：trunk 内部</h4>
+      <ul class="small">
+        <li>LSTM <code>[h, c]</code> → 注意力层 <code>[K, V, P]</code> 三元组（同型不透明 state）</li>
+        <li>受限因果窗 <code>left_context</code>：query 只看 <code>[i−L+1, i]</code>；训练用 1024 ≈ 全因果，流式收紧</li>
+        <li>其余组件（encoder / joiner / 训练管线）零改动</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 2. 架构 ═══════════════ -->
+<details class="mod" open>
+<summary>2. 架构总览：v2 trunk 数据流<span class="tag">结构</span></summary>
+<div class="body">
+
+  <div class="chart">
+    <svg viewBox="0 0 1000 330" role="img" aria-label="PredictorAttn v2 架构图">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#b1bac4"/>
+        </marker>
+        <marker id="arB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#0969da"/>
+        </marker>
+      </defs>
+
+      <text x="16" y="20" fill="#8c959f" font-size="11" font-family="ui-monospace,monospace" letter-spacing="1.5">PREDICTOR TRUNK · 纯语言侧（无声学输入）· 服务器现行配置</text>
+
+      <!-- ===== 主干 ===== -->
+      <rect x="16" y="30" width="130" height="56" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="81" y="53" fill="#1f2328" font-size="13" text-anchor="middle">已解码 token</text>
+      <text x="81" y="70" fill="#8c959f" font-size="10.5" text-anchor="middle" font-family="ui-monospace,monospace">y_1..y_u（含 BOS）</text>
+
+      <path d="M148,58 L178,58" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="182" y="30" width="124" height="56" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="244" y="53" fill="#1f2328" font-size="13" text-anchor="middle">Embedding</text>
+      <text x="244" y="70" fill="#8c959f" font-size="10.5" text-anchor="middle" font-family="ui-monospace,monospace">75 × 128</text>
+
+      <path d="M308,58 L338,58" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="342" y="30" width="118" height="56" rx="9" fill="#f2f8ff" stroke="#0969da" stroke-opacity=".55"/>
+      <text x="401" y="53" fill="#1f2328" font-size="13" text-anchor="middle">+ 绝对位置 P</text>
+      <text x="401" y="70" fill="#0969da" font-size="10.5" text-anchor="middle" font-family="ui-monospace,monospace">pos emb ≤ 4096 (v2)</text>
+
+      <path d="M462,58 L492,58" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="496" y="30" width="92" height="56" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="542" y="53" fill="#1f2328" font-size="13" text-anchor="middle">input_proj</text>
+      <text x="542" y="70" fill="#8c959f" font-size="10.5" text-anchor="middle" font-family="ui-monospace,monospace">128→256 + LN</text>
+
+      <path d="M590,58 L620,58" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="624" y="30" width="170" height="56" rx="9" fill="#fffbe9" stroke="#e8d08a"/>
+      <text x="709" y="53" fill="#1f2328" font-size="13" text-anchor="middle">4 × 受限因果 TF 层</text>
+      <text x="709" y="70" fill="#9a6700" font-size="10.5" text-anchor="middle" font-family="ui-monospace,monospace">pre-norm · 4 头 · FFN 1024</text>
+
+      <path d="M796,58 L826,58" stroke="#b1bac4" stroke-width="1.5" marker-end="url(#ar)"/>
+
+      <rect x="830" y="30" width="154" height="56" rx="9" fill="#fafbfc" stroke="#dfe3e8"/>
+      <text x="907" y="53" fill="#1f2328" font-size="13" text-anchor="middle">输出头</text>
+      <text x="907" y="70" fill="#8c959f" font-size="10.5" text-anchor="middle" font-family="ui-monospace,monospace">final LN → 512 → LN</text>
+
+      <text x="16" y="112" fill="#8c959f" font-size="10.5" font-family="ui-monospace,monospace">▼ 两个关键机制（黄色 = 本迭代核心；蓝色 = v2 新增）</text>
+
+      <!-- ===== 左卡: 单层结构 ===== -->
+      <rect x="16" y="124" width="440" height="186" rx="10" fill="#f6f8fa" stroke="#e8d08a" stroke-opacity=".7"/>
+      <text x="34" y="148" fill="#9a6700" font-size="12.5" font-weight="700">单层结构（pre-norm，v2 改动）</text>
+      <g font-family="ui-monospace,monospace" font-size="11">
+        <text x="34" y="174" fill="#424a53">h = x</text>
+        <text x="34" y="194" fill="#424a53">x = h + Dropout(MHA(LN(h)))</text>
+        <text x="34" y="210" fill="#9a6700">        ↑ norm 在残差分支内 (v2)</text>
+        <text x="34" y="230" fill="#424a53">x = x + Dropout(FFN(LN(x)))</text>
+        <text x="34" y="254" fill="#424a53">窗口: query i 只 attend keys [i−L+1 .. i]</text>
+        <text x="34" y="274" fill="#656d76">训练: 全序列 + bool mask (SDPA)</text>
+        <text x="34" y="292" fill="#656d76">推理: 单步 + KV append, 超 L 左截断</text>
+      </g>
+
+      <!-- ===== 右卡: state 契约 ===== -->
+      <rect x="486" y="124" width="498" height="186" rx="10" fill="#f6f8fa" stroke="#0969da" stroke-opacity=".45"/>
+      <text x="504" y="148" fill="#0969da" font-size="12.5" font-weight="700">state 契约：每层 [K, V, P]（对 beam-search 不透明）</text>
+      <g font-family="ui-monospace,monospace" font-size="11">
+        <text x="504" y="174" fill="#424a53">K,V : (B, H, ≤L, head_dim)   — KV cache</text>
+        <text x="504" y="192" fill="#0969da">P   : 1-elem long — 已消费 token 绝对位置 (v2)</text>
+        <text x="504" y="216" fill="#424a53">KV 截断后 长度 &lt; P: 窗口与绝对位置解耦</text>
+        <text x="504" y="234" fill="#656d76">K/V 内容已含各自位置(嵌入时注入) ⇒ P 只服务新 token</text>
+        <text x="504" y="258" fill="#424a53">torchaudio RNNTBeamSearch 不查 state 内部结构</text>
+        <text x="504" y="276" fill="#656d76">⇒ 与原 LSTM [h,c] 同型, 换 trunk 零改动</text>
+        <text x="504" y="296" fill="#1a7f37">回滚 = 恢复快照引用(含 P) + 重放 committed, O(1)</text>
+      </g>
+    </svg>
+    <div class="cap">图 1 · PredictorAttn v2。黄色为受限因果 TF 层（本迭代核心）；蓝色为 v2 新增的
+      绝对位置通道。state 每层 <code>[K, V, P]</code> 三元组：KV 是受限窗 cache，P 是绝对位置——
+      两者解耦是「全序列前向 == 增量解码」逐位等价的关键。</div>
+  </div>
+
+  <h3>与 LSTM 基线的对照</h3>
+  <table>
+    <thead><tr><th>维度</th><th>LSTM 基线</th><th>PredictorAttn v2</th></tr></thead>
+    <tbody>
+      <tr><td>参数量</td><td class="num">0.34M</td><td class="num">4.38M（d256 / 4 层 / 4 头 / FFN 1024）</td></tr>
+      <tr><td>结构</td><td>2 × LayerNorm-LSTM 128</td><td>4 × pre-norm 因果 TF 层</td></tr>
+      <tr><td>state（每层）</td><td class="num">[h, c]</td><td class="num">[K, V, P]</td></tr>
+      <tr><td>长程依赖</td><td>隐状态压缩传递（有损）</td><td>窗内 token 直接互看（≤left_context）</td></tr>
+      <tr><td>repeat 探针命中</td><td class="num tbl-win">0.536</td><td class="num">0.390（v1）→ 0.454（v2）</td></tr>
+      <tr><td>并行性</td><td>逐步（时间维串行）</td><td class="tbl-win">训练全序列并行</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note warn">
+    <b>探针差距 ≠ 最终差距</b>：v2 修复后探针 repeat 命中 0.454，仍低于 LSTM 的 0.536——LSTM
+    加性状态的 recency 偏置是结构性的。但探针是合成极端任务（18% 立即重复）；
+    真实 RNNT 监督下的验收标准是 <b>val PER 追平 LSTM 基线</b>，不是探针满分。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 3. 根因 ═══════════════ -->
+<details class="mod" open>
+<summary>3. 为什么原版训不动：探针实测的三个根因<span class="tag">8 月初事故复盘</span></summary>
+<div class="body">
+  <p>原版 trunk（无位置编码、post-norm）8 月初从头训练，与 LSTM 同配方跑两天即弃。
+  复盘时用<b>合成探针任务</b>定位根因——不用等一次真实训练（数小时）才能归因。</p>
+
+  <div class="grid3">
+    <div class="card">
+      <h4 class="bad">① 无位置编码</h4>
+      <p class="small">自注意力对 token 集合置换不变——分不清「同 token 最近一次出现在哪」。
+      RNNT 词表大量 repeat（单词内重复、屈折），repeat 命中探针 <b>0.39 vs LSTM 0.54</b>。</p>
+    </div>
+    <div class="card">
+      <h4 class="bad">② post-norm 从头训练收敛慢</h4>
+      <p class="small">norm 在残差之后，深层梯度路径不稳。v2 改 pre-norm
+      （iter-10 的 DraftCausalTransformer 同款结论），warm-in 显著加快。</p>
+    </div>
+    <div class="card">
+      <h4 class="bad">③ 配方错配</h4>
+      <p class="small">3.33M vs 0.34M 参数（13×），却套用同一组超参
+      （LR 5e-4 / warmup 10k / 120 epochs）从头训练，两天未见反超即弃。</p>
+    </div>
+  </div>
+
+  <h3>探针设计与结果</h3>
+  <p class="small muted">
+    任务：bigram Markov 链（V=74，每状态 6 个随机后继）+ 18% 立即重复；SEQ=48。
+    unigram 下界 CE = 4.213。<b>v1 探针（i.i.d. 任务）曾给出误导性结论</b>——两个 trunk 都收敛到
+    unigram 常数 2.92，任务太弱没有区分度；bigram + 重复才有。
+  </p>
+  <table>
+    <thead><tr><th>变体</th><th>val CE ↓</th><th>repeat 命中 ↑</th><th>判读</th></tr></thead>
+    <tbody>
+      <tr><td>LSTM（era-accurate 2×128）</td><td class="num tbl-win">1.911</td><td class="num tbl-win">0.536</td><td>加性状态天然带 recency 偏置</td></tr>
+      <tr><td>Attn v1（无 pos / post-norm）</td><td class="num">1.946</td><td class="num tbl-bad">0.390</td><td>CE 几乎追平但 repeat 明显掉队</td></tr>
+      <tr><td>Attn + 位置编码</td><td class="num">1.945</td><td class="num">0.452</td><td>回收约一半差距</td></tr>
+      <tr><td>Attn + pos + pre-norm（= v2 骨架）</td><td class="num tbl-win">1.943</td><td class="num">0.454</td><td>v2 采用的修复组合</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <b>CE 与 repeat 命中为何背离</b>：CE 被海量 unigram 项主导（各变体几乎同值），
+    只有「最近一次出现」类 token 的命中率能区分 recency 能力。
+    这也是「原版训练两天 loss 看着正常但 PER 不动」的微观解释——
+    loss 在降，语言侧最需要的 recency 能力没长出来。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 4. v2 修复 ═══════════════ -->
+<details class="mod" open>
+<summary>4. v2 修复与等价性不变量<span class="tag">逐根因对症</span></summary>
+<div class="body">
+
+  <table>
+    <thead><tr><th>根因</th><th>修复</th><th>实现要点</th></tr></thead>
+    <tbody>
+      <tr><td>无位置编码</td><td><code>pos = Embedding(max_len=4096)</code> 加性注入</td><td><code>_embed(tokens, start_pos)</code> 统一入口；full 前向 start_pos=0，增量 start_pos=state 中的 P</td></tr>
+      <tr><td>窗口 ≠ 位置</td><td>P 入 state：<code>[K, V, P]</code></td><td>KV 被截断到 ≤left_context 后，cache 长度 &lt; P；P 保证新 token 拿到正确绝对位置，旧 K/V 内容已自带位置</td></tr>
+      <tr><td>post-norm 收敛慢</td><td>pre-norm（norm 进残差分支）</td><td><code>x + Dropout(MHA(LN(x)))</code>；尾部补 <code>final_norm</code> 保输出尺度</td></tr>
+      <tr><td>13× 参数同配方</td><td>独立参数组 + LR 缩放</td><td><code>predictor_lr_scale</code>（默认 0.5）：WarmupLR 按 per-group base_lr 缩放，预热与衰减同步</td></tr>
+    </tbody>
+  </table>
+
+  <h3>等价性不变量（smoke_attn.py 逐位断言）</h3>
+  <div class="formula">
+    <b>full 前向</b> (B,U) 逐位 == <b>增量 predict</b> 逐 token（KV cache 吃同前缀）——含 left_context 截断区间
+  </div>
+  <p class="small">
+    这条不变量是结构保证而非约定：KV cache 是函数式拼接（cat 产生新张量），
+    P 随消费计数推进、截断不回退。任何「TF/增量不同构」的改动都会被测试当场抓住——
+    与 iter-10 对齐律的冒烟测试同一思路。
+  </p>
+
+  <div class="note fix">
+    <b>梯度通路</b>：pos embedding / attention / FFN / 输出头全部可训练；
+    P 是 long 常量（不参与梯度）；left_context 截断只影响推理增量路径，
+    训练全序列路径用 mask 表达同一窗口——两条路径 mask 语义逐位一致由测试 1/2 保证。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 5. KV 窗与 P 演示 ═══════════════ -->
+<details class="mod" open>
+<summary>5. 推理时序：KV 窗、绝对位置 P 与回滚<span class="tag">可交互</span></summary>
+<div class="body">
+  <p>演示用 <code>left_context L=6</code>（训练实际 1024）。看两个计数器的分工：
+  <b>KV</b> 是受限窗（超 L 左截断最旧），<b>P</b> 是绝对位置（只增不减——直到回滚）。</p>
+
+  <div class="demo">
+    <div class="demo-ctl">
+      <button class="primary" id="playBtn">▶ 播放</button>
+      <button id="stepBtn">单步 ▸</button>
+      <button id="resetBtn">↺ 重置</button>
+      <span class="clock">步骤 <b id="stepNum">0</b> / <b id="stepTotal">0</b></span>
+    </div>
+
+    <div class="cachebox" id="cachebox"></div>
+    <div class="chips">
+      <span class="chip">left_context L = <b>6</b>（演示值；训练 1024）</span>
+      <span class="chip hot">P（绝对位置）= <b id="pVal">—</b></span>
+      <span class="chip">KV 窗 = <b id="kvVal">—</b> / 6</span>
+    </div>
+    <p class="small muted" style="margin:10px 0 0">
+      <span style="color:#1a7f37">■ 本步 append</span> ·
+      <span style="color:#9a6700">■ 回滚后重放</span> ·
+      <span style="color:#cf222e">■ 被截断/丢弃</span>
+    </p>
+    <div class="stepnote" id="note">按「播放」或「单步」开始。</div>
+    <div class="steplist" id="dots"></div>
+  </div>
+
+  <div class="note">
+    <b>等价性的来源</b>：每个 token 的 K/V 在被处理时已由「embedding + 它当时的绝对位置」算出——
+    位置信息<b>烧在 cache 内容里</b>，所以窗口滑动不需要重算旧 token；P 只需要告诉
+    <b>新</b> token 它是谁的第几步。这就是为什么「截断 KV + P 照常推进」与全序列前向逐位等价。
+    回滚时 P 必须与 KV 一起恢复——被拒的 draft 没有被消费，位置也要退回。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 6. 训练过程 ═══════════════ -->
+<details class="mod" open>
+<summary>6. 训练过程：从头训练配方与观测<span class="tag">from scratch</span></summary>
+<div class="body">
+  <p>架构换了 trunk，<b>必须从头训练</b>（<code>from_checkpoint: null</code>）。
+  配方相对原版的修正：pre-norm + 位置编码让 warm-in 正常发生；
+  predictor trunk 独立参数组，LR = 全局 × <code>predictor_lr_scale: 0.5</code>。</p>
+
+  <pre><span class="c"># 服务器 (whd env) — 先跑验证再启动</span>
+git fetch && git checkout attn-predictor
+python scripts/smoke_attn.py        <span class="c"># 8 项全 PASS</span>
+python scripts/e2e_check_attn.py    <span class="c"># config → 模型 → joint 前向 → 增量 predict</span>
+
+<span class="c"># screen + tee 日志 (monitor 惯例: TRAIN_LOG 指向 exp_attn_train.log,</span>
+<span class="c"># 换 ckpt 后清 exp_iter2/monitor_eval/ 缓存)</span>
+screen -dmS iter2-train bash -c <span class="s">'train.py configs/server.yaml 2>&1 | tee exp_attn_train.log'</span></pre>
+
+  <table>
+    <thead><tr><th>阶段</th><th>看什么</th><th>判读</th></tr></thead>
+    <tbody>
+      <tr><td>前 10k 步</td><td>warmup（LR 线性升至 5e-4 / predictor 组 2.5e-4）</td><td>前期慢是正常的，不是原版那种「 loss 平掉」</td></tr>
+      <tr><td>epoch 1–2</td><td>train loss 是否稳定下降</td><td class="tbl-win">v2 与原版的关键区别：起步就该降</td></tr>
+      <tr><td>epoch 10–20</td><td>val PER 对比 LSTM 基线（同 epoch）</td><td>参数 13×，预热期天然更长；看趋势而非前几 epoch 的差距</td></tr>
+      <tr><td>验收</td><td>val PER 追平并反超 LSTM</td><td>达标 ⇒ attention trunk 可用，投喂 Medusa 头骨架</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note warn">
+    <b>旋钮 / 降级路径</b>：追平太慢（epoch 20 仍明显落后）→ <code>predictor_lr_scale 0.5 → 1.0</code>
+    （weight-only 重启）；训练不稳 → 降 0.25 或 warmup 提到 20000；
+    流式部署收紧 <code>predictor.attn.left_context</code>；位置溢出（超长句）已由
+    <code>clamp(max_len−1)</code> 兜底，共享末位嵌入属可接受退化。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 7. 验证清单 ═══════════════ -->
+<details class="mod" open>
+<summary>7. 验证清单：smoke_attn.py 8 项 + e2e<span class="tag">全绿</span></summary>
+<div class="body">
+  <table>
+    <thead><tr><th>#</th><th>验证内容</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>等价性 full==incremental（left_context=16, U=10 正常区），atol 1e-5</td></tr>
+      <tr><td class="num">2</td><td>等价性（left_context=8, U=20 <b>截断区</b>）——窗口滑动后仍逐位一致</td></tr>
+      <tr><td class="num">3</td><td>绝对位置 P==U：KV 被截断后 P 仍等于已消费 token 数</td></tr>
+      <tr><td class="num">4</td><td>KV 长度 ≤ left_context</td></tr>
+      <tr><td class="num">5</td><td>梯度到达位置编码（pos.weight.grad 非零）</td></tr>
+      <tr><td class="num">6</td><td>torch.jit.script(predict) 编译且与 eager 一致（TorchScript 下 lengths 须传张量；RNNTBeamSearch 实际传张量，契约无碍）</td></tr>
+      <tr><td class="num">7</td><td>e2e：config → 模型构建 → joint 前向 → 增量 predict + state 穿线（scripts/e2e_check_attn.py）</td></tr>
+      <tr><td class="num">8</td><td>compileall 全仓通过</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <b>事故记录</b>：验证期间唯一 FAIL 是冒烟测试自身——TorchScript 下给标注为
+    <code>Tensor</code> 的 <code>lengths</code> 传 <code>None</code> 会报
+    <code>strides() called on an undefined Tensor</code>。不是模型缺陷：beam-search
+    运行时总传真实张量。测试已改为传张量并对比 scripted vs eager 输出。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 8. 结论 ═══════════════ -->
+<details class="mod" open>
+<summary>8. 结论与下一步<span class="tag">Takeaway</span></summary>
+<div class="body">
+  <ol>
+    <li><b>归因先行</b>：合成探针（bigram Markov + 重复）两天内把「训不动」拆成三个可修的根因，
+    避免在真实训练上盲试——i.i.d. 探针太弱的教训是任务必须有 recency 区分度。</li>
+    <li><b>v2 = 位置 + pre-norm + 配方</b>：三者缺一不可；位置编码入 state（[K,V,P]）
+    使受限窗与绝对位置解耦，等价性成为结构性质。</li>
+    <li><b>契约零破坏</b>：对 torchaudio beam-search 而言 state 不透明，LSTM → 注意力 trunk
+    的替换对解码器与 Joiner 全透明。</li>
+    <li><b>验收标准</b>：val PER 追平 LSTM 基线（探针差距 0.454 vs 0.536 不作为验收项）。
+    达标后 trunk 可作为 Medusa 头的共享骨架（Family A 路线的既定用途）。</li>
+    <li><b>若训练仍不利</b>：LSTM 的 recency 偏置是结构性的，backoff 是保留 LSTM trunk——
+    但那属于「把序列建模搬进 draft 侧」的 iter-10 路线，两条线互补不冲突。</li>
+  </ol>
+</div>
+</details>
+
+<footer>
+  代码 · <code>conformer_rnnt/predictor_attn.py</code> (v2) ·
+  <code>conformer_rnnt/model.py</code> · <code>conformer_rnnt/lightning_module.py</code> ·
+  <code>scripts/smoke_attn.py</code> · <code>scripts/e2e_check_attn.py</code><br>
+  口径 · 探针 = bigram Markov 合成任务（V=74, SEQ=48, 18% 重复；unigram 下界 4.213）·
+  配置 = configs/server.yaml（d256 / 4 层 / 4 头 / FFN 1024 / left_context 1024）<br>
+  参考 · MSA-Transducer (arXiv:2102.11594) · 分支 attn-predictor（41b80a2 v2 修复 + 9bd6baa e2e）
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ══════════════ KV 窗 + P 演示 ══════════════ */
+/* 语义与 conformer_rnnt/predictor_attn.py v2 逐条对应:
+   - append 进 KV, 超 left_context 左截断
+   - P = 绝对位置, 只随消费推进; 回滚时与 KV 一起恢复 */
+const STEPS = [
+  { cache:['BOS'], P:1, cls:{0:'bos'},
+    note:'<b>解码开始</b>：BOS(blank) 进入——与 _init_decode 的 BOS 约定对齐。P=1，KV=1。' },
+  { cache:['BOS','DH'], P:2, cls:{1:'append'},
+    note:'<b>emit DH</b>：append 进每层 KV，P=2。DH 的 K/V 在处理时已烧入它的绝对位置。' },
+  { cache:['BOS','DH','S'], P:3, cls:{2:'append'},
+    note:'<b>emit S</b>：P=3，KV=2。窗口未满，一切正常累积。' },
+  { cache:['BOS','DH','S','AH0'], P:4, cls:{3:'append'},
+    note:'<b>emit AH0</b>：P=4，KV=4。' },
+  { cache:['BOS','DH','S','AH0','N'], P:5, cls:{4:'append'},
+    note:'<b>emit N</b>：P=5，KV=5。' },
+  { cache:['BOS','DH','S','AH0','N','T'], P:6, cls:{5:'append'},
+    note:'<b>emit T</b>：P=6，KV=6=L——窗口恰好满。' },
+  { cache:['DH','S','AH0','N','T','IY0'], P:7, cls:{5:'append'},
+    note:'<b>emit IY0</b>：append 后 KV=7 &gt; L → <b>左截断最旧 BOS</b>（红）。P=7 继续增长——<b>位置与窗长解耦</b>，这是等价性的关键。' },
+  { cache:['S','AH0','N','T','IY0','V'], P:8, cls:{5:'append'},
+    note:'<b>滑窗继续</b>：P=8，KV=6。每个新 token 的位置由 P 给出；窗内 K/V 内容自带位置，无需重算。' },
+  { cache:['N','T','IY0','V','D1','D2'], P:10, cls:{4:'append',5:'append'},
+    note:'<b>草拟 D1、D2</b>：cache 随 draft 推进（S、AH0 被挤出窗），P=10。draft 也进 cache——全接受时零开销。' },
+  { cache:['S','AH0','N','T','IY0','V'], P:8, cls:{},
+    note:'<b>D1 被拒 → 回滚</b>：恢复快照引用（KV=6, <b>P=8</b>——rejected token 未被消费，位置一并退回）。draft 全弃时无需重放；部分接受时才重放 committed（O(1) 截断 + 重放）。' },
+];
+
+let cur = -1, timer = null;
+const $ = id => document.getElementById(id);
+$('stepTotal').textContent = STEPS.length;
+
+function render(){
+  const st = STEPS[Math.max(0, cur)];
+  $('stepNum').textContent = cur < 0 ? 0 : cur + 1;
+  let html = '';
+  (st ? st.cache : []).forEach((tok, i) => {
+    const isSnap = st.snap != null && i < st.snap;
+    const cls = ['tokc'];
+    if (i === 0 && st.P <= 6) cls.push('bos');
+    if (st.cls && st.cls[i]) cls.push(st.cls[i]);
+    if (isSnap) cls.push('snap');
+    const lbl = (st.cls && st.cls[i] === 'append') ? '新增'
+              : (st.cls && st.cls[i] === 'replay') ? '重放'
+              : isSnap ? '快照' : '';
+    html += '<div class="' + cls.join(' ') + '">' + tok +
+            '<span class="lbl">' + lbl + '</span></div>';
+    if (i < st.cache.length - 1) html += '<span class="arrow">→</span>';
+  });
+  $('cachebox').innerHTML = cur < 0
+    ? '<span class="muted" style="font-size:13px;font-family:var(--mono)">cache 为空 —— 按播放开始</span>'
+    : html;
+  $('pVal').textContent = cur < 0 ? '—' : st.P;
+  $('kvVal').textContent = cur < 0 ? '—' : Math.min(st.cache.length, 6);
+  $('note').innerHTML = cur < 0 ? '按「播放」或「单步」开始。' : st.note;
+  $('dots').innerHTML = STEPS.map((_, i) =>
+    '<span class="dot' + (i === cur ? ' cur' : i < cur ? ' done' : '') + '">' + (i + 1) + '</span>'
+  ).join('');
+}
+
+function next(){ if(cur >= STEPS.length - 1){ stop(); return false; } cur++; render(); return true; }
+function stop(){ if(timer){ clearInterval(timer); timer = null; } $('playBtn').textContent = '▶ 播放'; }
+function play(){
+  if(timer) return;
+  if(cur >= STEPS.length - 1){ cur = -1; }
+  $('playBtn').textContent = '❚❚ 暂停';
+  timer = setInterval(() => { if(!next()) stop(); }, 2400);
+}
+$('playBtn').onclick = () => timer ? stop() : play();
+$('stepBtn').onclick = () => { stop(); next(); };
+$('resetBtn').onclick = () => { stop(); cur = -1; render(); };
+render();
+})();
+</script>
+</div>
+</body>
+</html>
