@@ -344,6 +344,7 @@ class LibriSpeechRNNTModule(LightningModule):
         beam_width: int = 20,
         # Training
         learning_rate: float = 5e-4,
+        predictor_lr_scale: float = 1.0,
         adam_betas: tuple = (0.9, 0.999),
         adam_eps: float = 1e-8,
         warmup_steps: int = 10000,
@@ -425,8 +426,16 @@ class LibriSpeechRNNTModule(LightningModule):
         )
 
         # ---- Optimizer & scheduler ----
+        # predictor trunk (attention) 独立 LR 组：transformer trunk 与
+        # encoder/joiner 的适配 LR 不同，允许单独缩放（WarmupLR 按组 base_lr 预热）。
+        pred_params = list(self.model.predictor.parameters())
+        pred_ids = {id(p) for p in pred_params}
+        other_params = [p for p in self.model.parameters() if id(p) not in pred_ids]
+        groups = [{"params": other_params, "lr": learning_rate}]
+        if pred_params:
+            groups.append({"params": pred_params, "lr": learning_rate * predictor_lr_scale})
         self.optimizer = torch.optim.Adam(
-            self.model.parameters(),
+            groups,
             lr=learning_rate,
             betas=adam_betas,
             eps=adam_eps,
@@ -546,6 +555,7 @@ class LibriSpeechRNNTModule(LightningModule):
             medusa_kl_weight=medusa_cfg.get("kl_weight", 0.05),
             # Training
             learning_rate=training_cfg.get("learning_rate", 5e-4),
+            predictor_lr_scale=training_cfg.get("predictor_lr_scale", 1.0),
             adam_betas=tuple(training_cfg.get("adam_betas", [0.9, 0.999])),
             adam_eps=training_cfg.get("adam_eps", 1e-8),
             warmup_steps=training_cfg.get("warmup_steps", 10000),

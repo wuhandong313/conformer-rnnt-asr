@@ -139,6 +139,9 @@ model:
       # Dropout
       dropout: 0.1
 
+      # 位置编码表长度 (须 ≥ 训练/解码最长 token 序列; blank 预置 1 不计入)
+      max_len: 4096
+
   # === Medusa 多头未来标签预测 (plan §3.3) ===
   medusa:
     # 头数 K (head 1..K 做 aux CE); 0 = 关闭 (单头消融, 仅验 trunk)
@@ -162,6 +165,10 @@ training:
   # === 优化器 (Adam) ===
   # 峰值学习率 (预热结束后达到此值)
   learning_rate: 0.0005
+
+  # predictor trunk (attention) 独立 LR 缩放: transformer 与 encoder/joiner
+  # 适配的 LR 不同; 0.5 起步, 收敛过慢可回调 1.0
+  predictor_lr_scale: 0.5
 
   # Adam beta 系数 (momentum 衰减率)
   adam_betas: [0.9, 0.999]

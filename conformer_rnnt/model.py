@@ -173,6 +173,7 @@ def conformer_rnnt_model(
     attn_ffn_dim: int = 1024,
     attn_left_context: int = 1024,
     attn_dropout: float = 0.1,
+    attn_max_len: int = 4096,
     # Joiner
     joiner_activation: str = "relu",
     # Medusa
@@ -194,6 +195,7 @@ def conformer_rnnt_model(
             ffn_dim=attn_ffn_dim,
             left_context=attn_left_context,
             dropout=attn_dropout,
+            max_len=attn_max_len,
         )
     else:
         predictor = Predictor(
@@ -278,6 +280,7 @@ def conformer_rnnt_model_from_config(config: Dict[str, Any]) -> ConformerRNNT:
         attn_ffn_dim=a.get("ffn_dim", 1024),
         attn_left_context=a.get("left_context", 1024),
         attn_dropout=a.get("dropout", 0.1),
+        attn_max_len=a.get("max_len", 4096),
         joiner_activation=j.get("activation", "relu"),
         medusa_num_heads=med.get("num_heads", 0),
     )

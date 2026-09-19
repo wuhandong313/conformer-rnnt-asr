@@ -1,15 +1,23 @@
 """受限因果自注意力 Predictor trunk (Family A — MSA-Transducer 风格)。
 
 替代原 LSTM `Predictor`，作为 Medusa 多头的共享 backbone：
-    Embedding → LayerNorm → N 层因果 Transformer(受限左上下文) → Dropout → Linear → LayerNorm
+    Embedding + 位置编码 → LayerNorm → N 层 pre-norm 因果 Transformer(受限左上下文)
+    → Dropout → final LayerNorm → Linear → LayerNorm
 output_dim=512 契约不变，与 Joiner 加性融合兼容。
+
+v2 修复（针对首轮训练失败的诊断，见探针实验）：
+  1. 补 learned positional embedding——无位置编码的因果 attention 无法区分
+     「最近一次出现的同 id token」，重复音素发射能力显著弱于 LSTM。
+  2. post-norm → pre-norm + 出口 final_norm——post-norm 从零训练收敛慢且不稳。
+  3. 绝对位置随 state 走：每层 state = [K, V, P]，P = 已消费 token 数（1-elem
+     long tensor）。KV 按 left_context 截断后 cache 长度 ≠ 绝对位置，
+     位置必须独立携带，才能保证增量路径与全序列路径逐位等价。
 
 受限因果：因果 mask + 可配左上下文窗 `left_context`。非流式评测用大窗(≈全因果)；
 流式收紧。对应 Luo 2021 MSA-Transducer (2102.11594)。
 
-state=KV cache：每层 `[K_cache, V_cache]`，类型 `List[List[Tensor]]`——与原 LSTM
-`[h,c]` 同型。`torchaudio.models.RNNTBeamSearch` 把 state 当不透明对象穿线、
-不查内部结构 (已核实 torchaudio 2.6 源码) ⇒ 换 trunk 不破坏 beam-search 契约。
+state 类型仍是 `List[List[Tensor]]`（对 beam-search 不透明，已核实 torchaudio 2.6
+`RNNTBeamSearch` 不查内部结构）⇒ 换 trunk 不破坏 beam-search 契约。
 """
 
 from typing import List, Optional, Tuple
@@ -110,22 +118,18 @@ class _CausalAttnLayer(torch.nn.Module):
 
     # ------------------------------------------------------------------
     def forward_full(self, x: Tensor) -> Tensor:
-        """完整序列残差前向。x: (B, U, D) → (B, U, D)。"""
-        x = x + self.dropout(self._mha_full(x))
-        x = self.norm1(x)
-        x = x + self.ffn(x)
-        x = self.norm2(x)
+        """完整序列残差前向（pre-norm）。x: (B, U, D) → (B, U, D)。"""
+        x = x + self.dropout(self._mha_full(self.norm1(x)))
+        x = x + self.ffn(self.norm2(x))
         return x
 
     def forward_inc(
         self, x_new: Tensor, k_cache: Tensor, v_cache: Tensor
     ) -> Tuple[Tensor, Tensor, Tensor]:
-        """单步增量残差前向。x_new: (B,1,D) → (out, new_k, new_v)。"""
-        attn_out, new_k, new_v = self._mha_increment(x_new, k_cache, v_cache)
+        """单步增量残差前向（pre-norm）。x_new: (B,1,D) → (out, new_k, new_v)。"""
+        attn_out, new_k, new_v = self._mha_increment(self.norm1(x_new), k_cache, v_cache)
         x = x_new + self.dropout(attn_out)
-        x = self.norm1(x)
-        x = x + self.ffn(x)
-        x = self.norm2(x)
+        x = x + self.ffn(self.norm2(x))
         return x, new_k, new_v
 
 
@@ -152,6 +156,7 @@ class PredictorAttn(torch.nn.Module):
         ffn_dim: FFN 隐藏维。
         left_context: 受限左上下文窗(含自身)。设大则近似全因果。
         dropout: dropout。
+        max_len: 位置编码表长度(≥ 训练/解码最长 token 序列)。
     """
 
     def __init__(
@@ -166,11 +171,14 @@ class PredictorAttn(torch.nn.Module):
         ffn_dim: int = 1024,
         left_context: int = 1024,
         dropout: float = 0.1,
+        max_len: int = 4096,
     ) -> None:
         super().__init__()
         # embedding 行数 = num_symbols+1 (与原 Predictor 一致，blank 挂末位)
         self.embedding = torch.nn.Embedding(num_symbols + 1, symbol_embedding_dim)
         self.input_proj = torch.nn.Linear(symbol_embedding_dim, d_model)
+        self.pos = torch.nn.Embedding(max_len, d_model)
+        self.max_len = max_len
         self.input_layer_norm = torch.nn.LayerNorm(d_model)
         self.layers = torch.nn.ModuleList(
             [
@@ -179,6 +187,7 @@ class PredictorAttn(torch.nn.Module):
             ]
         )
         self.dropout = torch.nn.Dropout(dropout)
+        self.final_norm = torch.nn.LayerNorm(d_model)  # pre-norm 栈的出口归一化
         self.linear = torch.nn.Linear(d_model, output_dim)
         self.output_layer_norm = torch.nn.LayerNorm(output_dim)
 
@@ -188,10 +197,20 @@ class PredictorAttn(torch.nn.Module):
         self.left_context = left_context
 
     # ------------------------------------------------------------------
+    def _embed(self, tokens: Tensor, start_pos: int) -> Tensor:
+        """token ids (B,U) + 绝对位置 start_pos..start_pos+U-1 → (B,U,d_model)。"""
+        U = tokens.size(1)
+        positions = torch.arange(start_pos, start_pos + U, device=tokens.device)
+        positions = torch.clamp(positions, max=self.max_len - 1)
+        h = self.input_proj(self.embedding(tokens)) + self.pos(positions).unsqueeze(0)
+        return self.input_layer_norm(h)
+
+    # ------------------------------------------------------------------
     def _empty_cache(self, batch: int, device: torch.device, dtype: torch.dtype) -> List[List[Tensor]]:
-        """空 KV cache：每层 [K(0 dim), V(0 dim)]。"""
+        """空 cache：每层 [K(0 dim), V(0 dim), P(绝对位置计数, 1-elem long)]。"""
         zero = torch.zeros(batch, self.num_heads, 0, self.head_dim).to(device=device, dtype=dtype)
-        return [[zero, zero] for _ in self.layers]
+        p0 = torch.zeros(1, dtype=torch.long, device=device)
+        return [[zero, zero, p0] for _ in self.layers]
 
     # ------------------------------------------------------------------
     def forward(
@@ -207,11 +226,10 @@ class PredictorAttn(torch.nn.Module):
             lengths: (B,) 有效长度(原样返回，beam-search 逐 token 不用它做 mask)。
             state: 忽略(批量前向不接 cache)；返回空 cache 供后续增量起点。
         """
-        emb = self.embedding(input)  # (B, U, emb_dim)
-        x = self.input_layer_norm(self.input_proj(emb))  # (B, U, d_model)
+        x = self._embed(input, 0)  # (B, U, d_model)
         for layer in self.layers:
             x = layer.forward_full(x)
-        x = self.dropout(x)
+        x = self.dropout(self.final_norm(x))
         out = self.output_layer_norm(self.linear(x))  # (B, U, output_dim)
         return out, lengths, self._empty_cache(input.size(0), input.device, x.dtype)
 
@@ -225,15 +243,15 @@ class PredictorAttn(torch.nn.Module):
     ) -> Tuple[Tensor, Tensor, List[List[Tensor]]]:
         """增量逐 token 前向(被 RNNTBeamSearch 调用)。
 
-        input: (B, 1) 单 token。state: 每层 [K_cache, V_cache] 或 None。
+        input: (B, 1) 单 token。state: 每层 [K_cache, V_cache, P] 或 None；
+        P = 已消费 token 数(绝对位置)，KV 截断不影响它。
         返回 (out:(B,1,output_dim), lengths, new_state)。
-        new_state 把新 token 的 K/V append 进各层 cache，并按 left_context 截断。
         """
         if state is None:
             state = self._empty_cache(input.size(0), input.device, torch.float32)
+        start_pos = int(state[0][2].item())
 
-        emb = self.embedding(input)  # (B,1,emb)
-        x = self.input_layer_norm(self.input_proj(emb))  # (B,1,d_model)
+        x = self._embed(input, start_pos)  # (B,1,d_model)
         new_state: List[List[Tensor]] = []
         layer_idx = 0
         for layer in self.layers:
@@ -241,9 +259,9 @@ class PredictorAttn(torch.nn.Module):
             k_cache = st[0]
             v_cache = st[1]
             x, new_k, new_v = layer.forward_inc(x, k_cache, v_cache)
-            new_state.append([new_k, new_v])
+            new_state.append([new_k, new_v, st[2] + input.size(1)])
             layer_idx += 1
-        x = self.dropout(x)
+        x = self.dropout(self.final_norm(x))
         out = self.output_layer_norm(self.linear(x))  # (B,1,output_dim)
         return out, lengths, new_state
 
@@ -263,4 +281,5 @@ def conformer_rnnt_predictor_attn_from_config(config: dict) -> "PredictorAttn":
         ffn_dim=a.get("ffn_dim", 1024),
         left_context=a.get("left_context", 1024),
         dropout=a.get("dropout", 0.1),
+        max_len=a.get("max_len", 4096),
     )
