@@ -33,7 +33,6 @@ Experiments run on the internal server at `/test21/conformer-rnnt-asr` (access v
   ```
   `monitor_iter2.py` skips ckpts younger than 180 s (Lightning may still be writing them) and caches one JSON per ckpt — purge `exp_iter2/monitor_eval/*` when a new run reuses the same tag/step names, or stale results will be reported.
 - **Warm-start convention**: copy the chosen best ckpt to `BEST_iterN.ckpt`, point `paths.from_checkpoint` at it, and bump the monitor's `TRAIN_LOG`. Warm-starts are weight-only (fresh optimizer/LR warmup); a brief PER transient right after restart is expected and self-heals.
-- **Ceiling/diagnostic tools**: `scripts/diag_rollout_ceiling.py` (acceptance ceiling), `scripts/diag_iter2.py` (TF vs draft accuracy), `scripts/probe_emit_gap.py` (emit-gap quantiles).
 
 ## Experiment Log
 

@@ -74,8 +74,8 @@ Per-sample, computes inter-frame abs-diff, detects **peaks+valleys** (`scipy.sig
 ### Configs
 - [configs/default.yaml](configs/default.yaml) — local; `hop_length: 80` (200fps), `compression.filter: hanning`, `medusa.num_heads: 0`, `decoding.mode: beam`.
 - [configs/server.yaml](configs/server.yaml) — GPU server (`/test21/medusa`); `hop_length: 160` (100fps), `compression.filter: naive`, `medusa.num_heads: 2` + `freeze_base: true`, `decoding.mode: spec_greedy`, `matmul_precision: high`, A100-tuned `num_workers`/`max_token_limit`, absolute paths.
-- [configs/server_scratch.yaml](configs/server_scratch.yaml) — Medusa head=1, unfrozen, from-scratch ablation (same as server.yaml minus `from_checkpoint`, isolated `exp_dir`, `beam_width: 0`).
-- [configs/eval_none.yaml](configs/eval_none.yaml) / [configs/eval_naive.yaml](configs/eval_naive.yaml) / [configs/eval_specgreedy.yaml](configs/eval_specgreedy.yaml) — eval-only configs differing only in `compression.filter` / `medusa.num_heads` / `decoding.*`, to disambiguate what the `val-none` checkpoint was actually trained with.
+- [configs/server_display.yaml](configs/server_display.yaml) — GPU server Medusa display iteration (iter-9 line; `server_display_scratch.yaml` derives from it with `from_checkpoint: null`, `freeze_base: false`, longer schedule for from-scratch training).
+- [configs/eval_specgreedy.yaml](configs/eval_specgreedy.yaml) — eval-only config pinning the spec-greedy decode mode.
 - `decoding.spec` supports only `max_draft` and `per_token_blank` (the `frame_window` / `tree` keys were removed — tree/top-k draft candidates are not implemented).
 
 ## Development environment
