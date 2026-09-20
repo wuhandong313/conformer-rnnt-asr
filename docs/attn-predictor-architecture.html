@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PredictorAttn v2 架构讲解 — 受限因果注意力 predictor：定位 / 根因 / 修复</title>
+<title>PredictorAttn v2 架构讲解 — 受限因果注意力 predictor：定位 / 根因 / 修复 / 训练出数</title>
 <style>
   :root{
     color-scheme:light;
@@ -169,20 +169,21 @@
 
 <header class="hero">
   <div class="eyebrow">conformer-rnnt-asr &nbsp;·&nbsp; branch attn-predictor &nbsp;·&nbsp; architecture</div>
-  <h1>受限因果注意力 Predictor（v2）：定位、根因与修复</h1>
+  <h1>受限因果注意力 Predictor（v2）：定位、根因、修复与训练出数</h1>
   <p class="sub">
     把 RNN-T 的 LSTM predictor 换成受限因果自注意力 trunk（Family A · MSA-Transducer 风格，
     arXiv:2102.11594）。原版（8 月初）从头训练两天即弃——本页先讲清<b>为什么训不动</b>
     （探针实测定位到三个叠加根因），再讲 v2 怎么修：位置编码、pre-norm、
-    绝对位置入 state、独立 LR 组。
+    绝对位置入 state、独立 LR 组；最后是 120 epoch 从头训练的实际结果
+    与两个<b>解码期 bug</b>（forward 忽略 state、变长 KV 过不了 beam 批处理）的修复。
   </p>
   <div class="kpis">
-    <div class="kpi"><div class="v">4.38M / 0.34M</div><div class="k">predictor 参数（attn v2 / LSTM 基线）</div></div>
-    <div class="kpi"><div class="v">0.39 → 0.45</div><div class="k">repeat 命中（探针；修复前 → 修复后，LSTM 0.54）</div></div>
-    <div class="kpi"><div class="v">[K,V,P]</div><div class="k">每层 state 三元组（beam-search 契约不变）</div></div>
+    <div class="kpi"><div class="v">0.1069</div><div class="k">beam-20 PER · 全量 test-clean · ep42 ckpt</div></div>
+    <div class="kpi"><div class="v">0.1112</div><div class="k">greedy PER · 全量 test-clean（同 ckpt）</div></div>
+    <div class="kpi"><div class="v">18.37 @ ep42</div><div class="k">val_loss 最优（120 ep 训完，之后过拟合）</div></div>
+    <div class="kpi"><div class="v">[K,V,P]</div><div class="k">每层 state 三元组；KV 定长循环 cache</div></div>
     <div class="kpi"><div class="v">0.5×</div><div class="k">predictor 独立 LR（predictor_lr_scale）</div></div>
-    <div class="kpi"><div class="v">1024</div><div class="k">left_context 受限因果窗（≈全因果）</div></div>
-    <div class="kpi"><div class="v">8 项</div><div class="k">smoke_attn 全绿（等价性 / 梯度 / JIT）</div></div>
+    <div class="kpi"><div class="v">13 项</div><div class="k">smoke_attn 全绿（等价 / 批处理 / JIT / max_len）</div></div>
   </div>
 </header>
 
@@ -190,7 +191,9 @@
   <b>一句话总结</b>：RNN-T 的 predictor 是<b>纯语言侧</b>模块（无声学输入），原版注意力 trunk
   训不动不是「注意力不行」，而是三个叠加根因——<span class="hl">无位置编码</span>（分不清同 token
   最近一次出现）、<span class="hl">post-norm 从头训练收敛慢</span>、<span class="hl">13× 参数与
-  0.34M 的 LSTM 同一配方</span>。v2 逐一修复，并保证 full 前向与 KV 增量解码逐位等价。
+  0.34M 的 LSTM 同一配方</span>。v2 逐一修复后从头训练 120 epoch 收敛
+  （val_loss 18.37 @ ep42），beam-20 全量 test-clean PER <b>0.1069</b>——与 iter-10
+  从头训练持平（0.1077），仍落后 warm-start LSTM 基线（0.073）。
 </div>
 
 <!-- ═══════════════ 1. 定位与契约 ═══════════════ -->
@@ -211,10 +214,11 @@
       </ul>
     </div>
     <div class="card">
-      <h4 class="hl">本迭代唯一变化：trunk 内部</h4>
+      <h4 class="hl">本迭代变化：trunk 内部 + 解码接口</h4>
       <ul class="small">
         <li>LSTM <code>[h, c]</code> → 注意力层 <code>[K, V, P]</code> 三元组（同型不透明 state）</li>
         <li>受限因果窗 <code>left_context</code>：query 只看 <code>[i−L+1, i]</code>；训练用 1024 ≈ 全因果，流式收紧</li>
+        <li>解码接口：forward 带状态单步委托 predict（§7 修复①），KV 定长循环 cache（§7 修复②）</li>
         <li>其余组件（encoder / joiner / 训练管线）零改动</li>
       </ul>
     </div>
@@ -287,7 +291,7 @@
         <text x="34" y="230" fill="#424a53">x = x + Dropout(FFN(LN(x)))</text>
         <text x="34" y="254" fill="#424a53">窗口: query i 只 attend keys [i−L+1 .. i]</text>
         <text x="34" y="274" fill="#656d76">训练: 全序列 + bool mask (SDPA)</text>
-        <text x="34" y="292" fill="#656d76">推理: 单步 + KV append, 超 L 左截断</text>
+        <text x="34" y="292" fill="#656d76">推理: 单步 + 定长循环 KV cache, 掩码 age ≤ p</text>
       </g>
 
       <!-- ===== 右卡: state 契约 ===== -->
@@ -388,7 +392,7 @@
     <thead><tr><th>根因</th><th>修复</th><th>实现要点</th></tr></thead>
     <tbody>
       <tr><td>无位置编码</td><td><code>pos = Embedding(max_len=4096)</code> 加性注入</td><td><code>_embed(tokens, start_pos)</code> 统一入口；full 前向 start_pos=0，增量 start_pos=state 中的 P</td></tr>
-      <tr><td>窗口 ≠ 位置</td><td>P 入 state：<code>[K, V, P]</code></td><td>KV 被截断到 ≤left_context 后，cache 长度 &lt; P；P 保证新 token 拿到正确绝对位置，旧 K/V 内容已自带位置</td></tr>
+      <tr><td>窗口 ≠ 位置</td><td>P 入 state：<code>[K, V, P]</code>，KV 定长循环 cache</td><td>K/V 恒为 <code>left_context</code> 长，新 token 写槽位 <code>p % left_context</code>（覆盖最旧），有效性掩码由 p 推导（age ≤ p）；P (batch,) 逐行携带绝对位置。定长是 beam-search 批处理的前提（见 §6）</td></tr>
       <tr><td>post-norm 收敛慢</td><td>pre-norm（norm 进残差分支）</td><td><code>x + Dropout(MHA(LN(x)))</code>；尾部补 <code>final_norm</code> 保输出尺度</td></tr>
       <tr><td>13× 参数同配方</td><td>独立参数组 + LR 缩放</td><td><code>predictor_lr_scale</code>（默认 0.5）：WarmupLR 按 per-group base_lr 缩放，预热与衰减同步</td></tr>
     </tbody>
@@ -399,9 +403,10 @@
     <b>full 前向</b> (B,U) 逐位 == <b>增量 predict</b> 逐 token（KV cache 吃同前缀）——含 left_context 截断区间
   </div>
   <p class="small">
-    这条不变量是结构保证而非约定：KV cache 是函数式拼接（cat 产生新张量），
-    P 随消费计数推进、截断不回退。任何「TF/增量不同构」的改动都会被测试当场抓住——
-    与 iter-10 对齐律的冒烟测试同一思路。
+    这条不变量是结构保证而非约定：增量路径每个 token 的 K/V 在被处理时已烧入它的绝对位置，
+    循环槽位上的有效性掩码恰好复现 full 路径的受限因果窗；P 逐行推进、永不回退（除回滚）。
+    任何「TF/增量不同构」的改动都会被测试当场抓住——与 iter-10 对齐律的冒烟测试同一思路。
+    <b>实测</b>：真实 ckpt 权重下 full vs incremental 最大偏差 5e-6（CPU/CUDA、U=600）。
   </p>
 
   <div class="note fix">
@@ -417,7 +422,8 @@
 <summary>5. 推理时序：KV 窗、绝对位置 P 与回滚<span class="tag">可交互</span></summary>
 <div class="body">
   <p>演示用 <code>left_context L=6</code>（训练实际 1024）。看两个计数器的分工：
-  <b>KV</b> 是受限窗（超 L 左截断最旧），<b>P</b> 是绝对位置（只增不减——直到回滚）。</p>
+  <b>KV</b> 是定长受限窗（循环槽位，新 token 覆盖最旧），
+  <b>P</b> 是绝对位置（只增不减——直到回滚）。</p>
 
   <div class="demo">
     <div class="demo-ctl">
@@ -444,8 +450,9 @@
 
   <div class="note">
     <b>等价性的来源</b>：每个 token 的 K/V 在被处理时已由「embedding + 它当时的绝对位置」算出——
-    位置信息<b>烧在 cache 内容里</b>，所以窗口滑动不需要重算旧 token；P 只需要告诉
-    <b>新</b> token 它是谁的第几步。这就是为什么「截断 KV + P 照常推进」与全序列前向逐位等价。
+    位置信息<b>烧在 cache 内容里</b>，所以循环槽位覆盖最旧不需要重算幸存 token；有效性掩码
+    （age = (p − s) % L ≤ p）恰好复现受限因果窗。P 只需要告诉
+    <b>新</b> token 它是谁的第几步。这就是为什么「定长循环 KV + P 照常推进」与全序列前向逐位等价。
     回滚时 P 必须与 KV 一起恢复——被拒的 draft 没有被消费，位置也要退回。
   </div>
 </div>
@@ -453,20 +460,23 @@
 
 <!-- ═══════════════ 6. 训练过程 ═══════════════ -->
 <details class="mod" open>
-<summary>6. 训练过程：从头训练配方与观测<span class="tag">from scratch</span></summary>
+<summary>6. 训练过程与结果：从头训练 120 epoch 实测<span class="tag">from scratch · 出数</span></summary>
 <div class="body">
   <p>架构换了 trunk，<b>必须从头训练</b>（<code>from_checkpoint: null</code>）。
   配方相对原版的修正：pre-norm + 位置编码让 warm-in 正常发生；
   predictor trunk 独立参数组，LR = 全局 × <code>predictor_lr_scale: 0.5</code>。</p>
 
-  <pre><span class="c"># 服务器 (whd env) — 先跑验证再启动</span>
-git fetch && git checkout attn-predictor
-python scripts/smoke_attn.py        <span class="c"># 8 项全 PASS</span>
-python scripts/e2e_check_attn.py    <span class="c"># config → 模型 → joint 前向 → 增量 predict</span>
+  <div class="kpis">
+    <div class="kpi"><div class="v">120 ep</div><div class="k">训满（val_loss 最优 <b>18.37 @ ep42</b>，之后过拟合）</div></div>
+    <div class="kpi"><div class="v">0.1069</div><div class="k">beam-20 PER · 全量 test-clean 2620 条 · RTF 0.148</div></div>
+    <div class="kpi"><div class="v">0.1112</div><div class="k">greedy PER · 同 ckpt · RTF 0.044</div></div>
+    <div class="kpi"><div class="v">vs 0.1077</div><div class="k">iter-10（LSTM+Medusa）从头训练——持平</div></div>
+    <div class="kpi"><div class="v">vs 0.073</div><div class="k">LSTM warm-start 基线——仍落后 3.4 pt</div></div>
+  </div>
 
-<span class="c"># screen + tee 日志 (monitor 惯例: TRAIN_LOG 指向 exp_attn_train.log,</span>
-<span class="c"># 换 ckpt 后清 exp_iter2/monitor_eval/ 缓存)</span>
-screen -dmS iter2-train bash -c <span class="s">'train.py configs/server.yaml 2>&1 | tee exp_attn_train.log'</span></pre>
+  <p class="small muted">口径：全量 test-clean 2620 样本，ckpt <code>val-epoch=42-step=26700</code>
+  （val_loss 最优）；beam-20 = <code>configs/server_eval_beam20.yaml</code>，greedy = width 1。
+  贪心与 beam 的发射逐位合理（修复解码 bug 后），对比基线均为 beam-20。</p>
 
   <table>
     <thead><tr><th>阶段</th><th>看什么</th><th>判读</th></tr></thead>
@@ -474,7 +484,7 @@ screen -dmS iter2-train bash -c <span class="s">'train.py configs/server.yaml 2>
       <tr><td>前 10k 步</td><td>warmup（LR 线性升至 5e-4 / predictor 组 2.5e-4）</td><td>前期慢是正常的，不是原版那种「 loss 平掉」</td></tr>
       <tr><td>epoch 1–2</td><td>train loss 是否稳定下降</td><td class="tbl-win">v2 与原版的关键区别：起步就该降</td></tr>
       <tr><td>epoch 10–20</td><td>val PER 对比 LSTM 基线（同 epoch）</td><td>参数 13×，预热期天然更长；看趋势而非前几 epoch 的差距</td></tr>
-      <tr><td>验收</td><td>val PER 追平并反超 LSTM</td><td>达标 ⇒ attention trunk 可用，投喂 Medusa 头骨架</td></tr>
+      <tr><td>验收</td><td>val PER 追平并反超 LSTM</td><td class="tbl-win">实际：beam-20 0.1069，与 iter-10 从头训练持平；未追平 warm-start LSTM（0.073），见 §7 下一步</td></tr>
     </tbody>
   </table>
 
@@ -483,63 +493,126 @@ screen -dmS iter2-train bash -c <span class="s">'train.py configs/server.yaml 2>
     （weight-only 重启）；训练不稳 → 降 0.25 或 warmup 提到 20000；
     流式部署收紧 <code>predictor.attn.left_context</code>；位置溢出（超长句）已由
     <code>clamp(max_len−1)</code> 兜底，共享末位嵌入属可接受退化。
+    <b>实测补充</b>：val_loss 在 ep42 见底后回升（过拟合），下次训练 60 epoch 足够。
+  </div>
+</div>
+</details>
+
+<!-- ═══════════════ 7. 解码期修复 ═══════════════ -->
+<details class="mod" open>
+<summary>7. 解码期修复：forward 委托 + 定长循环 KV cache<span class="tag">训练正常 · 推理触发</span></summary>
+<div class="body">
+  <p>训练收敛、全量评估却在出垃圾（首位 token 无限循环）——两个 bug 都只在
+  <b>解码路径</b>触发，等价性冒烟测不到（它们不在 trunk 内部，而在 trunk 与
+  解码器的<b>接口</b>上）：</p>
+
+  <table>
+    <thead><tr><th>Bug</th><th>现象</th><th>根因</th><th>修复</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>① forward 忽略 state</b></td>
+        <td>贪心解码每步 logits 恒定（如 <code>73:−0.72</code> 不动），首位 token 无限循环</td>
+        <td>torchaudio beam-search 的 decode 契约是
+        <code>model.predict → predictor.forward</code> 带状态单步。LSTM 的
+        <code>forward</code> 恰好天然单步，attn 的 <code>forward</code> 却把
+        (B,1) 当全序列重算——末 token 每<b>重新 embed 在位置 0</b>，无历史</td>
+        <td><code>forward</code> 收到 state 且输入单步 (B,1) 时委托
+        <code>predict()</code> 走增量路径；训练路径（state=None）不变</td>
+      </tr>
+      <tr>
+        <td><b>② 变长 KV 过不了 beam 批处理</b></td>
+        <td>beam-20 直接 <code>RuntimeError: cat 尺寸不匹配</code>（原 device-side assert 同根因）</td>
+        <td>torchaudio 在<b>同一帧内对 a-hypo 续扩</b>：不同 hypo 消费的 token 数不同，
+        KV cache 长度互异（实测 20 vs 22），<code>_batch_state</code> 沿 batch 维
+        <code>cat</code> 失败</td>
+        <td><b>定长循环 KV cache</b>：K/V 恒为 <code>left_context</code> 长，新 token
+        写槽位 <code>p % left_context</code>；有效性掩码由 p 推导
+        （age = (p−s) % L ≤ p）；P 改为 (batch,) 逐行携带绝对位置。
+        cat / index_select 全程成立，torchaudio 内部零改动</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="note fix">
+    <b>逐位等价保持</b>：循环槽位上「age ≤ p」的掩码恰好选出绝对位置 ∈
+    [p−L+1, p] ∩ [0, p] 的 key 集合——与 full 路径的受限因果窗严格同构。
+    修复后单条 e2e trace 从 3998 次重复发射恢复为 90 次合理发射；
+    全量贪心 PER 从「垃圾」恢复到 0.1112。
+  </div>
+
+  <div class="note warn">
+    <b>教训</b>：等价性冒烟测试只覆盖「trunk 内部」的 full vs incremental，
+    没覆盖「trunk × 解码器」的接口语义（forward 带 state 的单步契约、
+    批处理 state 的形状假设）。smoke 已补三类用例：混合 token 数 hypo
+    批处理等价、index_select 切片续解码、P 逐行正确性。
   </div>
 </div>
 </details>
 
 <!-- ═══════════════ 7. 验证清单 ═══════════════ -->
 <details class="mod" open>
-<summary>7. 验证清单：smoke_attn.py 8 项 + e2e<span class="tag">全绿</span></summary>
+<summary>8. 验证清单：smoke_attn.py 13 项 + e2e<span class="tag">全绿</span></summary>
 <div class="body">
   <table>
     <thead><tr><th>#</th><th>验证内容</th></tr></thead>
     <tbody>
       <tr><td class="num">1</td><td>等价性 full==incremental（left_context=16, U=10 正常区），atol 1e-5</td></tr>
       <tr><td class="num">2</td><td>等价性（left_context=8, U=20 <b>截断区</b>）——窗口滑动后仍逐位一致</td></tr>
-      <tr><td class="num">3</td><td>绝对位置 P==U：KV 被截断后 P 仍等于已消费 token 数</td></tr>
-      <tr><td class="num">4</td><td>KV 长度 ≤ left_context</td></tr>
-      <tr><td class="num">5</td><td>梯度到达位置编码（pos.weight.grad 非零）</td></tr>
-      <tr><td class="num">6</td><td>torch.jit.script(predict) 编译且与 eager 一致（TorchScript 下 lengths 须传张量；RNNTBeamSearch 实际传张量，契约无碍）</td></tr>
-      <tr><td class="num">7</td><td>e2e：config → 模型构建 → joint 前向 → 增量 predict + state 穿线（scripts/e2e_check_attn.py）</td></tr>
-      <tr><td class="num">8</td><td>compileall 全仓通过</td></tr>
+      <tr><td class="num">3</td><td>绝对位置 P==U：KV 定长循环后 P 仍等于已消费 token 数</td></tr>
+      <tr><td class="num">4</td><td>KV cache 定长 == left_context</td></tr>
+      <tr><td class="num">5</td><td><b>混合 token 数 hypo 批处理</b>：hypo A 消费 6 步 / B 消费 4 步，cat 成 batch 后 P 逐行 [7,5]、输出与逐 hypo 单独 decode 一致（torchaudio _batch_state 语义模拟）</td></tr>
+      <tr><td class="num">6</td><td><b>index_select 切片</b>（torchaudio _slice_state 语义）切单 hypo 后 predict 正常、P 正确推进</td></tr>
+      <tr><td class="num">7</td><td>梯度到达位置编码（pos.weight.grad 非零）</td></tr>
+      <tr><td class="num">8</td><td>torch.jit.script(predict) 编译且与 eager 一致（TorchScript 下 lengths 须传张量；RNNTBeamSearch 实际传张量，契约无碍）</td></tr>
+      <tr><td class="num">9</td><td>forward 超 max_len 显式报错（_assert，不允许静默 clamp）</td></tr>
+      <tr><td class="num">10</td><td>真实 ckpt 权重复核：full vs incremental 最大偏差 5e-6（CPU + CUDA，U=600）</td></tr>
+      <tr><td class="num">11</td><td>端到端单条 trace：TF loss 与贪心解码对比（scripts/diag_attn_e2e.py）</td></tr>
+      <tr><td class="num">12</td><td>e2e：config → 模型构建 → joint 前向 → 增量 predict + state 穿线（scripts/e2e_check_attn.py）</td></tr>
+      <tr><td class="num">13</td><td>compileall 全仓通过</td></tr>
     </tbody>
   </table>
 
   <div class="note">
-    <b>事故记录</b>：验证期间唯一 FAIL 是冒烟测试自身——TorchScript 下给标注为
+    <b>事故记录</b>：验证期间两次 FAIL——① TorchScript 下给标注为
     <code>Tensor</code> 的 <code>lengths</code> 传 <code>None</code> 会报
-    <code>strides() called on an undefined Tensor</code>。不是模型缺陷：beam-search
-    运行时总传真实张量。测试已改为传张量并对比 scripted vs eager 输出。
+    <code>strides() called on an undefined Tensor</code>（不是模型缺陷，测试改传张量）；
+    ② ModuleList 动态索引 / zip 在 TorchScript 下不可编译，改
+    <code>enumerate(self.layers)</code>。另记：<b>全 vs 增量等价测试测不出 §7
+    的两个接口 bug</b>——它们需要「trunk × 解码器」联合语义的用例（#5/#6）。
   </div>
 </div>
 </details>
 
 <!-- ═══════════════ 8. 结论 ═══════════════ -->
 <details class="mod" open>
-<summary>8. 结论与下一步<span class="tag">Takeaway</span></summary>
+<summary>9. 结论与下一步<span class="tag">Takeaway</span></summary>
 <div class="body">
   <ol>
     <li><b>归因先行</b>：合成探针（bigram Markov + 重复）两天内把「训不动」拆成三个可修的根因，
     避免在真实训练上盲试——i.i.d. 探针太弱的教训是任务必须有 recency 区分度。</li>
-    <li><b>v2 = 位置 + pre-norm + 配方</b>：三者缺一不可；位置编码入 state（[K,V,P]）
-    使受限窗与绝对位置解耦，等价性成为结构性质。</li>
-    <li><b>契约零破坏</b>：对 torchaudio beam-search 而言 state 不透明，LSTM → 注意力 trunk
-    的替换对解码器与 Joiner 全透明。</li>
-    <li><b>验收标准</b>：val PER 追平 LSTM 基线（探针差距 0.454 vs 0.536 不作为验收项）。
-    达标后 trunk 可作为 Medusa 头的共享骨架（Family A 路线的既定用途）。</li>
-    <li><b>若训练仍不利</b>：LSTM 的 recency 偏置是结构性的，backoff 是保留 LSTM trunk——
-    但那属于「把序列建模搬进 draft 侧」的 iter-10 路线，两条线互补不冲突。</li>
+    <li><b>v2 = 位置 + pre-norm + 配方，训练可用</b>：从头 120 epoch 收敛
+    （val_loss 18.37 @ ep42），beam-20 全量 PER 0.1069——与 iter-10 从头训练（0.1077）持平，
+    验证了注意力 trunk 在本任务上的可行性；但距 warm-start LSTM 基线（0.073）还差 3.4 pt。</li>
+    <li><b>接口 bug 只在解码路径暴露</b>：训练/TF 全程正常，垃圾输出全部来自
+    forward 忽略 state + 变长 KV 过不了 beam 批处理——冒烟测试必须覆盖
+    「trunk × 解码器」联合语义，而不只是 trunk 内部等价性。</li>
+    <li><b>契约零破坏</b>：对 torchaudio beam-search 而言 state 仍不透明，
+    定长循环 cache 让 cat/index_select 语义成立，torchaudio 内部零改动。</li>
+    <li><b>下一步</b>：① 在该 trunk 上接 Medusa 头，评估其作为草稿骨架的接受率
+    （Family A 路线的既定用途）；② 消融 <code>left_context</code> 与
+    <code>predictor_lr_scale</code>（0.5 → 1.0 weight-only 重启）尝试缩差距；
+    ③ 训练 60 epoch 即可（ep42 后过拟合）。</li>
   </ol>
 </div>
 </details>
 
 <footer>
-  代码 · <code>conformer_rnnt/predictor_attn.py</code> (v2) ·
+  代码 · <code>conformer_rnnt/predictor_attn.py</code> (v2 + 定长循环 KV) ·
   <code>conformer_rnnt/model.py</code> · <code>conformer_rnnt/lightning_module.py</code> ·
   <code>scripts/smoke_attn.py</code> · <code>scripts/e2e_check_attn.py</code><br>
-  口径 · 探针 = bigram Markov 合成任务（V=74, SEQ=48, 18% 重复；unigram 下界 4.213）·
+  口径 · PER = 全量 test-clean 2620 样本，ckpt val-epoch=42-step=26700（beam-20 / greedy 双口径）·
   配置 = configs/server.yaml（d256 / 4 层 / 4 头 / FFN 1024 / left_context 1024）<br>
-  参考 · MSA-Transducer (arXiv:2102.11594) · 分支 attn-predictor（41b80a2 v2 修复 + 9bd6baa e2e）
+  参考 · MSA-Transducer (arXiv:2102.11594) · 分支 attn-predictor（41b80a2 v2 → 5f86ef8 软点 → 2d873f8 解码修复 → ac04958 实验记录）
 </footer>
 
 <script>
@@ -563,8 +636,8 @@ const STEPS = [
     note:'<b>emit N</b>：P=5，KV=5。' },
   { cache:['BOS','DH','S','AH0','N','T'], P:6, cls:{5:'append'},
     note:'<b>emit T</b>：P=6，KV=6=L——窗口恰好满。' },
-  { cache:['DH','S','AH0','N','T','IY0'], P:7, cls:{5:'append'},
-    note:'<b>emit IY0</b>：append 后 KV=7 &gt; L → <b>左截断最旧 BOS</b>（红）。P=7 继续增长——<b>位置与窗长解耦</b>，这是等价性的关键。' },
+  { cache:['DH','S','AH0','N','T','IY0'], P:7, cls:{0:'append'},
+    note:'<b>emit IY0</b>：写循环槽位 6 % 6 = 0 ——<b>最旧 BOS 的槽位被覆盖</b>（红）。KV 恒为 L=6 定长；P=7 继续增长——<b>位置与窗长解耦</b>，这是等价性的关键。' },
   { cache:['S','AH0','N','T','IY0','V'], P:8, cls:{5:'append'},
     note:'<b>滑窗继续</b>：P=8，KV=6。每个新 token 的位置由 P 给出；窗内 K/V 内容自带位置，无需重算。' },
   { cache:['N','T','IY0','V','D1','D2'], P:10, cls:{4:'append',5:'append'},
