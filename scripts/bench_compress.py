@@ -195,12 +195,15 @@ def main() -> None:
 
         for pr in probes:
             # 与 infer.py 同路径: chat template 包裹, 避免裸 prompt 复读
-            full = tok.apply_chat_template(
+            enc = tok.apply_chat_template(
                 [{"role": "user", "content": pr["prompt"]}],
-                tokenize=True, add_generation_prompt=True, enable_thinking=False,
+                tokenize=True, return_dict=True, add_generation_prompt=True,
+                enable_thinking=False,
             )
-            if not isinstance(full, list):
-                full = full["input_ids"][0]
+            fi = enc["input_ids"]
+            if hasattr(fi, "tolist"):
+                fi = fi.tolist()
+            full = [int(x) for x in (fi[0] if fi and isinstance(fi[0], list) else fi)]
             L = len(full)
             ids = torch.tensor([full], device=dev)
 
