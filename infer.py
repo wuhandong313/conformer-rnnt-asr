@@ -43,6 +43,22 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--top-p", type=float, default=0.8)
     ap.add_argument("--thinking", action="store_true", help="开启思维链")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--compress", action="store_true",
+                    help="在注意力层输出后插入 token 压缩 (llm_compress)")
+    ap.add_argument("--compress-after", type=int, default=3,
+                    help="压缩插入点: 该层输出之后 (须为 full_attention 层 3/7/11/...)")
+    ap.add_argument("--compress-mode", default="savgol_hanning",
+                    choices=["naive", "savgol", "hanning", "savgol_hanning",
+                             "diffq", "diffq_hanning", "novelty", "novelty_hanning"],
+                    help="compression.py 对齐族 + 分位/窗口泛化族 (bench 对照)")
+    ap.add_argument("--keep-frac", type=float, default=0.5,
+                    help="novelty 模式目标保留比例 (压缩率主旋钮)")
+    ap.add_argument("--compress-distance", type=int, default=2,
+                    help="峰检测最小间距 (diff 模式压缩率旋钮)")
+    ap.add_argument("--keep-last", type=int, default=16,
+                    help="无条件保留的尾部 token 数")
+    ap.add_argument("--min-len", type=int, default=64,
+                    help="短于此长度不压缩")
     return ap.parse_args()
 
 
@@ -129,13 +145,37 @@ def generate_stream(model, tok, inputs: dict, args: argparse.Namespace) -> str:
     return buf
 
 
+def report_compression(comp) -> None:
+    if comp is not None and comp.stats["events"]:
+        k, t = comp.stats["kept"], comp.stats["total"]
+        print(f"[压缩 kept/total = {k}/{t} ({k / t:.0%})]")
+
+
 def main() -> None:
     args = parse_args()
     tok, model, device = load(args)
 
+    comp = None
+    if args.compress:
+        from llm_compress import TokenSaliencyCompressor, install_compression
+        comp = TokenSaliencyCompressor(
+            mode=args.compress_mode,
+            distance=args.compress_distance,
+            keep_frac=args.keep_frac,
+            keep_last=args.keep_last,
+            min_len=args.min_len,
+        )
+        install_compression(model, comp, after_layer=args.compress_after)
+        print(
+            f"[压缩启用: layer{args.compress_after} 后 | mode={args.compress_mode}"
+            f" | keep_frac={args.keep_frac} | distance={args.compress_distance}"
+            f" | keep_last={args.keep_last} | min_len={args.min_len}]"
+        )
+
     if args.prompt:
         messages = [{"role": "user", "content": args.prompt}]
         generate_stream(model, tok, encode_history(tok, messages, device), args)
+        report_compression(comp)
         return
 
     messages: List[dict] = []
@@ -173,6 +213,7 @@ def main() -> None:
         if idx != -1:
             reply = reply[:idx]
         messages.append({"role": "assistant", "content": reply})
+        report_compression(comp)
 
 
 if __name__ == "__main__":
