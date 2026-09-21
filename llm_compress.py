@@ -1,14 +1,15 @@
 """DynamicCompression 的 LLM 移植：Qwen3.5 第 N 层输出后的 token 压缩。
 
-算法蓝本 compression.py (ASR 帧间压缩)，模式对齐其命名：
+算法蓝本 compression.py (ASR 帧间压缩)，模式与其命名逐一对齐：
 
-  naive / savgol        : 帧差 sum|Δh| → find_peaks 峰∪谷 选关键 token (纯选择)
-  hanning / savgol_hanning : 同上检测 + 固定 Hanning 窗加权混合 (对应
-                          compression.py _hanning_smooth；可学习 weight
-                          predictor 在 LLM 上无训练来源，用标准 Hanning
-                          系数替代，结构不变)
-  novelty               : 局部窗口最近邻距离分位阈值 —— 非 compression.py
-                          方法，仅作 bench 对照消融
+  naive / savgol / fir    : 帧差 sum|Δh| (可平滑) → find_peaks 峰∪谷 选关键 token
+  hanning / savgol_hanning / fir_hanning : 同上检测 + Hanning 窗加权混合
+      (compression.py 的可学习 weight predictor 在 LLM 上无训练来源，
+       用标准 Hanning 系数替代，结构不变)
+  diffq(_hanning)         : 原法保序推广 —— 帧差幅值分位阈值 (自适应
+      prominence)，keep_frac 直控压缩率 (峰谷式保留率被极值密度锁死 ~41%)
+  novelty(_hanning)       : 局部窗口最近邻距离 —— 非 compression.py 方法，
+      仅作 bench 对照消融
 
 插入点 = 第 ``after_layer`` 层输出之后 (默认 3 = 第一个 full_attention 层)。
 压缩必须同步三件事 (transformers 5.9.0 modeling_qwen3_5.py 已探明)：
@@ -29,12 +30,14 @@ from typing import Optional, Tuple
 
 import numpy as np
 import torch
-from scipy.signal import find_peaks, savgol_filter
+from scipy.signal import find_peaks, savgol_filter, firwin, filtfilt
 from torch import Tensor
 
-DIFF_MODES = ("naive", "savgol", "hanning", "savgol_hanning",
-              "diffq", "diffq_hanning", "novelty", "novelty_hanning")
-BLEND_MODES = ("hanning", "savgol_hanning", "diffq_hanning", "novelty_hanning")
+DIFF_MODES = ("naive", "hanning", "fir", "savgol", "savgol_hanning",
+              "fir_hanning", "diffq", "diffq_hanning",
+              "novelty", "novelty_hanning")
+BLEND_MODES = ("hanning", "fir_hanning", "savgol_hanning",
+               "diffq_hanning", "novelty_hanning")
 QUANT_MODES = ("diffq", "diffq_hanning")
 
 
@@ -42,8 +45,9 @@ class TokenSaliencyCompressor:
     """帧差显著性 token 压缩器 (无参数)。
 
     Args:
-        mode: naive|savgol|hanning|savgol_hanning (compression.py 对齐)
-            | novelty (对照消融用，非本方法)。
+        mode: naive|hanning|fir|savgol|savgol_hanning|fir_hanning
+            (compression.py 对齐族), diffq|diffq_hanning (分位推广),
+            novelty|novelty_hanning (对照消融)。
         distance/prominence: find_peaks 参数 (diff 族压缩率旋钮)。
         hanning_window_size: 混合窗宽 (compression.py 同名参数)。
         keep_frac/novelty_window: novelty 模式参数。
@@ -102,6 +106,35 @@ class TokenSaliencyCompressor:
             if wlen > 3:
                 sig = savgol_filter(dn, window_length=wlen, polyorder=4)
         prom = self.prominence if self.prominence > 0 else None
+
+        if self.mode in ("fir", "fir_hanning"):
+            # compression.py fir 分支: FIR 低通粗检 → 原始信号 ±2 内精修。
+            # ASR 里 firwin(num_taps, 50/100) = 截止 1/2 Nyquist，token 域
+            # 无帧率概念，直接取归一化截止 0.5。
+            num_taps = min(21, len(dn) // 8)
+            if num_taps >= 5:
+                if num_taps % 2 == 0:
+                    num_taps -= 1
+                taps = firwin(num_taps, 0.5, pass_zero="lowpass")
+                sig = filtfilt(taps, 1.0, dn)
+            peaks_a, valleys_a = (
+                find_peaks(sig, distance=self.distance, prominence=prom)[0],
+                find_peaks(-sig, distance=self.distance, prominence=prom)[0],
+            )
+            r = 2
+            raw = dn
+            peaks = [
+                lo + int(np.argmax(raw[lo:hi]))
+                for p in peaks_a
+                for lo, hi in [(max(0, p - r), min(len(raw) - 1, p + r + 1))]
+            ]
+            valleys = [
+                lo + int(np.argmin(raw[lo:hi]))
+                for v in valleys_a
+                for lo, hi in [(max(0, v - r), min(len(raw) - 1, v + r + 1))]
+            ]
+            return np.array(peaks), np.array(valleys)
+
         peaks, _ = find_peaks(sig, distance=self.distance, prominence=prom)
         valleys, _ = find_peaks(-sig, distance=self.distance, prominence=prom)
         return peaks, valleys

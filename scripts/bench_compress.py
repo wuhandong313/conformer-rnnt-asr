@@ -2,12 +2,17 @@
 
 每个配置 × 每个样本: 单 forward 取 keep 统计 → generate 出答案 → 判命中。
 配置族:
-  off               基线
-  random_K          随机子集对照 (K 保留率)
-  savgol_dN         compression.py 原法 (帧差峰谷, 纯选择)
-  savgol_hanning_dN 原法 + Hanning 窗混合
-  diffq_f           帧差分位阈值 (保序泛化)
-  novelty_f         局部窗口最近邻距离 (对照消融)
+配置命名与 compression.py 模式对齐 (原法族统一 distance=2):
+  none              旁路基线 (= compression.py "none", 未压缩)
+  random_50         随机子集对照 (同保留率下界)
+  naive             帧差原始 find_peaks 峰谷 (纯选择)
+  hanning           同上 + 固定 Hanning 窗加权混合
+  fir               FIR 低通粗检 ±2 精修 (纯选择)
+  fir_hanning       fir + Hanning 混合
+  savgol            Savitzky-Golay 平滑峰谷 (纯选择)
+  savgol_hanning    savgol + Hanning 混合
+  diffq_f           帧差幅值分位阈值 (保序推广, keep_frac 直控压缩率)
+  novelty_f         局部窗口最近邻距离 (非原法, 对照消融)
 
 输出: 终端表 + CSV (bench_compress_results.csv)。
 用法: /root/.../python scripts/bench_compress.py [--limit N] [--max-new 32]
@@ -150,12 +155,16 @@ def main() -> None:
         MODEL_DIR, dtype=torch.float32
     ).to(dev).eval()
 
+    # 命名与 compression.py 模式对齐; 原法族统一 distance=2
     configs = [
-        ("off", None),
+        ("none", None),  # compression.py 旁路模式 = 未压缩基线
         ("random_50", dict(kind="random", keep_frac=0.5)),
-        ("savgol_d2", dict(mode="savgol", distance=2)),
-        ("savgol_d4", dict(mode="savgol", distance=4)),
-        ("savgol_hanning_d2", dict(mode="savgol_hanning", distance=2)),
+        ("naive", dict(mode="naive", distance=2)),
+        ("hanning", dict(mode="hanning", distance=2)),
+        ("fir", dict(mode="fir", distance=2)),
+        ("fir_hanning", dict(mode="fir_hanning", distance=2)),
+        ("savgol", dict(mode="savgol", distance=2)),
+        ("savgol_hanning", dict(mode="savgol_hanning", distance=2)),
         ("diffq_50", dict(mode="diffq", keep_frac=0.5)),
         ("diffq_85", dict(mode="diffq", keep_frac=0.85)),
         ("novelty_50", dict(mode="novelty", keep_frac=0.5)),
