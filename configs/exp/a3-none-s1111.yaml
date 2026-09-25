@@ -27,7 +27,7 @@ paths:
   exp_dir: "/test21/conformer-rnnt-asr/exp/a3-none-s1111"
 
   # 从某个 checkpoint 恢复训练 (null = 从头训练, 或填 .ckpt 路径)
-  from_checkpoint: "/test21/conformer-rnnt-asr/exp/checkpoints/val-none-epoch=34-step=21600.ckpt"
+  from_checkpoint: null
 
 # ---------------------------------------------------------------------------
 # 模型架构参数
