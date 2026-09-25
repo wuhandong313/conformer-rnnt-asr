@@ -7,8 +7,8 @@ __pycache__/
 .vscode/
 .idea/
 
-# Experiment outputs (large, regeneratable)
-exp/
+# Experiment outputs (large, regeneratable) — anchored to repo root
+/exp/
 output/
 lightning_logs/
 
