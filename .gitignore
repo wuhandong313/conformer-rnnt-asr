@@ -11,6 +11,7 @@ __pycache__/
 exp/
 output/
 lightning_logs/
+attn_train.log
 
 # Model artifacts (large binaries, not in repo)
 *.ckpt
