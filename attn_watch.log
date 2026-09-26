@@ -1,0 +1,192 @@
+=== 11:37 ===
+TRAIN ALIVE epoch=? step=? loss~524.91748 | CKPT val-epoch=00-step=200.ckpt age=12s
+=== 12:04 ===
+TRAIN ALIVE epoch=10 step=634 loss~2 | CKPT val-epoch=11-step=7100.ckpt age=25s
+=== 12:31 ===
+TRAIN ALIVE epoch=22 step=634 loss~2 | CKPT val-epoch=22-step=14100.ckpt age=101s
+=== 12:59 ===
+TRAIN ALIVE epoch=34 step=634 loss~2 | CKPT val-epoch=33-step=21000.ckpt age=265s
+=== 13:26 ===
+TRAIN ALIVE epoch=47 step=634 loss~2 | CKPT val-epoch=42-step=26700.ckpt age=746s
+=== 13:53 ===
+TRAIN ALIVE epoch=59 step=634 loss~2 | CKPT val-epoch=42-step=26700.ckpt age=2385s
+=== 14:20 ===
+TRAIN ALIVE epoch=72 step=634 loss~2 | CKPT train-epoch=70-step=44900.ckpt age=322s
+=== 14:48 ===
+TRAIN ALIVE epoch=85 step=588 loss~2 | CKPT train-epoch=75-step=47600.ckpt age=1385s
+=== 15:15 ===
+TRAIN ALIVE epoch=97 step=634 loss~2 | CKPT train-epoch=91-step=57700.ckpt age=983s
+=== 15:42 ===
+TRAIN ALIVE epoch=110 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=1135s
+=== 16:10 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=2774s
+=== 16:37 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=4406s
+=== 17:04 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=6044s
+=== 17:31 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=7683s
+=== 17:59 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=9315s
+=== 18:26 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=10953s
+=== 18:53 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=12591s
+=== 19:20 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=14229s
+=== 19:48 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=15861s
+=== 20:15 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=17500s
+=== 20:42 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=19138s
+=== 21:10 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=20776s
+=== 21:37 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=22408s
+=== 22:04 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=24046s
+=== 22:31 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=25685s
+=== 22:59 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=27316s
+=== 23:26 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=28955s
+=== 23:53 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=30593s
+=== 00:20 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=32231s
+=== 00:48 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=33864s
+=== 01:15 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=35502s
+=== 01:42 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=37140s
+=== 02:10 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=38778s
+=== 02:37 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=40410s
+=== 03:04 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=42048s
+=== 03:31 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=43686s
+=== 03:59 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=45319s
+=== 04:26 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=46957s
+=== 04:53 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=48595s
+=== 05:21 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=50233s
+=== 05:48 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=51865s
+=== 06:15 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=53503s
+=== 06:42 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=55142s
+=== 07:10 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=56774s
+=== 07:37 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=58412s
+=== 08:04 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=60050s
+=== 08:31 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=61688s
+=== 08:59 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=63320s
+=== 09:26 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=64959s
+=== 09:53 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=66597s
+=== 10:21 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=68235s
+=== 10:48 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=69868s
+=== 11:15 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=71506s
+=== 11:42 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=73144s
+=== 12:10 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=74776s
+=== 12:37 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=76414s
+=== 13:04 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=78052s
+=== 13:31 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=79691s
+=== 13:59 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=81323s
+=== 14:26 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=82961s
+=== 14:53 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=84600s
+=== 15:21 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=86237s
+=== 15:48 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=87870s
+=== 16:15 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=89509s
+=== 16:42 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=91147s
+=== 17:10 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=92779s
+=== 17:37 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=94417s
+=== 18:04 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=96055s
+=== 18:32 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=97693s
+=== 18:59 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=99326s
+=== 19:26 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=100964s
+=== 19:53 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=102602s
+=== 20:21 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=104234s
+=== 20:48 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=105873s
+=== 21:15 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=107511s
+=== 21:42 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=109149s
+=== 22:10 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=110781s
+=== 22:37 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=112419s
+=== 23:04 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=114058s
+=== 23:32 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=115696s
+=== 23:59 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=117328s
+=== 00:26 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=118966s
+=== 00:53 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=120604s
+=== 01:21 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=122236s
+=== 01:48 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=123874s
+=== 02:15 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=125513s
+=== 02:42 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=127151s
+=== 03:10 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=128783s
+=== 03:37 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=130421s
+=== 04:04 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=132060s
+=== 04:32 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=133698s
+=== 04:59 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=135330s
+=== 05:26 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=136968s
+=== 05:53 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=138606s
+=== 06:21 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=140238s
+=== 06:48 ===
+TRAIN DEAD epoch=119 step=634 loss~2 | CKPT train-epoch=102-step=65100.ckpt age=141877s

@@ -1,0 +1,39 @@
+Building model from config …
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Decoding: beam_width=20 (beam=20)
+Loading checkpoint: /test21/conformer-rnnt-asr/exp/checkpoints/val-epoch=42-step=26700.ckpt
+/pytorch/aten/src/ATen/native/cuda/Indexing.cu:1369: indexSelectSmallIndex: block: [0,0,0], thread: [0,0,0] Assertion `srcIndex < srcSelectDimSize` failed.
+Traceback (most recent call last):
+  File "/test21/conformer-rnnt-asr-attn/eval.py", line 180, in <module>
+    main()
+  File "/test21/conformer-rnnt-asr-attn/eval.py", line 176, in main
+    run_eval(model, device)
+  File "/test21/conformer-rnnt-asr-attn/eval.py", line 71, in run_eval
+    predicted = model(batch)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/test21/conformer-rnnt-asr-attn/conformer_rnnt/lightning_module.py", line 715, in forward
+    hypotheses = decoder(
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torchaudio/models/rnnt_decoder.py", line 293, in forward
+    return self._search(enc_out, None, beam_width)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torchaudio/models/rnnt_decoder.py", line 251, in _search
+    a_hypos = self._gen_a_hypos(
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torchaudio/models/rnnt_decoder.py", line 199, in _gen_a_hypos
+    new_hypos = self._gen_new_hypos(base_hypos, new_tokens, new_scores, t, device)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torchaudio/models/rnnt_decoder.py", line 223, in _gen_new_hypos
+    new_hypos.append((new_tokens, pred_out[i].detach(), _slice_state(pred_states, i, device), scores[i]))
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torchaudio/models/rnnt_decoder.py", line 47, in _slice_state
+    idx_tensor = torch.tensor([idx], device=device)
+RuntimeError: CUDA error: device-side assert triggered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+EVAL_DONE
