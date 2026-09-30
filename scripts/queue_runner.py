@@ -151,7 +151,8 @@ def process_run(run_name: str, config_path: str, eval_modes: list,
         eval_log = REPO / "results" / "logs" / f"{run_name}.{mode}.log"
         ret = run_cmd([sys.executable, "eval.py", config_path,
                        "--checkpoint", ckpt, "--beam", str(beam),
-                       "--out", str(REPO / "results" / out_csv)],
+                       "--out", str(REPO / "results" / "logs"
+                                    / f"{run_name}.{mode}.per_sample.csv")],
                       eval_log)
         fields = parse_result_line(eval_log) if ret == 0 else None
         if fields is None:

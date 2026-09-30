@@ -92,9 +92,17 @@ def main() -> int:
         cfg = copy.deepcopy(template)
         cfg.setdefault("paths", {})["exp_dir"] = f"{args.exp_root}/exp_smoke"
         cfg.setdefault("training", {})["epochs"] = 2
+        # Exercise the new-style detector/mixer path (not the legacy filter).
+        comp = cfg.setdefault("model", {}).setdefault("compression", {})
+        comp["detector"] = {"type": "savgol"}
+        comp["mixer"] = {"type": "hard"}
+        comp["keep_rate"] = args.rate
+        # NOTE: *_checkpoint_interval are every_n_train_steps (train.py), so
+        # the template's multi-thousand-step intervals would never fire in a
+        # 2-epoch run. Force small step intervals so ckpts exist for eval.
         cfg.setdefault("trainer", {})["checkpoint"] = {
-            "val_checkpoint_interval": 5,
-            "train_checkpoint_interval": 5,
+            "val_checkpoint_interval": 500,
+            "train_checkpoint_interval": 500,
             "save_top_k": 1,
             "save_weights_only": True,
         }
