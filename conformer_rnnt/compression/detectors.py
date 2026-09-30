@@ -411,6 +411,8 @@ class DPOracleDetector(Detector):
             if j > 1:
                 starts[j - 1] = t
         idx = torch.tensor(starts, dtype=torch.long, device=frames.device)
+        if diff is None:  # direct/test calls without a precomputed signal
+            diff = torch.abs(frames[1:] - frames[:-1]).sum(dim=-1)
         return idx, _diff_at(diff, idx, main_len)
 
 
