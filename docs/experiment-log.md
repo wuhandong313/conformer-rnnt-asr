@@ -48,3 +48,29 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 - 队列内容：oracle-dp（推理）→ a4-uniform / random / topk-diff / energy / max-pool /
   avg-pool / mmdp / ple / cosine-diff / savgol-cal（各 ~5.5 GPU·h 训练 + greedy eval）。
 - Stage 3 B-matrix（15 runs）就绪未启动：`scripts/stage3_pipeline.sh`，A4 Go/No-Go 后手动放行。
+
+---
+
+## Stage 1 — A0 诊断 + 管线自动推进（2026-09-30 17:37–，UTC）
+
+### 基线完成
+- none 基线 17:37 UTC 训完（120 epochs, step 76079）。ckpt 冻结现象说明：
+  val ckpt 停在 **ep26**（val_loss 最优，之后过拟合）；train ckpt 停在 ep91
+  （save_top_k=2 + train_loss 平台）。**锚点 = val-attn-none-epoch=26-step=16600.ckpt**（val-best）。
+
+### 自动管线里程碑
+- 17:37 smoke 门禁启动 → 17:45 通过（2-epoch 全链路 train→ckpt→eval→CSV，
+  `results/results.csv` 首行 smoke-detector PER 0.9694 —— 链路正确性验证，质量无意义）。
+- 17:45–17:47 A0 诊断（none anchor，CPU）：
+  - rate 复测（300 utt）：savgol **0.308**（0.280/0.309/0.333）、fir 0.279、naive 0.405
+    → 两锚点差异（savgol-anchor 0.274 vs none-anchor 0.308）= rate drift 素材。
+    **r=0.27 维持**：等码率预算锚定主方法实际率。
+  - layer_redundancy_none.csv 已存（analysis/out/）。
+- 17:47 A4 manifest 生成（11 runs，oracle-dp 首位、用 anchor ckpt 推理-only）。
+- 17:47– oracle-dp 贪心评测中（~44 utt/min，预计 ~18:47 完成；中期 cum PER 0.667
+  —— 压缩式 oracle 在未见过压缩的模型上退化属预期，作同条件天花板用）。
+- 之后：a4-uniform 起跑，10 个训练 run 串行（~55 GPU·h）。
+
+### 待办
+- [ ] oracle-dp 结果核对（天花板 PER + RTF）
+- [ ] A4 各 run 完成后 Go/No-Go：savgol ≥ uniform/avg-pool 且 DP-oracle 差距 >5%
