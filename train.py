@@ -50,9 +50,16 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
     exp_dir = paths.get("exp_dir", "./exp")
     checkpoint_dir = os.path.join(exp_dir, "checkpoints")
 
+    # ckpt 文件名体现配置: val-attn-savgol-epoch=42-step=26700.ckpt
+    model_cfg = config.get("model", {})
+    ckpt_tag = "{}-{}".format(
+        model_cfg.get("predictor", {}).get("type", "lstm"),
+        model_cfg.get("compression", {}).get("filter", "none"),
+    )
+
     val_ckpt = ModelCheckpoint(
         dirpath=checkpoint_dir,
-        filename="val-{epoch:02d}-{step}",
+        filename=f"val-{ckpt_tag}-{{epoch:02d}}-{{step}}",
         monitor="Losses/val_loss",
         mode="min",
         save_top_k=ckpt.get("save_top_k", 2),
@@ -62,7 +69,7 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
     )
     train_ckpt = ModelCheckpoint(
         dirpath=checkpoint_dir,
-        filename="train-{epoch:02d}-{step}",
+        filename=f"train-{ckpt_tag}-{{epoch:02d}}-{{step}}",
         monitor="Losses/train_loss",
         mode="min",
         save_top_k=ckpt.get("save_top_k", 2),
