@@ -44,6 +44,9 @@ A4_BASELINES = {
     "a4-ple": ("ple", "hard", {"threshold": 6.0}),
     "a4-cosine-diff": ("cosine_diff", "hard", {}),
     "a4-savgol-cal": ("savgol", "hard", {}),
+    # P12 oracle ceiling — global optimal segmentation, inference-only on the
+    # none anchor (manifest passes the anchor ckpt; never trained).
+    "oracle-dp": ("dp_seg", "seg_avg", {}),
 }
 
 B_DETECTORS = ["raw", "fir", "savgol", "ple", "cosine_diff"]
@@ -126,8 +129,10 @@ def main() -> int:
             name = f"b-{det}-{mix}"
             if only and name not in only:
                 continue
-            cfg = make_config(template, name, {"type": det}, {"type": mix}, None,
-                              f"{args.exp_root}/exp_b/{name}")
+            # Plan §Stage1: A4 AND B are all locked to the same measured
+            # keep_rate=r for a controlled detector×mixer comparison.
+            cfg = make_config(template, name, {"type": det}, {"type": mix},
+                              args.rate, f"{args.exp_root}/exp_b/{name}")
             write(cfg, out_dir / f"{name}.yaml")
             made.append(name)
 

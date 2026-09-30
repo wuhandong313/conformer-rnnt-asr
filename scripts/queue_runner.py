@@ -16,9 +16,11 @@ invocation (checkpoints are save_weights_only=True, so resume is not usable —
 training-plan §A6 note).
 
 Manifest format (TSV, '#' comment lines allowed):
-    run_name<TAB>config_path<TAB>eval_modes
+    run_name<TAB>config_path<TAB>eval_modes[<TAB>ckpt]
 where eval_modes is a comma-separated list drawn from:
     greedy | beam<W>   (e.g. "greedy,beam20"; default "greedy")
+and the optional 4th column is a checkpoint path — for inference-only runs
+(e.g. the DP oracle) that must NOT be trained; training is skipped.
 
 Usage (inside tmux):
     tmux new -s queue 'python scripts/queue_runner.py scripts/manifest_a4.tsv'
@@ -107,14 +109,14 @@ def parse_result_line(log_path: Path) -> dict | None:
 
 
 def process_run(run_name: str, config_path: str, eval_modes: list,
-                done: set) -> None:
+                done: set, forced_ckpt: str | None = None) -> None:
     config_path = str(REPO / config_path) if not os.path.isabs(config_path) \
         else config_path
     if not os.path.isfile(config_path):
         logging.error("[%s] config missing: %s — SKIPPED", run_name, config_path)
         return
 
-    ckpt = find_ckpt(config_path)
+    ckpt = forced_ckpt if forced_ckpt else find_ckpt(config_path)
     if ckpt is None:
         # ── Train ─────────────────────────────────────────────────────────
         logging.info("[%s] training …", run_name)
@@ -134,6 +136,10 @@ def process_run(run_name: str, config_path: str, eval_modes: list,
             logging.error("[%s] no val-*.ckpt after train exit — SKIPPED",
                           run_name)
             return
+    elif not os.path.isfile(ckpt):
+        logging.error("[%s] manifest ckpt not found: %s — SKIPPED",
+                      run_name, ckpt)
+        return
     logging.info("[%s] ckpt: %s", run_name, os.path.basename(ckpt))
 
     # ── Evals ─────────────────────────────────────────────────────────────
@@ -179,8 +185,10 @@ def read_manifest(path: str) -> list:
             if len(parts) < 2:
                 logging.error("bad manifest line: %r", raw.rstrip())
                 continue
+            ckpt = parts[3].strip() if len(parts) > 3 else None
             entries.append((parts[0], parts[1],
-                            (parts[2] if len(parts) > 2 else "greedy").split(",")))
+                            (parts[2] if len(parts) > 2 else "greedy").split(","),
+                            ckpt))
     return entries
 
 
@@ -196,13 +204,13 @@ def main() -> int:
     )
     entries = read_manifest(sys.argv[1])
     done = load_done()
-    n_evals = sum(len(ms) for _n, _c, ms in entries)
-    n_done = sum(1 for n, _c, ms in entries for m in ms if (n, m) in done)
+    n_evals = sum(len(ms) for _n, _c, ms, _k in entries)
+    n_done = sum(1 for n, _c, ms, _k in entries for m in ms if (n, m) in done)
     logging.info("manifest: %d runs / %d evals, %d already finished",
                  len(entries), n_evals, n_done)
-    for i, (run_name, config_path, eval_modes) in enumerate(entries, 1):
+    for i, (run_name, config_path, eval_modes, ckpt) in enumerate(entries, 1):
         logging.info("=== [%d/%d] %s ===", i, len(entries), run_name)
-        process_run(run_name, config_path, eval_modes, done)
+        process_run(run_name, config_path, eval_modes, done, ckpt)
     logging.info("queue drained.")
     return 0
 

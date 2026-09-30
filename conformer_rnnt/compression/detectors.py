@@ -350,6 +350,70 @@ class MMDPDetector(_SegmentedDetector):
         )
 
 
+class DPOracleDetector(Detector):
+    """P12 oracle: globally optimal k-segmentation (piecewise-constant L2).
+
+    Dynamic programming over ALL segmentations of the main sequence into
+    ``k = round(main_len*rate)`` contiguous segments, minimising total
+    within-segment squared error:
+
+        cost(i, t) = ||x[i:t]||² - (Σx[i:t])²/(t-i)   (via prefix sums)
+        D[j][t]    = min_i D[j-1][i] + cost(i, t)
+
+    Returns segment-start indices; paired with the ``seg_avg`` mixer, whose
+    per-segment means are exactly the DP optimum. Global / non-causal — a
+    ceiling reference, not a deployable detector. O(T²·k) per utterance.
+
+    ``dtype`` param: "float32" (default) or "float64" for the DP accumulators.
+    """
+
+    fixed_rate = True
+
+    def __init__(self, rate: float, dtype: str = "float32") -> None:
+        if not 0 < rate <= 1:
+            raise ValueError(f"rate must be in (0, 1], got {rate}")
+        self.rate = rate
+        self.acc_dtype = {"float32": np.float32, "float64": np.float64}[dtype]
+
+    def detect(self, frames, diff, diff_np, main_len):
+        k = _num_keep(main_len, self.rate)
+        x = frames.detach().to("cpu").numpy().astype(self.acc_dtype)  # (T, D)
+        T = main_len
+        D_dim = x.shape[1]
+        c1 = np.vstack([np.zeros((1, D_dim), self.acc_dtype),
+                        np.cumsum(x, axis=0)])
+        c2 = np.vstack([np.zeros((1, D_dim), self.acc_dtype),
+                        np.cumsum(x * x, axis=0)])
+
+        INF = np.inf
+        best = np.full((k + 1, T + 1), INF, self.acc_dtype)
+        best[0, 0] = 0.0
+        parent = np.zeros((k + 1, T + 1), dtype=np.int32)
+
+        for j in range(1, k + 1):
+            for t in range(j, T + 1):
+                i = np.arange(j - 1, t)
+                seglen = (t - i).astype(self.acc_dtype)          # (n,)
+                sum_ = c1[t] - c1[i]                             # (n, D)
+                sq = (c2[t] - c2[i]).sum(axis=1)                 # (n,)
+                cost = sq - (sum_ * sum_).sum(axis=1) / seglen   # (n,)
+                cost += best[j - 1, i]
+                b = int(np.argmin(cost))
+                if np.isfinite(cost[b]):
+                    best[j, t] = cost[b]
+                    parent[j, t] = i[b]
+
+        # Backtrack boundaries (right → left), then take segment starts.
+        starts = [0] * k
+        t = T
+        for j in range(k, 0, -1):
+            t = int(parent[j, t])
+            if j > 1:
+                starts[j - 1] = t
+        idx = torch.tensor(starts, dtype=torch.long, device=frames.device)
+        return idx, _diff_at(diff, idx, main_len)
+
+
 # ═══════════════════════════════════════════════════════════════════════════
 # Registry
 # ═══════════════════════════════════════════════════════════════════════════
@@ -368,6 +432,7 @@ DETECTOR_REGISTRY = {
     "max_pool": MaxPoolDetector,
     "avg_pool": AvgPoolDetector,
     "mmdp": MMDPDetector,
+    "dp_seg": DPOracleDetector,
 }
 
 
@@ -387,7 +452,7 @@ def build_detector(cfg: dict, keep_rate: Optional[float] = None) -> Detector:
 
     cls = DETECTOR_REGISTRY[dtype]
     if cls in (UniformDetector, RandomDetector, EnergyTopKDetector, TopKDiffDetector,
-               MaxPoolDetector, AvgPoolDetector, MMDPDetector):
+               MaxPoolDetector, AvgPoolDetector, MMDPDetector, DPOracleDetector):
         params.setdefault("rate", keep_rate)
         if params.get("rate") is None:
             raise ValueError(
