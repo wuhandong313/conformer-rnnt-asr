@@ -135,6 +135,14 @@ def main():
         help="Path to .ckpt checkpoint. If not given, auto-loads latest val-*.ckpt.",
     )
     parser.add_argument("--cpu", action="store_true", help="Force CPU even if config says cuda.")
+    parser.add_argument(
+        "--out", default=None,
+        help="Per-sample CSV output path (default: eval_per_sample.csv in CWD).",
+    )
+    parser.add_argument(
+        "--beam", type=int, default=None,
+        help="Override beam width (0 = greedy, overrides config beam_width).",
+    )
     args = parser.parse_args()
 
     # Config
@@ -148,6 +156,8 @@ def main():
     # Build model from config (architecture, paths — all from YAML)
     logging.info("Building model from config …")
     model = LibriSpeechRNNTModule.from_config(config)
+    if args.beam is not None:
+        model.beam_width = args.beam
     logging.info(
         "Decoding: beam_width=%s (%s)",
         model.beam_width,
@@ -173,7 +183,12 @@ def main():
 
     # Eval
     device = torch.device("cpu" if args.cpu else config.get("trainer", {}).get("accelerator", "cuda"))
-    run_eval(model, device)
+    metrics = run_eval(model, device, per_sample_file=args.out or "eval_per_sample.csv")
+    # Machine-readable summary line for automation (scripts/queue_runner.py)
+    print(
+        "RESULT per=%.4f rtf=%.4f n=%d ckpt=%s"
+        % (metrics["per"], metrics["rtf"], metrics["num_samples"], os.path.basename(ckpt_path))
+    )
 
 
 if __name__ == "__main__":
