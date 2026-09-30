@@ -51,11 +51,19 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
     checkpoint_dir = os.path.join(exp_dir, "checkpoints")
 
     # ckpt 文件名体现配置: val-attn-savgol-epoch=42-step=26700.ckpt
+    # 新式 detector/mixer 配置: val-attn-uniform-hard-r0.3-epoch=...
     model_cfg = config.get("model", {})
-    ckpt_tag = "{}-{}".format(
-        model_cfg.get("predictor", {}).get("type", "lstm"),
-        model_cfg.get("compression", {}).get("filter", "none"),
-    )
+    comp_cfg = model_cfg.get("compression", {})
+    pred_type = model_cfg.get("predictor", {}).get("type", "lstm")
+    if "detector" in comp_cfg:
+        det = comp_cfg.get("detector", {}).get("type", "raw")
+        mix = comp_cfg.get("mixer", {}).get("type", "hard")
+        keep = comp_cfg.get("keep_rate")
+        ckpt_tag = f"{pred_type}-{det}-{mix}"
+        if keep is not None:
+            ckpt_tag += f"-r{keep:.2f}"
+    else:
+        ckpt_tag = "{}-{}".format(pred_type, comp_cfg.get("filter", "none"))
 
     val_ckpt = ModelCheckpoint(
         dirpath=checkpoint_dir,

@@ -1,3 +1,6 @@
+# FROZEN pre-refactor reference implementation.
+# Verbatim copy of conformer_rnnt/compression.py @ commit e67507d.
+# Used by tests/test_parity.py — DO NOT MODIFY.
 """Dynamic inter-frame compression for sequence length reduction.
 
 Provides peak/valley detection on inter-frame difference signals with optional

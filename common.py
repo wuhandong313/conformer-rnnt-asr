@@ -9,13 +9,16 @@ This module provides common components shared across the project:
 """
 
 import json
+import logging
 import math
+import os
 from collections import namedtuple
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 import sentencepiece as spm
 import torch
 import torchaudio
+import yaml
 from torchaudio.models import Hypothesis
 
 
@@ -158,3 +161,28 @@ class WarmupLR(torch.optim.lr_scheduler._LRScheduler):
             (min(1.0, self._step_count / self.warmup_updates)) * base_lr
             for base_lr in self.base_lrs
         ]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Config / checkpoint helpers (shared by train.py, eval.py and analysis/*)
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+def load_config(path: str) -> Dict[str, Any]:
+    with open(path, "r") as f:
+        cfg = yaml.safe_load(f)
+    if cfg is None:
+        raise ValueError(f"Config file '{path}' is empty.")
+    return cfg
+
+
+def setup_logging(config: Dict[str, Any]) -> None:
+    debug = config.get("debug", False)
+    fmt = "%(asctime)s %(message)s" if debug else "%(message)s"
+    level = logging.DEBUG if debug else logging.INFO
+    logging.basicConfig(format=fmt, level=level, datefmt="%Y-%m-%d %H:%M:%S")
+
+
+def checkpoint_dir(config: Dict[str, Any]) -> str:
+    exp_dir = config.get("paths", {}).get("exp_dir", "./exp")
+    return os.path.join(exp_dir, "checkpoints")

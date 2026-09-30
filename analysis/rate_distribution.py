@@ -63,7 +63,7 @@ def main() -> None:
 
     # One detector instance per filter family (detection-only; weight predictor unused)
     detectors = {
-        fam: DynamicCompression(
+        fam: DynamicCompression.from_legacy(
             right_context_length=model_cfg["right_context_length"],
             compression_filter=fam,
             feature_dim=model_cfg["time_reduction_input_dim"]
@@ -97,8 +97,11 @@ def main() -> None:
             )
 
             row = {"fileid": fileid, "total_frames": total, "main_frames": main}
+            x_b = x[0, :main, :]
+            diff_b_t = torch.abs(x_b[1:] - x_b[:-1]).sum(dim=-1)
             for fam, det in detectors.items():
-                merged = det._detect_peaks_valleys(diff_b)
+                indices, _ = det.detector.detect(x_b, diff_b_t, diff_b, main)
+                merged = indices.cpu().numpy()
                 merged = merged[merged < main]
                 kept = len(merged) + rc
                 row[f"keep_{fam}"] = len(merged)

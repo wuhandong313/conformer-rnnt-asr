@@ -93,6 +93,9 @@ class ConformerEncoder(torch.nn.Module):
         compression_filter: str = "hanning",
         hanning_window_size: int = 5,
         weight_predictor_mode: str = "diff5",
+        compression_detector: Optional[dict] = None,
+        compression_mixer: Optional[dict] = None,
+        compression_keep_rate: Optional[float] = None,
     ) -> None:
         super().__init__()
         self.right_context_length = right_context_length
@@ -111,14 +114,28 @@ class ConformerEncoder(torch.nn.Module):
             depthwise_conv_kernel_size, dropout,
         )
 
-        # Inter-stage compression
-        self.compression = DynamicCompression(
-            right_context_length=right_context_length,
-            compression_filter=compression_filter,
-            hanning_window_size=hanning_window_size,
-            feature_dim=dim,
-            weight_predictor_mode=weight_predictor_mode,
-        )
+        # Inter-stage compression (new detector/mixer axes take precedence
+        # over the legacy filter enum)
+        if compression_detector is not None or compression_mixer is not None:
+            det_cfg = compression_detector or {"type": "raw"}
+            mix_cfg = compression_mixer or {"type": "hard"}
+            self.compression = DynamicCompression(
+                right_context_length=right_context_length,
+                detector=det_cfg,
+                mixer=mix_cfg,
+                feature_dim=dim,
+                keep_rate=compression_keep_rate,
+                hanning_window_size=hanning_window_size,
+                weight_predictor_mode=weight_predictor_mode,
+            )
+        else:
+            self.compression = DynamicCompression.from_legacy(
+                right_context_length=right_context_length,
+                compression_filter=compression_filter,
+                hanning_window_size=hanning_window_size,
+                feature_dim=dim,
+                weight_predictor_mode=weight_predictor_mode,
+            )
 
         # Stage 2 — long-range dependencies
         self.conformer2 = _make_conformer(
@@ -148,7 +165,7 @@ class ConformerEncoder(torch.nn.Module):
         x, x_len = self.conformer1(x, x_len + rc_frames)
 
         # Compression
-        if self.compression.compression_filter == "none":
+        if self.compression.passthrough:
             x, x_len = x, x_len
         else:
             x, x_len = self.compression(x, x_len)
