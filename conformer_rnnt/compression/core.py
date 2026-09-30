@@ -110,7 +110,7 @@ class DynamicCompression(torch.nn.Module):
             self.mixer = None
             return
 
-        self.detector: Detector = build_detector(detector)
+        self.detector: Detector = build_detector(detector, keep_rate=keep_rate)
         self.mixer = build_mixer(
             mixer, feature_dim, hanning_window_size, weight_predictor_mode
         )

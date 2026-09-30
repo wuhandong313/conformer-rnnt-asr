@@ -371,24 +371,29 @@ DETECTOR_REGISTRY = {
 }
 
 
-def build_detector(cfg: dict) -> Detector:
-    """Build a detector from ``{type, params}`` config dict."""
+def build_detector(cfg: dict, keep_rate: Optional[float] = None) -> Detector:
+    """Build a detector from ``{type, params}`` config dict.
+
+    Fixed-rate detectors take their ``rate`` from ``params.rate`` or fall back
+    to the module-level ``keep_rate``; error if neither is set.
+    """
     cfg = dict(cfg or {})
     dtype = cfg.get("type", "raw")
     params = dict(cfg.get("params", {}))
-    if dtype in ("fir", "savgol"):
-        params.setdefault("preprocess", dtype)
-    elif dtype == "raw":
-        params.setdefault("preprocess", "raw")
     if dtype not in DETECTOR_REGISTRY:
         raise ValueError(f"Unknown detector type '{dtype}'; known: {sorted(DETECTOR_REGISTRY)}")
-    if dtype == "fir":
-        params.pop("preprocess", None)  # FindPeaksDetector(fir) drives FIR itself
-        return FindPeaksDetector("fir")
+    if dtype in ("raw", "fir", "savgol"):
+        return FindPeaksDetector(dtype)
+
     cls = DETECTOR_REGISTRY[dtype]
-    kwargs = {}
-    if cls is FindPeaksDetector:
-        kwargs["preprocess"] = params.get("preprocess", "raw")
-    else:
-        kwargs.update(params)
-    return cls(**kwargs)
+    if cls in (UniformDetector, RandomDetector, EnergyTopKDetector, TopKDiffDetector,
+               MaxPoolDetector, AvgPoolDetector, MMDPDetector):
+        params.setdefault("rate", keep_rate)
+        if params.get("rate") is None:
+            raise ValueError(
+                f"Fixed-rate detector '{dtype}' requires keep_rate (module level) "
+                f"or params.rate"
+            )
+    if cls is RandomDetector:
+        params.setdefault("seed", 0)
+    return cls(**params)
