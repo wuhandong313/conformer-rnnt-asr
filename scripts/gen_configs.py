@@ -61,6 +61,9 @@ def make_config(template: dict, name: str, detector: dict, mixer: dict,
     comp["mixer"] = mixer
     comp["keep_rate"] = keep_rate
     cfg.setdefault("paths", {})["exp_dir"] = exp_dir
+    # Standing decision (2026-10-01): all training runs use 50 epochs
+    # (template had 120; val-best lands well before that anyway).
+    cfg.setdefault("training", {})["epochs"] = 50
     return cfg
 
 

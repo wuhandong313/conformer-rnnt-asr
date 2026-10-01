@@ -32,12 +32,20 @@ class HardSelectMixer:
 class SegmentAvgMixer:
     def mix(self, frames: Tensor, indices: Tensor, diff: Tensor, main_len: int) -> Tensor:
         # Segment i = [indices[i], indices[i+1]) (last segment ends at main_len).
+        # Vectorized: map each frame to its segment id, accumulate with
+        # index_add, divide by segment length (numerically equivalent to the
+        # original per-segment Python loop).
+        N = len(indices)
         bounds = torch.cat([indices, torch.tensor([main_len], device=indices.device)])
-        rows = []
-        for i in range(len(indices)):
-            s, e = int(bounds[i]), int(bounds[i + 1])
-            rows.append(frames[s:e].mean(dim=0))
-        return torch.stack(rows)
+        lengths = bounds[1:] - bounds[:-1]
+        seg_id = torch.repeat_interleave(
+            torch.arange(N, device=frames.device), lengths
+        )
+        acc = torch.zeros(
+            N, frames.shape[-1], device=frames.device, dtype=frames.dtype
+        )
+        acc.index_add_(0, seg_id, frames[:main_len])
+        return acc / lengths.unsqueeze(-1).to(frames.dtype)
 
 
 class LearnedWeightMixer(torch.nn.Module):
@@ -95,17 +103,17 @@ class LearnedWeightMixer(torch.nn.Module):
 
         all_weights = torch.softmax(self.weight_predictor(peak_features), dim=-1)
 
-        smoothed = []
-        for i, idx in enumerate(indices):
-            start = max(0, int(idx) - half_win)
-            end = min(main_len, int(idx) + half_win + 1)
-            w_start = start - (int(idx) - half_win)
-            w_end = self.window_size - ((int(idx) + half_win + 1) - end)
-            weights = all_weights[i, w_start:w_end]
-            weights = weights / weights.sum()
-            smoothed.append((frames[start:end] * weights.unsqueeze(-1)).sum(dim=0))
-
-        return torch.stack(smoothed)
+        # Vectorized windowed blend: gather the full (possibly clipped) window
+        # for every kept frame, zero out weights of out-of-range positions
+        # (equivalent to the original w_start/w_end slice + renormalize), then
+        # weighted-sum in one shot.
+        offsets = torch.arange(-half_win, half_win + 1, device=frames.device)
+        pos = indices.unsqueeze(-1) + offsets  # (N, W)
+        valid = (pos >= 0) & (pos < main_len)
+        weights = all_weights * valid.to(all_weights.dtype)
+        weights = weights / weights.sum(dim=-1, keepdim=True)
+        windows = frames[pos.clamp(0, main_len - 1)]  # (N, W, F)
+        return (windows * weights.unsqueeze(-1)).sum(dim=1)
 
 
 MIXER_REGISTRY = {
