@@ -44,7 +44,9 @@ class SegmentAvgMixer:
         acc = torch.zeros(
             N, frames.shape[-1], device=frames.device, dtype=frames.dtype
         )
-        acc.index_add_(0, seg_id, frames[:main_len])
+        # First segment starts at indices[0]; frames before it belong to no
+        # segment (the original per-segment loop never touched them either).
+        acc.index_add_(0, seg_id, frames[indices[0]:main_len])
         return acc / lengths.unsqueeze(-1).to(frames.dtype)
 
 

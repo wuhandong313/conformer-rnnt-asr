@@ -2,7 +2,10 @@
 
 Proves that the detector × mixer refactor (conformer_rnnt/compression/) is
 bit-exact against the pre-refactor implementation for all 6 legacy filters:
-indices identical and outputs torch.equal.
+indices identical and outputs equal. Hard-mixer filters (naive/fir/savgol)
+must match bit-exactly; learned-mixer filters (hanning/savgol_hanning) are
+vectorized and checked with allclose(atol=1e-5) — FP accumulation-order
+noise only.
 
 Run:  python tests/test_parity.py
 Exit code 0 = gate passed.
@@ -72,7 +75,13 @@ def main() -> int:
             with torch.no_grad():
                 out_l, len_l = legacy(x, lengths.clone())
                 out_n, len_n = new(x, lengths.clone())
-            if not torch.equal(out_l, out_n):
+            # Learned mixer (hanning/savgol_hanning) is vectorized since
+            # 2026-10-01; accumulation order differs from the legacy loop, so
+            # parity is allclose (FP32 noise ~1e-7) instead of torch.equal.
+            learn = filt in ("hanning", "savgol_hanning")
+            same = torch.allclose(out_l, out_n, atol=1e-5) if learn \
+                else torch.equal(out_l, out_n)
+            if not same:
                 ok = False
                 failures.append(
                     f"{filt}: seed {seed} output mismatch "
