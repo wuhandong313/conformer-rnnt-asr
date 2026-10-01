@@ -71,6 +71,21 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
   —— 压缩式 oracle 在未见过压缩的模型上退化属预期，作同条件天花板用）。
 - 之后：a4-uniform 起跑，10 个训练 run 串行（~55 GPU·h）。
 
+### 2026-10-01 修正与决策
+- **oracle-dp 完成：PER 0.6624, RTF 0.1865**（none-anchor ep26, r=0.27, n=2620）。
+  天花板解读：全局最优分段在未经压缩训练的模型上也退化到 0.66 → 压缩必须适应性训练（A4 从头训练验证）。
+- **速度诊断**：seg_avg/learned mixer 的 Python 逐段循环使 batch 前向 ~2.4s
+  （hard 仅 38-64ms），a4-avg-pool 实测 8.1 min/epoch（基线 3.3 it/s ≈ 2.7 min/epoch）。
+  **向量化**（index_add / masked windowed gather），~ms 级；learned 与 legacy 循环
+  仅 ~1e-7 FP 累加顺序差，parity 门禁对 learned 放宽 allclose(1e-5)，hard 仍位精确。
+  seg_avg 首段偏移 bug（frames[0:indices[0]] 不属于任何段）由 smoke 门禁 19/23 抓到，
+  修复后 parity 6/6 + smoke 23/23。
+- **【用户决定】所有训练 run 统一 50 epochs**（原 120）。理由：none 基线 val-best 在
+  ep26，120 epochs 后半段纯浪费。a4-avg-pool 的 120-ep 跑（~ep65）终止归档
+  （exp_a4/a4-avg-pool.aborted-120ep），50-ep + 向量化 mixer 重跑。
+- 管线重启（04:14 UTC），幂等跳过 smoke/oracle 已完成项，a4-avg-pool 重跑中。
+
 ### 待办
-- [ ] oracle-dp 结果核对（天花板 PER + RTF）
+- [ ] oracle-dp 结果核对（天花板 PER + RTF）✅（0.6624 / 0.1865）
+- [ ] a4-avg-pool（50ep 向量化版）epoch 速度确认
 - [ ] A4 各 run 完成后 Go/No-Go：savgol ≥ uniform/avg-pool 且 DP-oracle 差距 >5%
