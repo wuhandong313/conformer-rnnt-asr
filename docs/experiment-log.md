@@ -104,9 +104,10 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 ### A4 记分板（50 epochs, r=0.27, greedy, test-clean n=2620）
 | run | PER | RTF | val-best | 完成时间 |
 |---|---|---|---|---|
-| a4-avg-pool (avg_pool+seg_avg) | **0.1057** | 0.0381 | ep30 | 10-01 07:31 |
+| a4-avg-pool (avg_pool+seg_avg) | 0.1057 | 0.0381 | ep30 | 10-01 07:31 |
 | a4-cosine-diff (cosine_diff+hard) | 0.1166 | 0.0730 | ep48 | 10-01 09:56 |
 | a4-energy (energy+hard) | 0.1525 | 0.0379 | ep40 | 10-01 11:59 |
+| a4-max-pool (max_pool+hard) | **0.1026** | 0.0733 | ep30 | 10-01 15:50 |
 
 参考（非受控对比）：savgol 锚点（120ep s42）0.1112；oracle-dp 天花板 0.6624。
-进行中：a4-max-pool（11:59 起，Epoch 3，~2.5 min/epoch）。
+进行中：a4-mmdp（15:50 起）。前 4/10：max_pool 领先，两个固定率池化基线均优于 savgol 锚点参考值——受控对比等 a4-savgol-cal（50ep）出数。
