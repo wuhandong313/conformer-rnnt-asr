@@ -106,6 +106,7 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 |---|---|---|---|---|
 | a4-avg-pool (avg_pool+seg_avg) | **0.1057** | 0.0381 | ep30 | 10-01 07:31 |
 | a4-cosine-diff (cosine_diff+hard) | 0.1166 | 0.0730 | ep48 | 10-01 09:56 |
+| a4-energy (energy+hard) | 0.1525 | 0.0379 | ep40 | 10-01 11:59 |
 
 参考（非受控对比）：savgol 锚点（120ep s42）0.1112；oracle-dp 天花板 0.6624。
-进行中：a4-energy（10:00 起，Epoch 17，~2.5 min/epoch）。
+进行中：a4-max-pool（11:59 起，Epoch 3，~2.5 min/epoch）。
