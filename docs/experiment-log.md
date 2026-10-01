@@ -87,5 +87,16 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 
 ### 待办
 - [ ] oracle-dp 结果核对（天花板 PER + RTF）✅（0.6624 / 0.1865）
-- [ ] a4-avg-pool（50ep 向量化版）epoch 速度确认
+- [x] a4-avg-pool（50ep 向量化版）epoch 速度确认 ✅
 - [ ] A4 各 run 完成后 Go/No-Go：savgol ≥ uniform/avg-pool 且 DP-oracle 差距 >5%
+
+### 首个 50-epoch 结果（2026-10-01 07:31 UTC）
+| run | PER | RTF | val-best | 用时 |
+|---|---|---|---|---|
+| a4-avg-pool (avg_pool+seg_avg, r=0.27) | **0.1057** | 0.0381 | ep30/50 | 3.2h |
+
+- val-best 落在 ep30 → **50 epochs 决策被数据支持**（后半程无浪费）。
+- 向量化 mixer 生效：3.2h/run（此前 120ep 旧代码预计 ~17h/run）。
+- 参考：savgol 锚点（120ep, s42）PER 11.12%；oracle-dp 天花板（推理-only）66.24%。
+  注意 avg-pool 10.57% 与 savgol 锚点 epoch 数不同，等 A4 队列全部 50ep 出齐后统一对比。
+- 队列接力：a4-cosine-diff 07:31 起跑（字母序第 2/10）。A4 预计 ~10-02 12:30 UTC 跑完。
