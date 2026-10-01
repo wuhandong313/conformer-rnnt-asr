@@ -100,3 +100,12 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 - 参考：savgol 锚点（120ep, s42）PER 11.12%；oracle-dp 天花板（推理-only）66.24%。
   注意 avg-pool 10.57% 与 savgol 锚点 epoch 数不同，等 A4 队列全部 50ep 出齐后统一对比。
 - 队列接力：a4-cosine-diff 07:31 起跑（字母序第 2/10）。A4 预计 ~10-02 12:30 UTC 跑完。
+
+### A4 记分板（50 epochs, r=0.27, greedy, test-clean n=2620）
+| run | PER | RTF | val-best | 完成时间 |
+|---|---|---|---|---|
+| a4-avg-pool (avg_pool+seg_avg) | **0.1057** | 0.0381 | ep30 | 10-01 07:31 |
+| a4-cosine-diff (cosine_diff+hard) | 0.1166 | 0.0730 | ep48 | 10-01 09:56 |
+
+参考（非受控对比）：savgol 锚点（120ep s42）0.1112；oracle-dp 天花板 0.6624。
+进行中：a4-energy（10:00 起，Epoch 17，~2.5 min/epoch）。
