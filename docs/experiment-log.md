@@ -110,7 +110,8 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 | a4-max-pool (max_pool+hard) | **0.1026** | 0.0733 | ep30 | 10-01 15:50 |
 | a4-mmdp (mmdp+hard) | 0.1061 | 0.0469 | ep30 | 10-02 00:04 |
 | a4-ple (ple+hard) | **0.7028** ⚠ | 0.0253 | ep15 | 10-02 01:47 |
+| a4-random (random+hard) | 0.1302 | 0.0403 | ep31 | 10-02 03:47 |
 
 参考（非受控对比）：savgol 锚点（120ep s42）0.1112；oracle-dp 天花板 0.6624。
-进行中：a4-random（01:47 起）。
+进行中：a4-savgol-cal（03:47 起，**受控对比关键 run**），之后 topk-diff、uniform。
 ⚠ a4-ple 训练崩坏：val-best 停在 ep15 且 PER 70% 接近不可懂——PLE（cosine 累积距离游走 + threshold=6.0）在 r=0.27 等率 top-k 下选帧不稳定导致训练发散。待 A4 出齐后分析（候选解释：PLE scores 分布与 top-k 重排序交互不良）。
