@@ -133,13 +133,17 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 ### B-matrix 记分板（5 detector × 3 mixer，r=0.27，50ep，greedy n=2620；10-02 14:25 UTC 起跑）
 | detector | hard | seg_avg | learned |
 |---|---|---|---|
-| cosine_diff | 0.1160 | — | — |
+| cosine_diff | 0.1160 | — | **0.0915** 🏆 |
 | fir | — | — | — |
 | raw | — | — | — |
 | ple | — | — | — |
 | savgol | — | — | — |
 
 注：b-cosine_diff-hard 0.1160 vs A4 a4-cosine-diff 0.1166 —— 跨批次复现一致性 ±0.06pt。
+**🏆 learned mixer 重大发现**：cosine_diff+learned 0.0915 = 全场新纪录——
+比同 detector 的 hard 好 2.45pt（相对 21%），比 A4 冠军 max-pool（0.1026）好 1.11pt，
+比 savgol 锚点（0.1112）好 2pt。mixer 选择是主导因素：可学习加权混合在峰值处
+的局部平滑显著优于硬选帧。val-best ep47（近上限，后续可试 60ep）。
 
 参考（非受控对比）：savgol 锚点（120ep s42）0.1112；oracle-dp 天花板 0.6624。
 进行中：**a4-uniform（08:06 起，最后一个 run）**，预计 ~10:45 UTC 出数后汇总 Go/No-Go。
