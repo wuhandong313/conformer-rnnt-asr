@@ -112,9 +112,10 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 | a4-ple (ple+hard) | **0.7028** ⚠ | 0.0253 | ep15 | 10-02 01:47 |
 | a4-random (random+hard) | 0.1302 | 0.0403 | ep31 | 10-02 03:47 |
 | a4-savgol-cal (savgol+hard) | 0.1108 | 0.0413 | ep39 | 10-02 06:06 |
+| a4-topk-diff (topk_diff+hard) | 0.1596 | 0.0420 | ep44 | 10-02 08:06 |
 
 参考（非受控对比）：savgol 锚点（120ep s42）0.1112；oracle-dp 天花板 0.6624。
-进行中：a4-topk-diff（06:06 起），之后 a4-uniform。
+进行中：**a4-uniform（08:06 起，最后一个 run）**，预计 ~10:45 UTC 出数后汇总 Go/No-Go。
 注：savgol-cal 50ep=0.1108 vs savgol 锚点 120ep=0.1112 —— 几乎一致，验证 50-epoch 策略。
 **Go/No-Go 前哨**：受控 savgol（0.1108）目前落后 max-pool（0.1026，-0.82pt）与 avg-pool（0.1057，-0.51pt），判据第一半（savgol ≥ 固定率池化基线）暂不成立，等 uniform 出数后汇总判决。
 ⚠ a4-ple 训练崩坏：val-best 停在 ep15 且 PER 70% 接近不可懂——PLE（cosine 累积距离游走 + threshold=6.0）在 r=0.27 等率 top-k 下选帧不稳定导致训练发散。待 A4 出齐后分析（候选解释：PLE scores 分布与 top-k 重排序交互不良）。
