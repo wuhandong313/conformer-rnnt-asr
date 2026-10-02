@@ -108,6 +108,7 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 | a4-cosine-diff (cosine_diff+hard) | 0.1166 | 0.0730 | ep48 | 10-01 09:56 |
 | a4-energy (energy+hard) | 0.1525 | 0.0379 | ep40 | 10-01 11:59 |
 | a4-max-pool (max_pool+hard) | **0.1026** | 0.0733 | ep30 | 10-01 15:50 |
+| a4-mmdp (mmdp+hard) | 0.1061 | 0.0469 | ep30 | 10-02 00:04 |
 
 参考（非受控对比）：savgol 锚点（120ep s42）0.1112；oracle-dp 天花板 0.6624。
-进行中：a4-mmdp（15:50 起）。前 4/10：max_pool 领先，两个固定率池化基线均优于 savgol 锚点参考值——受控对比等 a4-savgol-cal（50ep）出数。
+进行中：a4-ple（10-02 00:04 起）。前 5/10：max_pool 领先；mmdp 训练慢（detector 未向量化，8.6 min/epoch）但质量正常。
