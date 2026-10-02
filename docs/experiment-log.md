@@ -130,6 +130,17 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 - 自适应（savgol）> uniform（+0.22pt）：动态选帧本身有价值，但"帧差峰值"信号弱于"段内极值/均值"
 - 帧差类动态检测器（cosine-diff/topk-diff/energy）普遍弱于 random 之外的池化系，ple 崩坏
 
+### B-matrix 记分板（5 detector × 3 mixer，r=0.27，50ep，greedy n=2620；10-02 14:25 UTC 起跑）
+| detector | hard | seg_avg | learned |
+|---|---|---|---|
+| cosine_diff | 0.1160 | — | — |
+| fir | — | — | — |
+| raw | — | — | — |
+| ple | — | — | — |
+| savgol | — | — | — |
+
+注：b-cosine_diff-hard 0.1160 vs A4 a4-cosine-diff 0.1166 —— 跨批次复现一致性 ±0.06pt。
+
 参考（非受控对比）：savgol 锚点（120ep s42）0.1112；oracle-dp 天花板 0.6624。
 进行中：**a4-uniform（08:06 起，最后一个 run）**，预计 ~10:45 UTC 出数后汇总 Go/No-Go。
 注：savgol-cal 50ep=0.1108 vs savgol 锚点 120ep=0.1112 —— 几乎一致，验证 50-epoch 策略。
