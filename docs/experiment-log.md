@@ -113,6 +113,22 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 | a4-random (random+hard) | 0.1302 | 0.0403 | ep31 | 10-02 03:47 |
 | a4-savgol-cal (savgol+hard) | 0.1108 | 0.0413 | ep39 | 10-02 06:06 |
 | a4-topk-diff (topk_diff+hard) | 0.1596 | 0.0420 | ep44 | 10-02 08:06 |
+| a4-uniform (uniform+hard) | 0.1130 | 0.0408 | ep31 | 10-02 10:03 |
+
+### A4 收官 + Go/No-Go 判决（10-02 10:03 UTC，队列 drain，总用时 ~40h）
+
+完整排序（greedy PER，r=0.27，50ep，n=2620）：
+**max-pool 0.1026** < avg-pool 0.1057 < mmdp 0.1061 < **savgol-cal 0.1108** < uniform 0.1130 < cosine-diff 0.1166 < random 0.1302 < energy 0.1525 < topk-diff 0.1596 < ple 0.7028⚠
+
+判据评估：
+1. "savgol ≥ uniform/avg-pool"：savgol 胜 uniform（0.1108 < 0.1130）但**负于 avg-pool（+0.51pt）与 max-pool（+0.82pt）→ 不成立**
+2. "DP-oracle 差距 >5%"：oracle 0.6624 为推理-only 探针（未适应训练的模型上压缩即崩），非有效天花板，判据按原意失效
+
+**结论：按计划判据 = No-Go**（自适应峰值检测在等码率 PER 上不敌简单池化）。
+支持性观察：
+- savgol 50ep 0.1108 ≈ 120ep 锚点 0.1112（epoch 策略再次验证）
+- 自适应（savgol）> uniform（+0.22pt）：动态选帧本身有价值，但"帧差峰值"信号弱于"段内极值/均值"
+- 帧差类动态检测器（cosine-diff/topk-diff/energy）普遍弱于 random 之外的池化系，ple 崩坏
 
 参考（非受控对比）：savgol 锚点（120ep s42）0.1112；oracle-dp 天花板 0.6624。
 进行中：**a4-uniform（08:06 起，最后一个 run）**，预计 ~10:45 UTC 出数后汇总 Go/No-Go。
