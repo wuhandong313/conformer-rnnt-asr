@@ -44,6 +44,55 @@ max_len 显式报错、JIT 契约。
 但仍显著落后于 warm-start LSTM 基线 (0.073)。作为 Medusa 草稿 backbone
 的价值需后续在该 trunk 上接 Medusa 头再评估。
 
+## attn trunk × Medusa 多头架构 (attn-multihead 分支, 2026-10-03)
+
+从 attn-predictor 拉出 `attn-multihead` 分支，把 Medusa 头接到 attn trunk 上，
+架构链路补齐并修了两个对齐 bug。
+
+### 架构
+
+- trunk: `PredictorAttn` (受限因果自注意力, KV cache 定长循环写槽位)，
+  输出 g (B, U+1, 512)，blank 前置 (`[blank, y_0..y_{U-1}]`)。
+- 头: `MedusaHeads` — head 0 = trunk 直投影 (由 RNN-T loss 经 joiner 训，
+  aux 侧只作 KL 的 detach 锚)；head k = ResBlock_k(g) → 共享 w_vocab，
+  零初始化 ⇒ 初始 draft ≡ base 分布。共享 512→V 投影 (Medusa 论文同款)。
+- 训练: `forward_train_aux` 输出 (logits_base, [logits_1..logits_K])，
+  aux 损失 = Σ λ_k·shifted_CE + β·KL(head_k ‖ head_0.detach)，
+  λ_k=0.8^k、β=0.05，已接入 `lightning_module._step`。
+- 解码: `spec_decode.speculative_greedy_decode` — 无损自投机贪心，草拟
+  K=2 (h1/h2, 钉死决策)，head-0 argmax 逐步验证。
+
+### 对齐契约 (两个 bug 的根因)
+
+`medusa.shifted_ce_loss` 的语义: head k 在列 l (trunk 已消费
+`[blank, y_0..y_{l-1}]`) 预测 **y_{l+k}**。由此：
+
+1. **草拟时机 = draft_before_emit**: spec 解码必须在**消费刚 emit 的
+   pred0 之前**查询头——此时 d_1 = y_{u+1} 恰是下一个 emit。旧实现在
+   消费 pred0 之后草拟 (post-emit)，草稿系统性偏移一位，接受率趋 0。
+   (multihead 分支 iter-10 的 draft_after_emit 模式是配合重写的头语义，
+   与本分支瘦身头不兼容。)
+2. **验证扫描边界**: 旧验证循环 `t < T-1` 会在最后一帧跳过 emit 检查
+   (oracle 在 t=T-1 仍会 emit)，spec 输出少于 oracle。已改为 `t < T`
+   逐步复刻 oracle；blank 预算 (per_token_blank) 耗尽即弃权，外层从同
+   (t, g_last) 继续，无损性不受影响。
+
+### 冒烟 (`scripts/smoke_multihead.py`, CPU)
+
+zero-init 头≡base 等价 / shifted_CE 对齐钉死 (one-hot 构造, 对齐正确
+loss≈0 偏移一位 loss>1) / aux 损失反传 (梯度到达 res_blocks + attn
+trunk) / spec-decode 无损 (13 个 blank-biased 随机 seed 逐 token 等于
+oracle) / **oracle 喂样满接受验收** (头恒草拟真实未来 token ⇒ R=2 轮
+吞掉 M=6 个 emit, R≈ceil(M/3)，若草拟偏移一位则 R≈M) / config factory。
+注意: 测试模型必须 `attn_dropout=0.0` + `model.eval()`，否则 dropout
+采样使解码逐次不一致 (排查时踩过)。
+
+### 训练配置
+
+`configs/server_attn_multihead.yaml` — 与 server.yaml 仅两处差异:
+`medusa.num_heads: 2`、`exp_dir: /test21/conformer-rnnt-asr-attn/exp_mh`
+(与单头基线 ckpt 隔离)。
+
 ## 复现
 
 ```bash

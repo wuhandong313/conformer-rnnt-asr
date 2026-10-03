@@ -11,6 +11,14 @@ width=1 oracle **逐 token 完全一致**（无损，PER 不牺牲）。
 链式 draft (默认)：同头单路径 argmax(d_j)。
 树式 (tree=True)：每头取 top-k 路径，取可接受最长者（同一批 heads，仅改候选）。
 
+对齐契约 (draft_before_emit)：训练侧 medusa.shifted_ce_loss 的语义是
+head k 在位置 u (predictor 已消费 prepended[0..u]，末 token = y_{u-1})
+预测 y_{u+k}。因此草拟必须在**消费刚 emit 的 token 之前**做：刚在
+位置 u 用 head-0 emit 了 y_u，此刻查询头，d_1 = y_{u+1} 恰是 y_u 之后
+的下一个 emit，验证时逐位对齐。若先推进 predictor 再草拟 (post-emit)，
+草稿系统性偏移一位，接受率趋近 0（multihead 分支 iter-10 的
+draft_after_emit 模式需配合重写的头语义，本分支瘦身头为 legacy 语义）。
+
 本实现 eager (非 JIT)，规避 DynamicCompression 的 numpy 不可 script 问题。
 """
 
@@ -85,10 +93,12 @@ def speculative_greedy_decode(
     """自投机贪心解码 (链式 draft) — 无损。
 
     状态推进严格复刻 greedy_decode：emit 后 g_last 推进、t 不变；blank 后
-    t 推进、g_last 不变。投机只在"连续 emit"处省 predictor 往返：草拟
-    d_1..d_K，逐个用 head-0 joiner argmax 验证(允许 ≤per_token_blank 个
-    blank 步到下一次 emit)，命中即连续提交；失配或遇 blank 则本步用标准
-    贪心推进。因验证器 == head-0 argmax == oracle argmax ⇒ 逐 token 一致。
+    t 推进、g_last 不变。投机在"连续 emit"处省 predictor 往返：在刚 emit
+    y_u 的位置 u（消费 y_u 之前）草拟 d_1..d_K（d_j = y_{u+j}，与
+    shifted_ce_loss 对齐，见模块 docstring），随后消费 y_u，再逐个用
+    head-0 joiner argmax 验证(允许 ≤per_token_blank 个 blank 步到下一次
+    emit)，命中即连续提交；失配或遇 blank 则本步用标准贪心推进。因验证
+    器 == head-0 argmax == oracle argmax ⇒ 逐 token 一致。
     """
     dev = features.device
     enc, enc_len = model.transcribe(features, feature_lengths)
@@ -121,24 +131,28 @@ def speculative_greedy_decode(
 
         # ---- emit y*=pred0 ----
         out.append(pred0)
-        # predictor 吃 pred0 → 新 g_last (label 位 +1，t 不变)
+
+        # ---- 草拟 d_1..d_K：必须在消费 pred0 之前，于当前位置 u 草拟 ----
+        # head k 在位置 u 预测 y_{u+k}，d_1 = y_{u+1} = 下一个 emit。
+        _, future_logits = model.predict_heads(g_last)
+        drafts = [int(future_logits[k].argmax(dim=-1).item()) for k in range(K)]
+
+        # ---- 消费 pred0（label 位 +1，t 不变）----
         tok = torch.tensor([[pred0]], device=dev, dtype=torch.long)
         g_last, _, state = model.predict(tok, one, state)
 
-        # ---- 草拟 d_1..d_K (head k argmax over 当前 g_last) ----
-        base_logits, future_logits = model.predict_heads(g_last)
-        drafts = [int(future_logits[k].argmax(dim=-1).item()) for k in range(K)]
-
         # ---- 逐个验证 d_j ----
         # 状态推进与 oracle 完全一致：每个 d_j 允许 ≤per_token_blank 次 blank
-        # (t 前进) 后 emit。若 emit == d_j：接受、推进 predictor。若 emit != d_j：
-        # 失配但仍须 emit 该 label（与 oracle 一致），然后停止投机。若 frame 耗尽
-        # 未 emit：停止投机（状态停留，下轮外层从同 t 继续，等价 oracle 走 blank）。
+        # (t 前进) 后 emit。扫描边界逐步复刻 oracle：t 可走到最后一帧 T-1
+        # (oracle 在 t=T-1 仍会 emit/走 blank)，t==T 才耗尽。若 emit == d_j：
+        # 接受、推进 predictor。若 emit != d_j：失配但仍须 emit 该 label（与
+        # oracle 一致），然后停止投机。若 blank 预算耗尽或帧耗尽未 emit：停止
+        # 投机（状态停留，下轮外层从同 t 继续，等价 oracle 走 blank）。
         for j in range(K):
             d_j = drafts[j]
             blanks = 0
             emitted = None
-            while blanks < per_token_blank and t < T - 1:
+            while t < T and blanks < per_token_blank:
                 lg, _, _ = model.join(enc[:, t:t+1], one, g_last, one)
                 p = int(lg.argmax(dim=-1).item())
                 if p == blank_idx:
@@ -148,7 +162,8 @@ def speculative_greedy_decode(
                     emitted = p
                     break
             if emitted is None:
-                # 帧窗耗尽未 emit：停止投机，t 已前进若干 blank（与 oracle 的 blank 前进一致）
+                # blank 预算或帧耗尽未 emit：停止投机，t 已前进的 blank 与
+                # oracle 的 blank 前进一致，外层从同 (t, g_last) 继续
                 break
             if emitted != d_j:
                 # 失配：但 head-0 在此处确实 emit `emitted`，必须提交以与 oracle 一致
