@@ -134,7 +134,7 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 | detector | hard | seg_avg | learned |
 |---|---|---|---|
 | cosine_diff | 0.1160 | 0.0959 | **0.0915** 🏆 |
-| fir | 0.1118 | — | — |
+| fir | 0.1118 | — | 0.0977 |
 | raw | — | — | — |
 | ple | — | — | — |
 | savgol | — | — | — |
@@ -143,6 +143,8 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 seg_avg 落库（10-02 21:56 UTC）：cosine_diff 行 mixer 排序 **learned(0.0915) < seg_avg(0.0959) < hard(0.1160)** 成立；
 seg_avg 也超过 A4 冠军 max-pool（0.1026）——soft mixing 系（learned/seg_avg）整体强于 hard 选帧。
 b-fir-hard 落库（10-03 00:21 UTC）：0.1118（RTF 0.0388，val-best ep45），介于 savgol-cal 与 cosine_diff-hard 之间。
+b-fir-learned 落库（10-03 03:26 UTC）：0.0977（RTF 0.0422，val-best ep38）——**learned < hard 在第二个 detector（fir）上复现**（−1.41pt），
+且 0.0977 也优于 A4 冠军 max-pool（0.1026）。两个 detector 一致：learned mixer 增益 −1.4 ~ −2.45pt。
 **🏆 learned mixer 重大发现**：cosine_diff+learned 0.0915 = 全场新纪录——
 比同 detector 的 hard 好 2.45pt（相对 21%），比 A4 冠军 max-pool（0.1026）好 1.11pt，
 比 savgol 锚点（0.1112）好 2pt。mixer 选择是主导因素：可学习加权混合在峰值处
