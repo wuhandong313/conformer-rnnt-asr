@@ -135,8 +135,8 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 |---|---|---|---|
 | cosine_diff | 0.1160 | 0.0959 | **0.0915** 🏆 |
 | fir | 0.1118 | **0.0917** | 0.0977 |
-| raw | — | — | — |
-| ple | — | — | — |
+| raw | 0.1212 | — | — |
+| ple | 0.7224 ⚠ | 0.5013 ⚠ | 0.6390 ⚠ |
 | savgol | — | — | — |
 
 注：b-cosine_diff-hard 0.1160 vs A4 a4-cosine-diff 0.1166 —— 跨批次复现一致性 ±0.06pt。
@@ -149,6 +149,9 @@ b-fir-seg_avg 落库（10-03 06:11 UTC）：0.0917（RTF 0.0498，val-best ep41�
 **注意：seg_avg 与 learned 的排序在 fir 上与 cosine_diff 相反**（fir: seg_avg 0.0917 < learned 0.0977；cosine_diff: learned 0.0915 < seg_avg 0.0959）——
 两个 soft mixer 互有胜负（差距 ≤0.6pt），但**两个 detector 上 soft 系（learned/seg_avg）都大幅领先 hard（−1.4 ~ −2.4pt）不变**。
 b-fir-seg_avg 0.0917 与全场纪录 b-cosine_diff-learned 0.0915 仅差 0.02pt。
+ple 行落库（10-03 07:57-12:27 UTC）：hard 0.7224（ep17 崩）/ learned 0.6390（ep12 崩）/ seg_avg 0.5013（ep48 跑完仍不可懂）
+——**复现 A4 的 ple 崩坏，且换 mixer 无法挽救**：PLE 游走分数 + threshold=6.0 在 r=0.27 等率 top-k 下选帧机制本身坏掉，与 mixer 无关（可注：soft mixer 让崩溃稍轻 0.72→0.50）。
+b-raw-hard 落库（10-03 14:37 UTC）：0.1212，比 fir-hard（0.1118）差——raw 峰值无平滑处理确实需要滤波。
 **🏆 learned mixer 重大发现**：cosine_diff+learned 0.0915 = 全场新纪录——
 比同 detector 的 hard 好 2.45pt（相对 21%），比 A4 冠军 max-pool（0.1026）好 1.11pt，
 比 savgol 锚点（0.1112）好 2pt。mixer 选择是主导因素：可学习加权混合在峰值处
