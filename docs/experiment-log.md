@@ -178,7 +178,7 @@ raw-learned/seg_avg + savgol-hard/learned 落库（10-03 晚，27/28 行）：b-
 4. **learned vs seg_avg 2:2 平**（cosine_diff/savgol→learned，fir/raw→seg_avg），互有胜负 ≤1.5pt，等价性待多种子检验。
 5. **ple 独立崩坏**（三 mixer 全崩 0.50-0.72，ep12-17/48）：等率 top-k 与游走分数机制冲突，与 mixer 无关。
 
-**对比不压缩基线**（baseline-none greedy，watcher 评测中，cum PER ~7.9% @1810/2620）：压缩到 r=0.27 的质量代价 ~1-1.2pt。
+**对比不压缩基线**（baseline-none greedy，2620 utts 全量）：**0.0781**（RTF 0.0487）。压缩到 r=0.27 的质量代价：冠军 +1.34pt（greedy 口径）。
 **RTF 陷阱**：baseline-none RTF 0.049 ≈ 压缩 run RTF（0.033-0.055）——墙钟被 RNN-T 解码循环/IO 主导，encoder FLOPs 的 3.65× 缩减不体现在 RTF 上，Phase E 必须做 FLOPs/延迟分解（已列 Stage 5）。
 
 **后续（已布置）**：eval-none 后自动跑 beam20（cosine_diff-learned / fir-seg_avg / savgol-learned / max-pool 对照）；然后 Stage 4（D0-D2 + C2 + A6-360h）。
@@ -190,5 +190,18 @@ raw-learned/seg_avg + savgol-hard/learned 落库（10-03 晚，27/28 行）：b-
 参考（非受控对比）：savgol 锚点（120ep s42）0.1112；oracle-dp 天花板 0.6624。
 进行中：**a4-uniform（08:06 起，最后一个 run）**，预计 ~10:45 UTC 出数后汇总 Go/No-Go。
 注：savgol-cal 50ep=0.1108 vs savgol 锚点 120ep=0.1112 —— 几乎一致，验证 50-epoch 策略。
+
+## Beam20 收尾评测（2026-10-04，2620 utts 全量，configs/server_eval_beam20.yaml，beam=20）
+
+| 模型 | greedy | beam20 | 增益 | RTF |
+|---|---|---|---|---|
+| cosine_diff-learned | 0.0915 | **0.0879** | +0.36pt | 0.592 |
+| fir-seg_avg | 0.0917 | **0.0884** | +0.33pt | 0.591 |
+| savgol-learned | 0.0926 | **0.0904** | +0.22pt | 0.568 |
+| max-pool（A4 冠军对照） | 0.1026 | 补跑中（14:04 UTC 重启） | — | ~0.50 |
+
+- 三个 B-matrix 头部模型 beam20 一致优于 greedy（+0.22~+0.36pt）；cosine_diff-learned beam20 **0.0879** 为全场最优。
+- beam RTF ~0.57-0.59（约为 greedy 的 10 倍）——RNN-T beam 解码主导墙钟，再次印证 Phase E 需 FLOPs/延迟分解。
+- 编排插曲：首轮编排器在 attn 仓库内搜 max-pool ckpt 落空（实际位于 /test21/conformer-rnnt-asr/exp_a4/a4-max-pool/checkpoints/），前三个模型正常完成，max-pool 手动补跑（tmux eval-beam，ckpt=val-attn-max_pool-hard-r0.27-epoch=30）。
 **Go/No-Go 前哨**：受控 savgol（0.1108）目前落后 max-pool（0.1026，-0.82pt）与 avg-pool（0.1057，-0.51pt），判据第一半（savgol ≥ 固定率池化基线）暂不成立，等 uniform 出数后汇总判决。
 ⚠ a4-ple 训练崩坏：val-best 停在 ep15 且 PER 70% 接近不可懂——PLE（cosine 累积距离游走 + threshold=6.0）在 r=0.27 等率 top-k 下选帧不稳定导致训练发散。待 A4 出齐后分析（候选解释：PLE scores 分布与 top-k 重排序交互不良）。
