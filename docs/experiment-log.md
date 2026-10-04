@@ -137,7 +137,7 @@ none anchor 训练完成后复测（`analysis/out/rate_distribution_none_anchor.
 | fir | 0.1118 | **0.0917** | 0.0977 |
 | raw | 0.1212 | 0.0968 | 0.1119 |
 | ple | 0.7224 ⚠ | 0.5013 ⚠ | 0.6390 ⚠ |
-| savgol | 0.0983 | 训练中 | 0.0926 |
+| savgol | 0.0983 | 0.0967 | 0.0926 |
 
 注：b-cosine_diff-hard 0.1160 vs A4 a4-cosine-diff 0.1166 —— 跨批次复现一致性 ±0.06pt。
 seg_avg 落库（10-02 21:56 UTC）：cosine_diff 行 mixer 排序 **learned(0.0915) < seg_avg(0.0959) < hard(0.1160)** 成立；
@@ -158,6 +158,30 @@ raw-learned/seg_avg + savgol-hard/learned 落库（10-03 晚，27/28 行）：b-
 - learned vs seg_avg 2:2 平（cosine_diff/savgol 上 learned 胜，fir/raw 上 seg_avg 胜），互有胜负、差距 ≤1.5pt
 - **A4 No-Go 被翻案**：savgol+learned 0.0926 反超 A4 冠军 max-pool 0.1026（−1.0pt）——A4 输在 mixer 不在检测器
 - 前三浓缩：cosine_diff-learned 0.0915 ≈ fir-seg_avg 0.0917 ≈ savgol-learned 0.0926（0.11pt 内），检测器选择远不如 mixer 重要
+
+### B-matrix 收官（10-04 03:30 UTC，15/15，~37h）
+
+完整记分板（greedy PER，r=0.27，50ep，n=2620）：
+
+| detector | hard | seg_avg | learned | 最优 soft 增益 |
+|---|---|---|---|---|
+| cosine_diff | 0.1160 | 0.0959 | **0.0915** 🏆 | −2.45pt |
+| fir | 0.1118 | 0.0917 | 0.0977 | −2.01pt |
+| raw | 0.1212 | 0.0968 | 0.1119 | −2.44pt |
+| savgol | 0.0983 | 0.0967 | 0.0926 | −0.57pt |
+| ple | 0.7224 ⚠ | 0.5013 ⚠ | 0.6390 ⚠ | （机制崩坏） |
+
+**四条结论**：
+1. **mixer 是主导因素**：4 个正常 detector 上 soft 全胜 hard，平均 −1.87pt（0.1118 → 0.0932）。压缩本身不掉分，掉分的是丢掉未选帧信息。
+2. **A4 No-Go 翻案**：savgol+learned 0.0926 反超 max-pool 0.1026（−1.0pt）；主方法（动态压缩+软混合）首次完整跑赢全部固定率池化基线。
+3. **检测器只需"合理"**：前三在 0.11pt 内扎堆（cosine_diff/fir/savgol + soft），raw 慢 0.4-0.5pt。
+4. **learned vs seg_avg 2:2 平**（cosine_diff/savgol→learned，fir/raw→seg_avg），互有胜负 ≤1.5pt，等价性待多种子检验。
+5. **ple 独立崩坏**（三 mixer 全崩 0.50-0.72，ep12-17/48）：等率 top-k 与游走分数机制冲突，与 mixer 无关。
+
+**对比不压缩基线**（baseline-none greedy，watcher 评测中，cum PER ~7.9% @1810/2620）：压缩到 r=0.27 的质量代价 ~1-1.2pt。
+**RTF 陷阱**：baseline-none RTF 0.049 ≈ 压缩 run RTF（0.033-0.055）——墙钟被 RNN-T 解码循环/IO 主导，encoder FLOPs 的 3.65× 缩减不体现在 RTF 上，Phase E 必须做 FLOPs/延迟分解（已列 Stage 5）。
+
+**后续（已布置）**：eval-none 后自动跑 beam20（cosine_diff-learned / fir-seg_avg / savgol-learned / max-pool 对照）；然后 Stage 4（D0-D2 + C2 + A6-360h）。
 **🏆 learned mixer 重大发现**：cosine_diff+learned 0.0915 = 全场新纪录——
 比同 detector 的 hard 好 2.45pt（相对 21%），比 A4 冠军 max-pool（0.1026）好 1.11pt，
 比 savgol 锚点（0.1112）好 2pt。mixer 选择是主导因素：可学习加权混合在峰值处
