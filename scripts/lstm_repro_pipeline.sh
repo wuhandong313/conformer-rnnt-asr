@@ -12,7 +12,8 @@ echo "[$(date -u +%FT%T)] pipeline start (repo: $(git rev-parse --short HEAD))" 
 
 # ── 1) 等 baseline beam20 eval 结束（GPU 释放）────────────────────────────
 echo "[$(date -u +%FT%T)] waiting for GPU (baseline eval running) ..." >> "$LOG"
-while pgrep -f "eval.py configs/server_baseline_none.yaml" >/dev/null; do sleep 60; done
+# 锚定真实 python 进程（tmux server 进程 argv 里也含 eval.py 字样，不能裸 pgrep）
+while pgrep -f "^/root/anaconda3/envs/whd/bin/python eval.py configs/server_baseline_none.yaml" >/dev/null; do sleep 60; done
 echo "[$(date -u +%FT%T)] GPU free, starting training" >> "$LOG"
 
 # ── 2) 训练，记录 best val ckpt ──────────────────────────────────────────
