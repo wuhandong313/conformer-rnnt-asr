@@ -363,9 +363,9 @@ D0–D8 不变，协议改四元组（§4），主口径改保持率 %。
 
 ---
 
-## 14. 泛化研究详细计划（v2.3 增补，2026-10-05，用户拍板下一主攻方向）
+## 14. 泛化研究详细计划（v2.4，2026-10-05 增补；同日两次修订：加入 G6/G7，后续训练实验统一改用 460h 全量数据）
 
-> 定位：对应 §13.1 WP4 的展开版。目标是在 B-matrix 已确立"mixer 主导、soft 制胜"之后，把核心结论从"Conformer-ASR-100h 单点"推向跨架构 / 跨数据规模 / 跨任务，形成顶会要求的泛化证据链。成本基准：100h/50ep 单 run 实测 ~2.5-3h（B-matrix 15 runs/37h），360h/40ep 推算 ~7-8h（training-plan 保守上限 15-18h）。
+> 定位：对应 §13.1 WP4 的展开版。目标是在 B-matrix 已确立"mixer 主导、soft 制胜"之后，把核心结论从"Conformer-ASR-100h 单点"推向跨架构 / 跨数据规模 / 跨任务，形成顶会要求的泛化证据链。成本基准：100h/50ep 单 run 实测 ~2.5-3h（B-matrix 15 runs/37h）；**用户 10-05 决定后续训练实验统一 460h（train-clean-100+360 合并，~132,553 句），50ep 单 run 推算 ~12h（约 100h 的 4.6×）**。数据就绪：100h/360h 的 flac 与 -ph 音素标注均已验证；加载器当前仅支持单子集，需新增合并模式（train-clean-460）+ smoke 门禁。
 
 ### 14.1 研究问题与 reviewer 质疑映射
 
@@ -381,16 +381,18 @@ D0–D8 不变，协议改四元组（§4），主口径改保持率 %。
 ### 14.2 实验矩阵（G1-G5）
 
 **G1 — 架构泛化（RQ1，P0）**
-- `g1-squeeze-learned`：squeezeformer 式主干（替换 conformer block，保持 2+8 布局与压缩位），cosine_diff-learned 冠军口径，100h/50ep，~3-4h。
-- `g1-squeeze-hard`：同主干 max-pool hard 对照，~3-4h。
+- `g1-squeeze-learned`：squeezeformer 式主干（替换 conformer block，保持 2+8 布局与压缩位），cosine_diff-learned 冠军口径，460h/50ep，~12h。
+- `g1-squeeze-hard`：同主干 max-pool hard 对照，~12h。
 - 产出：架构 × mixer 2×2 小矩阵——"soft>hard"若在新架构复现 → 结论升级为跨架构；否则限定 Conformer 并在 limitations 声明。
 - 决策门 **D4**：G1 soft>hard 成立 → 泛化故事完整版；不成立 → 收缩为"Conformer 深度机制分析"。
 
-**G2 — 数据规模泛化（RQ2，P0，360h 数据+音素标注已验证就绪）**
-- `a6-360-learned`：cosine_diff-learned，train-clean-360（104,014 句），40ep，~8-18h。
-- `a6-360-maxpool`：max-pool hard 对照（D2 判据必需），~8-18h。
-- `a6-360-baseline`（P1，预算允许则跑）：不压缩 360h 锚点，Pareto 图大数据锚点，~8-18h。
-- 免费附加：360h 冠军 ckpt 上 keep_rate ∈ {0.15,0.20,0.27,0.35,0.50} 推理侧率扫（与 WP3 Pareto 共享口径）。
+**G2 — 数据规模泛化（RQ2，P0，用户决定直接上 460h 全量）**
+- 规模轴 = 100h（B-matrix 已有结论）vs **460h**（train-clean-100+360 合并，~132,553 句；两段 flac 与 -ph 音素标注均已验证）。
+- `a6-460-learned`：cosine_diff-learned，460h，50ep，~12h。
+- `a6-460-maxpool`：max-pool hard 对照（D2 判据必需），~12h。
+- `a6-460-baseline`（P1，预算允许则跑）：不压缩 460h 锚点，Pareto 图锚点，~12h。
+- 前置：加载器新增 train-clean-460 合并模式（当前仅支持单子集）+ smoke 门禁。
+- 免费附加：460h 冠军 ckpt 上 keep_rate ∈ {0.15,0.20,0.27,0.35,0.50} 推理侧率扫（与 WP3 Pareto 共享口径）。
 
 **G3 — 任务迁移（RQ3，P1，推理为主，不占训练 GPU）**
 - `g3-kws`：命令词/关键词检索（Speech Commands 或 LibriSpeech 内构 keyword 子集），现有 ckpt 零训练评测，~0.5 天工程。
@@ -399,12 +401,12 @@ D0–D8 不变，协议改四元组（§4），主口径改保持率 %。
 - 产出：压缩 vs 不压缩在下游任务的相对退化表（预期退化 ≤ ASR 主任务）。
 
 **G4 — 插入位置消融（RQ4，P1）**
-- `g4-pos-front` / `g4-pos-rear`：压缩模块移到 conformer1 前 / conformer2 后（现位 mid 已有），2 runs × ~3h。
+- `g4-pos-front` / `g4-pos-rear`：压缩模块移到 conformer1 前 / conformer2 后（现位 mid 已有），2 runs × ~12h（460h）。
 - 依赖：A0 诊断层位统计（已有）。
 - 注意口径：不同位置省的 FLOPs 不同（front 省最多——整个 encoder 都在压缩后帧率上跑），横向对比须用 WP2 实测 FLOPs 等价换算，不能只看 r。
 
 **G5 — 可微门控 C2（RQ5，P1）**
-- `c2-signal-init` / `c2-random-init`：门控 logit 用检测器分数初始化 vs 随机初始化，2-3 runs × ~3h。
+- `c2-signal-init` / `c2-random-init`：门控 logit 用检测器分数初始化 vs 随机初始化，2-3 runs × ~12h（460h）。
 - 产出：可微门控 vs top-k 等率对比；若超冠军 → 论文方法升级点；若平 → 反证等率 top-k 设计合理性。
 
 **G6 — 多级（级联）压缩（RQ4，P1，用户 10-05 指定）**
@@ -414,7 +416,7 @@ D0–D8 不变，协议改四元组（§4），主口径改保持率 %。
   - `g6-two-eq`：0.52 × 0.52（等比）
   - `g6-two-coarse-fine`：0.40 × 0.675（先粗后细，符合冗余随深度递减假设）
   - `g6-two-fine-coarse`：0.675 × 0.40（反向对照）
-- 3 runs × ~3h = ~9h。
+- 3 runs × ~12h = ~36h（460h）。
 - 判据：总计算量与单点 r=0.27 等价（WP2 FLOPs 校准）下 PER 对比冠军 0.0915；若 two-stage 更优 → 论文方法升级点；机制产出 = "位置×次数" FLOPs-精度权衡图，配 A0 冗余分布解释。
 - 注意：r 乘积 ≠ FLOPs 等价（各 block 帧率不同），等计算口径以实测为准。
 
@@ -432,21 +434,21 @@ D0–D8 不变，协议改四元组（§4），主口径改保持率 %。
 
 | 组 | 内容 | runs | GPU·h | 优先级 |
 |---|---|---|---|---|
-| G1 架构泛化 | squeezeformer 主干 × {learned, hard} | 2(+1) | 6-8(+4) | P0 |
-| G2 数据规模 | 360h × {冠军, max-pool, 不压缩锚点} + 免费率扫 | 2(+1) | 16-36(+8-18) | P0 |
+| G1 架构泛化 | squeezeformer 主干 × {learned, hard}（460h） | 2(+1) | ~24(+12) | P0 |
+| G2 数据规模 | 460h × {冠军, max-pool, 不压缩锚点} + 免费率扫 | 2(+1) | ~24-36 | P0 |
 | G3 任务迁移 | KWS/SV 推理侧零训练 | 0(+1) | 0(+4) | P1 |
-| G4 插入位置 | 压缩移 conformer 前/后 vs 现位 | 2 | ~6 | P1 |
-| G5 可微门控 | 检测器分数初始化 vs 随机初始化 | 2-3 | 6-9 | P1 |
-| G6 多级压缩 | 2+4+4 双压缩点，r 拆分 3 种 | 3 | ~9 | P1 |
+| G4 插入位置 | 压缩移 conformer 前/后 vs 现位（460h） | 2 | ~24 | P1 |
+| G5 可微门控 | 检测器分数初始化 vs 随机初始化（460h） | 2-3 | 24-36 | P1 |
+| G6 多级压缩 | 2+4+4 双压缩点，r 拆分 3 种（460h） | 3 | ~36 | P1 |
 | G7 可解释性 | 音素去留统计/分数-声学相关/权重可视化/CKA+混淆漂移 | 0 | 1-2 | P1 |
-| **必选合计** | G1+G2 必选 | **4** | **~22-44** | |
-| **全量合计** | | **13-16** | **~45-81** | |
+| **必选合计** | G1+G2 必选 | **4** | **~48** | |
+| **全量合计** | | **13-16** | **~156-192**（约 7-8 GPU 天） | |
 
 对照：B-matrix 15 runs 实测 37h——本计划必选部分 (~2 天) 远小于 B-matrix，全量 (~3-6 天) 可控。训练用统一 50ep（360h 用 40ep），评测口径与 B-matrix 一致（greedy PER 2620 句 test-clean；360h 结果另跑同集）。
 
 ### 14.4 执行顺序与基础设施
 
-1. **G2 先行**（单 run 最长、承载 D2 判据）：写 stage4 queue 脚本（扩展 gen_configs 模板 g1/g2/g4/c2 + smoke 门禁），`tmux new -s queue-g4` 提队。
+1. **前置改造**：加载器新增 train-clean-460 合并模式 + smoke 门禁。**G2 先行**（单 run 最长、承载 D2 判据）：写 stage4 queue 脚本（扩展 gen_configs 模板 g1/g2/g4/g6/c2 + smoke 门禁），`tmux new -s queue-g4` 提队。
 2. G1 两 run 排队跟进（需先改 encoder 支持 squeezeformer block + 冒烟测试）。
 3. G4/G5/G6 穿插填空（G6 需 encoder 支持 2+4+4 布局与双压缩点实例化；等 G1/G2 调试间隙的 GPU 空闲）。
 3. G4/G5/G6 穿插填空（G6 需 encoder 支持 2+4+4 布局与双压缩点实例化；等 G1/G2 调试间隙的 GPU 空闲）。
@@ -457,7 +459,7 @@ D0–D8 不变，协议改四元组（§4），主口径改保持率 %。
 
 | 接收要求 | 本计划覆盖 |
 |---|---|
-| 泛化性（常见底线：≥2 架构 或 ≥2 数据集 × ≥2 任务） | G1（Conformer+squeezeformer）× G2（100h+360h）× G3（ASR+KWS/SV）三轴全覆盖 |
+| 泛化性（常见底线：≥2 架构 或 ≥2 数据集 × ≥2 任务） | G1（Conformer+squeezeformer）× G2（100h→460h 规模轴）× G3（ASR+KWS/SV）三轴全覆盖 |
 | 消融完整性 | G4 位置 + G5 可微对照 + G6 多级 + 已有 B-matrix 2D 主消融 |
 | 机制可解释性（"为什么 work"） | G7 四件套（音素去留 / 分数-声学相关 / 权重可视化 / 表征漂移）+ A0 冗余分布 |
 | 稳健性 | 单种子（用户 10-05 决定，论文如实声明）+ 推理侧率扫多点位 + test-clean 全量 |
