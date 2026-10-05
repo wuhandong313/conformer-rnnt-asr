@@ -199,9 +199,10 @@ raw-learned/seg_avg + savgol-hard/learned 落库（10-03 晚，27/28 行）：b-
 | fir-seg_avg | 0.0917 | **0.0884** | +0.33pt | 0.591 |
 | savgol-learned | 0.0926 | **0.0904** | +0.22pt | 0.568 |
 | max-pool（A4 冠军对照） | 0.1026 | **0.0979**（v2） | +0.47pt | 0.565 |
-| baseline-none | 0.0781 | 重跑中（v2，进行时 cum 0.082 @100 句，RTF ~0.92） | — | — |
+| baseline-none | 0.0781 | **0.0782**（v2） | +0.01pt | 0.870 |
 
-- 四个模型 beam20 一致优于 greedy（+0.22~+0.47pt）；cosine_diff-learned beam20 **0.0879** 为全场最优；max-pool v2 = 0.0979 证实此前 0.1436 为伪影，hard 池化在 beam 下同样正常受益。
+- 五个模型 beam20 收官：四个压缩模型一致优于 greedy（+0.22~+0.47pt）；cosine_diff-learned beam20 **0.0879** 为全场最优；max-pool v2 = 0.0979 证实此前 0.1436 为伪影，hard 池化在 beam 下同样正常受益。
+- **不压缩基线几乎不吃 beam 收益（7.81 → 7.82，+0.01pt）**：beam 无法消除压缩差距，冠军 beam20 8.79% vs 基线 7.82% = **结构性 +0.97pt**——故事线"3.7× FLOPs ↓ @ beam +0.97pt"的最终实测口径就此锁定。
 - beam RTF ~0.57-0.59（约为 greedy 的 10 倍；baseline-none 因帧率不压缩 beam RTF ~0.92）——RNN-T beam 解码主导墙钟，再次印证 Phase E 需 FLOPs/延迟分解。
 - 编排插曲：首轮编排器（scripts/eval_beam_top.sh）搜 max-pool ckpt 只查了 exp_b/exp 漏了 exp_a4 → 该格空缺；前三个模型用 per-model config 正常完成。
 

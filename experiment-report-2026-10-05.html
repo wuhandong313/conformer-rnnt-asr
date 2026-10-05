@@ -77,8 +77,8 @@
   <tr><td>1</td><td>诊断 pilot：确定压缩率、oracle 上界</td><td><span class="badge b-done">完成</span></td></tr>
   <tr><td>2</td><td>十种固定策略基线（A4，12 runs）与 Go/No-Go 判定</td><td><span class="badge b-done">完成</span></td></tr>
   <tr><td>3</td><td>检测器 × 混合器主消融矩阵（5×3 = 15 runs，约 37 小时）</td><td><span class="badge b-done">完成</span></td></tr>
-  <tr><td>3.5</td><td>冠军模型 beam 搜索评测（推理侧收尾）</td><td><span class="badge b-run">进行中</span></td></tr>
-  <tr><td>4</td><td>泛化验证（架构/任务/数据）+ 可微门控 + 360 小时数据规模锚点</td><td><span class="badge b-plan">已规划</span></td></tr>
+  <tr><td>3.5</td><td>冠军模型 beam 搜索评测（推理侧收尾，5 组全部完成）</td><td><span class="badge b-done">完成</span></td></tr>
+  <tr><td>4</td><td>泛化验证（架构/任务/数据）+ 可微门控 + 460 小时数据规模锚点</td><td><span class="badge b-plan">已规划</span></td></tr>
   <tr><td>5</td><td>效率-精度曲线（FLOPs/延迟分解）、跨模态推广</td><td><span class="badge b-plan">待启动</span></td></tr>
 </table>
 
@@ -122,24 +122,27 @@
 <div class="cards">
   <div class="card"><div class="num">3.7×</div><div class="lbl">编码器计算量（FLOPs）缩减</div></div>
   <div class="card"><div class="num">8.79%</div><div class="lbl">冠军方案 PER（beam 解码）</div></div>
-  <div class="card"><div class="num">+0.98pt</div><div class="lbl">相对不压缩基线的精度代价</div></div>
+  <div class="card"><div class="num">+0.97pt</div><div class="lbl">相对不压缩基线的精度代价（beam 下实测）</div></div>
 </div>
 <table>
   <tr><th>配置</th><th>PER</th><th>说明</th></tr>
-  <tr><td>不压缩基线</td><td>7.81%</td><td>200→50 fps 后无压缩</td></tr>
-  <tr><td class="champ">冠军 cosine_diff + learned（beam 解码）</td><td class="champ">8.79%</td><td>编码器 FLOPs 约 3.7× 缩减</td></tr>
-  <tr><td>同冠军（greedy 解码）</td><td>9.15%</td><td>beam 可再挽回 0.36 点</td></tr>
+  <tr><td>不压缩基线（greedy）</td><td>7.81%</td><td>200→50 fps 后无压缩</td></tr>
+  <tr><td>不压缩基线（beam20）</td><td>7.82%</td><td>beam 几乎无增益（+0.01pt）</td></tr>
+  <tr><td class="champ">冠军 cosine_diff + learned（beam20）</td><td class="champ">8.79%</td><td>编码器 FLOPs 约 3.7× 缩减</td></tr>
+  <tr><td>同冠军（greedy）</td><td>9.15%</td><td>beam 可再挽回 0.36 点</td></tr>
 </table>
-<p>→ <b>以约 1 个点的精度代价换取 3.7 倍编码器计算缩减；beam 解码下与不压缩基线差距缩到 1 个点以内。</b></p>
+<p>→ <b>以 0.97 点的精度代价换取 3.7 倍编码器计算缩减（beam20：8.79% vs 7.82%）。</b>值得注意：不压缩基线几乎不吃 beam 收益（+0.01pt），而压缩模型普遍 +0.22~0.47pt——beam 无法消除压缩差距，差距是结构性的约 1 个点。</p>
 
 <h2>三、当前进行中</h2>
 <ul>
-  <li><b>beam 评测补测</b>（max-pool 对照 + 不压缩基线）：今日内出全，预计结论不变。</li>
+  <li><b>beam 评测补测已收官</b>：max-pool 9.79%（+0.47pt）、不压缩基线 7.82%，5 组 beam20 全部完成，冠军仍是 cosine_diff+learned 8.79%。</li>
+  <li><b>LSTM predictor 对照复现</b>（进行中）：用与历史最优管线（stride4_comp，beam20 7.85%）完全一致的 LSTM predictor + naive 滤波配方重训，检验 attn predictor 是否等价或更优。</li>
+  <li><b>检测器 2×2 网格补全</b>（排队中）：cosine_diff+savgol 3 runs，LSTM 复现跑完后自动入队。</li>
   <li><b>质量保障插曲（可备询问）</b>：补测时发现评测脚本存在"配置与模型不匹配不报错"的隐患（strict=False），导致两组中间结果无效。已定位根因、撤销错误数据、按正确口径重跑；<b>已汇报的三组冠军评测均经核实不受影响</b>。后续将在评测入口加架构一致性校验。</li>
 </ul>
 
 <h2>四、下一步主攻：泛化研究详细计划（research-plan.md §14）</h2>
-<p>目标：把 B-matrix 确立的"<b>帧选择带来低损耗的超高计算量缩减（3.7× FLOPs ↓ @ beam 仅 +0.98pt）+ soft 混合制胜</b>"从 Conformer-ASR-100h 单点推向<b>跨架构 / 跨数据规模 / 跨任务</b>，形成顶会要求的泛化证据链。</p>
+<p>目标：把 B-matrix 确立的"<b>帧选择带来低损耗的超高计算量缩减（3.7× FLOPs ↓ @ beam 实测 +0.97pt）+ soft 混合制胜</b>"从 Conformer-ASR-100h 单点推向<b>跨架构 / 跨数据规模 / 跨任务</b>，形成顶会要求的泛化证据链。</p>
 
 <h3 style="font-size:15px; margin:18px 0 6px;">4.1 研究问题 ↔ reviewer 质疑映射</h3>
 <table>
@@ -173,7 +176,7 @@
 </ol>
 
 <div class="summary">
-<b>一句话总结：</b>15 组消融已完成，确立"<b>混合器主导、soft 混合制胜</b>"的核心结论；冠军方案以约 1 点精度代价换 <b>3.7 倍计算缩减</b>，beam 解码下与不压缩基本持平；下一步进入<b>泛化与规模化验证</b>。
+<b>一句话总结：</b>15 组消融 + 5 组 beam20 评测全部完成，确立"<b>混合器主导、soft 混合制胜</b>"的核心结论；冠军方案以 0.97 点精度代价换 <b>3.7 倍计算缩减</b>；下一步进入<b>泛化与规模化验证</b>。
 </div>
 
 <footer>数据来源：results/results.csv（27 runs 落库）、docs/experiment-log.md（attn-predictor 分支）。评测口径：test-clean 2620 句全量，字符级 PER。</footer>
