@@ -191,19 +191,27 @@ raw-learned/seg_avg + savgol-hard/learned 落库（10-03 晚，27/28 行）：b-
 进行中：**a4-uniform（08:06 起，最后一个 run）**，预计 ~10:45 UTC 出数后汇总 Go/No-Go。
 注：savgol-cal 50ep=0.1108 vs savgol 锚点 120ep=0.1112 —— 几乎一致，验证 50-epoch 策略。
 
-## Beam20 收尾评测（2026-10-04，2620 utts 全量，configs/server_eval_beam20.yaml，beam=20）
+## Beam20 收尾评测（2026-10-04~05，2620 utts 全量，beam=20，per-model configs/exp/*.yaml）
 
 | 模型 | greedy | beam20 | 增益 | RTF |
 |---|---|---|---|---|
 | cosine_diff-learned | 0.0915 | **0.0879** | +0.36pt | 0.592 |
 | fir-seg_avg | 0.0917 | **0.0884** | +0.33pt | 0.591 |
 | savgol-learned | 0.0926 | **0.0904** | +0.22pt | 0.568 |
-| max-pool（A4 冠军对照） | 0.1026 | **0.1436** ⚠ | **−4.10pt** | 0.553 |
+| max-pool（A4 冠军对照） | 0.1026 | 重跑中（v2） | — | — |
+| baseline-none | 0.0781 | 重跑中（v2） | — | — |
 
 - 三个 B-matrix 头部模型（soft mixer）beam20 一致优于 greedy（+0.22~+0.36pt）；cosine_diff-learned beam20 **0.0879** 为全场最优。
-- **max-pool（hard mixer）beam20 反而大幅恶化**（0.1026 → 0.1436，−4.1pt）：硬选帧/max 池化的帧复制在 beam 搜索中形成重复 token 吸引态（候选路径易卡死在循环上），beam 越宽惩罚越大。**soft mixer 与 beam 解码兼容，hard 池化不兼容**——这为 mixer 主导性结论再添一条独立证据，也意味着 hard 基线的 beam 对比对其自身不利。
-- beam RTF ~0.55-0.59（约为 greedy 的 10 倍）——RNN-T beam 解码主导墙钟，再次印证 Phase E 需 FLOPs/延迟分解。
-- 编排插曲：首轮编排器在 attn 仓库内搜 max-pool ckpt 落空（实际位于 /test21/conformer-rnnt-asr/exp_a4/a4-max-pool/checkpoints/），前三个模型正常完成，max-pool 手动补跑（tmux eval-beam，ckpt=val-attn-max_pool-hard-r0.27-epoch=30）。16:57 UTC 完成，全部 beam 评测收官。
-- 待选补测：baseline-none beam20（区分"beam 增益"是压缩产物还是普遍现象）；关键格多种子（learned vs seg_avg 等价性）。
+- beam RTF ~0.57-0.59（约为 greedy 的 10 倍）——RNN-T beam 解码主导墙钟，再次印证 Phase E 需 FLOPs/延迟分解。
+- 编排插曲：首轮编排器（scripts/eval_beam_top.sh）搜 max-pool ckpt 只查了 exp_b/exp 漏了 exp_a4 → 该格空缺；前三个模型用 per-model config 正常完成。
+
+### ⚠ 评测伪影记录（2026-10-05，重要教训）
+
+先前用 `configs/server_eval_beam20.yaml`（legacy `filter: "savgol"`，**无 keep_rate**）补跑的两组结果**全部作废**：
+- max-pool beam20 = 0.1436（日志留档 *.invalid-savgol-artifact）
+- baseline-none beam20 = 0.6444
+
+**根因**：`eval.py` 用 config 建模 + `load_state_dict(strict=False)`——架构不匹配被**静默跳过**，模型实际以"未训练 savgol 检测器 + hard mixer + 动态率"运行，与被评 ckpt 的架构（max_pool-hard r=0.27 / none）完全不符。据此撤销"hard 池化与 beam 解码不兼容"的结论（无证据支撑）。原始三个 b-* beam 结果用 per-model config，未受影响。
+**基础设施风险**：eval.py strict=False 是颗地雷，任何 config/ckpt 错配都不报错只出垃圾数——后续 eval 前应加架构一致性断言（列为 Stage 4 待办）。
 **Go/No-Go 前哨**：受控 savgol（0.1108）目前落后 max-pool（0.1026，-0.82pt）与 avg-pool（0.1057，-0.51pt），判据第一半（savgol ≥ 固定率池化基线）暂不成立，等 uniform 出数后汇总判决。
 ⚠ a4-ple 训练崩坏：val-best 停在 ep15 且 PER 70% 接近不可懂——PLE（cosine 累积距离游走 + threshold=6.0）在 r=0.27 等率 top-k 下选帧不稳定导致训练发散。待 A4 出齐后分析（候选解释：PLE scores 分布与 top-k 重排序交互不良）。
