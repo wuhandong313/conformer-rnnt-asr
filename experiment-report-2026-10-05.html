@@ -68,7 +68,7 @@
 
 <div class="callout">
 <b>研究目标（一句话）：</b>在 Conformer-RNNT 语音识别模型中做<b>动态帧压缩</b>——编码器自动找出"信息变化小"的语音帧并跳过，目标是<b>大幅降低编码器计算量（约 3.7 倍），同时不掉识别精度</b>。
-方法上解耦两个正交维度并做矩阵式消融：<b>检测器</b>（判断哪些帧重要：cosine_diff / fir / savgol / raw / ple）× <b>混合器</b>（丢帧信息如何补偿：hard 硬选帧 / seg_avg / learned 可学习加权）。
+方法上解耦两个正交维度并做矩阵式消融：<b>检测器</b>（判断哪些帧重要：raw / savgol / cosine_diff / cosine_diff+savgol）× <b>混合器</b>（丢帧信息如何补偿：hard 硬选帧 / seg_avg / learned 可学习加权）。
 </div>
 
 <h2>一、实验计划（5 批次，约 260 GPU·小时）</h2>
@@ -93,8 +93,8 @@
   <tr><th style="width:105px">检测器</th><th>打分原理（判断哪些帧重要）</th><th style="width:200px">特点</th></tr>
   <tr><td>raw</td><td>在"相邻帧差异曲线"上直接找峰（内容突变点）与谷（平稳点）作为保留候选</td><td>无平滑，最朴素的对照</td></tr>
   <tr><td>savgol</td><td>先用 Savitzky–Golay 多项式滤波平滑差异曲线，再找峰谷</td><td>抑制噪声毛刺，更稳</td></tr>
-  <tr><td>fir</td><td>先用 FIR 低通滤波器粗定位峰谷，再回原始曲线 ±2 帧内精细修正</td><td>平滑与保真的折中</td></tr>
   <tr><td>cosine_diff</td><td>用相邻帧余弦距离替代欧氏差异，距离局部极大（语义边界）与局部极小（平稳段中心）处保留帧</td><td>Audio Token Compression 风格</td></tr>
+  <tr><td>cosine_diff+savgol</td><td>余弦距离曲线先经 Savitzky–Golay 平滑再找峰谷（补全"信号 × 平滑"2×2 网格的最后一格）</td><td>待跑：与既有口径可比的 3 runs</td></tr>
   <tr><td>ple</td><td>沿累计余弦距离"游走计费"，超过阈值即切段并重置，切段数量不固定</td><td>DTM-Codec 风格；与等率机制冲突导致崩坏</td></tr>
 </table>
 <table>
@@ -104,18 +104,17 @@
   <tr><td>learned（可学习加权）</td><td>训练一个轻量 MLP，根据局部差异特征预测每个边界处的 Hanning 窗加权系数，对保留帧邻域做加权融合</td><td>唯一带可训练参数；冠军方案所用</td></tr>
 </table>
 
-<h3 style="font-size:15px; margin:18px 0 6px;">3. 主消融矩阵（15 组，greedy 误字率 PER，越低越好）</h3>
+<h3 style="font-size:15px; margin:18px 0 6px;">3. 主消融矩阵（12 组已完成 + 3 组 cos+savgol 待跑，greedy 误字率 PER，越低越好）</h3>
 <table>
   <tr><th>检测器</th><th>硬选帧 hard</th><th>seg_avg</th><th>learned</th><th>备注</th></tr>
   <tr><td>cosine_diff</td><td>11.60%</td><td>9.59%</td><td class="champ">9.15%（全场最优）</td><td>—</td></tr>
-  <tr><td>fir</td><td>11.18%</td><td>9.17%</td><td>9.77%</td><td>—</td></tr>
   <tr><td>savgol</td><td>9.83%</td><td>9.67%</td><td>9.26%</td><td>—</td></tr>
   <tr><td>raw</td><td>12.12%</td><td>9.68%</td><td>11.19%</td><td>—</td></tr>
   <tr><td>ple</td><td class="bad">崩坏</td><td class="bad">崩坏</td><td class="bad">崩坏</td><td>机制性冲突，放弃</td></tr>
 </table>
 <ol>
-  <li><b>混合方式是主导因素</b>：soft 混合在全部 4 个正常检测器上战胜硬选帧，平均提升 <b>1.87 个点</b>——"压缩本身不掉分，掉分的是丢帧后不补信息"。</li>
-  <li><b>检测器不挑</b>：前四名在 0.1 个点内扎堆，检测器只需"大致合理"，工程上可选用最简单的。</li>
+  <li><b>混合方式是主导因素</b>：soft 混合在全部 3 个正常检测器上战胜硬选帧，平均提升 <b>1.82 个点</b>——"压缩本身不掉分，掉分的是丢帧后不补信息"。</li>
+  <li><b>检测器间差距有限</b>：冠军 cosine_diff（9.15%）与次优 savgol（9.26%）仅差 0.11 个点，最佳前三组合集中在 0.53 个点内——检测器只需"大致合理"，重点在混合方式。</li>
   <li><b>ple 机制性崩坏</b>：其游走分数机制与等率选帧冲突，确认不再投入。</li>
 </ol>
 
@@ -139,8 +138,8 @@
   <li><b>质量保障插曲（可备询问）</b>：补测时发现评测脚本存在"配置与模型不匹配不报错"的隐患（strict=False），导致两组中间结果无效。已定位根因、撤销错误数据、按正确口径重跑；<b>已汇报的三组冠军评测均经核实不受影响</b>。后续将在评测入口加架构一致性校验。</li>
 </ul>
 
-<h2>四、下一步主攻：泛化研究详细计划（research-plan-v2 §14）</h2>
-<p>目标：把 B-matrix 确立的"<b>mixer 主导、soft 制胜</b>"从 Conformer-ASR-100h 单点推向<b>跨架构 / 跨数据规模 / 跨任务</b>，形成顶会要求的泛化证据链。</p>
+<h2>四、下一步主攻：泛化研究详细计划（research-plan.md §14）</h2>
+<p>目标：把 B-matrix 确立的"<b>帧选择带来低损耗的超高计算量缩减（3.7× FLOPs ↓ @ beam 仅 +0.98pt）+ soft 混合制胜</b>"从 Conformer-ASR-100h 单点推向<b>跨架构 / 跨数据规模 / 跨任务</b>，形成顶会要求的泛化证据链。</p>
 
 <h3 style="font-size:15px; margin:18px 0 6px;">4.1 研究问题 ↔ reviewer 质疑映射</h3>
 <table>
@@ -153,23 +152,23 @@
   <tr><td>RQ6：被压缩的帧在语音学上是什么？soft 为何优于 hard？</td><td>"方法像黑盒：压缩到底丢了什么信息？"</td><td>P1</td></tr>
 </table>
 
-<h3 style="font-size:15px; margin:18px 0 6px;">4.2 实验矩阵与成本（100h/50ep 实测 ~2.5-3h/run，360h/40ep 约 8-18h/run）</h3>
+<h3 style="font-size:15px; margin:18px 0 6px;">4.2 实验矩阵与成本（100h/50ep 实测 ~2.5-3h/run；460h/50ep = train-clean-100+360 合并 ~132,553 句，推算 ~12h/run）</h3>
 <table>
   <tr><th style="width:95px">组</th><th>内容</th><th style="width:100px">runs</th><th style="width:105px">GPU·h</th><th style="width:60px">优先级</th></tr>
-  <tr><td>G1 架构泛化</td><td>squeezeformer 式主干 × {learned 冠军, hard 对照}，验证 soft>hard 跨架构复现</td><td>2</td><td>6-8</td><td>P0</td></tr>
-  <tr><td>G2 数据规模</td><td>360h（104,014 句已验证就绪）× {冠军, max-pool 对照, 不压缩锚点}；推理侧免费附加 keep_rate 率扫</td><td>2(+1)</td><td>16-36</td><td>P0</td></tr>
-  <tr><td>G3 任务迁移</td><td>命令词/关键词检索 + 说话人验证（现有 ckpt 推理侧零训练评测）</td><td>0(+1)</td><td>0</td><td>P1</td></tr>
-  <tr><td>G4 插入位置</td><td>压缩模块移至 conformer 前/后，与现位（2+8 间）对照</td><td>2</td><td>~6</td><td>P1</td></tr>
-  <tr><td>G5 可微门控</td><td>门控 logit 用检测器分数初始化 vs 随机初始化，对照 top-k 等率</td><td>2-3</td><td>6-9</td><td>P1</td></tr>
-  <tr><td>G6 多级压缩</td><td>encoder 改 2+4+4 双压缩点，总预算 0.27 拆三种（0.52×0.52 / 0.40×0.675 先粗后细 / 0.675×0.40 反向对照）</td><td>3</td><td>~9</td><td>P1</td></tr>
-  <tr><td>G7 可解释性</td><td>四件套（推理侧零训练）：音素级去留统计（MFA 对齐 + Mann-Whitney U）· 检测分数×声学特征相关 · learned 权重可视化 · 压缩前后 CKA/混淆矩阵漂移</td><td>0</td><td>1-2</td><td>P1</td></tr>
-  <tr><td><b>合计</b></td><td></td><td><b>必选 4 / 全量 13-16</b></td><td><b>22-44 / 45-81</b></td><td>—</td></tr>
+  <tr><td>G1 架构泛化</td><td>squeezeformer 式主干 × {learned 冠军, hard 对照}，验证 soft>hard 跨架构复现</td><td>2(+1)</td><td>~24(+12)</td><td>P0</td></tr>
+  <tr><td>G2 数据规模</td><td>460h（train-clean-100+360 合并，~132,553 句已验证就绪）× {冠军, max-pool 对照, 不压缩锚点}；推理侧免费附加 keep_rate 率扫（前置：加载器合并模式）</td><td>2(+1)</td><td>~24-36</td><td>P0</td></tr>
+  <tr><td>G3 任务迁移</td><td>命令词分类 + 说话人验证：冻结 encoder 训练轻量任务头（KWS 分类头 / SV 嵌入头），压缩 vs 不压缩各一对照</td><td>4(+1)</td><td>~10-16(+4)</td><td>P1</td></tr>
+  <tr><td>G4 插入位置</td><td>压缩模块移至 conformer 前/后，与现位（2+8 间）对照</td><td>2</td><td>~24</td><td>P1</td></tr>
+  <tr><td>G5 可微门控</td><td>门控 logit 用检测器分数初始化 vs 随机初始化，对照 top-k 等率</td><td>2-3</td><td>24-36</td><td>P1</td></tr>
+  <tr><td>G6 多级压缩</td><td>encoder 改 2+4+4 双压缩点，总预算 0.27 拆三种（0.52×0.52 / 0.40×0.675 先粗后细 / 0.675×0.40 反向对照）</td><td>3</td><td>~36</td><td>P1</td></tr>
+  <tr><td>G7 可解释性</td><td>四件套（推理侧为主，几乎零训练）：音素级去留统计（MFA 对齐 + Mann-Whitney U）· 检测分数×声学特征相关 · learned 权重可视化 · 压缩前后 CKA/混淆矩阵漂移</td><td>0</td><td>1-2</td><td>P1</td></tr>
+  <tr><td><b>合计</b></td><td></td><td><b>必选 4 / 全量 17-20</b></td><td><b>~48 / ~166-208</b></td><td>—</td></tr>
 </table>
 
 <h3 style="font-size:15px; margin:18px 0 6px;">4.3 执行顺序与决策门</h3>
 <ol>
-  <li><b>G2 先行</b>（单 run 最长、承载 D2 判据）：新写 stage4 队列脚本 → <b>G1 跟进</b>（需 squeezeformer 改造 + 冒烟测试）→ G4/G5/G6 穿插填空 → G3/G7 推理侧随时并行（不占训练 GPU）。G6 需 encoder 支持 2+4+4 布局与双压缩点；G7 前置核实服务器 MFA 对齐工具状态。</li>
-  <li><b>决策门 D2</b>：360h 上冠军 ≥ max-pool → 泛化故事完整版；否则收缩为"100h 深度机制分析"。<b>决策门 D4</b>：G1 上 soft>hard 复现 → "mixer 主导"升级为跨架构结论；否则限定 Conformer 并在 limitations 声明。</li>
+  <li><b>前置改造</b>：加载器新增 train-clean-460 合并模式 + smoke 门禁。<b>G2 先行</b>（单 run 最长、承载 D2 判据）：写 stage4 队列脚本提队 → <b>G1 跟进</b>（需 squeezeformer 改造 + 冒烟测试）→ G4/G5/G6 穿插填空（G6 需 encoder 支持 2+4+4 布局与双压缩点）→ G3 任务头训练轻量（单 run 1-6h）、G7 推理侧统计，随时穿插；G7 前置核实服务器 MFA 对齐工具状态。</li>
+  <li><b>决策门 D2</b>：460h 上冠军 ≥ max-pool → 泛化故事完整版；否则收缩为"100h 深度机制分析"。<b>决策门 D4</b>：G1 上 soft>hard 复现 → 混合方式结论升级为跨架构结论；否则限定 Conformer 并在 limitations 声明。</li>
   <li><b>顶会对照</b>：架构 × 数据 × 任务三轴泛化全覆盖（常见底线为三者取二）；消融完整性含位置（G4）/可微（G5）/多级（G6）；机制可解释性由 G7 四件套 + A0 冗余分布承担；单种子口径如实声明；投稿主表 word-WER 由独立工作包承担，效率口径改为 FLOPs/延迟分解并行推进。</li>
 </ol>
 
