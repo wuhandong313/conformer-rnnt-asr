@@ -51,3 +51,6 @@ _probe*.py
 
 # Qoder
 .qoder/
+
+# Codebuddy
+.codebuddy/
