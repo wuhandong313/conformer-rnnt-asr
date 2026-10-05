@@ -175,9 +175,19 @@ class CosineDiffPeaksDetector(Detector):
     ``c_t = 1 - cos(frames[t], frames[t+1])``; a boundary is kept at ``t+1``
     when ``c_t`` is a local maximum (find_peaks), valley positions at ``t``
     when ``c_t`` is a local minimum.
+
+    preprocess:
+        "none"   — raw cosine distance → find_peaks (default)
+        "savgol" — Savitzky-Golay smooth of ``c`` → find_peaks
+                   (signal × smoothing grid completion: cos + savgol)
     """
 
     fixed_rate = False
+
+    def __init__(self, preprocess: str = "none") -> None:
+        if preprocess not in ("none", "savgol"):
+            raise ValueError(f"Unknown preprocess '{preprocess}'")
+        self.preprocess = preprocess
 
     def detect(self, frames, diff, diff_np, main_len):
         f = torch.nn.functional.normalize(frames, dim=-1)
@@ -187,6 +197,12 @@ class CosineDiffPeaksDetector(Detector):
                 torch.zeros(1, dtype=torch.long, device=frames.device),
                 torch.zeros(1, device=frames.device),
             )
+        if self.preprocess == "savgol" and len(c) > 3:
+            wlen = min(9, len(c))
+            if wlen % 2 == 0:
+                wlen -= 1
+            if wlen > 3:
+                c = savgol_filter(c, window_length=wlen, polyorder=4)
         peaks, _ = find_peaks(c)
         valleys, _ = find_peaks(-c)
         merged = np.unique(np.concatenate([peaks + 1, valleys]))
@@ -427,6 +443,7 @@ DETECTOR_REGISTRY = {
     "savgol": FindPeaksDetector,
     "ple": PLEDetector,
     "cosine_diff": CosineDiffPeaksDetector,
+    "cosine_diff_savgol": CosineDiffPeaksDetector,
     "uniform": UniformDetector,
     "random": RandomDetector,
     "energy": EnergyTopKDetector,
@@ -451,6 +468,8 @@ def build_detector(cfg: dict, keep_rate: Optional[float] = None) -> Detector:
         raise ValueError(f"Unknown detector type '{dtype}'; known: {sorted(DETECTOR_REGISTRY)}")
     if dtype in ("raw", "fir", "savgol"):
         return FindPeaksDetector(dtype)
+    if dtype == "cosine_diff_savgol":
+        return CosineDiffPeaksDetector(preprocess="savgol")
 
     cls = DETECTOR_REGISTRY[dtype]
     if cls in (UniformDetector, RandomDetector, EnergyTopKDetector, TopKDiffDetector,

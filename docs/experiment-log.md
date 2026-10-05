@@ -215,3 +215,9 @@ raw-learned/seg_avg + savgol-hard/learned 落库（10-03 晚，27/28 行）：b-
 **基础设施风险**：eval.py strict=False 是颗地雷，任何 config/ckpt 错配都不报错只出垃圾数——后续 eval 前应加架构一致性断言（列为 Stage 4 待办）。
 **Go/No-Go 前哨**：受控 savgol（0.1108）目前落后 max-pool（0.1026，-0.82pt）与 avg-pool（0.1057，-0.51pt），判据第一半（savgol ≥ 固定率池化基线）暂不成立，等 uniform 出数后汇总判决。
 ⚠ a4-ple 训练崩坏：val-best 停在 ep15 且 PER 70% 接近不可懂——PLE（cosine 累积距离游走 + threshold=6.0）在 r=0.27 等率 top-k 下选帧不稳定导致训练发散。待 A4 出齐后分析（候选解释：PLE scores 分布与 top-k 重排序交互不良）。
+
+## 检测器叙事调整（2026-10-05）
+
+- **fir 从论文叙事中去除**（用户决定）：FIR 平滑是 raw 差分的冗余平滑变体（与 savgol 同族），无独立叙事价值。其在 results.csv / 本日志中的 3 行结果保留存档，仅退出论文矩阵与汇报材料。
+- **检测器集按"信号 × 平滑"2×2 网格完备化**：{差分, 余弦距离} × {无平滑, SG 平滑}，已有 raw / savgol（=raw+SG）/ cosine_diff 三格，**补 cosine_diff_savgol**（余弦距离经 SG 平滑后找峰谷，`CosineDiffPeaksDetector(preprocess="savgol")`，已实现并本地冒烟通过）。
+- **待跑**：`b-cosine_diff_savgol-{hard,seg_avg,learned}` 3 runs（100h/50ep，~2.5-3h/run，与既有 B-matrix 口径可比；460h 是泛化实验口径，不用于此），baseline beam20 收官后入队。

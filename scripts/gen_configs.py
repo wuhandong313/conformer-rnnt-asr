@@ -17,8 +17,11 @@ A4 (10, equal-rate, mixer=hard unless stated):
     a4-mmdp a4-ple a4-cosine-diff a4-savgol-cal
     (*avg-pool pairs with the seg_avg mixer; our main config runs the legacy
     dynamic savgol path unchanged — see configs/server.yaml.)
-B-matrix (15):
-    b-{raw,fir,savgol,ple,cosine-diff} × {hard,seg-avg,learned}
+B-matrix (4×3 = 12 + PLE historical 3):
+    b-{raw,savgol,cosine_diff,cosine_diff_savgol} × {hard,seg-avg,learned}
+    (fir dropped from the narrative 2026-10-05 — redundant smoothing variant
+    of raw; ple kept for the collapse lesson. cos+savgol completes the
+    signal × smoothing 2×2 grid.)
 """
 
 import argparse
@@ -49,7 +52,7 @@ A4_BASELINES = {
     "oracle-dp": ("dp_seg", "seg_avg", {}),
 }
 
-B_DETECTORS = ["raw", "fir", "savgol", "ple", "cosine_diff"]
+B_DETECTORS = ["raw", "savgol", "ple", "cosine_diff", "cosine_diff_savgol"]
 B_MIXERS = ["hard", "seg_avg", "learned"]
 
 
