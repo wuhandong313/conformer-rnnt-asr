@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>动态帧压缩语音识别实验：计划与进度报告（2026-10-05）</title>
+<style>
+  :root {
+    --ink: #1a2332; --muted: #5b6b7f; --line: #dde4ec;
+    --accent: #2456c8; --accent-soft: #e8eefb;
+    --green: #1a7f4e; --green-soft: #e3f4eb;
+    --orange: #b45309; --orange-soft: #fdf0dd;
+    --gray-soft: #eef1f5;
+    --gold: #8a6d00; --gold-soft: #fdf6d8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px 16px 64px;
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, sans-serif;
+    color: var(--ink); background: #f5f7fa; line-height: 1.7;
+  }
+  .page { max-width: 880px; margin: 0 auto; background: #fff;
+    border: 1px solid var(--line); border-radius: 10px; padding: 40px 48px; }
+  header { border-bottom: 2px solid var(--accent); padding-bottom: 16px; margin-bottom: 28px; }
+  h1 { font-size: 24px; margin: 0 0 8px; }
+  .meta { color: var(--muted); font-size: 13px; }
+  h2 { font-size: 18px; margin: 36px 0 12px; padding-left: 10px;
+    border-left: 4px solid var(--accent); }
+  p { margin: 8px 0; font-size: 14.5px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+  th { background: var(--accent-soft); text-align: left; padding: 8px 10px;
+    border: 1px solid var(--line); font-weight: 600; }
+  td { padding: 8px 10px; border: 1px solid var(--line); }
+  tr:nth-child(even) td { background: #fafbfd; }
+  .champ { background: var(--gold-soft) !important; font-weight: 700; color: var(--gold); }
+  .bad { color: var(--orange); font-weight: 600; }
+  .badge { display: inline-block; font-size: 12px; padding: 1px 10px;
+    border-radius: 10px; font-weight: 600; white-space: nowrap; }
+  .b-done { background: var(--green-soft); color: var(--green); }
+  .b-run { background: var(--orange-soft); color: var(--orange); }
+  .b-plan { background: var(--gray-soft); color: var(--muted); }
+  .cards { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .card { flex: 1; min-width: 180px; background: var(--accent-soft);
+    border-radius: 8px; padding: 14px 16px; text-align: center; }
+  .card .num { font-size: 26px; font-weight: 800; color: var(--accent); }
+  .card .lbl { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .callout { background: #f8fafc; border: 1px solid var(--line);
+    border-left: 4px solid var(--accent); border-radius: 6px;
+    padding: 12px 16px; margin: 14px 0; font-size: 14px; }
+  .callout b { color: var(--accent); }
+  ol li, ul li { margin: 6px 0; font-size: 14.5px; }
+  .summary { margin-top: 36px; background: var(--accent-soft);
+    border: 1px solid #c9d8f5; border-radius: 8px; padding: 16px 20px; font-size: 15px; }
+  .summary b { color: var(--accent); }
+  footer { margin-top: 28px; color: var(--muted); font-size: 12px;
+    border-top: 1px solid var(--line); padding-top: 12px; }
+  @media print { body { background: #fff; padding: 0; }
+    .page { border: none; padding: 12px; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>动态帧压缩语音识别实验：计划与进度报告</h1>
+  <div class="meta">日期：2026-10-05 ｜ 项目：Conformer-RNNT 动态帧压缩（attn-predictor）｜ 训练与评测均在 GPU 服务器自动管线完成</div>
+</header>
+
+<div class="callout">
+<b>研究目标（一句话）：</b>在 Conformer-RNNT 语音识别模型中做<b>动态帧压缩</b>——编码器自动找出"信息变化小"的语音帧并跳过，目标是<b>大幅降低编码器计算量（约 3.7 倍），同时不掉识别精度</b>。
+方法上解耦两个正交维度并做矩阵式消融：<b>检测器</b>（判断哪些帧重要：cosine_diff / fir / savgol / raw / ple）× <b>混合器</b>（丢帧信息如何补偿：hard 硬选帧 / seg_avg / learned 可学习加权）。
+</div>
+
+<h2>一、实验计划（5 批次，约 260 GPU·小时）</h2>
+<table>
+  <tr><th style="width:70px">批次</th><th>内容</th><th style="width:90px">状态</th></tr>
+  <tr><td>1</td><td>诊断 pilot：确定压缩率、oracle 上界</td><td><span class="badge b-done">完成</span></td></tr>
+  <tr><td>2</td><td>十种固定策略基线（A4，12 runs）与 Go/No-Go 判定</td><td><span class="badge b-done">完成</span></td></tr>
+  <tr><td>3</td><td>检测器 × 混合器主消融矩阵（5×3 = 15 runs，约 37 小时）</td><td><span class="badge b-done">完成</span></td></tr>
+  <tr><td>3.5</td><td>冠军模型 beam 搜索评测（推理侧收尾）</td><td><span class="badge b-run">进行中</span></td></tr>
+  <tr><td>4</td><td>泛化验证（架构/任务/数据）+ 可微门控 + 360 小时数据规模锚点</td><td><span class="badge b-plan">已规划</span></td></tr>
+  <tr><td>5</td><td>效率-精度曲线（FLOPs/延迟分解）、跨模态推广</td><td><span class="badge b-plan">待启动</span></td></tr>
+</table>
+
+<h2>二、核心结果</h2>
+
+<h3 style="font-size:15px; margin:18px 0 6px;">1. 压缩率锁定：保留 27% 的帧（r=0.27）</h3>
+<p>诊断实验确认语音帧间冗余度高，27% 保留率是质量与计算的平衡点，全管线统一采用。</p>
+
+<h3 style="font-size:15px; margin:18px 0 6px;">2. 消融配置说明：检测器与混合器具体是什么</h3>
+<p>15 组实验共享同一套管线与口径：<b>检测器给每帧打"重要度"分 → 等率 top-k 保留 27% 的帧 → 混合器决定被丢帧的信息如何补偿 → 压缩后的帧序列送入上层 Conformer</b>。同批次内唯一变量是"检测器 × 混合器"的组合，保证横向可比。</p>
+<table>
+  <tr><th style="width:105px">检测器</th><th>打分原理（判断哪些帧重要）</th><th style="width:200px">特点</th></tr>
+  <tr><td>raw</td><td>在"相邻帧差异曲线"上直接找峰（内容突变点）与谷（平稳点）作为保留候选</td><td>无平滑，最朴素的对照</td></tr>
+  <tr><td>savgol</td><td>先用 Savitzky–Golay 多项式滤波平滑差异曲线，再找峰谷</td><td>抑制噪声毛刺，更稳</td></tr>
+  <tr><td>fir</td><td>先用 FIR 低通滤波器粗定位峰谷，再回原始曲线 ±2 帧内精细修正</td><td>平滑与保真的折中</td></tr>
+  <tr><td>cosine_diff</td><td>用相邻帧余弦距离替代欧氏差异，距离局部极大（语义边界）与局部极小（平稳段中心）处保留帧</td><td>Audio Token Compression 风格</td></tr>
+  <tr><td>ple</td><td>沿累计余弦距离"游走计费"，超过阈值即切段并重置，切段数量不固定</td><td>DTM-Codec 风格；与等率机制冲突导致崩坏</td></tr>
+</table>
+<table>
+  <tr><th style="width:105px">混合器</th><th>被丢弃帧的信息如何处理</th><th style="width:200px">特点</th></tr>
+  <tr><td>hard（硬选帧）</td><td>直接按索引取出保留帧，未选帧信息完全丢弃</td><td>零额外计算，信息损失最大</td></tr>
+  <tr><td>seg_avg（段均值）</td><td>每个保留帧替换为其所在段（至下一保留帧之前）全部帧的平均值</td><td>无参数，丢帧信息以均值形式部分回收</td></tr>
+  <tr><td>learned（可学习加权）</td><td>训练一个轻量 MLP，根据局部差异特征预测每个边界处的 Hanning 窗加权系数，对保留帧邻域做加权融合</td><td>唯一带可训练参数；冠军方案所用</td></tr>
+</table>
+
+<h3 style="font-size:15px; margin:18px 0 6px;">3. 主消融矩阵（15 组，greedy 误字率 PER，越低越好）</h3>
+<table>
+  <tr><th>检测器</th><th>硬选帧 hard</th><th>seg_avg</th><th>learned</th><th>备注</th></tr>
+  <tr><td>cosine_diff</td><td>11.60%</td><td>9.59%</td><td class="champ">9.15%（全场最优）</td><td>—</td></tr>
+  <tr><td>fir</td><td>11.18%</td><td>9.17%</td><td>9.77%</td><td>—</td></tr>
+  <tr><td>savgol</td><td>9.83%</td><td>9.67%</td><td>9.26%</td><td>—</td></tr>
+  <tr><td>raw</td><td>12.12%</td><td>9.68%</td><td>11.19%</td><td>—</td></tr>
+  <tr><td>ple</td><td class="bad">崩坏</td><td class="bad">崩坏</td><td class="bad">崩坏</td><td>机制性冲突，放弃</td></tr>
+</table>
+<ol>
+  <li><b>混合方式是主导因素</b>：soft 混合在全部 4 个正常检测器上战胜硬选帧，平均提升 <b>1.87 个点</b>——"压缩本身不掉分，掉分的是丢帧后不补信息"。</li>
+  <li><b>检测器不挑</b>：前四名在 0.1 个点内扎堆，检测器只需"大致合理"，工程上可选用最简单的。</li>
+  <li><b>ple 机制性崩坏</b>：其游走分数机制与等率选帧冲突，确认不再投入。</li>
+</ol>
+
+<h3 style="font-size:15px; margin:18px 0 6px;">4. 与不压缩基线对比（关键卖点）</h3>
+<div class="cards">
+  <div class="card"><div class="num">3.7×</div><div class="lbl">编码器计算量（FLOPs）缩减</div></div>
+  <div class="card"><div class="num">8.79%</div><div class="lbl">冠军方案 PER（beam 解码）</div></div>
+  <div class="card"><div class="num">+0.98pt</div><div class="lbl">相对不压缩基线的精度代价</div></div>
+</div>
+<table>
+  <tr><th>配置</th><th>PER</th><th>说明</th></tr>
+  <tr><td>不压缩基线</td><td>7.81%</td><td>200→50 fps 后无压缩</td></tr>
+  <tr><td class="champ">冠军 cosine_diff + learned（beam 解码）</td><td class="champ">8.79%</td><td>编码器 FLOPs 约 3.7× 缩减</td></tr>
+  <tr><td>同冠军（greedy 解码）</td><td>9.15%</td><td>beam 可再挽回 0.36 点</td></tr>
+</table>
+<p>→ <b>以约 1 个点的精度代价换取 3.7 倍编码器计算缩减；beam 解码下与不压缩基线差距缩到 1 个点以内。</b></p>
+
+<h2>三、当前进行中</h2>
+<ul>
+  <li><b>beam 评测补测</b>（max-pool 对照 + 不压缩基线）：今日内出全，预计结论不变。</li>
+  <li><b>质量保障插曲（可备询问）</b>：补测时发现评测脚本存在"配置与模型不匹配不报错"的隐患（strict=False），导致两组中间结果无效。已定位根因、撤销错误数据、按正确口径重跑；<b>已汇报的三组冠军评测均经核实不受影响</b>。后续将在评测入口加架构一致性校验。</li>
+</ul>
+
+<h2>四、下一步主攻：泛化研究详细计划（research-plan-v2 §14）</h2>
+<p>目标：把 B-matrix 确立的"<b>mixer 主导、soft 制胜</b>"从 Conformer-ASR-100h 单点推向<b>跨架构 / 跨数据规模 / 跨任务</b>，形成顶会要求的泛化证据链。</p>
+
+<h3 style="font-size:15px; margin:18px 0 6px;">4.1 研究问题 ↔ reviewer 质疑映射</h3>
+<table>
+  <tr><th style="width:290px">研究问题</th><th>回应的顶会质疑</th><th style="width:70px">优先级</th></tr>
+  <tr><td>RQ1：换 backbone 后结论还在吗</td><td>"只在 Conformer 上验证，换个模型还有用吗？"</td><td>P0</td></tr>
+  <tr><td>RQ2：100h 小数据结论能 scale 吗</td><td>"100h 太小，结论依赖数据规模吗？"</td><td>P0</td></tr>
+  <tr><td>RQ3：是否绑定 ASR 任务特性</td><td>"对其他语音任务有效吗？"</td><td>P1</td></tr>
+  <tr><td>RQ4：压缩为何夹在 2+8 层中间？为何只压一次？</td><td>插入位置敏感性与多级压缩机制质疑</td><td>P1</td></tr>
+  <tr><td>RQ5：为何不用端到端可微剪枝</td><td>方法选择正当性质疑</td><td>P1</td></tr>
+  <tr><td>RQ6：被压缩的帧在语音学上是什么？soft 为何优于 hard？</td><td>"方法像黑盒：压缩到底丢了什么信息？"</td><td>P1</td></tr>
+</table>
+
+<h3 style="font-size:15px; margin:18px 0 6px;">4.2 实验矩阵与成本（100h/50ep 实测 ~2.5-3h/run，360h/40ep 约 8-18h/run）</h3>
+<table>
+  <tr><th style="width:95px">组</th><th>内容</th><th style="width:100px">runs</th><th style="width:105px">GPU·h</th><th style="width:60px">优先级</th></tr>
+  <tr><td>G1 架构泛化</td><td>squeezeformer 式主干 × {learned 冠军, hard 对照}，验证 soft>hard 跨架构复现</td><td>2</td><td>6-8</td><td>P0</td></tr>
+  <tr><td>G2 数据规模</td><td>360h（104,014 句已验证就绪）× {冠军, max-pool 对照, 不压缩锚点}；推理侧免费附加 keep_rate 率扫</td><td>2(+1)</td><td>16-36</td><td>P0</td></tr>
+  <tr><td>G3 任务迁移</td><td>命令词/关键词检索 + 说话人验证（现有 ckpt 推理侧零训练评测）</td><td>0(+1)</td><td>0</td><td>P1</td></tr>
+  <tr><td>G4 插入位置</td><td>压缩模块移至 conformer 前/后，与现位（2+8 间）对照</td><td>2</td><td>~6</td><td>P1</td></tr>
+  <tr><td>G5 可微门控</td><td>门控 logit 用检测器分数初始化 vs 随机初始化，对照 top-k 等率</td><td>2-3</td><td>6-9</td><td>P1</td></tr>
+  <tr><td>G6 多级压缩</td><td>encoder 改 2+4+4 双压缩点，总预算 0.27 拆三种（0.52×0.52 / 0.40×0.675 先粗后细 / 0.675×0.40 反向对照）</td><td>3</td><td>~9</td><td>P1</td></tr>
+  <tr><td>G7 可解释性</td><td>四件套（推理侧零训练）：音素级去留统计（MFA 对齐 + Mann-Whitney U）· 检测分数×声学特征相关 · learned 权重可视化 · 压缩前后 CKA/混淆矩阵漂移</td><td>0</td><td>1-2</td><td>P1</td></tr>
+  <tr><td><b>合计</b></td><td></td><td><b>必选 4 / 全量 13-16</b></td><td><b>22-44 / 45-81</b></td><td>—</td></tr>
+</table>
+
+<h3 style="font-size:15px; margin:18px 0 6px;">4.3 执行顺序与决策门</h3>
+<ol>
+  <li><b>G2 先行</b>（单 run 最长、承载 D2 判据）：新写 stage4 队列脚本 → <b>G1 跟进</b>（需 squeezeformer 改造 + 冒烟测试）→ G4/G5/G6 穿插填空 → G3/G7 推理侧随时并行（不占训练 GPU）。G6 需 encoder 支持 2+4+4 布局与双压缩点；G7 前置核实服务器 MFA 对齐工具状态。</li>
+  <li><b>决策门 D2</b>：360h 上冠军 ≥ max-pool → 泛化故事完整版；否则收缩为"100h 深度机制分析"。<b>决策门 D4</b>：G1 上 soft>hard 复现 → "mixer 主导"升级为跨架构结论；否则限定 Conformer 并在 limitations 声明。</li>
+  <li><b>顶会对照</b>：架构 × 数据 × 任务三轴泛化全覆盖（常见底线为三者取二）；消融完整性含位置（G4）/可微（G5）/多级（G6）；机制可解释性由 G7 四件套 + A0 冗余分布承担；单种子口径如实声明；投稿主表 word-WER 由独立工作包承担，效率口径改为 FLOPs/延迟分解并行推进。</li>
+</ol>
+
+<div class="summary">
+<b>一句话总结：</b>15 组消融已完成，确立"<b>混合器主导、soft 混合制胜</b>"的核心结论；冠军方案以约 1 点精度代价换 <b>3.7 倍计算缩减</b>，beam 解码下与不压缩基本持平；下一步进入<b>泛化与规模化验证</b>。
+</div>
+
+<footer>数据来源：results/results.csv（27 runs 落库）、docs/experiment-log.md（attn-predictor 分支）。评测口径：test-clean 2620 句全量，字符级 PER。</footer>
+
+</div>
+</body>
+</html>
