@@ -286,7 +286,7 @@ D0–D8 不变，协议改四元组（§4），主口径改保持率 %。
 
 ---
 
-## 13. 顶会冲刺执行计划（v2.1，2026-10-05 增补）
+## 13. 顶会冲刺执行计划（v2.2，2026-10-05 增补；同日修订：移除多种子工作包）
 
 > 原则：不绑定具体截稿日期，按"语音顶会（Interspeech/ICASSP 级）接收要求"组织为依赖排序的工作包；每个工作包有明确产出、工作量与 Go/No-Go 门。目标期刊/会议与投稿时机由进度质量决定，进度本身是唯一节拍器。
 
@@ -303,7 +303,6 @@ D0–D8 不变，协议改四元组（§4），主口径改保持率 %。
 | 缺口 | 严重度 |
 |---|---|
 | **word 级 WER 口径**（LibriSpeech 顶会通行 WER；当前目标是音素序列 + PER，reviewer 必问） | **P0，投稿硬门槛** |
-| 多种子 + 显著性检验 | P0 |
 | FLOPs 实测与延迟分解（RTF 陷阱已实证） | P0 |
 | 外部已发表基线对比（P1/P2 至少一项） | P0 |
 | Pareto 曲线（率扫） | P1 |
@@ -318,52 +317,124 @@ D0–D8 不变，协议改四元组（§4），主口径改保持率 %。
   - 路线 b：音素→词还原（CMUdict 词典约束解码）——零重训但工程复杂、易被挑刺。
 - 产出 B：test-clean + **test-other** 双测试集 WER 表（test-other 是 LibriSpeech 论文事实标配）。
 - 产出 C：`eval.py` 架构一致性断言（strict=False 地雷，10-05 事故整改）。
-- Go/No-Go D1：路线 a 复刻冠军 word-WER 与 PER 结论一致（soft>hard、learned 最优）→ 进入 WP2；若结论翻转，回炉归因（预期翻转概率低：机制与 tokenizer 无关）。
+- Go/No-Go D1：路线 a 复刻冠军 word-WER 与 PER 结论一致（soft>hard、learned 最优）→ 进入 WP4（泛化验证）；若结论翻转，回炉归因（预期翻转概率低：机制与 tokenizer 无关）。
 
-**WP2 — 统计严谨性（P0，4-6 GPU·h，1 周，依赖 WP1）**
-- 冠军格（cosine_diff×learned）、次优（fir×seg_avg）、max-pool 基线各补 2 种子（共 6 run × ~6h）。
-- 产出：mean±std 表 + paired bootstrap 显著性（冠军 vs max-pool，冠军 vs hard）。
-
-**WP3 — 效率口径（P0，纯本地，3-5 天，可与 WP1 并行）**
+**WP2 — 效率口径（P0，纯本地，3-5 天，可与 WP1 并行）**
 - FLOPs 实测（thop/fvcore 双工具交叉验证）：不压缩 vs r=0.27 vs 率扫各点；detector 自身开销单列（checklist：<5%）。
 - 延迟分解表：encoder / predictor-joiner / 解码循环（解释 RTF 陷阱）。
 - 产出：论文效率表 + Pareto 图骨架。
 
-**WP4 — Pareto 率扫（P1，推理-only，2-3 天，依赖 WP3）**
+**WP3 — Pareto 率扫（P1，推理-only，2-3 天，依赖 WP2）**
 - 冠军 ckpt 推理时扫 keep_rate ∈ {0.15, 0.20, 0.27, 0.35, 0.50}（检测器分数是运行时旋钮，无需重训）。
 - 产出：PER/FLOPs Pareto 主图（≥4 曲线：oracle/uniform/max-pool/ours）。
 
-**WP5 — 泛化验证（P1，~4 GPU 天，依赖 WP1 口径）**
+**WP4 — 泛化验证（P1，~4 GPU 天，依赖 WP1 口径）**
 - 最小可投稿集（四元组裁剪版）：架构（Conformer→ squeeze/ECAPA 型前端 1 项）× 数据规模（100h→360h A6 锚点 1 run 15-18h）× 任务（ASR→命令词/说话人验证 1 项推理侧迁移）。≥3 数据集项可引 P2 的跨数据集结果补位。
 - C2 可微门控（2-3 run）若赶不上投稿则移入扩展版，不阻塞主线。
 - Go/No-Go D2：360h 锚点上冠军法仍 ≥ max-pool → 泛化故事成立；否则论文收缩为"100h 深度分析 + 机制发现"，投 workshop/期刊。
 
-**WP6 — 外部基线对比（P0，4 周，风险最高，尽早启动）**
+**WP5 — 外部基线对比（P0，4 周，风险最高，尽早启动）**
 - P2（cosine-diff 分割，LALM 2025）：推理侧复现性高，优先。
 - P1（PLE 边界+MASK，Interspeech 2026）：注意本仓库 PLE 复刻已崩坏——先做 P1 作者口径（变率+MASK 填充）核对是复刻错还是方法对 ASR 不适，结论无论哪边都可作为论文素材（复现性发现或负结果分析）。
 - 止损：4 周内无法对齐任一方法 → 降级为 Related Work 定量引用 + 定位差异，主表不含外部基线（风险：reviewer 扣分项，需在 limitations 说明）。
 
-**WP7 — 论文与复现包（P0，3-4 周，与 WP5/6 后期并行）**
+**WP6 — 论文与复现包（P0，3-4 周，与 WP4/5 后期并行）**
 - 故事线（§9 v2 微调）：以"检测×混合解耦发现 mixer 主导"为钩子，动机图用 A0 诊断，主表 = B-matrix 2D 热图 + WER 版基线对比，主图 = Pareto。
-- 图表清单：架构图、2D 热图、Pareto（WP4）、A0 冗余分布、learned 权重可视化、延迟分解。
+- 图表清单：架构图、2D 热图、Pareto（WP3）、A0 冗余分布、learned 权重可视化、延迟分解。
 - 复现包：configs/exp + queue_runner + 清洗后 results.csv + 种子表。
 
 ### 13.2 关键决策门汇总
 
 | 门 | 判据 | 通过 | 不通过 |
 |---|---|---|---|
-| D1（WP1 末） | word-WER 复刻结论与 PER 一致 | WP2 启动 | 回炉归因，暂缓 WP2 |
-| D2（WP5 中） | 360h 锚点冠军 ≥ max-pool | 泛化故事完整版 | 收缩为 100h 机制论文 |
-| D3（WP6 末） | ≥1 外部基线复现对齐 | 主表含外部对比 | limitations 声明 + 定位差异 |
+| D1（WP1 末） | word-WER 复刻结论与 PER 一致 | WP4 启动 | 回炉归因，暂缓后续 GPU 工作包 |
+| D2（WP4 中） | 360h 锚点冠军 ≥ max-pool | 泛化故事完整版 | 收缩为 100h 机制论文 |
+| D3（WP5 末） | ≥1 外部基线复现对齐 | 主表含外部对比 | limitations 声明 + 定位差异 |
 
 ### 13.3 GPU 预算汇总（粗估）
 
 | 项 | runs | GPU·h |
 |---|---|---|
 | WP1 word-BPE 复刻 | 1-2 | 6-12 |
-| WP2 种子 | 6 | ~36 |
-| WP5 泛化 + A6 360h + C2 | 5-8 | 60-100 |
-| 合计 | 12-16 | **~100-150**（1 GPU 约 6-9 周连续，与推理侧工作包并行无冲突） |
+| WP4 泛化 + A6 360h + C2 | 5-8 | 60-100 |
+| 合计 | 6-10 | **~70-115**（1 GPU 约 5-7 周连续，与推理侧工作包并行无冲突） |
+
+> 修订（v2.2，2026-10-05）：应用户决定移除原 WP2 多种子复跑工作包；learned vs seg_avg 等价性以单种子结果报告，论文中如实声明。
+
+---
+
+## 14. 泛化研究详细计划（v2.3 增补，2026-10-05，用户拍板下一主攻方向）
+
+> 定位：对应 §13.1 WP4 的展开版。目标是在 B-matrix 已确立"mixer 主导、soft 制胜"之后，把核心结论从"Conformer-ASR-100h 单点"推向跨架构 / 跨数据规模 / 跨任务，形成顶会要求的泛化证据链。成本基准：100h/50ep 单 run 实测 ~2.5-3h（B-matrix 15 runs/37h），360h/40ep 推算 ~7-8h（training-plan 保守上限 15-18h）。
+
+### 14.1 研究问题与 reviewer 质疑映射
+
+| RQ | 研究问题 | 回应的顶会质疑 | 优先级 |
+|---|---|---|---|
+| RQ1 | r=0.27 + "soft mixer 制胜"是否依赖 Conformer 特定架构？ | "只在 Conformer 上验证，换个 backbone 还有用吗？" | **P0** |
+| RQ2 | 结论是否依赖 100h 小数据的冗余特性？ | "100h 太小，结论能 scale 吗？" | **P0** |
+| RQ3 | 是否绑定 ASR 任务特性？ | "对其他语音任务有效吗？" | P1 |
+| RQ4 | 压缩模块插入位置是否敏感？ | "为什么夹在 2+8 层中间？机制依据？" | P1 |
+| RQ5 | top-k 等率选帧能否被可微门控超越？ | "为什么不用端到端可微剪枝（P3）？" | P1 |
+
+### 14.2 实验矩阵（G1-G5）
+
+**G1 — 架构泛化（RQ1，P0）**
+- `g1-squeeze-learned`：squeezeformer 式主干（替换 conformer block，保持 2+8 布局与压缩位），cosine_diff-learned 冠军口径，100h/50ep，~3-4h。
+- `g1-squeeze-hard`：同主干 max-pool hard 对照，~3-4h。
+- 产出：架构 × mixer 2×2 小矩阵——"soft>hard"若在新架构复现 → 结论升级为跨架构；否则限定 Conformer 并在 limitations 声明。
+- 决策门 **D4**：G1 soft>hard 成立 → 泛化故事完整版；不成立 → 收缩为"Conformer 深度机制分析"。
+
+**G2 — 数据规模泛化（RQ2，P0，360h 数据+音素标注已验证就绪）**
+- `a6-360-learned`：cosine_diff-learned，train-clean-360（104,014 句），40ep，~8-18h。
+- `a6-360-maxpool`：max-pool hard 对照（D2 判据必需），~8-18h。
+- `a6-360-baseline`（P1，预算允许则跑）：不压缩 360h 锚点，Pareto 图大数据锚点，~8-18h。
+- 免费附加：360h 冠军 ckpt 上 keep_rate ∈ {0.15,0.20,0.27,0.35,0.50} 推理侧率扫（与 WP3 Pareto 共享口径）。
+
+**G3 — 任务迁移（RQ3，P1，推理为主，不占训练 GPU）**
+- `g3-kws`：命令词/关键词检索（Speech Commands 或 LibriSpeech 内构 keyword 子集），现有 ckpt 零训练评测，~0.5 天工程。
+- `g3-sv`：说话人验证（encoder 嵌入 + cosine scoring，VoxCeleb1-O），零训练，~1 天工程。
+- `g3-sv-ft`（可选）：压缩 encoder 在 VoxCeleb 微调 1 run ~4h。
+- 产出：压缩 vs 不压缩在下游任务的相对退化表（预期退化 ≤ ASR 主任务）。
+
+**G4 — 插入位置消融（RQ4，P1）**
+- `g4-pos-front` / `g4-pos-rear`：压缩模块移到 conformer1 前 / conformer2 后（现位 mid 已有），2 runs × ~3h。
+- 依赖：A0 诊断层位统计（已有）。
+
+**G5 — 可微门控 C2（RQ5，P1）**
+- `c2-signal-init` / `c2-random-init`：门控 logit 用检测器分数初始化 vs 随机初始化，2-3 runs × ~3h。
+- 产出：可微门控 vs top-k 等率对比；若超冠军 → 论文方法升级点；若平 → 反证等率 top-k 设计合理性。
+
+### 14.3 成本汇总
+
+| 组 | runs（必选+可选） | GPU·h | 优先级 |
+|---|---|---|---|
+| G1 架构泛化 | 2 + 1 | 6-8 (+4) | P0 |
+| G2 数据规模 | 2 + 1 | 16-36 (+8-18) | P0 |
+| G3 任务迁移 | 0 + 1 | 0 (+4) | P1 |
+| G4 位置消融 | 2 | ~6 | P1 |
+| G5 可微门控 | 2-3 | 6-9 | P1 |
+| **必选合计** | **4 runs** | **~22-44** | |
+| **全量合计** | **10-13 runs** | **~34-70** | |
+
+对照：B-matrix 15 runs 实测 37h——本计划必选部分 (~2 天) 远小于 B-matrix，全量 (~3-6 天) 可控。训练用统一 50ep（360h 用 40ep），评测口径与 B-matrix 一致（greedy PER 2620 句 test-clean；360h 结果另跑同集）。
+
+### 14.4 执行顺序与基础设施
+
+1. **G2 先行**（单 run 最长、承载 D2 判据）：写 stage4 queue 脚本（扩展 gen_configs 模板 g1/g2/g4/c2 + smoke 门禁），`tmux new -s queue-g4` 提队。
+2. G1 两 run 排队跟进（需先改 encoder 支持 squeezeformer block + 冒烟测试）。
+3. G4/G5 穿插填空（等 G1/G2 编译调试间隙的 GPU 空闲）。
+4. G3 推理侧随时并行（不占训练 GPU，与 WP2 效率口径共享工程）。
+5. 全部落库 results.csv（g1-/g2-/g3-/g4-/c2- 前缀），experiment-log 记分板续更。
+
+### 14.5 顶会接收要求对照
+
+| 接收要求 | 本计划覆盖 |
+|---|---|
+| 泛化性（常见底线：≥2 架构 或 ≥2 数据集 × ≥2 任务） | G1（Conformer+squeezeformer）× G2（100h+360h）× G3（ASR+KWS/SV）三轴全覆盖 |
+| 消融完整性 | G4 位置 + G5 可微对照 + 已有 B-matrix 2D 主消融 |
+| 稳健性 | 单种子（用户 10-05 决定，论文如实声明）+ 推理侧率扫多点位 + test-clean 全量 |
+| 口径一致 | 训练评测 PER；投稿主表 WER 由 WP1 冠军复刻承担，泛化实验不重训 WER 版 |
 
 ---
 
