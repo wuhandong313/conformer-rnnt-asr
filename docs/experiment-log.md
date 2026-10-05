@@ -222,3 +222,23 @@ raw-learned/seg_avg + savgol-hard/learned 落库（10-03 晚，27/28 行）：b-
 - **fir 从论文叙事中去除**（用户决定）：FIR 平滑是 raw 差分的冗余平滑变体（与 savgol 同族），无独立叙事价值。其在 results.csv / 本日志中的 3 行结果保留存档，仅退出论文矩阵与汇报材料。
 - **检测器集按"信号 × 平滑"2×2 网格完备化**：{差分, 余弦距离} × {无平滑, SG 平滑}，已有 raw / savgol（=raw+SG）/ cosine_diff 三格，**补 cosine_diff_savgol**（余弦距离经 SG 平滑后找峰谷，`CosineDiffPeaksDetector(preprocess="savgol")`，已实现并本地冒烟通过）。
 - **待跑**：`b-cosine_diff_savgol-{hard,seg_avg,learned}` 3 runs（100h/50ep，~2.5-3h/run，与既有 B-matrix 口径可比；460h 是泛化实验口径，不用于此），baseline beam20 收官后入队。
+
+## LSTM predictor 复现（2026-10-05，main 分支 @ 0678aa7）
+
+- **动机**：用户要求用 emformer_rnnt_copy 的 stride4_comp 配方（LSTM predictor + naive filter + sum loss reduction）重训一个，检验能否达到旧管线能力。架构经代码级核实与旧管线逐字同源（conformer 2+8 @512 + LSTM predictor 2×128）。
+- **配置**：`configs/server_lstm_naive.yaml`（naive + sum + 50ep + beam_width 20，exp_dir `/test21/conformer-rnnt-asr/exp_lstm_naive_repro`）；服务器 worktree `/test21/conformer-rnnt-asr-main`；自动管线 `scripts/lstm_repro_pipeline.sh`（等 GPU → 训练 → best val ckpt 直接 beam20，同 config 防架构错配）。本地 smoke 通过（39.89M + 0.34M + 0.04M）。
+- **结果**：beam20 PER **0.0824**（RTF 0.0678，2620 句），best val ckpt = epoch 34。
+- **对照**：
+  | 模型 | beam20 PER | beam RTF |
+  |---|---|---|
+  | 旧 emformer stride4_comp（51ep，同配方） | 0.0785 | — |
+  | **本次 LSTM 复现（50ep）** | **0.0824** | **0.068** |
+  | baseline-none（attn，不压缩） | 0.0782 | 0.870 |
+  | attn 冠军 cosine_diff-learned（mean loss） | 0.0879 | 0.565 |
+
+- vs 旧管线：**-0.39pt 未完全达到**（50ep vs 51ep、种子、或数据管线细节差异，暂不深究）
+  - vs attn 冠军：**好 0.55pt**（注意口径差：sum vs mean loss，严格对齐需补一个 mean-loss LSTM run）
+  - vs baseline：压缩模型（r=0.27）仍未过不压缩基线，与 B-matrix 结论一致
+- **意外发现**：LSTM predictor 的 beam RTF **0.068** vs attn trunk 的 **0.565（~8×）**——attention trunk 在 beam 逐步展开时每步重代价，LSTM 状态可缓存；若成立是效率叙事的重要素材（待核实两处 RTF 口径一致后写入 WP2）。
+- **工程教训**：管线等待循环裸 `pgrep -f "eval.py ..."` 匹配到 tmux server 进程的 argv（永久保留启动命令串），空等 1h；修复 = 锚定真实 python 进程路径 `pgrep -f "^/root/.../python eval.py ..."`（0678aa7）。
+- **队列**：cos+savgol 3 runs（`b-cosine_diff_savgol-{hard,seg_avg,learned}`，r=0.27，train+greedy）已挂链式队列，LSTM 管线结束（19:30 UTC）后 19:31 自动开跑，预计 ~10-06 04:00 UTC 前后出齐。
