@@ -438,11 +438,17 @@ class LibriSpeechRNNTModule(LightningModule):
         warmup_steps: int = 10000,
         rnnt_loss_reduction: str = "sum",
         rnnt_loss_clamp: float = 1.0,
-        # "batch" = one batched rnnt_loss call; "sample" = per-sample calls.
-        # Identical costs/gradients under reduction="sum", but each kernel
-        # launch sees a (1, T, U, V) tensor — sidesteps torchaudio 2.6 CUDA
-        # kernel illegal-memory-access with word-BPE-sized vocabs.
+        # "batch" = one batched rnnt_loss call; "sample" = per-sample calls;
+        # "group" = samples packed into sub-batches under a numel cap (see
+        # _pack_groups). All three are identical under reduction="sum", but
+        # the kernel's DP has a ~35ms sequential wavefront latency per call
+        # that batching parallelizes across samples — per-sample is B× that
+        # latency. "group" sidesteps the torchaudio 2.6 CUDA kernel
+        # illegal-memory-access (which only ever fired on large multi-sample
+        # calls) while keeping most of the batched-call speed.
         rnnt_loss_chunk: str = "batch",
+        rnnt_group_numel_limit: float = 2.5e8,
+        rnnt_group_max_b: int = 8,
         # Data — augmentation
         spec_aug_freq_mask_param: int = 27,
         spec_aug_time_mask_param: int = 100,
@@ -522,6 +528,8 @@ class LibriSpeechRNNTModule(LightningModule):
             clamp=rnnt_loss_clamp,
         )
         self.rnnt_loss_chunk = rnnt_loss_chunk
+        self.rnnt_group_numel_limit = rnnt_group_numel_limit
+        self.rnnt_group_max_b = rnnt_group_max_b
 
         # ---- Optimizer & scheduler ----
         self.optimizer = torch.optim.Adam(
@@ -644,6 +652,10 @@ class LibriSpeechRNNTModule(LightningModule):
             rnnt_loss_reduction=training_cfg.get("rnnt_loss_reduction", "sum"),
             rnnt_loss_clamp=training_cfg.get("rnnt_loss_clamp", 1.0),
             rnnt_loss_chunk=training_cfg.get("rnnt_loss_chunk", "batch"),
+            rnnt_group_numel_limit=float(
+                training_cfg.get("rnnt_group_numel_limit", 2.5e8)
+            ),
+            rnnt_group_max_b=int(training_cfg.get("rnnt_group_max_b", 8)),
             # Data — augmentation
             spec_aug_freq_mask_param=aug_cfg.get("freq_mask_param", 27),
             spec_aug_time_mask_param=aug_cfg.get("time_mask_param", 100),
@@ -776,37 +788,84 @@ class LibriSpeechRNNTModule(LightningModule):
         return loss
 
     def _rnnt_loss(self, output, targets, src_lengths, target_lengths):
-        """RNNT loss — batched call, or per-sample chunk (``rnnt_loss_chunk``).
+        """RNNT loss — batched, per-sample, or grouped calls (``rnnt_loss_chunk``).
 
-        The per-sample chunk is exactly equivalent to the batched call under
-        ``reduction="sum"`` (same costs, same gradients — padded frames never
-        enter the DP), but each kernel launch operates on a (1, T_i, U_i, V)
-        tensor.
+        All modes are exactly equivalent under ``reduction="sum"``: the DP
+        never enters padded frames, so cropping changes nothing.
 
         NOTE: the torchaudio rnnt_loss op (v2.6.0, compute.cu) requires
         ``logits.size(1) == max(logit_lengths)``, ``logits.size(2) ==
         max(target_lengths) + 1`` and ``targets.size(1) == max(target_lengths)``
-        *strictly*, and requires a contiguous logits tensor. So each sample
-        must have its T/U dims cropped to its actual lengths before the call.
+        *strictly*, and requires a contiguous logits tensor (compute.cu:39).
+        Every non-batch call therefore crops to the max lengths *within its
+        group* — the op handles per-sample lengths internally.
 
         Perf: crop bounds come from a single ``.tolist()`` — indexing CUDA
         scalars with ``int()`` per sample would drain the GPU queue once per
         sample and serialize the whole step on host<->device syncs.
         """
-        if self.rnnt_loss_chunk == "sample":
+        mode = self.rnnt_loss_chunk
+        if mode == "batch":
+            return self.loss(output, targets, src_lengths, target_lengths)
+
+        t_list = src_lengths.tolist()
+        u_list = target_lengths.tolist()
+
+        if mode == "sample":
+            ranges = [(i, i + 1) for i in range(output.size(0))]
+        elif mode == "group":
+            order = sorted(range(len(t_list)), key=lambda i: (t_list[i], u_list[i]))
+            ranges = self._pack_groups([t_list[i] for i in order],
+                                       [u_list[i] for i in order],
+                                       output.size(3))
+            # Reorder so each group is a contiguous slice (index_select copy
+            # is order-invariant for a summed loss; autograd scatters back).
+            order_t = torch.tensor(order, device=output.device, dtype=torch.long)
+            output = output.index_select(0, order_t)
+            targets = targets.index_select(0, order_t)
+            src_lengths = src_lengths.index_select(0, order_t)
+            target_lengths = target_lengths.index_select(0, order_t)
             t_list = src_lengths.tolist()
             u_list = target_lengths.tolist()
-            losses = [
-                self.loss(
-                    output[i : i + 1, : t_list[i], : u_list[i] + 1].contiguous(),
-                    targets[i : i + 1, : u_list[i]].contiguous(),
-                    src_lengths[i : i + 1],
-                    target_lengths[i : i + 1],
-                )
-                for i in range(output.size(0))
-            ]
-            return torch.stack(losses).sum()
-        return self.loss(output, targets, src_lengths, target_lengths)
+        else:
+            raise ValueError(f"unknown rnnt_loss_chunk mode: {mode!r}")
+
+        losses = [
+            self.loss(
+                output[lo:hi, : max(t_list[lo:hi]),
+                       : max(u_list[lo:hi]) + 1].contiguous(),
+                targets[lo:hi, : max(u_list[lo:hi])].contiguous(),
+                src_lengths[lo:hi],
+                target_lengths[lo:hi],
+            )
+            for lo, hi in ranges
+        ]
+        return torch.stack(losses).sum()
+
+    def _pack_groups(self, t_list, u_list, vocab):
+        """Greedy-pack T-sorted samples into contiguous [lo, hi) ranges with
+        group_size x max_T x (max_U+1) x V under ``rnnt_group_numel_limit``
+        (and at most ``rnnt_group_max_b`` samples per group). The limit keeps
+        every multi-sample op call far below the numel regime where the
+        torchaudio 2.6 kernel has shown illegal memory access. A sample that
+        alone exceeds the limit stays in its own single-sample group."""
+        n = len(t_list)
+        ranges = []
+        start = 0
+        for end in range(1, n + 1):
+            t_g = max(t_list[start:end])
+            u_g = max(u_list[start:end]) + 1
+            over = (
+                (end - start) * t_g * u_g * vocab > self.rnnt_group_numel_limit
+                or (end - start) > self.rnnt_group_max_b
+            )
+            if over and end - start > 1:
+                # sample end-1 pushed the window over — close the group
+                # before it and let it start the next one
+                ranges.append((start, end - 1))
+                start = end - 1
+        ranges.append((start, n))
+        return ranges
 
     # ------------------------------------------------------------------
     # Hooks

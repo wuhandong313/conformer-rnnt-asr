@@ -18,8 +18,13 @@ while [ "$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits -i 0
 done
 echo "[$(date -u +%FT%T)] GPU free, starting training" >> "$LOG"
 
-# ── 2) 训练，记录 best val ckpt ──────────────────────────────────────────
+# ── 2) 训练，记录 best val ckpt（失败自动从 last.ckpt 续训，最多 3 次尝试）─
+rc=1
+for attempt in 1 2 3; do
+RESUME_LAST=$([ "$attempt" -gt 1 ] && echo 1 || echo 0) \
 "$P" - > "$REPO/word_960h.train.log" 2>&1 <<'PYEOF'
+import os
+
 import torch, yaml
 from pytorch_lightning import seed_everything
 from pytorch_lightning.callbacks import ModelCheckpoint
@@ -32,7 +37,13 @@ torch.set_float32_matmul_precision(cfg.get("trainer", {}).get("matmul_precision"
 
 model = LibriSpeechRNNTModule.from_config(cfg)
 trainer = T.build_trainer(cfg)
-trainer.fit(model, ckpt_path=cfg.get("paths", {}).get("from_checkpoint"))
+ckpt_path = cfg.get("paths", {}).get("from_checkpoint")
+if os.environ.get("RESUME_LAST") == "1":
+    cand = os.path.join(cfg["paths"]["exp_dir"], "checkpoints", "last.ckpt")
+    if os.path.exists(cand):
+        print("RESUMING from", cand, flush=True)
+        ckpt_path = cand
+trainer.fit(model, ckpt_path=ckpt_path)
 
 val_cks = [c for c in trainer.callbacks
            if isinstance(c, ModelCheckpoint) and (c.monitor or "").endswith("val_loss")]
@@ -41,8 +52,10 @@ print("BEST_CKPT:", best)
 with open("best_ckpt_word_960h.txt", "w") as f:
     f.write(best)
 PYEOF
-rc=$?
-echo "[$(date -u +%FT%T)] training exit=$rc" >> "$LOG"
+  rc=$?
+  echo "[$(date -u +%FT%T)] training attempt $attempt exit=$rc" >> "$LOG"
+  [ $rc -eq 0 ] && break
+done
 if [ $rc -ne 0 ] || [ ! -s "$REPO/best_ckpt_word_960h.txt" ]; then
   echo "[$(date -u +%FT%T)] TRAINING FAILED — see word_960h.train.log, abort" >> "$LOG"
   exit 1

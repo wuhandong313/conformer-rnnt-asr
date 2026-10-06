@@ -102,6 +102,7 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
         gradient_clip_val=training_cfg.get("gradient_clip_val", 10.0),
         accumulate_grad_batches=trainer_cfg.get("accumulate_grad_batches", 1),
         callbacks=callbacks,
+        save_last=ckpt.get("save_last", None),
         num_sanity_val_steps=trainer_cfg.get("num_sanity_val_steps", 0),
         val_check_interval=trainer_cfg.get("val_check_interval", 500),
         fast_dev_run=trainer_cfg.get("fast_dev_run", False),

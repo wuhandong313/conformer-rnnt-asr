@@ -132,11 +132,21 @@ training:
 
   rnnt_loss_clamp: 1.0
 
-  # RNNT loss kernel 调用粒度: "batch" = 单次批量调用; "sample" = 逐样本调用。
-  # reduction=sum 下两者 costs/梯度完全等价, 但 "sample" 每次 kernel 只见
-  # (1,T,U,V) 小张量 —— 规避 torchaudio 2.6 批量 kernel 在 word-BPE 大词表下
-  # 的 illegal memory access (实测批量路径 ~step98 确定性崩溃, 显存仅 30G)
-  rnnt_loss_chunk: "sample"
+  # RNNT loss kernel 调用粒度:
+  #   "batch"  = 单次批量调用 (最快, 但 torchaudio 2.6 kernel 在 word 大词表下
+  #              ~step98 确定性 illegal memory access, 显存仅 30G 非 OOM)
+  #   "sample" = 逐样本调用 (绝对安全, 但 kernel DP 有 ~35ms 固定串行延迟 ×B,
+  #              实测 296ms/步 vs 批量 65ms → 训练慢 40%)
+  #   "group"  = 折中: 按 T 排序贪心打包成小组 (每组 numel ≤ 下限), 组内裁剪到
+  #              组最大长度 (满足 op 严格形状校验), 一次调用算一组。实测与批量
+  #              同速且 loss/梯度 bit-exact; 每次调用的张量比崩溃域小 ≥8 倍
+  rnnt_loss_chunk: "group"
+
+  # group 模式: 单次调用允许的 numel 上限 (2.5e8 = 2.05e9 已验证安全用例的 1/8)
+  rnnt_group_numel_limit: 250000000
+
+  # group 模式: 单次调用允许的最大样本数
+  rnnt_group_max_b: 8
 
   # === 梯度裁剪 ===
   gradient_clip_val: 10.0
@@ -259,6 +269,9 @@ trainer:
     save_top_k: 2
 
     save_weights_only: true
+
+    # 保存 last.ckpt (完整训练状态) — 管线训练失败时自动从它续训
+    save_last: true
 
     val_checkpoint_interval: 100
 
