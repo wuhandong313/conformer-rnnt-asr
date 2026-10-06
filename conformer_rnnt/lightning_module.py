@@ -779,21 +779,30 @@ class LibriSpeechRNNTModule(LightningModule):
         """RNNT loss — batched call, or per-sample chunk (``rnnt_loss_chunk``).
 
         The per-sample chunk is exactly equivalent to the batched call under
-        ``reduction="sum"`` (same costs, same gradients), but each kernel
-        launch operates on a (1, T, U, V) tensor.
+        ``reduction="sum"`` (same costs, same gradients — padded frames never
+        enter the DP), but each kernel launch operates on a (1, T_i, U_i, V)
+        tensor.
+
+        NOTE: the torchaudio rnnt_loss op (v2.6.0, compute.cu) requires
+        ``logits.size(1) == max(logit_lengths)``, ``logits.size(2) ==
+        max(target_lengths) + 1`` and ``targets.size(1) == max(target_lengths)``
+        *strictly*, and requires a contiguous logits tensor. So each sample
+        must have its T/U dims cropped to its actual lengths before the call.
         """
         if self.rnnt_loss_chunk == "sample":
-            return torch.stack(
-                [
+            losses = []
+            for i in range(output.size(0)):
+                t_i = int(src_lengths[i])
+                u_i = int(target_lengths[i])
+                losses.append(
                     self.loss(
-                        output[i : i + 1],
-                        targets[i : i + 1],
+                        output[i : i + 1, :t_i, : u_i + 1].contiguous(),
+                        targets[i : i + 1, :u_i].contiguous(),
                         src_lengths[i : i + 1],
                         target_lengths[i : i + 1],
                     )
-                    for i in range(output.size(0))
-                ]
-            ).sum()
+                )
+            return torch.stack(losses).sum()
         return self.loss(output, targets, src_lengths, target_lengths)
 
     # ------------------------------------------------------------------
