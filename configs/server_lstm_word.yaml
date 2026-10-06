@@ -28,7 +28,7 @@ paths:
   global_stats_path: "/test21/librispeech/global_stats.json"
 
   # 实验输出目录 (checkpoints、logs 保存位置)
-  exp_dir: "/test21/conformer-rnnt-asr/exp_lstm_word"
+  exp_dir: "/test21/conformer-rnnt-asr/exp_word_960h"
 
   # 从某个 checkpoint 恢复训练 (null = 从头训练, 或填 .ckpt 路径)
   from_checkpoint: null
@@ -79,7 +79,8 @@ model:
   # === 层间动态压缩 ===
   compression:
     # 压缩滤波模式: none | naive | hanning | fir | savgol | savgol_hanning
-    filter: "naive"
+    # none = 不压缩 (直通), 960h word 全量基线
+    filter: "none"
 
     # Hanning 窗大小 (仅 hanning / savgol_hanning 模式生效)
     hanning_window_size: 5
@@ -208,7 +209,8 @@ trainer:
 
   log_every_n_steps: 10
 
-  val_check_interval: 200
+  # 每隔多少训练步跑一次验证 (960h 每 epoch 3132 步, 1000 步一验 ≈ 3 次/epoch)
+  val_check_interval: 1000
 
   num_sanity_val_steps: 0
 

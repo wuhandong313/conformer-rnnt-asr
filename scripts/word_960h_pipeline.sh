@@ -1,0 +1,59 @@
+#!/bin/bash
+# Word-BPE 960h 全量基线管线 (filter=none, LSTM predictor)
+#   等 GPU 空闲 → 训练 50ep → best val ckpt 直接 beam20 评测 (test-clean + test-other)
+# 用法: tmux 里 bash scripts/word_960h_pipeline.sh（工作目录任意）
+set -u
+REPO=/test21/conformer-rnnt-asr-main
+cd "$REPO"
+P=/root/anaconda3/envs/whd/bin/python
+CFG=configs/server_lstm_word.yaml
+LOG="$REPO/pipeline_word_960h.log"
+
+echo "[$(date -u +%FT%T)] pipeline start (repo: $(git rev-parse --short HEAD))" >> "$LOG"
+
+# ── 1) 等 GPU 空闲 (显存占用 < 2GB) ─────────────────────────────────────
+echo "[$(date -u +%FT%T)] waiting for GPU ..." >> "$LOG"
+while [ "$(nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits -i 0)" -gt 2000 ]; do
+  sleep 120
+done
+echo "[$(date -u +%FT%T)] GPU free, starting training" >> "$LOG"
+
+# ── 2) 训练，记录 best val ckpt ──────────────────────────────────────────
+"$P" - > "$REPO/word_960h.train.log" 2>&1 <<'PYEOF'
+import torch, yaml
+from pytorch_lightning import seed_everything
+from pytorch_lightning.callbacks import ModelCheckpoint
+from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
+import train as T
+
+cfg = T.load_config("configs/server_lstm_word.yaml")
+seed_everything(cfg.get("seed", 42), workers=True)
+torch.set_float32_matmul_precision(cfg.get("trainer", {}).get("matmul_precision", "medium"))
+
+model = LibriSpeechRNNTModule.from_config(cfg)
+trainer = T.build_trainer(cfg)
+trainer.fit(model, ckpt_path=cfg.get("paths", {}).get("from_checkpoint"))
+
+val_cks = [c for c in trainer.callbacks
+           if isinstance(c, ModelCheckpoint) and (c.monitor or "").endswith("val_loss")]
+best = val_cks[0].best_model_path if val_cks else ""
+print("BEST_CKPT:", best)
+with open("best_ckpt_word_960h.txt", "w") as f:
+    f.write(best)
+PYEOF
+rc=$?
+echo "[$(date -u +%FT%T)] training exit=$rc" >> "$LOG"
+if [ $rc -ne 0 ] || [ ! -s "$REPO/best_ckpt_word_960h.txt" ]; then
+  echo "[$(date -u +%FT%T)] TRAINING FAILED — see word_960h.train.log, abort" >> "$LOG"
+  exit 1
+fi
+BEST=$(cat "$REPO/best_ckpt_word_960h.txt")
+echo "[$(date -u +%FT%T)] best ckpt: $BEST" >> "$LOG"
+
+# ── 3) beam20 评测（同一 config；test = clean + other 5559 句）───────────
+"$P" eval.py "$CFG" --checkpoint "$BEST" \
+  > "$REPO/word_960h.beam20.log" 2>&1
+rc=$?
+echo "[$(date -u +%FT%T)] beam20 eval exit=$rc" >> "$LOG"
+grep -E "^PER:|^RTF:|Evaluation complete" "$REPO/word_960h.beam20.log" | tail -4 >> "$LOG"
+echo "[$(date -u +%FT%T)] pipeline done" >> "$LOG"
