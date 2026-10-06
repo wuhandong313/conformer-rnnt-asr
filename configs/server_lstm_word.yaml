@@ -167,6 +167,17 @@ data:
   # 编码前是否去空格: word 协议必须 false (保留空格, SPM ▁ 词片依赖空格)
   strip_spaces: false
 
+  # === RNNT kernel int32 溢出守卫 ===
+  # torchaudio 2.6 的 RNNT CUDA kernel 用 int32 索引联合输出张量,
+  # B×T×(U+1)×V ≥ 2^31 即触发 illegal memory access (word V=4001 时
+  # B×T×U ≳ 536k 就会命中; 实测 2.05e9 OK / 2.26e9 崩)。
+  # 守卫用真实 token 数 U (sp_model 精确编码) + chars×frames_per_char 估帧数,
+  # 自动拆分超限 batch; 单句即超限的剔除并打印 fileid。
+  rnnt_numel_limit: 1.9e9
+
+  # 帧数估计系数 (输出帧/转写字符; 实测均值 ~1.75, 取 3.0 覆盖慢语速)
+  rnnt_frames_per_char: 3.0
+
   # === 批处理 ===
   # 每 batch 最大字符数 (按转写字符长度累积分组). RNNT loss 显存 ∝ Σ(T×U)×V,
   # V=4001 是音素 75 的 54 倍 → 预算须等比缩减: 16000×(75/4001)≈300 太碎,

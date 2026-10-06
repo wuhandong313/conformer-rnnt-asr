@@ -202,18 +202,41 @@ class LIBRISPEECH(Dataset):
 class CustomDataset(torch.utils.data.Dataset):
     """Sort LibriSpeech samples by target length and batch to max token count.
 
+    Optionally applies an RNNT-kernel overflow guard: the torchaudio RNNT
+    CUDA kernel indexes the joint output tensor with int32, so any batch
+    with ``B × T × (U+1) × V >= 2^31`` elements crashes with an illegal
+    memory access. When ``sp_model`` and ``rnnt_vocab`` are given, batches
+    are greedily split so every batch stays under ``numel_limit``; a single
+    sentence that alone exceeds the limit is dropped and reported.
+
     Args:
         base_dataset: A :class:`LIBRISPEECH` instance.
-        max_token_limit: Maximum total target tokens per batch.
+        max_token_limit: Maximum total target chars per batch.
+        sp_model: SentencePiece model; giving it enables the overflow guard.
+        rnnt_vocab: RNNT output vocab size V incl. blank (guard needs V > 0).
+        strip_spaces: Space-stripping applied before SPM encoding — must
+            match the training label extraction exactly.
+        frames_per_char: Conservative encoder-output-frames-per-char ratio
+            used to bound T (measured average ≈ 1.75 at 25 fps output).
+        numel_limit: Batch element budget B×T×(U+1)×V (kernel limit 2^31).
     """
 
-    def __init__(self, base_dataset: LIBRISPEECH, max_token_limit: int):
+    def __init__(
+        self,
+        base_dataset: LIBRISPEECH,
+        max_token_limit: int,
+        sp_model=None,
+        rnnt_vocab: int = 0,
+        strip_spaces: bool = True,
+        frames_per_char: float = 3.0,
+        numel_limit: float = 1.9e9,
+    ):
         super().__init__()
         self.base_dataset = base_dataset
 
-        fileid_to_target_length = {}
+        fileid_to_transcript = {}
         idx_target_lengths = [
-            (idx, self._target_length(fileid, fileid_to_target_length))
+            (idx, len(self._transcript(fileid, fileid_to_transcript)))
             for idx, fileid in enumerate(self.base_dataset._walker)
         ]
 
@@ -227,8 +250,14 @@ class CustomDataset(torch.utils.data.Dataset):
 
         self.batches = batch_by_token_count(idx_target_lengths, max_token_limit)
 
-    def _target_length(self, fileid: str, fileid_to_target_length: dict) -> int:
-        if fileid not in fileid_to_target_length:
+        if sp_model is not None and rnnt_vocab > 0:
+            self.batches = self._apply_numel_guard(
+                idx_target_lengths, fileid_to_transcript, sp_model,
+                rnnt_vocab, strip_spaces, frames_per_char, numel_limit,
+            )
+
+    def _transcript(self, fileid: str, fileid_to_transcript: dict) -> str:
+        if fileid not in fileid_to_transcript:
             speaker_id, chapter_id, _ = fileid.split("-")
             file_text = (
                 speaker_id
@@ -243,8 +272,66 @@ class CustomDataset(torch.utils.data.Dataset):
             with open(file_text) as ft:
                 for line in ft:
                     fileid_text, transcript = line.strip().split(" ", 1)
-                    fileid_to_target_length[fileid_text] = len(transcript)
-        return fileid_to_target_length[fileid]
+                    fileid_to_transcript[fileid_text] = transcript
+        return fileid_to_transcript[fileid]
+
+    def _apply_numel_guard(
+        self, idx_target_lengths, fileid_to_transcript, sp_model,
+        rnnt_vocab, strip_spaces, frames_per_char, numel_limit,
+    ):
+        """Split batches so B×T_est×(U+1)×V stays below the int32 limit.
+
+        U (real token count) is computed with the exact same encoding path
+        as ``_extract_labels``; T is bounded conservatively via
+        ``chars × frames_per_char``.
+        """
+        chars_by_idx = dict(idx_target_lengths)
+        token_len_by_idx = {}
+        for idx, fileid in enumerate(self.base_dataset._walker):
+            text = fileid_to_transcript[fileid].lower()
+            if strip_spaces:
+                text = text.replace(" ", "")
+            token_len_by_idx[idx] = len(sp_model.encode(text))
+
+        kept, dropped = [], []
+        worst = 0.0
+
+        def flush(cur, cur_t, cur_u):
+            nonlocal worst
+            if not cur:
+                return
+            if len(cur) == 1 and cur_t * cur_u * rnnt_vocab >= numel_limit:
+                fid = self.base_dataset._walker[cur[0]]
+                dropped.append((fid, int(cur_t), cur_u - 1))
+                return
+            worst = max(worst, len(cur) * cur_t * cur_u * rnnt_vocab)
+            kept.append(cur)
+
+        for batch in self.batches:
+            cur, cur_t, cur_u = [], 0.0, 0
+            for i in batch:
+                t = chars_by_idx[i] * frames_per_char
+                u = token_len_by_idx[i] + 1  # +1: blank slot on the U axis
+                if cur and (
+                    (len(cur) + 1) * max(cur_t, t) * max(cur_u, u) * rnnt_vocab
+                    >= numel_limit
+                ):
+                    flush(cur, cur_t, cur_u)
+                    cur, cur_t, cur_u = [], 0.0, 0
+                cur.append(i)
+                cur_t, cur_u = max(cur_t, t), max(cur_u, u)
+            flush(cur, cur_t, cur_u)
+
+        msg = (
+            f"[CustomDataset:{self.base_dataset._url}] RNNT numel guard "
+            f"(V={rnnt_vocab}, limit={numel_limit:.3g}): "
+            f"batches {len(self.batches)} -> {len(kept)}"
+        )
+        if dropped:
+            msg += f", dropped {len(dropped)} oversized sentence(s): {dropped}"
+        msg += f", worst batch est. {worst:.3g} elements"
+        print(msg)
+        return kept
 
     def __getitem__(self, idx: int):
         return [self.base_dataset[subidx] for subidx in self.batches[idx]]
@@ -305,6 +392,10 @@ class LibriSpeechRNNTModule(LightningModule):
             merged training (e.g. all three train subsets = 960 hours).
         val_subset: LibriSpeech validation subset name, or a list of names.
         test_subset: LibriSpeech test subset name, or a list of names.
+        rnnt_numel_limit: Max B×T×(U+1)×V elements per train/val batch (guard
+            against the RNNT CUDA kernel's int32 indexing limit of 2^31).
+        rnnt_frames_per_char: Conservative output-frames-per-char estimate
+            used by the overflow guard (measured average ≈ 1.75).
     """
 
     def __init__(
@@ -370,6 +461,10 @@ class LibriSpeechRNNTModule(LightningModule):
         # must be False for word-level SPM models (pieces carry ▁ space marks).
         transcript_suffix: str = "-ph",
         strip_spaces: bool = True,
+        # Data — RNNT kernel overflow guard (word-BPE V=4001 can exceed the
+        # int32 indexing limit of the torchaudio RNNT CUDA kernel)
+        rnnt_numel_limit: float = 1.9e9,
+        rnnt_frames_per_char: float = 3.0,
         # Decoding
         beam_width: int = 20,
     ):
@@ -473,15 +568,17 @@ class LibriSpeechRNNTModule(LightningModule):
         self.test_subsets = self._as_list(test_subset)
         self.transcript_suffix = transcript_suffix
         self.strip_spaces = strip_spaces
-
-    @staticmethod
-    def _as_list(subset: Union[str, List[str]]) -> List[str]:
-        return [subset] if isinstance(subset, str) else list(subset)
+        self.rnnt_numel_limit = rnnt_numel_limit
+        self.rnnt_frames_per_char = rnnt_frames_per_char
 
         # ---- Decoding ----
         # beam_width=0 → greedy (RNNTBeamSearch width=1); used as the
         # lossless oracle baseline for future speculative decoding.
         self.beam_width = beam_width
+
+    @staticmethod
+    def _as_list(subset: Union[str, List[str]]) -> List[str]:
+        return [subset] if isinstance(subset, str) else list(subset)
 
     # ------------------------------------------------------------------
     # Factory: build from a config dictionary (e.g. loaded from YAML)
@@ -559,6 +656,9 @@ class LibriSpeechRNNTModule(LightningModule):
             # Transcript protocol
             transcript_suffix=data_cfg.get("transcript_suffix", "-ph"),
             strip_spaces=data_cfg.get("strip_spaces", True),
+            # RNNT kernel overflow guard
+            rnnt_numel_limit=data_cfg.get("rnnt_numel_limit", 1.9e9),
+            rnnt_frames_per_char=data_cfg.get("rnnt_frames_per_char", 3.0),
             # Decoding
             beam_width=decoding_cfg.get("beam_width", 20),
         )
@@ -713,6 +813,11 @@ class LibriSpeechRNNTModule(LightningModule):
                         transcript_suffix=self.transcript_suffix,
                     ),
                     max_token_limit=self.max_token_limit,
+                    sp_model=self.sp_model,
+                    rnnt_vocab=self.blank_idx + 1,
+                    strip_spaces=self.strip_spaces,
+                    frames_per_char=self.rnnt_frames_per_char,
+                    numel_limit=self.rnnt_numel_limit,
                 )
                 for subset in self.train_subsets
             ]
@@ -738,6 +843,11 @@ class LibriSpeechRNNTModule(LightningModule):
                         transcript_suffix=self.transcript_suffix,
                     ),
                     max_token_limit=self.max_token_limit,
+                    sp_model=self.sp_model,
+                    rnnt_vocab=self.blank_idx + 1,
+                    strip_spaces=self.strip_spaces,
+                    frames_per_char=self.rnnt_frames_per_char,
+                    numel_limit=self.rnnt_numel_limit,
                 )
                 for subset in self.val_subsets
             ]
