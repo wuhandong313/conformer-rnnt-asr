@@ -132,6 +132,12 @@ training:
 
   rnnt_loss_clamp: 1.0
 
+  # RNNT loss kernel 调用粒度: "batch" = 单次批量调用; "sample" = 逐样本调用。
+  # reduction=sum 下两者 costs/梯度完全等价, 但 "sample" 每次 kernel 只见
+  # (1,T,U,V) 小张量 —— 规避 torchaudio 2.6 批量 kernel 在 word-BPE 大词表下
+  # 的 illegal memory access (实测批量路径 ~step98 确定性崩溃, 显存仅 30G)
+  rnnt_loss_chunk: "sample"
+
   # === 梯度裁剪 ===
   gradient_clip_val: 10.0
 

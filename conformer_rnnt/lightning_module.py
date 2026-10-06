@@ -438,6 +438,11 @@ class LibriSpeechRNNTModule(LightningModule):
         warmup_steps: int = 10000,
         rnnt_loss_reduction: str = "sum",
         rnnt_loss_clamp: float = 1.0,
+        # "batch" = one batched rnnt_loss call; "sample" = per-sample calls.
+        # Identical costs/gradients under reduction="sum", but each kernel
+        # launch sees a (1, T, U, V) tensor — sidesteps torchaudio 2.6 CUDA
+        # kernel illegal-memory-access with word-BPE-sized vocabs.
+        rnnt_loss_chunk: str = "batch",
         # Data — augmentation
         spec_aug_freq_mask_param: int = 27,
         spec_aug_time_mask_param: int = 100,
@@ -516,6 +521,7 @@ class LibriSpeechRNNTModule(LightningModule):
             reduction=rnnt_loss_reduction,
             clamp=rnnt_loss_clamp,
         )
+        self.rnnt_loss_chunk = rnnt_loss_chunk
 
         # ---- Optimizer & scheduler ----
         self.optimizer = torch.optim.Adam(
@@ -637,6 +643,7 @@ class LibriSpeechRNNTModule(LightningModule):
             warmup_steps=training_cfg.get("warmup_steps", 10000),
             rnnt_loss_reduction=training_cfg.get("rnnt_loss_reduction", "sum"),
             rnnt_loss_clamp=training_cfg.get("rnnt_loss_clamp", 1.0),
+            rnnt_loss_chunk=training_cfg.get("rnnt_loss_chunk", "batch"),
             # Data — augmentation
             spec_aug_freq_mask_param=aug_cfg.get("freq_mask_param", 27),
             spec_aug_time_mask_param=aug_cfg.get("time_mask_param", 100),
@@ -764,9 +771,30 @@ class LibriSpeechRNNTModule(LightningModule):
         src_lengths = torch.clamp(src_lengths, max=max_time).to(torch.int32)
         target_lengths = batch.target_lengths.to(torch.int32)
 
-        loss = self.loss(output, batch.targets, src_lengths, target_lengths)
+        loss = self._rnnt_loss(output, batch.targets, src_lengths, target_lengths)
         self.log(f"Losses/{step_type}_loss", loss, on_step=True, on_epoch=True)
         return loss
+
+    def _rnnt_loss(self, output, targets, src_lengths, target_lengths):
+        """RNNT loss — batched call, or per-sample chunk (``rnnt_loss_chunk``).
+
+        The per-sample chunk is exactly equivalent to the batched call under
+        ``reduction="sum"`` (same costs, same gradients), but each kernel
+        launch operates on a (1, T, U, V) tensor.
+        """
+        if self.rnnt_loss_chunk == "sample":
+            return torch.stack(
+                [
+                    self.loss(
+                        output[i : i + 1],
+                        targets[i : i + 1],
+                        src_lengths[i : i + 1],
+                        target_lengths[i : i + 1],
+                    )
+                    for i in range(output.size(0))
+                ]
+            ).sum()
+        return self.loss(output, targets, src_lengths, target_lengths)
 
     # ------------------------------------------------------------------
     # Hooks
