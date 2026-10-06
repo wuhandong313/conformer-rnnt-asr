@@ -242,3 +242,9 @@ raw-learned/seg_avg + savgol-hard/learned 落库（10-03 晚，27/28 行）：b-
 - **意外发现**：LSTM predictor 的 beam RTF **0.068** vs attn trunk 的 **0.565（~8×）**——attention trunk 在 beam 逐步展开时每步重代价，LSTM 状态可缓存；若成立是效率叙事的重要素材（待核实两处 RTF 口径一致后写入 WP2）。
 - **工程教训**：管线等待循环裸 `pgrep -f "eval.py ..."` 匹配到 tmux server 进程的 argv（永久保留启动命令串），空等 1h；修复 = 锚定真实 python 进程路径 `pgrep -f "^/root/.../python eval.py ..."`（0678aa7）。
 - **队列**：cos+savgol 3 runs（`b-cosine_diff_savgol-{hard,seg_avg,learned}`，r=0.27，train+greedy）已挂链式队列，LSTM 管线结束（19:30 UTC）后 19:31 自动开跑，预计 ~10-06 04:00 UTC 前后出齐。
+
+### 训练中止（2026-10-06，用户指令）
+
+- **用户要求停掉所有训练**（10-06 ~03:00 UTC）：`b-cosine_diff_savgol-learned` 在 ~ep24 中止（无结果），queue_runner + tmux 全部清理，GPU 已空。
+- 2×2 网格补全最终状态：hard **0.1136** ✓ / seg_avg **0.0912**（全场 greedy 新高）✓ / **learned 缺失**（中止，未入 results.csv）。results.csv 停在 30 行。
+- 若日后需要补 learned 格：`scripts/manifest_cos_savgol.tsv` 里该行直接重跑 queue_runner 即可（config 已在 configs/exp/）。
