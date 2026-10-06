@@ -178,9 +178,11 @@ data:
   prefetch_factor: 2
 
   # === 数据子集 ===
-  # 首个 word run 先用 train-clean-100, 与 LSTM 音素复现 (clean-100) 保持
-  # 单变量对照 (只换标签协议); 460h 合并 loader 落地后再切大训练集
-  train_subset: "train-clean-100"
+  # 960h 全量训练 (clean-100 + clean-360 + other-500 合并 loader, batch 不混子集)
+  train_subset:
+    - "train-clean-100"
+    - "train-clean-360"
+    - "train-other-500"
 
   val_subset: "dev-clean"
 

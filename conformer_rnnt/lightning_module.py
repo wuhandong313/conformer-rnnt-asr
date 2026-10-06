@@ -301,7 +301,8 @@ class LibriSpeechRNNTModule(LightningModule):
         spec_aug_time_mask_prob: Time masking probability.
         max_token_limit: Max target tokens per batch.
         num_workers: DataLoader worker count.
-        train_subset: LibriSpeech training subset name.
+        train_subset: LibriSpeech training subset name, or a list of names for
+            merged training (e.g. all three train subsets = 960 hours).
         val_subset: LibriSpeech validation subset name.
         test_subset: LibriSpeech test subset name.
     """
@@ -359,7 +360,7 @@ class LibriSpeechRNNTModule(LightningModule):
         max_token_limit: int = 1000,
         num_workers: int = 32,
         prefetch_factor: int = 2,
-        train_subset: str = "train-clean-100",
+        train_subset: Union[str, List[str]] = "train-clean-100",
         val_subset: str = "dev-clean",
         test_subset: str = "test-clean",
         # Data — transcript protocol
@@ -464,7 +465,11 @@ class LibriSpeechRNNTModule(LightningModule):
         self.max_token_limit = max_token_limit
         self.num_workers = num_workers
         self.prefetch_factor = prefetch_factor
-        self.train_subset = train_subset
+        # train_subset accepts a single subset name or a list (merged training,
+        # e.g. ["train-clean-100", "train-clean-360", "train-other-500"] = 960h)
+        self.train_subsets = (
+            [train_subset] if isinstance(train_subset, str) else list(train_subset)
+        )
         self.val_subset = val_subset
         self.test_subset = test_subset
         self.transcript_suffix = transcript_suffix
@@ -695,16 +700,18 @@ class LibriSpeechRNNTModule(LightningModule):
     # DataLoaders
     # ------------------------------------------------------------------
     def train_dataloader(self):
+        # One CustomDataset per subset (batches never mix subsets), then concat
         dataset = torch.utils.data.ConcatDataset(
             [
                 CustomDataset(
                     LIBRISPEECH(
                         self.librispeech_path,
-                        url=self.train_subset,
+                        url=subset,
                         transcript_suffix=self.transcript_suffix,
                     ),
                     max_token_limit=self.max_token_limit,
-                ),
+                )
+                for subset in self.train_subsets
             ]
         )
         return torch.utils.data.DataLoader(
