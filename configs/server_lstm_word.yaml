@@ -18,14 +18,14 @@
 # ---------------------------------------------------------------------------
 paths:
   # LibriSpeech 数据集根目录 (内含 LibriSpeech/ 子目录)
-  # 服务器上数据和 medusa 项目共享同一份 LibriSpeech
-  dataset_path: "/test21/medusa"
+  dataset_path: "/test21/librispeech"
 
-  # SentencePiece BPE 模型文件路径 (word-BPE 4000, 本地训练后上传)
-  sp_model_path: "/test21/medusa/spm_bpe_4000_word.model"
+  # SentencePiece BPE 模型文件路径 (word-BPE 4000, 960h 全量版, 在 -main worktree 根目录)
+  # 460h 备选: /test21/conformer-rnnt-asr-main/spm_bpe_4000_word.model
+  sp_model_path: "/test21/conformer-rnnt-asr-main/spm_bpe_4000_word_960h.model"
 
   # 全局特征统计文件路径 (JSON: mean + invstddev)
-  global_stats_path: "/test21/medusa/global_stats.json"
+  global_stats_path: "/test21/librispeech/global_stats.json"
 
   # 实验输出目录 (checkpoints、logs 保存位置)
   exp_dir: "/test21/conformer-rnnt-asr/exp_lstm_word"

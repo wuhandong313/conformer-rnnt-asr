@@ -14,14 +14,13 @@
 # ---------------------------------------------------------------------------
 paths:
   # LibriSpeech 数据集根目录 (内含 LibriSpeech/ 子目录)
-  # 服务器上数据和 medusa 项目共享同一份 LibriSpeech
-  dataset_path: "/test21/medusa"
+  dataset_path: "/test21/librispeech"
 
   # SentencePiece BPE 模型文件路径 (文本 tokenize / detokenize)
-  sp_model_path: "/test21/medusa/spm_bpe_74.model"
+  sp_model_path: "/test21/librispeech/spm_bpe_74.model"
 
   # 全局特征统计文件路径 (JSON: mean + invstddev)
-  global_stats_path: "/test21/medusa/global_stats.json"
+  global_stats_path: "/test21/librispeech/global_stats.json"
 
   # 实验输出目录 (checkpoints、logs 保存位置)
   exp_dir: "/test21/conformer-rnnt-asr/exp_lstm_naive_repro"

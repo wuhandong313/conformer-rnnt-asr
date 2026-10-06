@@ -49,7 +49,7 @@ Per-sample, computes inter-frame abs-diff, detects **peaks+valleys** (`scipy.sig
 `LibriSpeechRNNTModule.from_config(config)` is the canonical factory ([lightning_module.py:448](conformer_rnnt/lightning_module.py#L448)); `conformer_rnnt_model_from_config` mirrors it for the bare model. To change behavior, edit the YAML — do not add CLI flags to `train.py` (it deliberately takes only the config path).
 
 ### Two configs, one diff that matters
-[configs/default.yaml](configs/default.yaml) (local) vs [configs/server.yaml](configs/server.yaml) (GPU server at `/test21/medusa`): server uses `hop_length: 160` (100fps vs 200fps), `compression.filter: savgol_hanning`, `matmul_precision: high`, tuned `num_workers`/`max_token_limit` for A100, and absolute dataset paths.
+[configs/default.yaml](configs/default.yaml) (local) vs [configs/server.yaml](configs/server.yaml) (GPU server at `/test21/librispeech`): server uses `hop_length: 160` (100fps vs 200fps), `compression.filter: savgol_hanning`, `matmul_precision: high`, tuned `num_workers`/`max_token_limit` for A100, and absolute dataset paths.
 
 ## Development environment
 
