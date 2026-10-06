@@ -788,20 +788,23 @@ class LibriSpeechRNNTModule(LightningModule):
         max(target_lengths) + 1`` and ``targets.size(1) == max(target_lengths)``
         *strictly*, and requires a contiguous logits tensor. So each sample
         must have its T/U dims cropped to its actual lengths before the call.
+
+        Perf: crop bounds come from a single ``.tolist()`` — indexing CUDA
+        scalars with ``int()`` per sample would drain the GPU queue once per
+        sample and serialize the whole step on host<->device syncs.
         """
         if self.rnnt_loss_chunk == "sample":
-            losses = []
-            for i in range(output.size(0)):
-                t_i = int(src_lengths[i])
-                u_i = int(target_lengths[i])
-                losses.append(
-                    self.loss(
-                        output[i : i + 1, :t_i, : u_i + 1].contiguous(),
-                        targets[i : i + 1, :u_i].contiguous(),
-                        src_lengths[i : i + 1],
-                        target_lengths[i : i + 1],
-                    )
+            t_list = src_lengths.tolist()
+            u_list = target_lengths.tolist()
+            losses = [
+                self.loss(
+                    output[i : i + 1, : t_list[i], : u_list[i] + 1].contiguous(),
+                    targets[i : i + 1, : u_list[i]].contiguous(),
+                    src_lengths[i : i + 1],
+                    target_lengths[i : i + 1],
                 )
+                for i in range(output.size(0))
+            ]
             return torch.stack(losses).sum()
         return self.loss(output, targets, src_lengths, target_lengths)
 

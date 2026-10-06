@@ -142,7 +142,21 @@ training:
   gradient_clip_val: 10.0
 
   # === 训练轮数 ===
+  # epochs 只是上限; 实际由 early_stopping 按验证损失收敛决定何时停
   epochs: 50
+
+  # 最少训练 epoch (下限, 跨过 10k 步 warmup 区, 防止 warmup 期间误停)
+  min_epochs: 1
+
+  # === 早停 (收敛条件) ===
+  # patience 按"验证次数"计: val_check_interval=2000 步一验 (~20 分钟/次),
+  # patience=10 ≈ 连续 10 次 (约 3.5 小时) val_loss 无任何改善即停。
+  # 触发后 trainer.fit 正常返回, 管线自动取 best val ckpt 做 beam20 评测。
+  early_stopping:
+    monitor: "Losses/val_loss"
+    mode: "min"
+    patience: 10
+    min_delta: 0.0
 
 # ---------------------------------------------------------------------------
 # 数据配置

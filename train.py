@@ -18,7 +18,7 @@ from typing import Any, Dict
 import yaml
 import torch
 from pytorch_lightning import Trainer, seed_everything
-from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 
 from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
 
@@ -72,17 +72,36 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
         verbose=True,
     )
 
+    # Early stopping (config-driven; absent/disabled by default).
+    # patience counts validation checks — with val_check_interval=2000 that is
+    # roughly 2000*patience training steps without val_loss improvement.
+    callbacks = [val_ckpt, train_ckpt]
+    es_cfg = training_cfg.get("early_stopping")
+    if es_cfg:
+        callbacks.insert(
+            0,
+            EarlyStopping(
+                monitor=es_cfg.get("monitor", "Losses/val_loss"),
+                mode="min",
+                patience=es_cfg.get("patience", 10),
+                min_delta=es_cfg.get("min_delta", 0.0),
+                strict=True,
+                verbose=True,
+            ),
+        )
+
     return Trainer(
         log_every_n_steps=trainer_cfg.get("log_every_n_steps", 10),
         default_root_dir=exp_dir,
         max_epochs=training_cfg.get("epochs", 120),
+        min_epochs=training_cfg.get("min_epochs", 0),
         num_nodes=trainer_cfg.get("num_nodes", 1),
         devices=trainer_cfg.get("devices", 1),
         accelerator=trainer_cfg.get("accelerator", "cuda"),
         strategy=trainer_cfg.get("strategy", "auto"),
         gradient_clip_val=training_cfg.get("gradient_clip_val", 10.0),
         accumulate_grad_batches=trainer_cfg.get("accumulate_grad_batches", 1),
-        callbacks=[val_ckpt, train_ckpt],
+        callbacks=callbacks,
         num_sanity_val_steps=trainer_cfg.get("num_sanity_val_steps", 0),
         val_check_interval=trainer_cfg.get("val_check_interval", 500),
         fast_dev_run=trainer_cfg.get("fast_dev_run", False),
