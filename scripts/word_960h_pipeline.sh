@@ -21,7 +21,9 @@ echo "[$(date -u +%FT%T)] GPU free, starting training" >> "$LOG"
 # ── 2) 训练，记录 best val ckpt（失败自动从 last.ckpt 续训，最多 3 次尝试）─
 rc=1
 for attempt in 1 2 3; do
-RESUME_LAST=$([ "$attempt" -gt 1 ] && echo 1 || echo 0) \
+# external RESUME_LAST=1 wins (lets an operator restart into an existing run);
+# otherwise retries resume, the first attempt starts fresh
+RESUME_LAST=${RESUME_LAST:-$([ "$attempt" -gt 1 ] && echo 1 || echo 0)} \
 "$P" - > "$REPO/word_960h.train.log" 2>&1 <<'PYEOF'
 import os
 

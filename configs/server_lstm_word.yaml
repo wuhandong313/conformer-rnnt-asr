@@ -165,7 +165,10 @@ training:
   early_stopping:
     monitor: "Losses/val_loss"
     mode: "min"
-    patience: 10
+    # patience counts validation checks; val_check_interval=2000 -> 25 checks
+    # is ~40000 steps (~1.7 epochs) without improvement. 10 was far too tight:
+    # a normal mid-training plateau killed the run at epoch 3.
+    patience: 25
     min_delta: 0.0
 
 # ---------------------------------------------------------------------------
