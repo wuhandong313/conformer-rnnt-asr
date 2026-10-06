@@ -656,9 +656,9 @@ class LibriSpeechRNNTModule(LightningModule):
             # Transcript protocol
             transcript_suffix=data_cfg.get("transcript_suffix", "-ph"),
             strip_spaces=data_cfg.get("strip_spaces", True),
-            # RNNT kernel overflow guard
-            rnnt_numel_limit=data_cfg.get("rnnt_numel_limit", 1.9e9),
-            rnnt_frames_per_char=data_cfg.get("rnnt_frames_per_char", 3.0),
+            # RNNT kernel overflow guard (float(): PyYAML may hand back a str)
+            rnnt_numel_limit=float(data_cfg.get("rnnt_numel_limit", 1.9e9)),
+            rnnt_frames_per_char=float(data_cfg.get("rnnt_frames_per_char", 3.0)),
             # Decoding
             beam_width=decoding_cfg.get("beam_width", 20),
         )

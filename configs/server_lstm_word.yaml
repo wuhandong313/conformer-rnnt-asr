@@ -173,7 +173,8 @@ data:
   # B×T×U ≳ 536k 就会命中; 实测 2.05e9 OK / 2.26e9 崩)。
   # 守卫用真实 token 数 U (sp_model 精确编码) + chars×frames_per_char 估帧数,
   # 自动拆分超限 batch; 单句即超限的剔除并打印 fileid。
-  rnnt_numel_limit: 1.9e9
+  # 注意: PyYAML 只认带符号指数的浮点 (1.9e+9), 1.9e9 会被当字符串 → 写整数
+  rnnt_numel_limit: 1900000000
 
   # 帧数估计系数 (输出帧/转写字符; 实测均值 ~1.75, 取 3.0 覆盖慢语速)
   rnnt_frames_per_char: 3.0
