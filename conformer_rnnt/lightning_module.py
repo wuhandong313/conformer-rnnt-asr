@@ -303,8 +303,8 @@ class LibriSpeechRNNTModule(LightningModule):
         num_workers: DataLoader worker count.
         train_subset: LibriSpeech training subset name, or a list of names for
             merged training (e.g. all three train subsets = 960 hours).
-        val_subset: LibriSpeech validation subset name.
-        test_subset: LibriSpeech test subset name.
+        val_subset: LibriSpeech validation subset name, or a list of names.
+        test_subset: LibriSpeech test subset name, or a list of names.
     """
 
     def __init__(
@@ -361,8 +361,8 @@ class LibriSpeechRNNTModule(LightningModule):
         num_workers: int = 32,
         prefetch_factor: int = 2,
         train_subset: Union[str, List[str]] = "train-clean-100",
-        val_subset: str = "dev-clean",
-        test_subset: str = "test-clean",
+        val_subset: Union[str, List[str]] = "dev-clean",
+        test_subset: Union[str, List[str]] = "test-clean",
         # Data — transcript protocol
         # transcript_suffix: per-chapter transcript filename suffix ("-ph" for
         # phoneme transcripts, "" for official word transcripts).
@@ -465,15 +465,18 @@ class LibriSpeechRNNTModule(LightningModule):
         self.max_token_limit = max_token_limit
         self.num_workers = num_workers
         self.prefetch_factor = prefetch_factor
-        # train_subset accepts a single subset name or a list (merged training,
-        # e.g. ["train-clean-100", "train-clean-360", "train-other-500"] = 960h)
-        self.train_subsets = (
-            [train_subset] if isinstance(train_subset, str) else list(train_subset)
-        )
-        self.val_subset = val_subset
-        self.test_subset = test_subset
+        # train_subset/val_subset/test_subset accept a single subset name or a
+        # list of names for merged loading (e.g. all three train subsets = 960h;
+        # ["test-clean", "test-other"] = mixed eval). Batches never mix subsets.
+        self.train_subsets = self._as_list(train_subset)
+        self.val_subsets = self._as_list(val_subset)
+        self.test_subsets = self._as_list(test_subset)
         self.transcript_suffix = transcript_suffix
         self.strip_spaces = strip_spaces
+
+    @staticmethod
+    def _as_list(subset: Union[str, List[str]]) -> List[str]:
+        return [subset] if isinstance(subset, str) else list(subset)
 
         # ---- Decoding ----
         # beam_width=0 → greedy (RNNTBeamSearch width=1); used as the
@@ -731,11 +734,12 @@ class LibriSpeechRNNTModule(LightningModule):
                 CustomDataset(
                     LIBRISPEECH(
                         self.librispeech_path,
-                        url=self.val_subset,
+                        url=subset,
                         transcript_suffix=self.transcript_suffix,
                     ),
                     max_token_limit=self.max_token_limit,
-                ),
+                )
+                for subset in self.val_subsets
             ]
         )
         return torch.utils.data.DataLoader(
@@ -749,10 +753,15 @@ class LibriSpeechRNNTModule(LightningModule):
         )
 
     def test_dataloader(self):
-        dataset = LIBRISPEECH(
-            self.librispeech_path,
-            url=self.test_subset,
-            transcript_suffix=self.transcript_suffix,
+        dataset = torch.utils.data.ConcatDataset(
+            [
+                LIBRISPEECH(
+                    self.librispeech_path,
+                    url=subset,
+                    transcript_suffix=self.transcript_suffix,
+                )
+                for subset in self.test_subsets
+            ]
         )
         return torch.utils.data.DataLoader(
             dataset,

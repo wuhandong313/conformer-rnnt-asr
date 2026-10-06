@@ -184,9 +184,15 @@ data:
     - "train-clean-360"
     - "train-other-500"
 
-  val_subset: "dev-clean"
+  # 验证集 (dev-clean + dev-other 合并, ~10.8h)
+  val_subset:
+    - "dev-clean"
+    - "dev-other"
 
-  test_subset: "test-clean"
+  # 测试集 (test-clean + test-other 合并, ~10.8h; eval CSV 按说话人 id 可拆 clean/other)
+  test_subset:
+    - "test-clean"
+    - "test-other"
 
 # ---------------------------------------------------------------------------
 # PyTorch Lightning Trainer 配置
