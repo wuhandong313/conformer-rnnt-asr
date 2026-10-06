@@ -248,3 +248,8 @@ raw-learned/seg_avg + savgol-hard/learned 落库（10-03 晚，27/28 行）：b-
 - **用户要求停掉所有训练**（10-06 ~03:00 UTC）：`b-cosine_diff_savgol-learned` 在 ~ep24 中止（无结果），queue_runner + tmux 全部清理，GPU 已空。
 - 2×2 网格补全最终状态：hard **0.1136** ✓ / seg_avg **0.0912**（全场 greedy 新高）✓ / **learned 缺失**（中止，未入 results.csv）。results.csv 停在 30 行。
 - 若日后需要补 learned 格：`scripts/manifest_cos_savgol.tsv` 里该行直接重跑 queue_runner 即可（config 已在 configs/exp/）。
+
+### ⚠ LSTM 复现口径更正 + 差距归因（2026-10-06）
+
+- **口径更正（重要）**：main 分支的压缩**没有 keep_rate 旋钮**——LSTM 复现 run 用的是原始可变率峰谷机制（保留率 ~0.40，总压缩 ~0.10），**不是 B-matrix 的 r=0.27**。前文"LSTM 比 attn 冠军好 0.55pt（同口径）"表述**作废**：两者压缩率不同（LSTM 保留帧数 ~1.5×）。beam RTF 8× 的发现不受影响（同机制同帧数下 predictor 解码开销差）。
+- **8.24 vs 7.85（0.39pt）差距归因**：机制逐行核实一致（raw diff → find_peaks 无滤波，合并逻辑相同）；配方关键项一致（sum loss / LR / warmup / 架构 / ~51ep）；val 曲线确认 ep34 为全局最优（best-val 选择无误）。剩余不可排除因素：① 环境漂移（原实验为旧版 torch/Lightning/CUDA，RNNT loss 与 cuDNN LSTM 内核跨版本差异）；② 单种子噪声（100h ±0.2-0.4pt 常态）；③ 原实验未存 hparams（batch/clip/val 协议无法逐项核对）。**判定：基本复现，差距在环境+种子噪声带内，非复现失败**。定论需换种子重训估方差（~4h，待用户定夺）。
