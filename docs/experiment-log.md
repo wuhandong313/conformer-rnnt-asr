@@ -253,3 +253,15 @@ raw-learned/seg_avg + savgol-hard/learned 落库（10-03 晚，27/28 行）：b-
 
 - **口径更正（重要）**：main 分支的压缩**没有 keep_rate 旋钮**——LSTM 复现 run 用的是原始可变率峰谷机制（保留率 ~0.40，总压缩 ~0.10），**不是 B-matrix 的 r=0.27**。前文"LSTM 比 attn 冠军好 0.55pt（同口径）"表述**作废**：两者压缩率不同（LSTM 保留帧数 ~1.5×）。beam RTF 8× 的发现不受影响（同机制同帧数下 predictor 解码开销差）。
 - **8.24 vs 7.85（0.39pt）差距归因**：机制逐行核实一致（raw diff → find_peaks 无滤波，合并逻辑相同）；配方关键项一致（sum loss / LR / warmup / 架构 / ~51ep）；val 曲线确认 ep34 为全局最优（best-val 选择无误）。剩余不可排除因素：① 环境漂移（原实验为旧版 torch/Lightning/CUDA，RNNT loss 与 cuDNN LSTM 内核跨版本差异）；② 单种子噪声（100h ±0.2-0.4pt 常态）；③ 原实验未存 hparams（batch/clip/val 协议无法逐项核对）。**判定：基本复现，差距在环境+种子噪声带内，非复现失败**。定论需换种子重训估方差（~4h，待用户定夺）。
+
+### 🔍 LSTM 复现差距根因：metric 口径不一致 + batch 配方差异（2026-10-06，交叉打分定案）
+
+- **交叉打分**（把两边逐句 hyp 用同一把尺子重打分，纯 python Levenshtein + 同一 spm）：
+  | 模型 | main 口径（按句平均字符级） | 语料级字符级 | 原始口径（piece 级语料级） |
+  |---|---|---|---|
+  | 原始 stride4_comp_ep51 | **0.0737** | 0.0606 | **0.0785**（与原报告完全吻合✓）|
+  | LSTM 复现（50ep） | 0.0824 | 0.0770 | 0.0979 |
+- **结论 1（metric）**：原始 7.85% 是 `analyze_errors.py` 家族的 **piece 级语料级**错误率；main eval.py 是**按句平均字符级** PER。两个数不可直接比：原始模型在 main 口径下其实是 **7.37%**，真实差距 = **0.87pt**（不是表面 0.39pt）。原始口径下差距 1.94pt。
+- **结论 2（数据加载层排除）**：test-clean 逐句 ref 与原始完全一致；服务器 /test21/medusa/ 的 spm_bpe_74.model 与 global_stats.json md5 与原始 repo 逐字节相同（c1a99a20… / c3de4e57…）。
+- **结论 3（真实差距主因，按嫌疑排序）**：① **batch 打包配方**：原始 `max_token_limit=1000`（~1371 步/ep，val 到 51ep 仍在改善），复现继承 server.yaml 的 **16000**（634 步/ep，val 34ep 后平台）——warmup/LR 动态完全不同；② TF32（repro）vs FP32（原始未设）；③ best-val ep34 vs final ep51。
+- **对项目的含义**：B-matrix 全部 run 统一用 16000+TF32 协议，内部自洽不受影响；"复现失败"改为"**配方未对齐的复现，差距主要来自 batch 规模**"。若要严格复现需 max_token_limit=1000 + matmul_precision=highest 重跑（~4-5h，暂不执行）。
