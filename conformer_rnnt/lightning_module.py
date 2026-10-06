@@ -92,13 +92,18 @@ def _download_librispeech(root: str, url: str) -> None:
 
 
 def _get_librispeech_metadata(
-    fileid: str, root: str, folder: str, ext_audio: str, ext_txt: str
+    fileid: str,
+    root: str,
+    folder: str,
+    ext_audio: str,
+    ext_txt: str,
+    transcript_suffix: str = "-ph",
 ) -> Tuple[str, int, str, int, int, int]:
     speaker_id, chapter_id, utterance_id = fileid.split("-")
     fileid_audio = f"{speaker_id}-{chapter_id}-{utterance_id}"
     filepath = os.path.join(folder, speaker_id, chapter_id, f"{fileid_audio}{ext_audio}")
 
-    file_text = f"{speaker_id}-{chapter_id}-ph{ext_txt}"
+    file_text = f"{speaker_id}-{chapter_id}{transcript_suffix}{ext_txt}"
     file_text = os.path.join(root, folder, speaker_id, chapter_id, file_text)
     with open(file_text) as ft:
         for line in ft:
@@ -145,8 +150,10 @@ class LIBRISPEECH(Dataset):
         url: str = URL,
         folder_in_archive: str = FOLDER_IN_ARCHIVE,
         download: bool = False,
+        transcript_suffix: str = "-ph",
     ) -> None:
         self._url = url
+        self._transcript_suffix = transcript_suffix
         if url not in _DATA_SUBSETS:
             raise ValueError(
                 f"Invalid url '{url}'; please provide one of {_DATA_SUBSETS}."
@@ -173,7 +180,8 @@ class LIBRISPEECH(Dataset):
         """Get metadata for the n-th sample (filepath instead of waveform)."""
         fileid = self._walker[n]
         return _get_librispeech_metadata(
-            fileid, self._archive, self._url, self._ext_audio, self._ext_txt
+            fileid, self._archive, self._url, self._ext_audio, self._ext_txt,
+            transcript_suffix=self._transcript_suffix,
         )
 
     def __getitem__(self, n: int) -> Tuple[Tensor, int, str, int, int, int]:
@@ -223,7 +231,11 @@ class CustomDataset(torch.utils.data.Dataset):
         if fileid not in fileid_to_target_length:
             speaker_id, chapter_id, _ = fileid.split("-")
             file_text = (
-                speaker_id + "-" + chapter_id + "-ph" + self.base_dataset._ext_txt
+                speaker_id
+                + "-"
+                + chapter_id
+                + self.base_dataset._transcript_suffix
+                + self.base_dataset._ext_txt
             )
             file_text = os.path.join(
                 self.base_dataset._path, speaker_id, chapter_id, file_text
@@ -350,6 +362,13 @@ class LibriSpeechRNNTModule(LightningModule):
         train_subset: str = "train-clean-100",
         val_subset: str = "dev-clean",
         test_subset: str = "test-clean",
+        # Data — transcript protocol
+        # transcript_suffix: per-chapter transcript filename suffix ("-ph" for
+        # phoneme transcripts, "" for official word transcripts).
+        # strip_spaces: remove spaces before SPM encoding (phoneme protocol);
+        # must be False for word-level SPM models (pieces carry ▁ space marks).
+        transcript_suffix: str = "-ph",
+        strip_spaces: bool = True,
         # Decoding
         beam_width: int = 20,
     ):
@@ -448,6 +467,8 @@ class LibriSpeechRNNTModule(LightningModule):
         self.train_subset = train_subset
         self.val_subset = val_subset
         self.test_subset = test_subset
+        self.transcript_suffix = transcript_suffix
+        self.strip_spaces = strip_spaces
 
         # ---- Decoding ----
         # beam_width=0 → greedy (RNNTBeamSearch width=1); used as the
@@ -527,6 +548,9 @@ class LibriSpeechRNNTModule(LightningModule):
             train_subset=data_cfg.get("train_subset", "train-clean-100"),
             val_subset=data_cfg.get("val_subset", "dev-clean"),
             test_subset=data_cfg.get("test_subset", "test-clean"),
+            # Transcript protocol
+            transcript_suffix=data_cfg.get("transcript_suffix", "-ph"),
+            strip_spaces=data_cfg.get("strip_spaces", True),
             # Decoding
             beam_width=decoding_cfg.get("beam_width", 20),
         )
@@ -544,7 +568,10 @@ class LibriSpeechRNNTModule(LightningModule):
     # ------------------------------------------------------------------
     def _extract_labels(self, samples: List):
         targets = [
-            self.sp_model.encode(sample[2].lower().replace(" ", ""))
+            self.sp_model.encode(
+                sample[2].lower().replace(" ", "") if self.strip_spaces
+                else sample[2].lower()
+            )
             for sample in samples
         ]
         lengths = torch.tensor([len(elem) for elem in targets]).to(dtype=torch.int32)
@@ -671,7 +698,11 @@ class LibriSpeechRNNTModule(LightningModule):
         dataset = torch.utils.data.ConcatDataset(
             [
                 CustomDataset(
-                    LIBRISPEECH(self.librispeech_path, url=self.train_subset),
+                    LIBRISPEECH(
+                        self.librispeech_path,
+                        url=self.train_subset,
+                        transcript_suffix=self.transcript_suffix,
+                    ),
                     max_token_limit=self.max_token_limit,
                 ),
             ]
@@ -691,7 +722,11 @@ class LibriSpeechRNNTModule(LightningModule):
         dataset = torch.utils.data.ConcatDataset(
             [
                 CustomDataset(
-                    LIBRISPEECH(self.librispeech_path, url=self.val_subset),
+                    LIBRISPEECH(
+                        self.librispeech_path,
+                        url=self.val_subset,
+                        transcript_suffix=self.transcript_suffix,
+                    ),
                     max_token_limit=self.max_token_limit,
                 ),
             ]
@@ -707,7 +742,11 @@ class LibriSpeechRNNTModule(LightningModule):
         )
 
     def test_dataloader(self):
-        dataset = LIBRISPEECH(self.librispeech_path, url=self.test_subset)
+        dataset = LIBRISPEECH(
+            self.librispeech_path,
+            url=self.test_subset,
+            transcript_suffix=self.transcript_suffix,
+        )
         return torch.utils.data.DataLoader(
             dataset,
             batch_size=1,

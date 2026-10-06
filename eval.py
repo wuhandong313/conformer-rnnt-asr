@@ -64,7 +64,9 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
 
     with torch.no_grad():
         for idx, (batch, transcripts) in enumerate(dataloader):
-            actual = transcripts[0].lower().replace(" ", "")
+            actual = transcripts[0].lower()
+            if model.strip_spaces:
+                actual = actual.replace(" ", "")
 
             # Timing
             t0 = time.time()
