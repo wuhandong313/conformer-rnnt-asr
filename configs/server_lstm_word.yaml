@@ -168,9 +168,10 @@ data:
   strip_spaces: false
 
   # === 批处理 ===
-  # 每 batch 最大字符数 (按转写字符长度累积分组). word 转写比音素串短,
-  # 同预算下每 batch 句数更多, RNNT 目标序列 (BPE) 更短
-  max_token_limit: 16000
+  # 每 batch 最大字符数 (按转写字符长度累积分组). RNNT loss 显存 ∝ Σ(T×U)×V,
+  # V=4001 是音素 75 的 54 倍 → 预算须等比缩减: 16000×(75/4001)≈300 太碎,
+  # 取 5000 (最长句 batch 峰值 ~35GB, 80GB 卡留足余量; 16000 实测 OOM 80GB)
+  max_token_limit: 5000
 
   # DataLoader 子进程数 (A100 建议 16-24, 消除数据加载瓶颈)
   num_workers: 20
@@ -209,8 +210,8 @@ trainer:
 
   log_every_n_steps: 10
 
-  # 每隔多少训练步跑一次验证 (960h 每 epoch 3132 步, 1000 步一验 ≈ 3 次/epoch)
-  val_check_interval: 1000
+  # 每隔多少训练步跑一次验证 (5000 预算下每 epoch ~10k 步, 2000 步一验 ≈ 5 次/epoch)
+  val_check_interval: 2000
 
   num_sanity_val_steps: 0
 
