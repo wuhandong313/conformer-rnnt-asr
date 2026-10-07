@@ -784,16 +784,18 @@ class LibriSpeechRNNTModule(LightningModule):
         target_lengths = batch.target_lengths.to(torch.int32)
 
         loss = self._rnnt_loss(output, batch.targets, src_lengths, target_lengths)
-        # reduction="sum": `loss` is a whole-batch sum. Batches are dynamic
+        # reduction="sum": `loss` is a whole-batch sum. Batching is dynamic
         # (batch_size=None, and the collate can drop over-limit batches), so a
-        # plain mean-over-batches swings ~+-30% between validations purely from
-        # composition. batch_size makes the epoch aggregate loss-per-utterance.
+        # plain mean-over-batches swings tens of percent between validations
+        # from composition alone. Divide by the utterance count and pass
+        # batch_size so the epoch aggregate is sum(loss) / sum(utterances).
+        bsz = batch.targets.size(0)
         self.log(
             f"Losses/{step_type}_loss",
-            loss,
+            loss / bsz,
             on_step=True,
             on_epoch=True,
-            batch_size=batch.targets.size(0),
+            batch_size=bsz,
         )
         return loss
 
