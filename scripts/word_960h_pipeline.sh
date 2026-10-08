@@ -43,11 +43,13 @@ trainer = T.build_trainer(cfg)
 ckpt_path = cfg.get("paths", {}).get("from_checkpoint")
 if os.environ.get("RESUME_LAST") == "1":
     # save_last rotates to last-v1/-v2/... whenever last.ckpt is already taken,
-    # so the literal path goes stale after the first restart; the live state of
-    # the most recent run is always the newest last*.ckpt by mtime
+    # and manual checkpoint surgery can refresh mtimes, so neither the literal
+    # path nor mtime identifies the live state; global_step is the monotone one
     cands = glob.glob(os.path.join(cfg["paths"]["exp_dir"], "checkpoints", "last*.ckpt"))
     if cands:
-        ckpt_path = max(cands, key=os.path.getmtime)
+        ckpt_path = max(
+            cands, key=lambda p: torch.load(p, map_location="cpu", weights_only=False).get("global_step", -1)
+        )
         print("RESUMING from", ckpt_path, flush=True)
 trainer.fit(model, ckpt_path=ckpt_path)
 
