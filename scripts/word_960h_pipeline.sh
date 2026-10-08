@@ -25,6 +25,7 @@ for attempt in 1 2 3; do
 # otherwise retries resume, the first attempt starts fresh
 RESUME_LAST=${RESUME_LAST:-$([ "$attempt" -gt 1 ] && echo 1 || echo 0)} \
 "$P" - > "$REPO/word_960h.train.log" 2>&1 <<'PYEOF'
+import glob
 import os
 
 import torch, yaml
@@ -41,10 +42,13 @@ model = LibriSpeechRNNTModule.from_config(cfg)
 trainer = T.build_trainer(cfg)
 ckpt_path = cfg.get("paths", {}).get("from_checkpoint")
 if os.environ.get("RESUME_LAST") == "1":
-    cand = os.path.join(cfg["paths"]["exp_dir"], "checkpoints", "last.ckpt")
-    if os.path.exists(cand):
-        print("RESUMING from", cand, flush=True)
-        ckpt_path = cand
+    # save_last rotates to last-v1/-v2/... whenever last.ckpt is already taken,
+    # so the literal path goes stale after the first restart; the live state of
+    # the most recent run is always the newest last*.ckpt by mtime
+    cands = glob.glob(os.path.join(cfg["paths"]["exp_dir"], "checkpoints", "last*.ckpt"))
+    if cands:
+        ckpt_path = max(cands, key=os.path.getmtime)
+        print("RESUMING from", ckpt_path, flush=True)
 trainer.fit(model, ckpt_path=ckpt_path)
 
 val_cks = [c for c in trainer.callbacks
