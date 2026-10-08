@@ -155,8 +155,9 @@ training:
   # epochs 只是上限; 实际由 early_stopping 按验证损失收敛决定何时停
   epochs: 50
 
-  # 最少训练 epoch (下限, 跨过 10k 步 warmup 区, 防止 warmup 期间误停)
-  min_epochs: 1
+  # 最少训练 epoch (早停在累计 processed epoch >= min_epochs 前不生效;
+  # 续训时该计数从 ckpt 恢复并延续, 不是从 0 重数)
+  min_epochs: 15
 
   # === 早停 (收敛条件) ===
   # patience 按"验证次数"计: val_check_interval=2000 步一验 (~20 分钟/次),
