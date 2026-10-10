@@ -1,13 +1,17 @@
 #!/bin/bash
 # Word-BPE 960h 全量基线管线 (filter=none, LSTM predictor)
 #   等 GPU 空闲 → 训练 50ep → best val ckpt 直接 beam20 评测 (test-clean + test-other)
-# 用法: tmux 里 bash scripts/word_960h_pipeline.sh（工作目录任意）
+# 用法: bash scripts/word_960h_pipeline.sh [config.yaml]
+#   config 默认 configs/server_lstm_word.yaml; 所有日志/产物按 config 文件名 (TAG) 区分,
+#   逐句评测 CSV 评测后重命名为 eval_per_sample_<TAG>.csv, 各实验互不覆盖
 set -u
 REPO=/test21/conformer-rnnt-asr-main
 cd "$REPO"
 P=/root/anaconda3/envs/whd/bin/python
-CFG=configs/server_lstm_word.yaml
-LOG="$REPO/pipeline_word_960h.log"
+CFG=${1:-configs/server_lstm_word.yaml}
+TAG=$(basename "$CFG" .yaml)
+export PIPELINE_CFG="$CFG" PIPELINE_TAG="$TAG"
+LOG="$REPO/pipeline_${TAG}.log"
 
 echo "[$(date -u +%FT%T)] pipeline start (repo: $(git rev-parse --short HEAD))" >> "$LOG"
 
@@ -24,7 +28,8 @@ for attempt in 1 2 3; do
 # external RESUME_LAST=1 wins (lets an operator restart into an existing run);
 # otherwise retries resume, the first attempt starts fresh
 RESUME_LAST=${RESUME_LAST:-$([ "$attempt" -gt 1 ] && echo 1 || echo 0)} \
-"$P" - > "$REPO/word_960h.train.log" 2>&1 <<'PYEOF'
+PYTORCH_CUDA_ALLOC_CONF=${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True} \
+"$P" - > "$REPO/${TAG}.train.log" 2>&1 <<'PYEOF'
 import glob
 import os
 
@@ -34,7 +39,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
 import train as T
 
-cfg = T.load_config("configs/server_lstm_word.yaml")
+cfg = T.load_config(os.environ["PIPELINE_CFG"])
 seed_everything(cfg.get("seed", 42), workers=True)
 torch.set_float32_matmul_precision(cfg.get("trainer", {}).get("matmul_precision", "medium"))
 
@@ -57,24 +62,25 @@ val_cks = [c for c in trainer.callbacks
            if isinstance(c, ModelCheckpoint) and (c.monitor or "").endswith("val_loss")]
 best = val_cks[0].best_model_path if val_cks else ""
 print("BEST_CKPT:", best)
-with open("best_ckpt_word_960h.txt", "w") as f:
+with open(f"best_ckpt_{os.environ['PIPELINE_TAG']}.txt", "w") as f:
     f.write(best)
 PYEOF
   rc=$?
   echo "[$(date -u +%FT%T)] training attempt $attempt exit=$rc" >> "$LOG"
   [ $rc -eq 0 ] && break
 done
-if [ $rc -ne 0 ] || [ ! -s "$REPO/best_ckpt_word_960h.txt" ]; then
-  echo "[$(date -u +%FT%T)] TRAINING FAILED — see word_960h.train.log, abort" >> "$LOG"
+if [ $rc -ne 0 ] || [ ! -s "$REPO/best_ckpt_${TAG}.txt" ]; then
+  echo "[$(date -u +%FT%T)] TRAINING FAILED — see ${TAG}.train.log, abort" >> "$LOG"
   exit 1
 fi
-BEST=$(cat "$REPO/best_ckpt_word_960h.txt")
+BEST=$(cat "$REPO/best_ckpt_${TAG}.txt")
 echo "[$(date -u +%FT%T)] best ckpt: $BEST" >> "$LOG"
 
 # ── 3) beam20 评测（同一 config；test = clean + other 5559 句）───────────
 "$P" eval.py "$CFG" --checkpoint "$BEST" \
-  > "$REPO/word_960h.beam20.log" 2>&1
+  > "$REPO/${TAG}.beam20.log" 2>&1
 rc=$?
 echo "[$(date -u +%FT%T)] beam20 eval exit=$rc" >> "$LOG"
-grep -E "^PER:|^RTF:|Evaluation complete" "$REPO/word_960h.beam20.log" | tail -4 >> "$LOG"
+grep -E "^PER:|^RTF:|Evaluation complete" "$REPO/${TAG}.beam20.log" | tail -4 >> "$LOG"
+mv "$REPO/eval_per_sample.csv" "$REPO/eval_per_sample_${TAG}.csv" 2>/dev/null || true
 echo "[$(date -u +%FT%T)] pipeline done" >> "$LOG"
