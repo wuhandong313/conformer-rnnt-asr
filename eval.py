@@ -52,7 +52,7 @@ def compute_per(reference: str, hypothesis: str) -> float:
 # ═══════════════════════════════════════════════════════════════════════════
 
 
-def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file: str = "eval_per_sample.csv") -> Dict[str, Any]:
+def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file: str = "eval_per_sample.csv", max_utts: int = 0) -> Dict[str, Any]:
     model = model.to(device)
     model.eval()
     dataloader = model.test_dataloader()
@@ -64,6 +64,8 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
 
     with torch.no_grad():
         for idx, (batch, transcripts) in enumerate(dataloader):
+            if max_utts and n >= max_utts:
+                break
             actual = transcripts[0].lower()
             if model.strip_spaces:
                 actual = actual.replace(" ", "")
@@ -137,6 +139,8 @@ def main():
         help="Path to .ckpt checkpoint. If not given, auto-loads latest val-*.ckpt.",
     )
     parser.add_argument("--cpu", action="store_true", help="Force CPU even if config says cuda.")
+    parser.add_argument("--max-utts", type=int, default=0, help="Evaluate only the first N utterances (0 = full set).")
+    parser.add_argument("--out", default="eval_per_sample.csv", help="Path for the per-sample CSV.")
     args = parser.parse_args()
 
     # Config
@@ -175,7 +179,7 @@ def main():
 
     # Eval
     device = torch.device("cpu" if args.cpu else config.get("trainer", {}).get("accelerator", "cuda"))
-    run_eval(model, device)
+    run_eval(model, device, per_sample_file=args.out, max_utts=args.max_utts)
 
 
 if __name__ == "__main__":
