@@ -47,3 +47,6 @@ env/
 
 # CodeBuddy
 .codebuddy/
+
+# Credentials / server access (local only, never push)
+remote-access.md
