@@ -1,0 +1,302 @@
+# ===========================================================================
+# Conformer-RNNT ASR — 服务器训练配置 (word-BPE 4000 + 压缩冠军复刻)
+# ===========================================================================
+#
+# 用法:
+#   python train.py configs/server_lstm_word_cosd_learned.yaml
+#
+# WP1 路线 a — B-matrix 冠军 cosine_diff + learned mixer @ keep_rate 0.27
+#   在 word-BPE 960h 协议下复刻 (research-plan.md D1 决策门):
+#   - 架构与 uncompressed 锚点 (server_lstm_word.yaml) 逐字相同
+#     (10L/ffn1024/predictor 2x128), 只启用压缩, WER 直接对照 11.89%
+#   - 冠军在音素协议 (attn-predictor 分支): greedy PER 0.0915 / beam20 0.0879
+#   - 压缩代码: conformer_rnnt/compression/ 包 (detector x mixer x keep_rate)
+#   ⚠ 新旧协议数字不可直接比较 (token 序列与 blank_idx 均不同)
+#
+# ===========================================================================
+
+# ---------------------------------------------------------------------------
+# 路径配置 — 数据集、模型文件、输出目录
+# ---------------------------------------------------------------------------
+paths:
+  # LibriSpeech 数据集根目录 (内含 LibriSpeech/ 子目录)
+  dataset_path: "/test21/librispeech"
+
+  # SentencePiece BPE 模型文件路径 (word-BPE 4000, 960h 全量版, 在 -main worktree 根目录)
+  # 460h 备选: /test21/conformer-rnnt-asr-main/spm_bpe_4000_word.model
+  sp_model_path: "/test21/conformer-rnnt-asr-main/spm_bpe_4000_word_960h.model"
+
+  # 全局特征统计文件路径 (JSON: mean + invstddev)
+  global_stats_path: "/test21/librispeech/global_stats.json"
+
+  # 实验输出目录 (checkpoints、logs 保存位置)
+  exp_dir: "/test21/conformer-rnnt-asr/exp_word_960h_cosd_learned"
+
+  # 从某个 checkpoint 恢复训练 (null = 从头训练, 或填 .ckpt 路径)
+  from_checkpoint: null
+
+# ---------------------------------------------------------------------------
+# 模型架构参数
+# ---------------------------------------------------------------------------
+model:
+  # === 输入 / 输出 ===
+  # Mel 滤波器组维度 (梅尔频谱的频域维度)
+  input_dim: 80
+
+  # 编码器输出维度 (传给 Joiner 的向量维度)
+  encoding_dim: 512
+
+  # SentencePiece 词表大小 (word-BPE 4000, blank 自动 = get_piece_size() = 4000)
+  num_symbols: 4000
+
+  # === 时间降采样 ===
+  # 输入线性投影后的维度
+  time_reduction_input_dim: 128
+
+  # 帧合并因子 (4 表示每 4 帧合并为 1 帧, 帧率从 200fps → 50fps)
+  time_reduction_stride: 4
+
+  # 每条语音末尾追加的右上下文帧数 (用于流式推理的 lookahead)
+  right_context_length: 4
+
+  # === Conformer 编码器 ===
+  # 每层多头注意力的头数
+  num_heads: 8
+
+  # Feed-forward 隐藏层维度
+  ffn_dim: 1024
+
+  # 压缩前的 Conformer 层数 (Block 1 — 捕捉局部特征)
+  num_layers_block1: 2
+
+  # 压缩后的 Conformer 层数 (Block 2 — 建模长程依赖)
+  num_layers_block2: 8
+
+  # Depthwise 卷积核大小 (Conformer 的核心组件, 控制局部上下文窗口)
+  depthwise_conv_kernel_size: 31
+
+  # Dropout 概率 (应用于 Conformer 各子层)
+  dropout: 0.1
+
+  # === 层间动态压缩 (detector x mixer x keep_rate, 新式压缩包) ===
+  # B-matrix 冠军组合: cosine_diff 检测 + learned 混合 @ 等率 r=0.27
+  # (encoder 检测到 detector/mixer 键即走新式路径, filter 枚举被忽略)
+  compression:
+    detector:
+      type: "cosine_diff"
+
+    mixer:
+      type: "learned"
+
+    # 等率压缩: 按检测分数 top-round(main_len * r) 保留 (frame 0 恒保留)
+    keep_rate: 0.27
+
+    # learned mixer 权重预测器输入模式 (diff5 = 帧差特征窗口 5)
+    weight_predictor_mode: "diff5"
+
+  # === Predictor (RNN-T 语言模型组件) — LSTM, 与 emformer_rnnt_copy 同配置 ===
+  predictor:
+    # Token embedding 维度
+    symbol_embedding_dim: 128
+
+    # LSTM 层数
+    num_lstm_layers: 2
+
+    # LSTM 隐藏状态维度 (通常与 symbol_embedding_dim 相同)
+    lstm_hidden_dim: 128
+
+    # 是否对 LSTM 的 gate / cell 做 LayerNorm
+    lstm_layer_norm: true
+
+    # LSTM LayerNorm 的 epsilon
+    lstm_layer_norm_epsilon: 0.001
+
+    # LSTM 层间 Dropout 概率
+    lstm_dropout: 0.3
+
+  # === Joiner (联合网络, 融合声学+语言编码) ===
+  joiner:
+    # 非线性激活函数: relu | tanh | gelu | silu
+    activation: "relu"
+
+# ---------------------------------------------------------------------------
+# 训练超参数
+# ---------------------------------------------------------------------------
+training:
+  # === 优化器 (Adam) ===
+  learning_rate: 0.0005
+
+  adam_betas: [0.9, 0.999]
+
+  adam_eps: 1.0e-8
+
+  # === 学习率调度 ===
+  warmup_steps: 10000
+
+  # === RNN-T 损失 ===
+  rnnt_loss_reduction: "sum"
+
+  rnnt_loss_clamp: 1.0
+
+  # RNNT loss kernel 调用粒度:
+  #   "batch"  = 单次批量调用 (最快, 但 torchaudio 2.6 kernel 在 word 大词表下
+  #              ~step98 确定性 illegal memory access, 显存仅 30G 非 OOM)
+  #   "sample" = 逐样本调用 (绝对安全, 但 kernel DP 有 ~35ms 固定串行延迟 ×B,
+  #              实测 296ms/步 vs 批量 65ms → 训练慢 40%)
+  #   "group"  = 折中: 按 T 排序贪心打包成小组 (每组 numel ≤ 下限), 组内裁剪到
+  #              组最大长度 (满足 op 严格形状校验), 一次调用算一组。实测与批量
+  #              同速且 loss/梯度 bit-exact; 每次调用的张量比崩溃域小 ≥8 倍
+  rnnt_loss_chunk: "group"
+
+  # group 模式: 单次调用允许的 numel 上限 (2.5e8 = 2.05e9 已验证安全用例的 1/8)
+  rnnt_group_numel_limit: 250000000
+
+  # group 模式: 单次调用允许的最大样本数
+  rnnt_group_max_b: 8
+
+  # === 梯度裁剪 ===
+  gradient_clip_val: 10.0
+
+  # === 训练轮数 ===
+  # epochs 只是上限; 实际由 early_stopping 按验证损失收敛决定何时停
+  epochs: 50
+
+  # 最少训练 epoch (早停在累计 processed epoch >= min_epochs 前不生效;
+  # 续训时该计数从 ckpt 恢复并延续, 不是从 0 重数)
+  min_epochs: 15
+
+  # === 早停 (收敛条件) ===
+  # patience 按"验证次数"计: val_check_interval=2000 步一验 (~20 分钟/次),
+  # patience=10 ≈ 连续 10 次 (约 3.5 小时) val_loss 无任何改善即停。
+  # 触发后 trainer.fit 正常返回, 管线自动取 best val ckpt 做 beam20 评测。
+  early_stopping:
+    monitor: "Losses/val_loss"
+    mode: "min"
+    # patience counts validation checks; val_check_interval=2000 -> 25 checks
+    # is ~40000 steps (~1.7 epochs) without improvement. 10 was far too tight:
+    # a normal mid-training plateau killed the run at epoch 3.
+    patience: 25
+    min_delta: 0.0
+
+# ---------------------------------------------------------------------------
+# 数据配置
+# ---------------------------------------------------------------------------
+data:
+  # 音频采样率 (Hz)
+  sample_rate: 16000
+
+  # === Mel 频谱参数 ===
+  n_fft: 400
+
+  n_mels: 80
+
+  hop_length: 160
+
+  # === SpecAugment (仅训练时生效, 在线数据增强) ===
+  spec_augment:
+    freq_mask_param: 27
+
+    time_mask_param: 100
+
+    time_mask_prob: 0.2
+
+  # === 转写协议 (word-BPE) ===
+  # 每章转写文件名后缀: "" = 官方词转写 {spk}-{ch}.trans.txt ("-ph" = 音素, 旧协议)
+  transcript_suffix: ""
+
+  # 编码前是否去空格: word 协议必须 false (保留空格, SPM ▁ 词片依赖空格)
+  strip_spaces: false
+
+  # === RNNT kernel int32 溢出守卫 ===
+  # torchaudio 2.6 的 RNNT CUDA kernel 用 int32 索引联合输出张量,
+  # B×T×(U+1)×V ≥ 2^31 即触发 illegal memory access (word V=4001 时
+  # B×T×U ≳ 536k 就会命中; 实测 2.05e9 OK / 2.26e9 崩)。
+  # 守卫用真实 token 数 U (sp_model 精确编码) + chars×frames_per_char 估帧数,
+  # 自动拆分超限 batch; 单句即超限的剔除并打印 fileid。
+  # 注意: PyYAML 只认带符号指数的浮点 (1.9e+9), 1.9e9 会被当字符串 → 写整数
+  rnnt_numel_limit: 1900000000
+
+  # 帧数估计系数 (输出帧/转写字符; 实测均值 ~1.75, 取 3.0 覆盖慢语速)
+  rnnt_frames_per_char: 3.0
+
+  # === 批处理 ===
+  # 每 batch 最大字符数 (按转写字符长度累积分组). RNNT loss 显存 ∝ Σ(T×U)×V,
+  # V=4001 是音素 75 的 54 倍 → 预算须等比缩减: 16000×(75/4001)≈300 太碎,
+  # 取 5000 (最长句 batch 峰值 ~35GB, 80GB 卡留足余量; 16000 实测 OOM 80GB)
+  max_token_limit: 5000
+
+  # DataLoader 子进程数 (A100 建议 16-24, 消除数据加载瓶颈)
+  num_workers: 20
+
+  # DataLoader 预取因子 (每个 worker 预加载 batch 数)
+  prefetch_factor: 2
+
+  # === 数据子集 ===
+  # 960h 全量训练 (clean-100 + clean-360 + other-500 合并 loader, batch 不混子集)
+  train_subset:
+    - "train-clean-100"
+    - "train-clean-360"
+    - "train-other-500"
+
+  # 验证集 (dev-clean + dev-other 合并, ~10.8h)
+  val_subset:
+    - "dev-clean"
+    - "dev-other"
+
+  # 测试集 (test-clean + test-other 合并, ~10.8h; eval CSV 按说话人 id 可拆 clean/other)
+  test_subset:
+    - "test-clean"
+    - "test-other"
+
+# ---------------------------------------------------------------------------
+# PyTorch Lightning Trainer 配置
+# ---------------------------------------------------------------------------
+trainer:
+  accelerator: "cuda"
+
+  strategy: "auto"
+
+  devices: 1
+
+  num_nodes: 1
+
+  log_every_n_steps: 10
+
+  # 每隔多少训练步跑一次验证 (5000 预算下每 epoch ~10k 步, 2000 步一验 ≈ 5 次/epoch)
+  val_check_interval: 2000
+
+  num_sanity_val_steps: 0
+
+  fast_dev_run: false
+
+  # Float32 矩阵乘法精度 (A100 Tensor Core): "high" = TF32
+  matmul_precision: "high"
+
+  accumulate_grad_batches: 1
+
+  # === Checkpoint 保存 ===
+  checkpoint:
+    save_top_k: 2
+
+    save_weights_only: true
+
+    # 保存 last.ckpt (完整训练状态) — 管线训练失败时自动从它续训
+    save_last: true
+
+    val_checkpoint_interval: 100
+
+    train_checkpoint_interval: 100
+
+# ---------------------------------------------------------------------------
+# 解码配置 (eval 时生效)
+# ---------------------------------------------------------------------------
+decoding:
+  # 0 = greedy (投机解码无损 oracle); >0 = beam search
+  beam_width: 20
+
+# ---------------------------------------------------------------------------
+# 其他
+# ---------------------------------------------------------------------------
+debug: false
+
+seed: 42
