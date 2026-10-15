@@ -5,14 +5,14 @@ import sys
 
 import torch
 
-sys.path.insert(0, "/test21/conformer-rnnt-asr-attn")
+sys.path.insert(0, "/test21/conformer-rnnt-asr")
 import yaml
 
 import sentencepiece as spm  # noqa: E402
 
 from conformer_rnnt.lightning_module import LibriSpeechRNNTModule  # noqa: E402
 
-with open("/test21/conformer-rnnt-asr-attn/configs/server_eval_greedy.yaml") as f:
+with open("/test21/conformer-rnnt-asr/configs/server_eval_greedy.yaml") as f:
     config = yaml.safe_load(f)
 model = LibriSpeechRNNTModule.from_config(config)
 ckpt = "/test21/conformer-rnnt-asr/exp/checkpoints/val-epoch=42-step=26700.ckpt"

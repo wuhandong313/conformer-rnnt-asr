@@ -52,7 +52,7 @@ def compute_per(reference: str, hypothesis: str) -> float:
 # ═══════════════════════════════════════════════════════════════════════════
 
 
-def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file: str = "eval_per_sample.csv") -> Dict[str, Any]:
+def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file: str = "artifacts/evaluations/eval_per_sample.csv") -> Dict[str, Any]:
     model = model.to(device)
     model.eval()
     dataloader = model.test_dataloader()
@@ -104,6 +104,7 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
 
     # Save per-sample CSV
     import csv
+    os.makedirs(os.path.dirname(os.path.abspath(per_sample_file)), exist_ok=True)
     with open(per_sample_file, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=["idx", "PER", "RTF", "ref", "hyp"])
         writer.writeheader()
@@ -137,7 +138,7 @@ def main():
     parser.add_argument("--cpu", action="store_true", help="Force CPU even if config says cuda.")
     parser.add_argument(
         "--out", default=None,
-        help="Per-sample CSV output path (default: eval_per_sample.csv in CWD).",
+        help="Per-sample CSV output path (default: artifacts/evaluations/eval_per_sample.csv in CWD).",
     )
     parser.add_argument(
         "--beam", type=int, default=None,
@@ -183,7 +184,7 @@ def main():
 
     # Eval
     device = torch.device("cpu" if args.cpu else config.get("trainer", {}).get("accelerator", "cuda"))
-    metrics = run_eval(model, device, per_sample_file=args.out or "eval_per_sample.csv")
+    metrics = run_eval(model, device, per_sample_file=args.out or "artifacts/evaluations/eval_per_sample.csv")
     # Machine-readable summary line for automation (scripts/queue_runner.py)
     print(
         "RESULT per=%.4f rtf=%.4f n=%d ckpt=%s"

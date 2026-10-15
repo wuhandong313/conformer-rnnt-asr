@@ -5,7 +5,7 @@ import sys
 
 import torch
 
-sys.path.insert(0, "/test21/conformer-rnnt-asr-attn")
+sys.path.insert(0, "/test21/conformer-rnnt-asr")
 import yaml  # noqa: E402
 
 
@@ -15,7 +15,7 @@ def load_config(path):
 
 from conformer_rnnt.lightning_module import LibriSpeechRNNTModule  # noqa: E402
 
-config = load_config("/test21/conformer-rnnt-asr-attn/configs/server_eval_greedy.yaml")
+config = load_config("/test21/conformer-rnnt-asr/configs/server_eval_greedy.yaml")
 model = LibriSpeechRNNTModule.from_config(config)
 ckpt = "/test21/conformer-rnnt-asr/exp/checkpoints/val-epoch=42-step=26700.ckpt"
 model.load_state_dict(torch.load(ckpt, map_location="cpu")["state_dict"])

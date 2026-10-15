@@ -11,13 +11,13 @@ import sys
 import torch
 import yaml
 
-sys.path.insert(0, "/test21/conformer-rnnt-asr-attn")
+sys.path.insert(0, "/test21/conformer-rnnt-asr")
 
 from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
 
 
 def main() -> None:
-    config = yaml.safe_load(open("/test21/conformer-rnnt-asr-attn/configs/server.yaml"))
+    config = yaml.safe_load(open("/test21/conformer-rnnt-asr/configs/server.yaml"))
     config["paths"]["from_checkpoint"] = (
         "/test21/conformer-rnnt-asr/exp/checkpoints/val-epoch=42-step=26700.ckpt"
     )

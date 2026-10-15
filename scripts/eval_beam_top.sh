@@ -1,6 +1,6 @@
 #!/bin/bash
 # Beam20 evals for top B-matrix runs + A4 champion (auto-triggered after eval-none)
-cd /test21/conformer-rnnt-asr-attn
+cd /test21/conformer-rnnt-asr
 P=/root/anaconda3/envs/whd/bin/python
 CK_MAX=$(find /test21/conformer-rnnt-asr/exp_b /test21/conformer-rnnt-asr/exp -name 'val-attn-max_pool-hard-r0.27-epoch=30-step=19100.ckpt' 2>/dev/null | head -1)
 echo "$(date -u '+%F %T') max-pool ckpt: $CK_MAX"

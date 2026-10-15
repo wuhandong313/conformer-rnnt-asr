@@ -1,3 +1,11 @@
+
+# Allow direct execution from the repository root.
+import sys as _sys
+from pathlib import Path as _Path
+_repo_root = str(_Path(__file__).resolve().parents[2])
+if _repo_root not in _sys.path:
+    _sys.path.insert(0, _repo_root)
+
 import torch, time
 from conformer_rnnt.model import conformer_rnnt_model
 from conformer_rnnt.spec_decode import greedy_decode, speculative_greedy_decode

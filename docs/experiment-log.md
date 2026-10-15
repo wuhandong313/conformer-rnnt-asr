@@ -226,7 +226,7 @@ raw-learned/seg_avg + savgol-hard/learned 落库（10-03 晚，27/28 行）：b-
 ## LSTM predictor 复现（2026-10-05，main 分支 @ 0678aa7）
 
 - **动机**：用户要求用 emformer_rnnt_copy 的 stride4_comp 配方（LSTM predictor + naive filter + sum loss reduction）重训一个，检验能否达到旧管线能力。架构经代码级核实与旧管线逐字同源（conformer 2+8 @512 + LSTM predictor 2×128）。
-- **配置**：`configs/server_lstm_naive.yaml`（naive + sum + 50ep + beam_width 20，exp_dir `/test21/conformer-rnnt-asr/exp_lstm_naive_repro`）；服务器 worktree `/test21/conformer-rnnt-asr-main`；自动管线 `scripts/lstm_repro_pipeline.sh`（等 GPU → 训练 → best val ckpt 直接 beam20，同 config 防架构错配）。本地 smoke 通过（39.89M + 0.34M + 0.04M）。
+- **配置**：`configs/server_lstm_naive.yaml`（naive + sum + 50ep + beam_width 20，exp_dir `/test21/conformer-rnnt-asr/exp_lstm_naive_repro`）；服务器 worktree `/test21/conformer-rnnt-asr`；自动管线 `scripts/lstm_repro_pipeline.sh`（等 GPU → 训练 → best val ckpt 直接 beam20，同 config 防架构错配）。本地 smoke 通过（39.89M + 0.34M + 0.04M）。
 - **结果**：beam20 PER **0.0824**（RTF 0.0678，2620 句），best val ckpt = epoch 34。
 - **对照**：
   | 模型 | beam20 PER | beam RTF |

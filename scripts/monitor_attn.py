@@ -16,10 +16,10 @@ import subprocess
 import sys
 import time
 
-REPO = "/test21/conformer-rnnt-asr-attn"
+REPO = "/test21/conformer-rnnt-asr"
 # 分支 configs/server.yaml 的 exp_dir 指向主仓库 exp/, ckpt 落在那里
 CKPT_DIR = "/test21/conformer-rnnt-asr/exp/checkpoints"
-TRAIN_LOG = os.path.join(REPO, "attn_train.log")
+TRAIN_LOG = os.path.join(REPO, "artifacts/logs/attn_train.log")
 SESSION = "attn-train"
 
 

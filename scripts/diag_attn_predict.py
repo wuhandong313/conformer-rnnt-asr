@@ -12,7 +12,7 @@ import sys
 
 import torch
 
-sys.path.insert(0, "/test21/conformer-rnnt-asr-attn")
+sys.path.insert(0, "/test21/conformer-rnnt-asr")
 
 from conformer_rnnt.predictor_attn import PredictorAttn
 

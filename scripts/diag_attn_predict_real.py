@@ -11,7 +11,7 @@ import sys
 import torch
 import yaml
 
-sys.path.insert(0, "/test21/conformer-rnnt-asr-attn")
+sys.path.insert(0, "/test21/conformer-rnnt-asr")
 
 from conformer_rnnt.predictor_attn import PredictorAttn
 
@@ -33,7 +33,7 @@ def check(pa: torch.nn.Module, tokens: torch.Tensor, tag: str) -> None:
 
 
 def main() -> None:
-    config = yaml.safe_load(open("/test21/conformer-rnnt-asr-attn/configs/server.yaml"))
+    config = yaml.safe_load(open("/test21/conformer-rnnt-asr/configs/server.yaml"))
     n_sym = config["model"].get("num_symbols", 74) + 1  # +blank, 与 model.py 工厂一致
     pa = PredictorAttn(
         num_symbols=n_sym,

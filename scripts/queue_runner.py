@@ -200,7 +200,7 @@ def main() -> int:
         format="%(asctime)s %(message)s", level=logging.INFO,
         datefmt="%F %T",
         handlers=[logging.StreamHandler(sys.stdout),
-                  logging.FileHandler(REPO / "results" / "queue_runner.log")],
+                  logging.FileHandler(REPO / "results" / "artifacts/logs/queue_runner.log")],
     )
     entries = read_manifest(sys.argv[1])
     done = load_done()
