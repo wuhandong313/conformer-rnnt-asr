@@ -56,3 +56,8 @@ checkpoints, saves the best validation checkpoint path, and stops the queue
 on failure. Each experiment receives a TRAINING_COMPLETE marker after all
 50 epochs. No eval.py command is run. run.json records each training process, config hash,
 epoch and global step. Logs append across restarts.
+
+## Launch record
+
+Started at 2026-10-15T13:43:35.573274+00:00 in tmux `phone69_460h_serial` on code commit `b5d7e290e0b10602d873c2c723934ab125c2516e`.
+Initial runtime snapshots and small logs are tracked in artifacts/runs/phone69_460h_serial/.

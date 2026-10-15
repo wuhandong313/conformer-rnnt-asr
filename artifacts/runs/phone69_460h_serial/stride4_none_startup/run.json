@@ -1,0 +1,24 @@
+{
+  "status": "training",
+  "config": "configs/server_phone69_460h_stride4_none_s42_e50.yaml",
+  "config_sha256": "477e8b7624248c2cc55a04fd5bb2813b070b9fd31c4b4f7ab28ed0fe2e335a7c",
+  "code_commit": "b5d7e290e0b10602d873c2c723934ab125c2516e",
+  "pid": 54233,
+  "started_at": "2026-10-15T13:43:41.581304+00:00",
+  "epochs": 50,
+  "early_stopping": false,
+  "max_token_limit": 8000,
+  "train_subset": [
+    "train-clean-100",
+    "train-clean-360"
+  ],
+  "val_subset": "dev-clean",
+  "test_subset": "test-clean",
+  "tokenizer": "phone69",
+  "resume_checkpoint": null,
+  "internal_dim": 128,
+  "num_heads": 8,
+  "updated_at": "2026-10-15T13:48:06.099729+00:00",
+  "epoch": 1,
+  "global_step": 600
+}

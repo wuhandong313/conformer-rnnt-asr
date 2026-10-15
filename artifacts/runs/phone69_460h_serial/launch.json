@@ -1,0 +1,31 @@
+{
+  "started_at": "2026-10-15T13:43:35.573274+00:00",
+  "commit": "b5d7e290e0b10602d873c2c723934ab125c2516e",
+  "session": "phone69_460h_serial",
+  "command": "env CUDA_VISIBLE_DEVICES=0 bash scripts/server/phone69_460h_serial_pipeline.sh",
+  "configs": [
+    {
+      "config": "configs/server_phone69_460h_stride4_none_s42_e50.yaml",
+      "projection": 32,
+      "stride": 4,
+      "budget": 8000,
+      "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50"
+    },
+    {
+      "config": "configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml",
+      "projection": 128,
+      "stride": 1,
+      "budget": 2000,
+      "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50"
+    },
+    {
+      "config": "configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml",
+      "projection": 32,
+      "stride": 4,
+      "budget": 8000,
+      "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50"
+    }
+  ],
+  "test_evaluation": false,
+  "preflight_memory_probes": false
+}
