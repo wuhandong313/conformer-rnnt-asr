@@ -1,6 +1,6 @@
 # LLM token 压缩实验：compression.py 方法族 × Qwen3.5-0.8B
 
-> 分支 `llm-compression` | 2026-09-21 | 代码 `llm_compress.py`+`scripts/bench_compress.py` | 数据 `bench_compress_results.csv`(121 行)
+> 分支 `llm-compression` | 2026-09-21 | 代码 `llm_compress.py`+`scripts/bench_compress.py` | 数据 `artifacts/evaluations/bench_compress_results.csv`(121 行)
 
 ## 1. 压缩方式介绍
 

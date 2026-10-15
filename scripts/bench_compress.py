@@ -14,7 +14,7 @@
   diffq_f           帧差幅值分位阈值 (保序推广, keep_frac 直控压缩率)
   novelty_f         局部窗口最近邻距离 (非原法, 对照消融)
 
-输出: 终端表 + CSV (bench_compress_results.csv)。
+输出: 终端表 + CSV (artifacts/evaluations/bench_compress_results.csv)。
 用法: /root/.../python scripts/bench_compress.py [--limit N] [--max-new 32]
 本地: python scripts/bench_compress.py --limit 2 先冒烟。
 """
@@ -267,7 +267,7 @@ def main() -> None:
             h.remove()
         print(f"[config {name} done]", flush=True)
 
-    out_csv = "bench_compress_results.csv"
+    out_csv = "artifacts/evaluations/bench_compress_results.csv"
     with open(out_csv, "w", newline="", encoding="utf-8") as f:
         wr = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         wr.writeheader()
