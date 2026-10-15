@@ -51,6 +51,14 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
     checkpoint_dir = os.path.join(exp_dir, "checkpoints")
     filt = config.get("model", {}).get("compression", {}).get("filter", "none")
     save_last = ckpt.get("save_last", False)
+    # Opt in to selecting the checkpoint at the validation that produced its
+    # score, rather than selecting a later training step with a stale score.
+    save_on_validation_end = ckpt.get("save_on_validation_end", False)
+    val_schedule = (
+        {"every_n_train_steps": 0, "every_n_epochs": 1, "save_on_train_epoch_end": False}
+        if save_on_validation_end
+        else {"every_n_train_steps": ckpt.get("val_checkpoint_interval", 500)}
+    )
 
     val_ckpt = ModelCheckpoint(
         dirpath=checkpoint_dir,
@@ -62,7 +70,7 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
         # KeyError("optimizer_states") on weights-only checkpoints (PL 2.x).
         save_weights_only=ckpt.get("save_weights_only", True) and not save_last,
         save_last=save_last,
-        every_n_train_steps=ckpt.get("val_checkpoint_interval", 500),
+        **val_schedule,
         verbose=True,
     )
     train_ckpt = ModelCheckpoint(

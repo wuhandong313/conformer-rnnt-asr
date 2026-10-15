@@ -10,6 +10,7 @@
 - Adam，峰值学习率 5e-4，预热 10000 steps，RNN-T sum loss，梯度裁剪 10。
 - 每批最多 4000 个真实音素；20 个读取进程，prefetch 2；单 GPU float32/TF32。
 - 每 200 steps 验证，保留两个最优验证 checkpoint 和可恢复的 last checkpoint。
+- 验证结束立即保存对应 checkpoint，以本次验证分数选优。
 - 训练结束后选择最低验证损失的 checkpoint，自动进行 test-clean beam20 corpus PER 评估。
 
 服务器启动入口：

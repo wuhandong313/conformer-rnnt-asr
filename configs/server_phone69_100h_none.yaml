@@ -82,6 +82,7 @@ trainer:
     save_top_k: 2
     save_weights_only: true
     save_last: true  # last/val include optimizer state for recovery
+    save_on_validation_end: true  # save the model whose validation score was just measured
     val_checkpoint_interval: 200
     train_checkpoint_interval: 500
 
