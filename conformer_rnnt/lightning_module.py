@@ -693,7 +693,7 @@ class LibriSpeechRNNTModule(LightningModule):
             # Paths
             librispeech_path=paths.get("dataset_path", "./librispeech/Librispeech_phoneme_transcription"),
             sp_model_path=paths.get("sp_model_path"),
-            global_stats_path=paths.get("global_stats_path", "global_stats.json"),
+            global_stats_path=paths.get("global_stats_path", "assets/statistics/global_stats.json"),
             # Encoder
             num_symbols=model_cfg.get("num_symbols"),
             tokenizer_type=config.get("tokenizer", {}).get(

@@ -6,7 +6,7 @@
 #   python train.py configs/server_lstm_word.yaml
 #
 # 标签协议切换: 固定 phone69 → word-BPE-4000
-#   - spm 模型: spm_bpe_4000_word.model (clean-100 + clean-360 官方词转写训练)
+#   - spm 模型: assets/tokenizers/spm_bpe_4000_word.model (clean-100 + clean-360 官方词转写训练)
 #   - transcript_suffix: ""  → 读官方 {spk}-{ch}.trans.txt (非 -ph 音素文件)
 #   - strip_spaces: false    → 保留空格编码 (SPM ▁ 词片自带空格标记)
 #   ⚠ 新旧协议数字不可直接比较 (token 序列与 blank_idx 均不同)
@@ -21,8 +21,8 @@ paths:
   dataset_path: "/test21/librispeech"
 
   # SentencePiece BPE 模型文件路径 (word-BPE 4000, 960h 全量版, 在 -main worktree 根目录)
-  # 460h 备选: /test21/conformer-rnnt-asr-main/spm_bpe_4000_word.model
-  sp_model_path: "/test21/conformer-rnnt-asr-main/spm_bpe_4000_word_960h.model"
+  # 460h 备选: /test21/conformer-rnnt-asr/assets/tokenizers/spm_bpe_4000_word.model
+  sp_model_path: "/test21/conformer-rnnt-asr/assets/tokenizers/spm_bpe_4000_word_960h.model"
 
   # 全局特征统计文件路径 (JSON: mean + invstddev)
   global_stats_path: "/test21/librispeech/global_stats.json"

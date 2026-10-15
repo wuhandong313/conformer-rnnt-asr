@@ -7,6 +7,14 @@ Times on synthetic tensors of realistic shape:
   4. encoder fwd+bwd on a synthetic mel batch
 Also asserts sub-batch == batched == per-sample losses/grads.
 """
+
+# Allow direct execution from the repository root.
+import sys as _sys
+from pathlib import Path as _Path
+_repo_root = str(_Path(__file__).resolve().parents[2])
+if _repo_root not in _sys.path:
+    _sys.path.insert(0, _repo_root)
+
 import time
 
 import torch

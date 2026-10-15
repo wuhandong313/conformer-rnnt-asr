@@ -22,7 +22,7 @@ a b d d͡ʒ e f h i j k l m n o p s t t͡ʃ u v w z
 其说明文件称这些标签由 Epitran 从文本生成。扫描七个子集得到 292,367 条语音、
 36,112,605 个音素 token，每个子集都观察到上述 38 个 token，无重复 ID 或异常行。
 
-`ArtNet_camera_ready_20260611.pdf` 第 2 页 §2.1 和第 3 页 §3.1 明确采用
+`papers/artnet/ArtNet_camera_ready_20260611.pdf` 第 2 页 §2.1 和第 3 页 §3.1 明确采用
 Epitran 文本→IPA，再通过 PanPhon 映射到 24 维特征。论文未公布完整词表或
 附加符号清理参数，因此只能确认方法一致，不能据此断言现成标签逐项复现作者预处理。
 本地参考代码中的 ARPABET→39 IPA 和早期 41 音素方案均不是本次采用的方案。

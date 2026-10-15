@@ -1,8 +1,8 @@
 #!/bin/bash
 # Pod restart recovery: rebuild whd env -> verify -> auto-resume bigdec training
 set -u
-REPO=/test21/conformer-rnnt-asr-main
-LOG="$REPO/env_rebuild.log"
+REPO=/test21/conformer-rnnt-asr
+LOG="$REPO/artifacts/logs/env_rebuild.log"
 exec >> "$LOG" 2>&1
 echo "===== rebuild start $(date -u '+%F %T') UTC ====="
 
@@ -30,4 +30,5 @@ fi
 
 echo "===== env ready $(date -u '+%F %T') UTC - launching training (RESUME_LAST=1) ====="
 cd "$REPO"
+mkdir -p "$REPO/artifacts/logs" "$REPO/artifacts/evaluations" "$REPO/artifacts/checkpoints"
 RESUME_LAST=1 bash scripts/word_960h_pipeline.sh configs/server_lstm_word_bigdec.yaml

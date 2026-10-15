@@ -1,10 +1,11 @@
 #!/bin/bash
 # chain watcher: bigdec session end -> verify pipeline done -> pull -> champion run
-REPO=/test21/conformer-rnnt-asr-main
-LOG=$REPO/pipeline_server_lstm_word_bigdec.log
-CW=$REPO/chain_watcher.log
+REPO=/test21/conformer-rnnt-asr
+LOG=$REPO/artifacts/logs/pipeline_server_lstm_word_bigdec.log
+CW=$REPO/artifacts/logs/chain_watcher.log
 MARK=$REPO/CHAIN_ABORTED
-cd "$REPO" || exit 1
+cd "$REPO"
+mkdir -p "$REPO/artifacts/logs" "$REPO/artifacts/evaluations" "$REPO/artifacts/checkpoints" || exit 1
 echo "watcher start $(date '+%m-%d %H:%M:%S')" >> "$CW"
 while true; do
   if ! tmux has-session -t bigdec 2>/dev/null; then

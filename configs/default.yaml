@@ -17,7 +17,7 @@ paths:
   dataset_path: "./librispeech"
 
   # 全局特征统计文件路径 (JSON: mean + invstddev, 由 global_stats.py 生成)
-  global_stats_path: "global_stats.json"
+  global_stats_path: "assets/statistics/global_stats.json"
 
   # 实验输出目录 (checkpoints、logs 都保存在这里)
   exp_dir: "./exp_phone69"

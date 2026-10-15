@@ -57,7 +57,7 @@ def compute_cer(reference: str, hypothesis: str) -> float:
 def run_eval(
     model: LibriSpeechRNNTModule,
     device: torch.device,
-    per_sample_file: str = "eval_per_sample.csv",
+    per_sample_file: str = "artifacts/evaluations/eval_per_sample.csv",
     max_utts: int = 0,
     metric: str = "wer",
     trace_wer: bool = False,
@@ -232,6 +232,7 @@ def run_eval(
 
     # Save per-sample CSV
     import csv
+    os.makedirs(os.path.dirname(os.path.abspath(per_sample_file)), exist_ok=True)
     with open(per_sample_file, "w", newline="") as f:
         fieldnames = {
             "wer": ["idx", "WER", "word_errors", "reference_words", "RTF", "ref", "hyp"],
@@ -280,7 +281,7 @@ def main():
     )
     parser.add_argument("--cpu", action="store_true", help="Force CPU even if config says cuda.")
     parser.add_argument("--max-utts", type=int, default=0, help="Evaluate only the first N utterances (0 = full set).")
-    parser.add_argument("--out", default="eval_per_sample.csv", help="Path for the per-sample CSV.")
+    parser.add_argument("--out", default="artifacts/evaluations/eval_per_sample.csv", help="Path for the per-sample CSV.")
     parser.add_argument("--trace-wer", action="store_true", help="Print input metadata, word tokens, DP rows, and WER alignment for every sample.")
     parser.add_argument(
         "--metric",

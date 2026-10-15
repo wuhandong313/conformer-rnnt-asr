@@ -9,6 +9,14 @@ path within the ~30G free VRAM.
 phase0: group loss/grad vs per-sample reference (proven safe) on 3 batches.
 phase2: 2000 real m._step fwd+bwd in group mode.
 """
+
+# Allow direct execution from the repository root.
+import sys as _sys
+from pathlib import Path as _Path
+_repo_root = str(_Path(__file__).resolve().parents[2])
+if _repo_root not in _sys.path:
+    _sys.path.insert(0, _repo_root)
+
 import os
 import time
 

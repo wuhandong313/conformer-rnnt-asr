@@ -1,10 +1,11 @@
 #!/bin/bash
 # probe: bigdec training status (tag: server_lstm_word_bigdec)
 TAG=server_lstm_word_bigdec
-REPO=/test21/conformer-rnnt-asr-main
+REPO=/test21/conformer-rnnt-asr
 EXP=/test21/conformer-rnnt-asr/exp_word_960h_cosd_learned
 P=/root/anaconda3/envs/whd/bin/python
 cd "$REPO"
+mkdir -p "$REPO/artifacts/logs" "$REPO/artifacts/evaluations" "$REPO/artifacts/checkpoints"
 echo "NOW: $(date '+%m-%d %H:%M') / server UTC $(date -u '+%m-%d %H:%M')"
 echo "PROGRESS: $(tail -c 300 ${TAG}.train.log | tr '\r' '\n' | grep . | tail -1)"
 echo "PIPELINE: $(tail -2 pipeline_${TAG}.log | tr '\n' ' | ')"
@@ -44,5 +45,5 @@ echo "TMUX: $(tmux ls 2>/dev/null | grep -E 'bigdec|word960|chain' || echo none)
 # ── chain watcher / champion run status ──
 echo "CHAIN: $(tmux has-session -t chain 2>/dev/null && echo alive || echo dead)"
 [ -f CHAIN_ABORTED ] && echo "!!! CHAIN_ABORTED: $(head -1 CHAIN_ABORTED)"
-[ -f chain_watcher.log ] && echo "WATCHER: $(tail -3 chain_watcher.log | tr '\n' '|')"
-[ -f pipeline_server_lstm_word_cosd_learned.log ] && echo "CHAMPION: $(tail -3 pipeline_server_lstm_word_cosd_learned.log | tr '\n' '|')"
+[ -f artifacts/logs/chain_watcher.log ] && echo "WATCHER: $(tail -3 artifacts/logs/chain_watcher.log | tr '\n' '|')"
+[ -f artifacts/logs/pipeline_server_lstm_word_cosd_learned.log ] && echo "CHAMPION: $(tail -3 artifacts/logs/pipeline_server_lstm_word_cosd_learned.log | tr '\n' '|')"

@@ -5,7 +5,7 @@
 #   config 默认 configs/server_lstm_word.yaml; 所有日志/产物按 config 文件名 (TAG) 区分,
 #   逐句 WER CSV 写入 eval_wer_per_sample_<TAG>.csv, 各实验互不覆盖
 set -u
-REPO=/test21/conformer-rnnt-asr-main
+REPO=/test21/conformer-rnnt-asr
 cd "$REPO"
 P=/root/anaconda3/envs/whd/bin/python
 CFG=${1:-configs/server_lstm_word.yaml}
