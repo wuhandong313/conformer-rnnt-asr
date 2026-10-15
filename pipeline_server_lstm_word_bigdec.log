@@ -1,0 +1,13 @@
+[2026-10-10T04:40:56] pipeline start (repo: 82c559b)
+[2026-10-10T04:40:56] waiting for GPU ...
+[2026-10-10T04:40:57] GPU free, starting training
+[2026-10-10T11:33:17] pipeline start (repo: 82c559b)
+[2026-10-10T11:33:17] waiting for GPU ...
+[2026-10-10T11:33:17] GPU free, starting training
+[2026-10-12T21:15:14] training attempt 1 exit=0
+[2026-10-12T21:15:14] best ckpt: /test21/conformer-rnnt-asr/exp_word_960h_bigdec/checkpoints/val-none-epoch=12-step=291900.ckpt
+[2026-10-13T08:32:59] beam20 eval exit=0
+Evaluation complete — 5559 samples
+PER: 0.0894
+RTF: 1.0502
+[2026-10-13T08:32:59] pipeline done

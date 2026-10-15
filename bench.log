@@ -1,0 +1,9 @@
+shape B=8 T=250 U=40 V=4001  logits=0.33G elem
+[1] batched   loss=20897.83  65.4 ms
+[2] sample    loss=20897.83  296.3 ms  dloss=0.00e+00 dgrad=0.00e+00
+[3] sub4      loss=20897.83  67.8 ms  dloss=0.00e+00 dgrad=0.00e+00
+Seed set to 42
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+[4] encoder fwd+bwd (B=8 T=1200)  200.9 ms
+budget: step = encoder + loss + optimizer/data  ->  loss share at sample path = 296ms

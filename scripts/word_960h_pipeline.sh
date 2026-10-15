@@ -1,9 +1,9 @@
 #!/bin/bash
-# Word-BPE 960h 全量基线管线 (filter=none, LSTM predictor)
-#   等 GPU 空闲 → 训练 50ep → best val ckpt 直接 beam20 评测 (test-clean + test-other)
+# Word-BPE 960h 训练与 beam20 WER 测评管线
+#   等 GPU 空闲 → 训练 → best val ckpt 评测 (test-clean + test-other)
 # 用法: bash scripts/word_960h_pipeline.sh [config.yaml]
 #   config 默认 configs/server_lstm_word.yaml; 所有日志/产物按 config 文件名 (TAG) 区分,
-#   逐句评测 CSV 评测后重命名为 eval_per_sample_<TAG>.csv, 各实验互不覆盖
+#   逐句 WER CSV 写入 eval_wer_per_sample_<TAG>.csv, 各实验互不覆盖
 set -u
 REPO=/test21/conformer-rnnt-asr-main
 cd "$REPO"
@@ -76,11 +76,11 @@ fi
 BEST=$(cat "$REPO/best_ckpt_${TAG}.txt")
 echo "[$(date -u +%FT%T)] best ckpt: $BEST" >> "$LOG"
 
-# ── 3) beam20 评测（同一 config；test = clean + other 5559 句）───────────
-"$P" eval.py "$CFG" --checkpoint "$BEST" \
+# ── 3) beam20 WER 评测（test = clean + other 5559 句）───────────────────
+"$P" eval.py "$CFG" --checkpoint "$BEST" --metric wer \
+  --out "$REPO/eval_wer_per_sample_${TAG}.csv" \
   > "$REPO/${TAG}.beam20.log" 2>&1
 rc=$?
 echo "[$(date -u +%FT%T)] beam20 eval exit=$rc" >> "$LOG"
-grep -E "^PER:|^RTF:|Evaluation complete" "$REPO/${TAG}.beam20.log" | tail -4 >> "$LOG"
-mv "$REPO/eval_per_sample.csv" "$REPO/eval_per_sample_${TAG}.csv" 2>/dev/null || true
+grep -E "^WER:|^RTF:|Evaluation complete" "$REPO/${TAG}.beam20.log" | tail -4 >> "$LOG"
 echo "[$(date -u +%FT%T)] pipeline done" >> "$LOG"

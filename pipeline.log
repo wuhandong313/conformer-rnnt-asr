@@ -1,0 +1,12 @@
+[2026-10-05T14:05:32] pipeline start (repo: 75c0c98)
+[2026-10-05T14:05:32] waiting for GPU (baseline eval running) ...
+[2026-10-05T15:45:04] pipeline start (repo: 0678aa7)
+[2026-10-05T15:45:04] waiting for GPU (baseline eval running) ...
+[2026-10-05T15:45:04] GPU free, starting training
+[2026-10-05T19:07:32] training exit=0
+[2026-10-05T19:07:32] best ckpt: /test21/conformer-rnnt-asr/exp_lstm_naive_repro/checkpoints/val-naive-epoch=34-step=22000.ckpt
+[2026-10-05T19:30:12] beam20 eval exit=0
+Evaluation complete — 2620 samples
+PER: 0.0824
+RTF: 0.0678
+[2026-10-05T19:30:12] pipeline done

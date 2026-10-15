@@ -1,0 +1,105 @@
+# Word-BPE 960h cosine_diff + learned; batch budget 10000.
+# Resume state is copied from the original experiment; loss group limits are unchanged.
+---
+paths:
+  dataset_path: "/test21/librispeech"
+  sp_model_path: "/test21/conformer-rnnt-asr-main/spm_bpe_4000_word_960h.model"
+  global_stats_path: "/test21/librispeech/global_stats.json"
+  exp_dir: "/test21/conformer-rnnt-asr/exp_word_960h_cosd_learned_b10000"
+  from_checkpoint: 
+model:
+  input_dim: 80
+  encoding_dim: 512
+  num_symbols: 4000
+  time_reduction_input_dim: 128
+  time_reduction_stride: 4
+  right_context_length: 4
+  num_heads: 8
+  ffn_dim: 1024
+  num_layers_block1: 2
+  num_layers_block2: 8
+  depthwise_conv_kernel_size: 31
+  dropout: 0.1
+  compression:
+    detector:
+      type: cosine_diff
+    mixer:
+      type: learned
+    keep_rate: 0.27
+    weight_predictor_mode: diff5
+  predictor:
+    symbol_embedding_dim: 128
+    num_lstm_layers: 2
+    lstm_hidden_dim: 128
+    lstm_layer_norm: true
+    lstm_layer_norm_epsilon: 0.001
+    lstm_dropout: 0.3
+  joiner:
+    activation: relu
+training:
+  learning_rate: 0.0005
+  adam_betas:
+  - 0.9
+  - 0.999
+  adam_eps: 1.0e-08
+  warmup_steps: 10000
+  rnnt_loss_reduction: sum
+  rnnt_loss_clamp: 1.0
+  rnnt_loss_chunk: group
+  rnnt_group_numel_limit: 250000000
+  rnnt_group_max_b: 8
+  gradient_clip_val: 10.0
+  epochs: 50
+  min_epochs: 15
+  early_stopping:
+    monitor: Losses/val_loss
+    mode: min
+    patience: 25
+    min_delta: 0.0
+data:
+  sample_rate: 16000
+  n_fft: 400
+  n_mels: 80
+  hop_length: 160
+  spec_augment:
+    freq_mask_param: 27
+    time_mask_param: 100
+    time_mask_prob: 0.2
+  transcript_suffix: ''
+  strip_spaces: false
+  rnnt_numel_limit: 3800000000
+  rnnt_frames_per_char: 3.0
+  max_token_limit: 10000
+  num_workers: 20
+  prefetch_factor: 2
+  train_subset:
+  - train-clean-100
+  - train-clean-360
+  - train-other-500
+  val_subset:
+  - dev-clean
+  - dev-other
+  test_subset:
+  - test-clean
+  - test-other
+trainer:
+  accelerator: cuda
+  strategy: auto
+  devices: 1
+  num_nodes: 1
+  log_every_n_steps: 10
+  val_check_interval: 2000
+  num_sanity_val_steps: 0
+  fast_dev_run: false
+  matmul_precision: high
+  accumulate_grad_batches: 1
+  checkpoint:
+    save_top_k: 2
+    save_weights_only: true
+    save_last: true
+    val_checkpoint_interval: 100
+    train_checkpoint_interval: 100
+decoding:
+  beam_width: 20
+debug: false
+seed: 42

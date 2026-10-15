@@ -1,0 +1,10 @@
+[2026-10-14T03:22:47] pipeline start (repo: 74f092a)
+[2026-10-14T03:22:47] waiting for GPU ...
+[2026-10-14T03:22:47] GPU free, starting training
+[2026-10-14T17:13:06] training attempt 1 exit=0
+[2026-10-14T17:13:06] best ckpt: /test21/conformer-rnnt-asr/exp_word_960h_cosd_learned_b14000/checkpoints/val-none-epoch=11-step=227500.ckpt
+[2026-10-14T22:39:44] beam20 eval exit=0
+Evaluation complete — 5559 samples
+PER: 0.0910
+RTF: 0.4606
+[2026-10-14T22:39:44] pipeline done
