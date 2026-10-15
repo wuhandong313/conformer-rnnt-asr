@@ -167,11 +167,23 @@ def conformer_rnnt_model_from_config(config: Dict[str, Any]) -> ConformerRNNT:
     c = m.get("compression", {})
     p = m.get("predictor", {})
     j = m.get("joiner", {})
+    num_symbols = m.get("num_symbols")
+    if num_symbols is None:
+        tokenizer = config.get("tokenizer", {})
+        tokenizer_type = tokenizer.get("type", "phone69")
+        if tokenizer_type == "phone69":
+            from phone69_tokenizer import DEFAULT_PHONE69_VOCAB, FixedPhone69Tokenizer
+            num_symbols = FixedPhone69Tokenizer(tokenizer.get("vocab_path") or DEFAULT_PHONE69_VOCAB).get_piece_size()
+        elif tokenizer_type == "ipa":
+            from ipa_tokenizer import DEFAULT_VOCAB, FixedIPATokenizer
+            num_symbols = FixedIPATokenizer(tokenizer.get("vocab_path") or DEFAULT_VOCAB).get_piece_size()
+        else:
+            raise ValueError("Word-BPE model factory requires model.num_symbols")
 
     return conformer_rnnt_model(
         input_dim=m.get("input_dim", 80),
         encoding_dim=m.get("encoding_dim", 512),
-        num_symbols=m.get("num_symbols", 74) + 1,  # +blank
+        num_symbols=num_symbols + 1,  # +blank
         right_context_length=m.get("right_context_length", 4),
         time_reduction_input_dim=m.get("time_reduction_input_dim", 128),
         time_reduction_stride=m.get("time_reduction_stride", 4),

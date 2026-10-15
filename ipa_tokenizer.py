@@ -18,6 +18,8 @@ class FixedIPATokenizer:
     strings are rejected rather than guessed or split into Unicode characters.
     """
 
+    is_phone_tokenizer = True
+
     def __init__(self, vocab_path: str | Path = DEFAULT_VOCAB):
         self.spec = json.loads(Path(vocab_path).read_text(encoding="utf-8"))
         if (self.spec.get("version") != 1 or self.spec.get("normalization") != "NFC"
@@ -80,7 +82,7 @@ class FixedIPATokenizer:
 
 def encode_transcript(tokenizer, text: str, strip_spaces: bool = True) -> list[int]:
     """Share exactly the same encoding between collation and batch guarding."""
-    if not isinstance(tokenizer, FixedIPATokenizer):
+    if not getattr(tokenizer, "is_phone_tokenizer", False):
         text = text.lower()
         if strip_spaces:
             text = text.replace(" ", "")

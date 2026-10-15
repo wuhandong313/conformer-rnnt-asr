@@ -81,7 +81,7 @@ def post_process_hypos(
 
     Args:
         hypos: List of Hypothesis objects from RNNT beam search.
-        sp_model: Fixed IPA tokenizer or legacy SentencePiece decoder.
+        sp_model: Fixed phone tokenizer or word SentencePiece decoder.
 
     Returns:
         List of (decoded_text, score, token_ids) tuples.

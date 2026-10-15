@@ -5,7 +5,7 @@
 # 用法:
 #   python train.py configs/server_lstm_word.yaml
 #
-# 标签协议切换: phoneme-74 → word-BPE-4000
+# 标签协议切换: 固定 phone69 → word-BPE-4000
 #   - spm 模型: spm_bpe_4000_word.model (clean-100 + clean-360 官方词转写训练)
 #   - transcript_suffix: ""  → 读官方 {spk}-{ch}.trans.txt (非 -ph 音素文件)
 #   - strip_spaces: false    → 保留空格编码 (SPM ▁ 词片自带空格标记)

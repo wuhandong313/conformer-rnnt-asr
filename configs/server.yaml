@@ -16,14 +16,11 @@ paths:
   # LibriSpeech 数据集根目录 (内含 LibriSpeech/ 子目录)
   dataset_path: "/test21/librispeech"
 
-  # SentencePiece BPE 模型文件路径 (文本 tokenize / detokenize)
-  sp_model_path: "/test21/librispeech/spm_bpe_74.model"
-
   # 全局特征统计文件路径 (JSON: mean + invstddev)
   global_stats_path: "/test21/librispeech/global_stats.json"
 
   # 实验输出目录 (checkpoints、logs 保存位置)
-  exp_dir: "/test21/conformer-rnnt-asr/exp"
+  exp_dir: "./exp_phone69"
 
   # 从某个 checkpoint 恢复训练 (null = 从头训练, 或填 .ckpt 路径)
   from_checkpoint: null
@@ -31,6 +28,10 @@ paths:
 # ---------------------------------------------------------------------------
 # 模型架构参数
 # ---------------------------------------------------------------------------
+tokenizer:
+  type: phone69
+  vocab_path: "configs/phone69_vocab.json"
+
 model:
   # === 输入 / 输出 ===
   # Mel 滤波器组维度 (梅尔频谱的频域维度)
@@ -39,8 +40,8 @@ model:
   # 编码器输出维度 (传给 Joiner 的向量维度)
   encoding_dim: 512
 
-  # SentencePiece 词表大小 (不含 blank, blank 会自动 +1)
-  num_symbols: 74
+  # 固定 phone69 词表大小 (过滤 spn，不含 blank)
+  num_symbols: 69  # blank = 69, total outputs = 70; spn is filtered
 
   # === 时间降采样 ===
   # 输入线性投影后的维度
@@ -153,6 +154,8 @@ training:
 # 数据配置
 # ---------------------------------------------------------------------------
 data:
+  transcript_suffix: "-ph"
+  strip_spaces: false
   # 音频采样率 (Hz)
   sample_rate: 16000
 
@@ -179,7 +182,7 @@ data:
 
   # === 批处理 ===
   # 每 batch 最大 token 数 (按 target token 数累积分组, 控制显存)
-  max_token_limit: 16000
+  max_token_limit: 4000  # fixed phones, not transcript characters
 
   # DataLoader 子进程数 (A100 建议 16-24, 消除数据加载瓶颈)
   num_workers: 20

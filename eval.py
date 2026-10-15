@@ -64,8 +64,8 @@ def run_eval(
 ) -> Dict[str, Any]:
     if metric not in {"wer", "cer", "per"}:
         raise ValueError(f"Unsupported evaluation metric: {metric}")
-    if (model.tokenizer_type == "ipa") != (metric == "per"):
-        raise ValueError("IPA evaluation requires PER; PER requires tokenizer.type: ipa")
+    if (model.tokenizer_type in {"ipa", "phone69"}) != (metric == "per"):
+        raise ValueError("Fixed phone evaluation requires PER; PER requires tokenizer.type: ipa or phone69")
     if metric == "wer" and model.strip_spaces:
         raise ValueError("WER requires a word-text config with data.strip_spaces: false")
     if trace_wer and metric != "wer":
@@ -287,7 +287,7 @@ def main():
         choices=("auto", "wer", "cer", "per"),
         default="auto",
         help=(
-            "auto selects PER for IPA, otherwise WER when data.strip_spaces is false or CER; "
+            "auto selects PER for IPA/phone69, otherwise WER when data.strip_spaces is false or CER; "
             "WER lowercases and splits on whitespace, preserving punctuation."
         ),
     )
@@ -306,7 +306,7 @@ def main():
     model = LibriSpeechRNNTModule.from_config(config)
     metric = args.metric
     if metric == "auto":
-        metric = "per" if model.tokenizer_type == "ipa" else ("cer" if model.strip_spaces else "wer")
+        metric = "per" if model.tokenizer_type in {"ipa", "phone69"} else ("cer" if model.strip_spaces else "wer")
     logging.info("Evaluation metric: %s", metric.upper())
     logging.info(
         "Decoding: beam_width=%s (%s)",
@@ -330,7 +330,7 @@ def main():
     ckpt = torch.load(ckpt_path, map_location="cpu")
     model.validate_tokenizer_checkpoint(ckpt)
     state_dict = ckpt.get("state_dict", ckpt)
-    model.load_state_dict(state_dict, strict=model.tokenizer_type == "ipa")
+    model.load_state_dict(state_dict, strict=model.tokenizer_type in {"ipa", "phone69"})
 
     # Eval
     device = torch.device("cpu" if args.cpu else config.get("trainer", {}).get("accelerator", "cuda"))

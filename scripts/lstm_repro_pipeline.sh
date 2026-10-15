@@ -53,5 +53,5 @@ echo "[$(date -u +%FT%T)] best ckpt: $BEST" >> "$LOG"
   > "$REPO/lstm_naive.beam20.log" 2>&1
 rc=$?
 echo "[$(date -u +%FT%T)] beam20 eval exit=$rc" >> "$LOG"
-grep -E "^CER:|^RTF:|Evaluation complete" "$REPO/lstm_naive.beam20.log" | tail -4 >> "$LOG"
+grep -E "^PER:|^RTF:|Evaluation complete" "$REPO/lstm_naive.beam20.log" | tail -4 >> "$LOG"
 echo "[$(date -u +%FT%T)] pipeline done" >> "$LOG"

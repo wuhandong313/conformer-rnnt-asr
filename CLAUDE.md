@@ -21,7 +21,7 @@ python eval.py configs/server.yaml --checkpoint exp/checkpoints/val-epoch=02-ste
 python eval.py configs/server.yaml --cpu   # force CPU
 ```
 
-There is **no requirements file, no test suite, no build step**. Dependencies are implicit: `torch`, `torchaudio`, `pytorch-lightning`, `sentencepiece`, `numpy`, `scipy`, `pyyaml`.
+There is no build step. Dependencies are implicit: `torch`, `torchaudio`, `pytorch-lightning`, `numpy`, `scipy`, `pyyaml`; only word-BPE requires `sentencepiece`. Focused regression tests run with `python -m unittest discover -s tests`.
 
 ## Architecture
 
@@ -40,6 +40,7 @@ For beam-search inference, `ConformerRNNT` exposes `@torch.jit.export` methods (
 - **MelSpectrogram is NOT a registered submodule**: it's lazily built on CPU via `_get_mel_transform()` and kept out of `state_dict()`, so checkpoints contain only the Conformer/Predictor/Joiner weights.
 - **Right-context padding happens in the data pipeline**, not the encoder — the feature tensor is padded by `right_context_length` frames before entering the encoder, then separated inside `DynamicCompression` (right-context frames pass through uncompressed).
 - **Batching is by token count, not fixed size**: `CustomDataset` pre-sorts samples by target length (descending) and `batch_by_token_count` ([common.py](common.py)) groups until `max_token_limit` is hit. DataLoader uses `batch_size=None` with a custom collate.
+- **Fixed phone69 targets**: `phone69_tokenizer.py` maps 69 stressed ARPABET phones to IDs 0–68, filters source `spn`, and appends blank at 69. Phone69 never loads SentencePiece; checkpoints record the vocabulary fingerprint. See `docs/phone69_tokenizer.md`.
 - ** Phoneme transcriptions**: the `LIBRISPEECH` class ([lightning_module.py](conformer_rnnt/lightning_module.py)) reads `{speaker}-{chapter}-ph.trans.txt` files, not standard word transcriptions.
 
 ### Dynamic compression ([conformer_rnnt/compression.py](conformer_rnnt/compression.py))
