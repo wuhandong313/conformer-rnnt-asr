@@ -1,0 +1,272 @@
+=== stage1 pipeline start Wed Sep 30 13:26:05 UTC 2026 ===
+baseline session ended Wed Sep 30 17:36:02 UTC 2026
+anchor ckpt: /test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt
+2026-09-30 17:37:02 manifest: 1 runs / 1 evals, 0 already finished
+2026-09-30 17:37:02 === [1/1] smoke-detector ===
+2026-09-30 17:37:02 [smoke-detector] training …
+2026-09-30 17:37:02 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/smoke-detector.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/smoke-detector.train.log)
+2026-09-30 17:42:03 exit=0 elapsed=301s
+2026-09-30 17:42:03 [smoke-detector] ckpt: val-attn-savgol-hard-r0.27-epoch=01-step=1000.ckpt
+2026-09-30 17:42:03 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/smoke-detector.yaml --checkpoint /test21/conformer-rnnt-asr/exp_smoke/checkpoints/val-attn-savgol-hard-r0.27-epoch=01-step=1000.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/smoke-detector.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/smoke-detector.greedy.log)
+2026-09-30 17:45:13 exit=0 elapsed=190s
+2026-09-30 17:45:13 recorded: smoke-detector / greedy -> PER=0.9694 RTF=0.0091
+2026-09-30 17:45:13 queue drained.
+smoke chain OK Wed Sep 30 17:45:13 UTC 2026
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Checkpoint: /test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt | subset: test-clean
+[50] done
+[100] done
+[150] done
+[200] done
+[250] done
+[300] done
+Saved: analysis/out/rate_distribution_none_anchor.csv (300 utterances)
+detector       mean      std      p10      p50      p90
+naive         0.405    0.027    0.370    0.407    0.434
+fir           0.279    0.025    0.250    0.283    0.306
+savgol        0.308    0.022    0.280    0.309    0.333
+matplotlib not available — skipping plot
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Checkpoint: /test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt | device: cpu
+[20/200] done
+[40/200] done
+[60/200] done
+[80/200] done
+[100/200] done
+[120/200] done
+[140/200] done
+[160/200] done
+[180/200] done
+[200/200] done
+time_reduction   cos=0.640  sparsity=0.281  still=0.352  diff=418.84
+block1_out       cos=0.574  sparsity=0.261  still=0.195  diff=407.30
+compression_out  cos=0.574  sparsity=0.261  still=0.195  diff=407.30
+Saved: analysis/out/layer_redundancy_none.csv
+matplotlib not available — skipping plot
+A0 diagnostics done Wed Sep 30 17:47:49 UTC 2026
+--- manifests/a4.tsv ---
+oracle-dp	configs/exp/oracle-dp.yaml	greedy	/test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt
+a4-avg-pool	configs/exp/a4-avg-pool.yaml	greedy
+a4-cosine-diff	configs/exp/a4-cosine-diff.yaml	greedy
+a4-energy	configs/exp/a4-energy.yaml	greedy
+a4-max-pool	configs/exp/a4-max-pool.yaml	greedy
+a4-mmdp	configs/exp/a4-mmdp.yaml	greedy
+a4-ple	configs/exp/a4-ple.yaml	greedy
+a4-random	configs/exp/a4-random.yaml	greedy
+a4-savgol-cal	configs/exp/a4-savgol-cal.yaml	greedy
+a4-topk-diff	configs/exp/a4-topk-diff.yaml	greedy
+a4-uniform	configs/exp/a4-uniform.yaml	greedy
+2026-09-30 17:47:49 manifest: 11 runs / 11 evals, 0 already finished
+2026-09-30 17:47:49 === [1/11] oracle-dp ===
+2026-09-30 17:47:49 [oracle-dp] ckpt: val-attn-none-epoch=26-step=16600.ckpt
+2026-09-30 17:47:49 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/oracle-dp.yaml --checkpoint /test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/oracle-dp.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/oracle-dp.greedy.log)
+2026-09-30 19:43:27 exit=0 elapsed=6938s
+2026-09-30 19:43:27 recorded: oracle-dp / greedy -> PER=0.6624 RTF=0.1865
+2026-09-30 19:43:27 === [2/11] a4-avg-pool ===
+2026-09-30 19:43:27 [a4-avg-pool] training …
+2026-09-30 19:43:27 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-avg-pool.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-avg-pool.train.log)
+=== stage1 pipeline start Thu Oct  1 04:10:14 UTC 2026 ===
+baseline session ended Thu Oct  1 04:10:15 UTC 2026
+anchor ckpt: /test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt
+2026-10-01 04:11:10 manifest: 1 runs / 1 evals, 1 already finished
+2026-10-01 04:11:10 === [1/1] smoke-detector ===
+2026-10-01 04:11:10 [smoke-detector] ckpt: val-attn-savgol-hard-r0.27-epoch=01-step=1000.ckpt
+2026-10-01 04:11:10 [smoke-detector] greedy already recorded — skip
+2026-10-01 04:11:10 queue drained.
+smoke chain OK Thu Oct  1 04:11:10 UTC 2026
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Checkpoint: /test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt | subset: test-clean
+[50] done
+[100] done
+[150] done
+[200] done
+[250] done
+[300] done
+Saved: analysis/out/rate_distribution_none_anchor.csv (300 utterances)
+detector       mean      std      p10      p50      p90
+naive         0.405    0.027    0.370    0.407    0.434
+fir           0.279    0.025    0.250    0.283    0.306
+savgol        0.308    0.022    0.280    0.309    0.333
+matplotlib not available — skipping plot
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Checkpoint: /test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt | device: cpu
+[20/200] done
+[40/200] done
+[60/200] done
+[80/200] done
+[100/200] done
+[120/200] done
+[140/200] done
+[160/200] done
+[180/200] done
+[200/200] done
+time_reduction   cos=0.640  sparsity=0.281  still=0.352  diff=418.84
+block1_out       cos=0.574  sparsity=0.261  still=0.195  diff=407.30
+compression_out  cos=0.574  sparsity=0.261  still=0.195  diff=407.30
+Saved: analysis/out/layer_redundancy_none.csv
+matplotlib not available — skipping plot
+A0 diagnostics done Thu Oct  1 04:13:36 UTC 2026
+--- manifests/a4.tsv ---
+oracle-dp	configs/exp/oracle-dp.yaml	greedy	/test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt
+a4-avg-pool	configs/exp/a4-avg-pool.yaml	greedy
+a4-cosine-diff	configs/exp/a4-cosine-diff.yaml	greedy
+a4-energy	configs/exp/a4-energy.yaml	greedy
+a4-max-pool	configs/exp/a4-max-pool.yaml	greedy
+a4-mmdp	configs/exp/a4-mmdp.yaml	greedy
+a4-ple	configs/exp/a4-ple.yaml	greedy
+a4-random	configs/exp/a4-random.yaml	greedy
+a4-savgol-cal	configs/exp/a4-savgol-cal.yaml	greedy
+a4-topk-diff	configs/exp/a4-topk-diff.yaml	greedy
+a4-uniform	configs/exp/a4-uniform.yaml	greedy
+2026-10-01 04:13:36 manifest: 11 runs / 11 evals, 1 already finished
+2026-10-01 04:13:36 === [1/11] oracle-dp ===
+2026-10-01 04:13:36 [oracle-dp] ckpt: val-attn-none-epoch=26-step=16600.ckpt
+2026-10-01 04:13:36 [oracle-dp] greedy already recorded — skip
+2026-10-01 04:13:36 === [2/11] a4-avg-pool ===
+2026-10-01 04:13:36 [a4-avg-pool] training …
+2026-10-01 04:13:36 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-avg-pool.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-avg-pool.train.log)
+=== stage1 pipeline start Thu Oct  1 04:14:07 UTC 2026 ===
+baseline session ended Thu Oct  1 04:14:07 UTC 2026
+anchor ckpt: /test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt
+2026-10-01 04:15:01 manifest: 1 runs / 1 evals, 1 already finished
+2026-10-01 04:15:01 === [1/1] smoke-detector ===
+2026-10-01 04:15:01 [smoke-detector] ckpt: val-attn-savgol-hard-r0.27-epoch=01-step=1000.ckpt
+2026-10-01 04:15:01 [smoke-detector] greedy already recorded — skip
+2026-10-01 04:15:01 queue drained.
+smoke chain OK Thu Oct  1 04:15:01 UTC 2026
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Checkpoint: /test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt | subset: test-clean
+[50] done
+[100] done
+[150] done
+[200] done
+[250] done
+[300] done
+Saved: analysis/out/rate_distribution_none_anchor.csv (300 utterances)
+detector       mean      std      p10      p50      p90
+naive         0.405    0.027    0.370    0.407    0.434
+fir           0.279    0.025    0.250    0.283    0.306
+savgol        0.308    0.022    0.280    0.309    0.333
+matplotlib not available — skipping plot
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Checkpoint: /test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt | device: cpu
+[20/200] done
+[40/200] done
+[60/200] done
+[80/200] done
+[100/200] done
+[120/200] done
+[140/200] done
+[160/200] done
+[180/200] done
+[200/200] done
+time_reduction   cos=0.640  sparsity=0.281  still=0.352  diff=418.84
+block1_out       cos=0.574  sparsity=0.261  still=0.195  diff=407.30
+compression_out  cos=0.574  sparsity=0.261  still=0.195  diff=407.30
+Saved: analysis/out/layer_redundancy_none.csv
+matplotlib not available — skipping plot
+A0 diagnostics done Thu Oct  1 04:17:39 UTC 2026
+--- manifests/a4.tsv ---
+oracle-dp	configs/exp/oracle-dp.yaml	greedy	/test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt
+a4-avg-pool	configs/exp/a4-avg-pool.yaml	greedy
+a4-cosine-diff	configs/exp/a4-cosine-diff.yaml	greedy
+a4-energy	configs/exp/a4-energy.yaml	greedy
+a4-max-pool	configs/exp/a4-max-pool.yaml	greedy
+a4-mmdp	configs/exp/a4-mmdp.yaml	greedy
+a4-ple	configs/exp/a4-ple.yaml	greedy
+a4-random	configs/exp/a4-random.yaml	greedy
+a4-savgol-cal	configs/exp/a4-savgol-cal.yaml	greedy
+a4-topk-diff	configs/exp/a4-topk-diff.yaml	greedy
+a4-uniform	configs/exp/a4-uniform.yaml	greedy
+2026-10-01 04:17:40 manifest: 11 runs / 11 evals, 1 already finished
+2026-10-01 04:17:40 === [1/11] oracle-dp ===
+2026-10-01 04:17:40 [oracle-dp] ckpt: val-attn-none-epoch=26-step=16600.ckpt
+2026-10-01 04:17:40 [oracle-dp] greedy already recorded — skip
+2026-10-01 04:17:40 === [2/11] a4-avg-pool ===
+2026-10-01 04:17:40 [a4-avg-pool] training …
+2026-10-01 04:17:40 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-avg-pool.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-avg-pool.train.log)
+2026-10-01 07:18:04 exit=0 elapsed=10825s
+2026-10-01 07:18:04 [a4-avg-pool] ckpt: val-attn-avg_pool-seg_avg-r0.27-epoch=30-step=19100.ckpt
+2026-10-01 07:18:04 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-avg-pool.yaml --checkpoint /test21/conformer-rnnt-asr/exp_a4/a4-avg-pool/checkpoints/val-attn-avg_pool-seg_avg-r0.27-epoch=30-step=19100.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/a4-avg-pool.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-avg-pool.greedy.log)
+2026-10-01 07:31:30 exit=0 elapsed=806s
+2026-10-01 07:31:30 recorded: a4-avg-pool / greedy -> PER=0.1057 RTF=0.0381
+2026-10-01 07:31:30 === [3/11] a4-cosine-diff ===
+2026-10-01 07:31:30 [a4-cosine-diff] training …
+2026-10-01 07:31:30 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-cosine-diff.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-cosine-diff.train.log)
+2026-10-01 09:32:23 exit=0 elapsed=7253s
+2026-10-01 09:32:23 [a4-cosine-diff] ckpt: val-attn-cosine_diff-hard-r0.27-epoch=48-step=31000.ckpt
+2026-10-01 09:32:23 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-cosine-diff.yaml --checkpoint /test21/conformer-rnnt-asr/exp_a4/a4-cosine-diff/checkpoints/val-attn-cosine_diff-hard-r0.27-epoch=48-step=31000.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/a4-cosine-diff.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-cosine-diff.greedy.log)
+2026-10-01 09:56:47 exit=0 elapsed=1464s
+2026-10-01 09:56:47 recorded: a4-cosine-diff / greedy -> PER=0.1166 RTF=0.0730
+2026-10-01 09:56:47 === [4/11] a4-energy ===
+2026-10-01 09:56:47 [a4-energy] training …
+2026-10-01 09:56:47 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-energy.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-energy.train.log)
+2026-10-01 11:46:03 exit=0 elapsed=6555s
+2026-10-01 11:46:03 [a4-energy] ckpt: val-attn-energy-hard-r0.27-epoch=40-step=25500.ckpt
+2026-10-01 11:46:03 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-energy.yaml --checkpoint /test21/conformer-rnnt-asr/exp_a4/a4-energy/checkpoints/val-attn-energy-hard-r0.27-epoch=40-step=25500.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/a4-energy.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-energy.greedy.log)
+2026-10-01 11:59:31 exit=0 elapsed=809s
+2026-10-01 11:59:31 recorded: a4-energy / greedy -> PER=0.1525 RTF=0.0379
+2026-10-01 11:59:31 === [5/11] a4-max-pool ===
+2026-10-01 11:59:31 [a4-max-pool] training …
+2026-10-01 11:59:31 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-max-pool.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-max-pool.train.log)
+2026-10-01 15:25:43 exit=0 elapsed=12371s
+2026-10-01 15:25:43 [a4-max-pool] ckpt: val-attn-max_pool-hard-r0.27-epoch=30-step=19100.ckpt
+2026-10-01 15:25:43 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-max-pool.yaml --checkpoint /test21/conformer-rnnt-asr/exp_a4/a4-max-pool/checkpoints/val-attn-max_pool-hard-r0.27-epoch=30-step=19100.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/a4-max-pool.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-max-pool.greedy.log)
+2026-10-01 15:50:56 exit=0 elapsed=1513s
+2026-10-01 15:50:56 recorded: a4-max-pool / greedy -> PER=0.1026 RTF=0.0733
+2026-10-01 15:50:56 === [6/11] a4-mmdp ===
+2026-10-01 15:50:56 [a4-mmdp] training …
+2026-10-01 15:50:56 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-mmdp.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-mmdp.train.log)
+2026-10-01 23:48:26 exit=0 elapsed=28650s
+2026-10-01 23:48:26 [a4-mmdp] ckpt: val-attn-mmdp-hard-r0.27-epoch=30-step=19100.ckpt
+2026-10-01 23:48:26 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-mmdp.yaml --checkpoint /test21/conformer-rnnt-asr/exp_a4/a4-mmdp/checkpoints/val-attn-mmdp-hard-r0.27-epoch=30-step=19100.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/a4-mmdp.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-mmdp.greedy.log)
+2026-10-02 00:04:28 exit=0 elapsed=961s
+2026-10-02 00:04:28 recorded: a4-mmdp / greedy -> PER=0.1061 RTF=0.0469
+2026-10-02 00:04:28 === [7/11] a4-ple ===
+2026-10-02 00:04:28 [a4-ple] training …
+2026-10-02 00:04:28 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-ple.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-ple.train.log)
+2026-10-02 01:40:34 exit=0 elapsed=5767s
+2026-10-02 01:40:34 [a4-ple] ckpt: val-attn-ple-hard-r0.27-epoch=15-step=9900.ckpt
+2026-10-02 01:40:34 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-ple.yaml --checkpoint /test21/conformer-rnnt-asr/exp_a4/a4-ple/checkpoints/val-attn-ple-hard-r0.27-epoch=15-step=9900.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/a4-ple.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-ple.greedy.log)
+2026-10-02 01:47:32 exit=0 elapsed=418s
+2026-10-02 01:47:32 recorded: a4-ple / greedy -> PER=0.7028 RTF=0.0253
+2026-10-02 01:47:32 === [8/11] a4-random ===
+2026-10-02 01:47:32 [a4-random] training …
+2026-10-02 01:47:32 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-random.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-random.train.log)
+2026-10-02 03:33:50 exit=0 elapsed=6378s
+2026-10-02 03:33:50 [a4-random] ckpt: val-attn-random-hard-r0.27-epoch=31-step=19800.ckpt
+2026-10-02 03:33:50 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-random.yaml --checkpoint /test21/conformer-rnnt-asr/exp_a4/a4-random/checkpoints/val-attn-random-hard-r0.27-epoch=31-step=19800.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/a4-random.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-random.greedy.log)
+2026-10-02 03:47:52 exit=0 elapsed=842s
+2026-10-02 03:47:52 recorded: a4-random / greedy -> PER=0.1302 RTF=0.0403
+2026-10-02 03:47:52 === [9/11] a4-savgol-cal ===
+2026-10-02 03:47:52 [a4-savgol-cal] training …
+2026-10-02 03:47:52 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-savgol-cal.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-savgol-cal.train.log)
+2026-10-02 05:52:29 exit=0 elapsed=7477s
+2026-10-02 05:52:30 [a4-savgol-cal] ckpt: val-attn-savgol-hard-r0.27-epoch=39-step=24800.ckpt
+2026-10-02 05:52:30 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-savgol-cal.yaml --checkpoint /test21/conformer-rnnt-asr/exp_a4/a4-savgol-cal/checkpoints/val-attn-savgol-hard-r0.27-epoch=39-step=24800.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/a4-savgol-cal.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-savgol-cal.greedy.log)
+2026-10-02 06:06:55 exit=0 elapsed=865s
+2026-10-02 06:06:55 recorded: a4-savgol-cal / greedy -> PER=0.1108 RTF=0.0413
+2026-10-02 06:06:55 === [10/11] a4-topk-diff ===
+2026-10-02 06:06:55 [a4-topk-diff] training …
+2026-10-02 06:06:55 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-topk-diff.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-topk-diff.train.log)
+2026-10-02 07:52:31 exit=0 elapsed=6336s
+2026-10-02 07:52:31 [a4-topk-diff] ckpt: val-attn-topk_diff-hard-r0.27-epoch=44-step=28400.ckpt
+2026-10-02 07:52:31 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-topk-diff.yaml --checkpoint /test21/conformer-rnnt-asr/exp_a4/a4-topk-diff/checkpoints/val-attn-topk_diff-hard-r0.27-epoch=44-step=28400.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/a4-topk-diff.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-topk-diff.greedy.log)
+2026-10-02 08:06:51 exit=0 elapsed=860s
+2026-10-02 08:06:51 recorded: a4-topk-diff / greedy -> PER=0.1596 RTF=0.0420
+2026-10-02 08:06:51 === [11/11] a4-uniform ===
+2026-10-02 08:06:51 [a4-uniform] training …
+2026-10-02 08:06:51 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-uniform.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-uniform.train.log)
+2026-10-02 09:50:05 exit=0 elapsed=6194s
+2026-10-02 09:50:05 [a4-uniform] ckpt: val-attn-uniform-hard-r0.27-epoch=31-step=19800.ckpt
+2026-10-02 09:50:05 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-uniform.yaml --checkpoint /test21/conformer-rnnt-asr/exp_a4/a4-uniform/checkpoints/val-attn-uniform-hard-r0.27-epoch=31-step=19800.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/a4-uniform.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/a4-uniform.greedy.log)
+2026-10-02 10:03:53 exit=0 elapsed=827s
+2026-10-02 10:03:53 recorded: a4-uniform / greedy -> PER=0.1130 RTF=0.0408
+2026-10-02 10:03:53 queue drained.
+=== stage1 pipeline done Fri Oct  2 10:03:53 UTC 2026 ===

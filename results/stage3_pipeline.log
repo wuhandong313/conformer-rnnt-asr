@@ -1,0 +1,140 @@
+=== stage3 B-matrix start Fri Oct  2 14:25:08 UTC 2026 ===
+--- manifests/b.tsv ---
+b-cosine_diff-hard	configs/exp/b-cosine_diff-hard.yaml	greedy
+b-cosine_diff-learned	configs/exp/b-cosine_diff-learned.yaml	greedy
+b-cosine_diff-seg_avg	configs/exp/b-cosine_diff-seg_avg.yaml	greedy
+b-fir-hard	configs/exp/b-fir-hard.yaml	greedy
+b-fir-learned	configs/exp/b-fir-learned.yaml	greedy
+b-fir-seg_avg	configs/exp/b-fir-seg_avg.yaml	greedy
+b-ple-hard	configs/exp/b-ple-hard.yaml	greedy
+b-ple-learned	configs/exp/b-ple-learned.yaml	greedy
+b-ple-seg_avg	configs/exp/b-ple-seg_avg.yaml	greedy
+b-raw-hard	configs/exp/b-raw-hard.yaml	greedy
+b-raw-learned	configs/exp/b-raw-learned.yaml	greedy
+b-raw-seg_avg	configs/exp/b-raw-seg_avg.yaml	greedy
+b-savgol-hard	configs/exp/b-savgol-hard.yaml	greedy
+b-savgol-learned	configs/exp/b-savgol-learned.yaml	greedy
+b-savgol-seg_avg	configs/exp/b-savgol-seg_avg.yaml	greedy
+2026-10-02 14:25:08 manifest: 15 runs / 15 evals, 0 already finished
+2026-10-02 14:25:08 === [1/15] b-cosine_diff-hard ===
+2026-10-02 14:25:08 [b-cosine_diff-hard] training …
+2026-10-02 14:25:08 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-cosine_diff-hard.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-cosine_diff-hard.train.log)
+2026-10-02 16:26:07 exit=0 elapsed=7259s
+2026-10-02 16:26:07 [b-cosine_diff-hard] ckpt: val-attn-cosine_diff-hard-r0.27-epoch=41-step=26100.ckpt
+2026-10-02 16:26:07 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-cosine_diff-hard.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-cosine_diff-hard/checkpoints/val-attn-cosine_diff-hard-r0.27-epoch=41-step=26100.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-cosine_diff-hard.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-cosine_diff-hard.greedy.log)
+2026-10-02 16:42:27 exit=0 elapsed=980s
+2026-10-02 16:42:27 recorded: b-cosine_diff-hard / greedy -> PER=0.1160 RTF=0.0490
+2026-10-02 16:42:27 === [2/15] b-cosine_diff-learned ===
+2026-10-02 16:42:27 [b-cosine_diff-learned] training …
+2026-10-02 16:42:27 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-cosine_diff-learned.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-cosine_diff-learned.train.log)
+2026-10-02 19:20:02 exit=0 elapsed=9454s
+2026-10-02 19:20:02 [b-cosine_diff-learned] ckpt: val-attn-cosine_diff-learned-r0.27-epoch=47-step=29900.ckpt
+2026-10-02 19:20:02 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-cosine_diff-learned.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-cosine_diff-learned/checkpoints/val-attn-cosine_diff-learned-r0.27-epoch=47-step=29900.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-cosine_diff-learned.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-cosine_diff-learned.greedy.log)
+2026-10-02 19:35:06 exit=0 elapsed=904s
+2026-10-02 19:35:06 recorded: b-cosine_diff-learned / greedy -> PER=0.0915 RTF=0.0428
+2026-10-02 19:35:06 === [3/15] b-cosine_diff-seg_avg ===
+2026-10-02 19:35:06 [b-cosine_diff-seg_avg] training …
+2026-10-02 19:35:06 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-cosine_diff-seg_avg.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-cosine_diff-seg_avg.train.log)
+2026-10-02 21:42:47 exit=0 elapsed=7661s
+2026-10-02 21:42:47 [b-cosine_diff-seg_avg] ckpt: val-attn-cosine_diff-seg_avg-r0.27-epoch=36-step=22900.ckpt
+2026-10-02 21:42:47 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-cosine_diff-seg_avg.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-cosine_diff-seg_avg/checkpoints/val-attn-cosine_diff-seg_avg-r0.27-epoch=36-step=22900.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-cosine_diff-seg_avg.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-cosine_diff-seg_avg.greedy.log)
+2026-10-02 21:56:54 exit=0 elapsed=847s
+2026-10-02 21:56:54 recorded: b-cosine_diff-seg_avg / greedy -> PER=0.0959 RTF=0.0402
+2026-10-02 21:56:54 === [4/15] b-fir-hard ===
+2026-10-02 21:56:54 [b-fir-hard] training …
+2026-10-02 21:56:54 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-fir-hard.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-fir-hard.train.log)
+2026-10-03 00:07:28 exit=0 elapsed=7834s
+2026-10-03 00:07:28 [b-fir-hard] ckpt: val-attn-fir-hard-r0.27-epoch=45-step=28600.ckpt
+2026-10-03 00:07:28 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-fir-hard.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-fir-hard/checkpoints/val-attn-fir-hard-r0.27-epoch=45-step=28600.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-fir-hard.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-fir-hard.greedy.log)
+2026-10-03 00:21:02 exit=0 elapsed=814s
+2026-10-03 00:21:02 recorded: b-fir-hard / greedy -> PER=0.1118 RTF=0.0388
+2026-10-03 00:21:02 === [5/15] b-fir-learned ===
+2026-10-03 00:21:02 [b-fir-learned] training …
+2026-10-03 00:21:02 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-fir-learned.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-fir-learned.train.log)
+2026-10-03 03:12:12 exit=0 elapsed=10270s
+2026-10-03 03:12:12 [b-fir-learned] ckpt: val-attn-fir-learned-r0.27-epoch=38-step=24200.ckpt
+2026-10-03 03:12:12 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-fir-learned.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-fir-learned/checkpoints/val-attn-fir-learned-r0.27-epoch=38-step=24200.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-fir-learned.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-fir-learned.greedy.log)
+2026-10-03 03:26:43 exit=0 elapsed=871s
+2026-10-03 03:26:43 recorded: b-fir-learned / greedy -> PER=0.0977 RTF=0.0422
+2026-10-03 03:26:43 === [6/15] b-fir-seg_avg ===
+2026-10-03 03:26:43 [b-fir-seg_avg] training …
+2026-10-03 03:26:43 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-fir-seg_avg.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-fir-seg_avg.train.log)
+2026-10-03 05:53:31 exit=0 elapsed=8808s
+2026-10-03 05:53:31 [b-fir-seg_avg] ckpt: val-attn-fir-seg_avg-r0.27-epoch=41-step=26100.ckpt
+2026-10-03 05:53:31 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-fir-seg_avg.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-fir-seg_avg/checkpoints/val-attn-fir-seg_avg-r0.27-epoch=41-step=26100.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-fir-seg_avg.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-fir-seg_avg.greedy.log)
+2026-10-03 06:11:34 exit=0 elapsed=1083s
+2026-10-03 06:11:34 recorded: b-fir-seg_avg / greedy -> PER=0.0917 RTF=0.0498
+2026-10-03 06:11:34 === [7/15] b-ple-hard ===
+2026-10-03 06:11:34 [b-ple-hard] training …
+2026-10-03 06:11:34 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-ple-hard.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-ple-hard.train.log)
+2026-10-03 07:48:48 exit=0 elapsed=5833s
+2026-10-03 07:48:48 [b-ple-hard] ckpt: val-attn-ple-hard-r0.27-epoch=17-step=11300.ckpt
+2026-10-03 07:48:48 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-ple-hard.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-ple-hard/checkpoints/val-attn-ple-hard-r0.27-epoch=17-step=11300.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-ple-hard.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-ple-hard.greedy.log)
+2026-10-03 07:57:30 exit=0 elapsed=523s
+2026-10-03 07:57:30 recorded: b-ple-hard / greedy -> PER=0.7224 RTF=0.0329
+2026-10-03 07:57:30 === [8/15] b-ple-learned ===
+2026-10-03 07:57:30 [b-ple-learned] training …
+2026-10-03 07:57:30 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-ple-learned.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-ple-learned.train.log)
+2026-10-03 10:12:16 exit=0 elapsed=8086s
+2026-10-03 10:12:16 [b-ple-learned] ckpt: val-attn-ple-learned-r0.27-epoch=12-step=7700.ckpt
+2026-10-03 10:12:16 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-ple-learned.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-ple-learned/checkpoints/val-attn-ple-learned-r0.27-epoch=12-step=7700.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-ple-learned.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-ple-learned.greedy.log)
+2026-10-03 10:23:28 exit=0 elapsed=672s
+2026-10-03 10:23:28 recorded: b-ple-learned / greedy -> PER=0.6390 RTF=0.0356
+2026-10-03 10:23:28 === [9/15] b-ple-seg_avg ===
+2026-10-03 10:23:28 [b-ple-seg_avg] training …
+2026-10-03 10:23:28 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-ple-seg_avg.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-ple-seg_avg.train.log)
+2026-10-03 12:14:11 exit=0 elapsed=6643s
+2026-10-03 12:14:11 [b-ple-seg_avg] ckpt: val-attn-ple-seg_avg-r0.27-epoch=48-step=30800.ckpt
+2026-10-03 12:14:11 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-ple-seg_avg.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-ple-seg_avg/checkpoints/val-attn-ple-seg_avg-r0.27-epoch=48-step=30800.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-ple-seg_avg.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-ple-seg_avg.greedy.log)
+2026-10-03 12:27:00 exit=0 elapsed=769s
+2026-10-03 12:27:00 recorded: b-ple-seg_avg / greedy -> PER=0.5013 RTF=0.0420
+2026-10-03 12:27:00 === [10/15] b-raw-hard ===
+2026-10-03 12:27:00 [b-raw-hard] training …
+2026-10-03 12:27:00 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-raw-hard.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-raw-hard.train.log)
+2026-10-03 14:18:19 exit=0 elapsed=6679s
+2026-10-03 14:18:19 [b-raw-hard] ckpt: val-attn-raw-hard-r0.27-epoch=49-step=31200.ckpt
+2026-10-03 14:18:19 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-raw-hard.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-raw-hard/checkpoints/val-attn-raw-hard-r0.27-epoch=49-step=31200.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-raw-hard.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-raw-hard.greedy.log)
+2026-10-03 14:37:24 exit=0 elapsed=1145s
+2026-10-03 14:37:24 recorded: b-raw-hard / greedy -> PER=0.1212 RTF=0.0551
+2026-10-03 14:37:24 === [11/15] b-raw-learned ===
+2026-10-03 14:37:24 [b-raw-learned] training …
+2026-10-03 14:37:24 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-raw-learned.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-raw-learned.train.log)
+2026-10-03 17:04:03 exit=0 elapsed=8799s
+2026-10-03 17:04:03 [b-raw-learned] ckpt: val-attn-raw-learned-r0.27-epoch=45-step=29100.ckpt
+2026-10-03 17:04:03 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-raw-learned.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-raw-learned/checkpoints/val-attn-raw-learned-r0.27-epoch=45-step=29100.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-raw-learned.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-raw-learned.greedy.log)
+2026-10-03 17:17:50 exit=0 elapsed=827s
+2026-10-03 17:17:50 recorded: b-raw-learned / greedy -> PER=0.1119 RTF=0.0407
+2026-10-03 17:17:50 === [12/15] b-raw-seg_avg ===
+2026-10-03 17:17:50 [b-raw-seg_avg] training …
+2026-10-03 17:17:50 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-raw-seg_avg.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-raw-seg_avg.train.log)
+2026-10-03 19:21:57 exit=0 elapsed=7447s
+2026-10-03 19:21:57 [b-raw-seg_avg] ckpt: val-attn-raw-seg_avg-r0.27-epoch=34-step=22100.ckpt
+2026-10-03 19:21:57 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-raw-seg_avg.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-raw-seg_avg/checkpoints/val-attn-raw-seg_avg-r0.27-epoch=34-step=22100.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-raw-seg_avg.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-raw-seg_avg.greedy.log)
+2026-10-03 19:35:44 exit=0 elapsed=827s
+2026-10-03 19:35:44 recorded: b-raw-seg_avg / greedy -> PER=0.0968 RTF=0.0396
+2026-10-03 19:35:44 === [13/15] b-savgol-hard ===
+2026-10-03 19:35:44 [b-savgol-hard] training …
+2026-10-03 19:35:44 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-savgol-hard.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-savgol-hard.train.log)
+2026-10-03 21:40:32 exit=0 elapsed=7488s
+2026-10-03 21:40:32 [b-savgol-hard] ckpt: val-attn-savgol-hard-r0.27-epoch=40-step=25500.ckpt
+2026-10-03 21:40:32 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-savgol-hard.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-savgol-hard/checkpoints/val-attn-savgol-hard-r0.27-epoch=40-step=25500.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-savgol-hard.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-savgol-hard.greedy.log)
+2026-10-03 21:57:32 exit=0 elapsed=1020s
+2026-10-03 21:57:32 recorded: b-savgol-hard / greedy -> PER=0.0983 RTF=0.0481
+2026-10-03 21:57:32 === [14/15] b-savgol-learned ===
+2026-10-03 21:57:32 [b-savgol-learned] training …
+2026-10-03 21:57:32 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-savgol-learned.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-savgol-learned.train.log)
+2026-10-04 00:42:35 exit=0 elapsed=9903s
+2026-10-04 00:42:35 [b-savgol-learned] ckpt: val-attn-savgol-learned-r0.27-epoch=42-step=26700.ckpt
+2026-10-04 00:42:35 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-savgol-learned.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-savgol-learned/checkpoints/val-attn-savgol-learned-r0.27-epoch=42-step=26700.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-savgol-learned.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-savgol-learned.greedy.log)
+2026-10-04 00:57:46 exit=0 elapsed=911s
+2026-10-04 00:57:46 recorded: b-savgol-learned / greedy -> PER=0.0926 RTF=0.0437
+2026-10-04 00:57:46 === [15/15] b-savgol-seg_avg ===
+2026-10-04 00:57:46 [b-savgol-seg_avg] training …
+2026-10-04 00:57:46 RUN: /root/anaconda3/envs/whd/bin/python train.py /test21/conformer-rnnt-asr-attn/configs/exp/b-savgol-seg_avg.yaml (log: /test21/conformer-rnnt-asr-attn/results/logs/b-savgol-seg_avg.train.log)
+2026-10-04 03:17:05 exit=0 elapsed=8359s
+2026-10-04 03:17:05 [b-savgol-seg_avg] ckpt: val-attn-savgol-seg_avg-r0.27-epoch=39-step=25300.ckpt
+2026-10-04 03:17:05 RUN: /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/b-savgol-seg_avg.yaml --checkpoint /test21/conformer-rnnt-asr/exp_b/b-savgol-seg_avg/checkpoints/val-attn-savgol-seg_avg-r0.27-epoch=39-step=25300.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/b-savgol-seg_avg.greedy.per_sample.csv (log: /test21/conformer-rnnt-asr-attn/results/logs/b-savgol-seg_avg.greedy.log)
+2026-10-04 03:30:56 exit=0 elapsed=831s
+2026-10-04 03:30:56 recorded: b-savgol-seg_avg / greedy -> PER=0.0967 RTF=0.0403
+2026-10-04 03:30:56 queue drained.
+=== stage3 B-matrix done Sun Oct  4 03:30:56 UTC 2026 ===

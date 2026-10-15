@@ -1,0 +1,107 @@
+paths:
+  dataset_path: /test21/medusa
+  sp_model_path: /test21/medusa/spm_bpe_74.model
+  global_stats_path: /test21/medusa/global_stats.json
+  exp_dir: /test21/conformer-rnnt-asr/exp_b/b-ple-learned
+  from_checkpoint: null
+model:
+  input_dim: 80
+  encoding_dim: 512
+  num_symbols: 74
+  time_reduction_input_dim: 128
+  time_reduction_stride: 4
+  right_context_length: 4
+  num_heads: 8
+  ffn_dim: 1024
+  num_layers_block1: 2
+  num_layers_block2: 8
+  depthwise_conv_kernel_size: 31
+  dropout: 0.1
+  compression:
+    filter: savgol
+    hanning_window_size: 5
+    weight_predictor_mode: diff5
+    detector:
+      type: ple
+    mixer:
+      type: learned
+    keep_rate: 0.27
+  predictor:
+    type: attn
+    symbol_embedding_dim: 128
+    num_lstm_layers: 2
+    lstm_hidden_dim: 128
+    lstm_layer_norm: true
+    lstm_layer_norm_epsilon: 0.001
+    lstm_dropout: 0.3
+    attn:
+      d_model: 256
+      num_layers: 4
+      num_heads: 4
+      ffn_dim: 1024
+      left_context: 1024
+      dropout: 0.1
+      max_len: 4096
+  medusa:
+    num_heads: 0
+    ce_loss_weights:
+    - 0.8
+    - 0.64
+    - 0.512
+    - 0.4096
+    kl_weight: 0.05
+  joiner:
+    activation: relu
+training:
+  learning_rate: 0.0005
+  predictor_lr_scale: 0.5
+  adam_betas:
+  - 0.9
+  - 0.999
+  adam_eps: 1.0e-08
+  warmup_steps: 10000
+  rnnt_loss_reduction: mean
+  rnnt_loss_clamp: 1.0
+  gradient_clip_val: 10.0
+  epochs: 50
+data:
+  sample_rate: 16000
+  n_fft: 400
+  n_mels: 80
+  hop_length: 160
+  spec_augment:
+    freq_mask_param: 27
+    time_mask_param: 100
+    time_mask_prob: 0.2
+  max_token_limit: 16000
+  num_workers: 20
+  prefetch_factor: 2
+  train_subset: train-clean-100
+  val_subset: dev-clean
+  test_subset: test-clean
+trainer:
+  accelerator: cuda
+  strategy: auto
+  devices: 1
+  num_nodes: 1
+  log_every_n_steps: 10
+  val_check_interval: 200
+  num_sanity_val_steps: 0
+  fast_dev_run: false
+  matmul_precision: high
+  accumulate_grad_batches: 1
+  checkpoint:
+    save_top_k: 2
+    save_weights_only: true
+    val_checkpoint_interval: 100
+    train_checkpoint_interval: 100
+decoding:
+  beam_width: 20
+  mode: beam
+  spec:
+    max_draft: 4
+    frame_window: 16
+    per_token_blank: 4
+    tree: false
+debug: false
+seed: 42

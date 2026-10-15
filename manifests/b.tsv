@@ -1,0 +1,15 @@
+b-cosine_diff-hard	configs/exp/b-cosine_diff-hard.yaml	greedy
+b-cosine_diff-learned	configs/exp/b-cosine_diff-learned.yaml	greedy
+b-cosine_diff-seg_avg	configs/exp/b-cosine_diff-seg_avg.yaml	greedy
+b-fir-hard	configs/exp/b-fir-hard.yaml	greedy
+b-fir-learned	configs/exp/b-fir-learned.yaml	greedy
+b-fir-seg_avg	configs/exp/b-fir-seg_avg.yaml	greedy
+b-ple-hard	configs/exp/b-ple-hard.yaml	greedy
+b-ple-learned	configs/exp/b-ple-learned.yaml	greedy
+b-ple-seg_avg	configs/exp/b-ple-seg_avg.yaml	greedy
+b-raw-hard	configs/exp/b-raw-hard.yaml	greedy
+b-raw-learned	configs/exp/b-raw-learned.yaml	greedy
+b-raw-seg_avg	configs/exp/b-raw-seg_avg.yaml	greedy
+b-savgol-hard	configs/exp/b-savgol-hard.yaml	greedy
+b-savgol-learned	configs/exp/b-savgol-learned.yaml	greedy
+b-savgol-seg_avg	configs/exp/b-savgol-seg_avg.yaml	greedy

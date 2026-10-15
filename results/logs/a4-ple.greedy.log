@@ -1,0 +1,538 @@
+
+===== 2026-10-02 01:40:34 $ /root/anaconda3/envs/whd/bin/python eval.py /test21/conformer-rnnt-asr-attn/configs/exp/a4-ple.yaml --checkpoint /test21/conformer-rnnt-asr/exp_a4/a4-ple/checkpoints/val-attn-ple-hard-r0.27-epoch=15-step=9900.ckpt --beam 0 --out /test21/conformer-rnnt-asr-attn/results/logs/a4-ple.greedy.per_sample.csv =====
+Building model from config …
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Decoding: beam_width=0 (greedy)
+Loading checkpoint: /test21/conformer-rnnt-asr/exp_a4/a4-ple/checkpoints/val-attn-ple-hard-r0.27-epoch=15-step=9900.ckpt
+[   0] PER: 0.742 (cum: 0.742)  RTF: 0.1182 (cum: 0.1182)  |  ref: hhiy1hhow1ptdheh1rwuh1dbiy0stuw1fer0dih1ner0ter1nah0psah0ndk  |  hyp: hhiy1luh1ktdhae1tthiy0ruw1mzah1vdhflaw1er0dah1vflaw1er0zsao1
+[   5] PER: 0.716 (cum: 0.674)  RTF: 0.0184 (cum: 0.0453)  |  ref: thiy0myuw1zih0kkey1mnih1rer0ae1ndhhiy1rih0kao1lddhwer1dzthwe  |  hyp: thiy0kah0nvyuw1zih0ngfrah1mdhpaa1nder0ih0ngwih1riy0ah0s
+[  10] PER: 0.703 (cum: 0.702)  RTF: 0.0244 (cum: 0.0330)  |  ref: weh1lnaw1eh1nih0say1dih0kleh1ryuw1hhae1vah0hheh1dae1ndsow1hh  |  hyp: naw1weh1lmay1tmay1kih1stmay1kih1k
+[  15] PER: 0.607 (cum: 0.700)  RTF: 0.0276 (cum: 0.0329)  |  ref: bah1tthiy0dah1skdiy1pah0nih0ngih0ndhskuw1lruw2mkah1ver0dow1v  |  hyp: bah1tthiy0dah1stbih1ldih0ngbeh1lah0ndbeh1riy0row1mah0n
+[  20] PER: 0.736 (cum: 0.713)  RTF: 0.0138 (cum: 0.0293)  |  ref: ih1fah0mae1nhhae1dstow1lah0nah0paw1ndih0nhhih1zyuw1thae1ndhh  |  hyp: ah0nddhae1twuh1dpae1sih0ngtuw1paw1ndthiy0paw1ndah0pih1rdthiy
+[  25] PER: 0.675 (cum: 0.715)  RTF: 0.0322 (cum: 0.0280)  |  ref: ah0jheh1ntah0lkih1kfrah1mdhtao1lboy1ih2nthiy0beh1nchbih0hhay  |  hyp: thiy0jhah1jhah0nae1skttuw1kweh1schah0nkweh1schah0n
+[  30] PER: 0.615 (cum: 0.701)  RTF: 0.0413 (cum: 0.0297)  |  ref: bih0weh1rah1vmey1kih0ngdhae1tmih0stey1k  |  hyp: bih0wiy1rbih0fao1rdhstey1kmih1ster0ney1k
+[  35] PER: 0.538 (cum: 0.692)  RTF: 0.0257 (cum: 0.0298)  |  ref: hhiy1hhae1ddhfey1thih1nhhih1mdhae1tmuw1vzmaw1ntah0nz  |  hyp: hhiy1hhae1ddah1ftmeh1ntah0nz
+[  40] PER: 0.736 (cum: 0.693)  RTF: 0.0157 (cum: 0.0301)  |  ref: hhiy1seh1tao1fah0brah1ptliy0fer0dhbuh1lwao1kih0ngrae1pah0dli  |  hyp: hhiy1seh1dah0lih1tah0lkray1dwih0thah0lih1tah0lbeh1riy0ah0ndk
+[  45] PER: 0.607 (cum: 0.692)  RTF: 0.0318 (cum: 0.0308)  |  ref: suw1ndhhhow1lbrih1jhwah0ztreh1mbah0lih0ngae1ndrih0zaw1ndih0n  |  hyp: suw1nliy0daw1nih0ngdaw1nih0ng
+[  50] PER: 0.795 (cum: 0.698)  RTF: 0.0115 (cum: 0.0292)  |  ref: ih1twah0zay1dah0lfao1rhhih1mtuw1muw1vhhih0mseh1lftuw1biy0jhe  |  hyp: ih1twah0zah0feh1ltdhae1tdheh1rtuw1biy0rih1der0zah0ndseh1lvz
+[  55] PER: 0.777 (cum: 0.700)  RTF: 0.0146 (cum: 0.0285)  |  ref: thiy0yuh1rah0pdhey1hhae1dkah1mfrah1mley1aw1tdheh1rbiy2ao1ndt  |  hyp: thiy0yah1ngmae1nztrey1njhdae1ndmey1dreh1sah0prey1zih0z
+[  60] PER: 0.823 (cum: 0.688)  RTF: 0.0171 (cum: 0.0286)  |  ref: hhiy1stuh1dstih1lih0ndeh1frah0nstow2dheh1rkao1lzae1ndpeh1riy  |  hyp: hhiy1stih1lwer1dz
+[  65] PER: 0.819 (cum: 0.693)  RTF: 0.0211 (cum: 0.0283)  |  ref: dhey1yuw0nay1teh1vriy0kwaa1lah0tiy0ae1ndsah1mtay2mzyuw1wih1l  |  hyp: dhey1yuw1naa1tyuw1krih1stah0ns
+[  70] PER: 0.611 (cum: 0.697)  RTF: 0.0499 (cum: 0.0278)  |  ref: dheh1nhhiy1kah1mztuw1dhbiy1kah1vih0t  |  hyp: ae1nddheh1nkah1mih0ngtuw1biy1ih0ng
+[  75] PER: 0.778 (cum: 0.701)  RTF: 0.0137 (cum: 0.0270)  |  ref: dhey1aa1rbih0aa1ndao1lah1dher0wer1ksdhae1tay1now1ih0gzih1sti  |  hyp: dheh1rwer1bow1thfih1rsay1dih0dway1lgrey1tah1vah0grey1tpey1pe
+[  80] PER: 0.817 (cum: 0.702)  RTF: 0.0155 (cum: 0.0267)  |  ref: dhih1sae1twah1nskah0mpeh1lzyuw1tow2ah2nder0stae1nddhae1tdhwe  |  hyp: dheh1rwah0zah0sah0nah1vah0deh1kah0ndnaa1twah1nah1vdhruw1prah
+[  85] PER: 0.830 (cum: 0.707)  RTF: 0.0115 (cum: 0.0260)  |  ref: ih1twih1lbiy0hhow1liy0ih2mpaa1sah0bah0lfer0yuw1tuw1riy0tey1n  |  hyp: ih1twuh1dhae1vbih1nfeh1riy0ah0smeh1kah0gnih1rliy0way1tway1t
+[  90] PER: 0.788 (cum: 0.711)  RTF: 0.0116 (cum: 0.0253)  |  ref: hhiy1rih1zah0niy1kwah0liy0tih1pih0kah0lgriy1kskuw1llae1nskey  |  hyp: ih1zah0nih1rliy0bih0liy1vddheh1rwih1lkeh1rah0weh2rdheh1rwih1
+[  95] PER: 0.688 (cum: 0.715)  RTF: 0.0259 (cum: 0.0256)  |  ref: dheh1rzwah1nah0nddheh1rzah0nah1dher0thiy0dah1dliy0ah0ndthfli  |  hyp: dheh1rih1zwah1nflah1ngkwah0nt
+[ 100] PER: 0.604 (cum: 0.714)  RTF: 0.0237 (cum: 0.0253)  |  ref: ih1nbow1thdhiy1zhhay1mih1thah0kah0lsah1bjheh0ktsthser0aw1ndi  |  hyp: ae1ndbih1ldih0ngdhae1tsah1chah0nah1dher0ney1cher0byuw1tah0fa
+[ 105] PER: 0.802 (cum: 0.716)  RTF: 0.0131 (cum: 0.0251)  |  ref: ih1tih1zah0gliy1ner0brih1ngih0ngdaw1nhher0wah1nshiy1fah1vkao  |  hyp: ih1tih1zah0guh1dih1tih1zmah1striy0tay1m
+[ 110] PER: 0.633 (cum: 0.715)  RTF: 0.0161 (cum: 0.0249)  |  ref: hher0ae1ngdhtay1er0sah0mpraa1dah0ktah1vah0tay1er0lah0stah1ng  |  hyp: hher0hheh1rah0kah1zah0nttay1m
+[ 115] PER: 0.556 (cum: 0.714)  RTF: 0.0281 (cum: 0.0247)  |  ref: hher0eh1dah0tiy0thiy0kaa1zah1vaa2law1rfao1lts  |  hyp: hher0hhae1dah0drow1lfrah1mfao1ltfao1lts
+[ 120] PER: 0.600 (cum: 0.712)  RTF: 0.0282 (cum: 0.0246)  |  ref: hhah1zbah0nddhneh1kstthih1ngtuw1ah0way1f  |  hyp: hhae1zih0nhhih1zway1ftuw1way1ftuw1way1f
+[ 125] PER: 1.286 (cum: 0.715)  RTF: 0.0322 (cum: 0.0222)  |  ref: ey0miy1  |  hyp: ay1hhae1vmiy1n
+[ 130] PER: 0.763 (cum: 0.716)  RTF: 0.0096 (cum: 0.0218)  |  ref: ow1tih1zthiy0fer1sttih1zflae1ter0iy0ih0nmay1siy1ih0ngae1ndma  |  hyp: ow1ldow1ntmay1may1ndmay1ndmay1ndwah0zwao1ktah0zwao1ktthpeh1r
+[ 135] PER: 0.655 (cum: 0.716)  RTF: 0.0314 (cum: 0.0216)  |  ref: sah1mwah2neh1lstow1ldah0stao1riy0naa1tper0tih1kyah0ler0liy0i  |  hyp: sah1mah1vdheh1msiy1wah0znaa1twah0znaa1tfaa1low0ih0ngfao1lih0
+[ 140] PER: 0.608 (cum: 0.716)  RTF: 0.0286 (cum: 0.0219)  |  ref: thiy0ah1dher0zrih0zeh1ntih0dpow0stpow1nmah0ntbah1tih1twah0zj  |  hyp: thiy0ah1dher0zthiy0ah1dher0zwih1chdhstrah1kah0lmay1ndmiy1
+[ 145] PER: 0.659 (cum: 0.713)  RTF: 0.0277 (cum: 0.0225)  |  ref: shiy1wah0zdhmow1stah0griy1ah0bah0lwuh1mah0nay1veh1ver0now1ni  |  hyp: shiy1wah0znow1dhae1tdheh1rwer1beh1ter0wey1eh1ver0hhaw2eh1ver
+[ 150] PER: 0.619 (cum: 0.711)  RTF: 0.0675 (cum: 0.0230)  |  ref: praa1bah0bliy0naa1ttih1ldhseh1kah0ndpow2st  |  hyp: frah1mdhlae1dah0lkah0ndih1stah0ntpruw1st
+[ 155] PER: 0.960 (cum: 0.711)  RTF: 0.0902 (cum: 0.0240)  |  ref: wow1ntyuw1teh1ldah1glah0s  |  hyp: wah1ntuw1yuw1wah1ntay1tow1ldah1vgah1ler0dah0s
+[ 160] PER: 0.701 (cum: 0.712)  RTF: 0.0238 (cum: 0.0239)  |  ref: dhfer1stah1vdhiy1ztah1chih0zkah0nvey1ddhae1tthiy0rih1tah0nst  |  hyp: thfer1stdhfer1stwey1tah0poy1ntih0dah1vgah1nah0gah1n
+[ 165] PER: 0.631 (cum: 0.711)  RTF: 0.0151 (cum: 0.0240)  |  ref: shiy1wah0zyah1ngah0ntray1dner1vah0sih1twah0zah0vih1zhah0nah1  |  hyp: shiy1wah0zah0baw1tdhvih1zih0tsih1mpah0lgrey1tliy0grey1tah0na
+[ 170] PER: 0.705 (cum: 0.710)  RTF: 0.0248 (cum: 0.0241)  |  ref: bah1twah0zdhae1tao1lhher0rih0wao1rdwah2nah1vdhley1diy0zae1sk  |  hyp: bah1tih1twah0znaa1tbah1tih1twah0z
+[ 175] PER: 0.791 (cum: 0.711)  RTF: 0.0187 (cum: 0.0240)  |  ref: dhih1saw1twer0dmyuw1tah0bih1lah0tiy0ih1ndah0key2tih0dae1nddi  |  hyp: thiy0sah1nder0zpraa1per0tiy0ay1lay1flay1tah1v
+[ 180] PER: 0.726 (cum: 0.711)  RTF: 0.0183 (cum: 0.0238)  |  ref: ae1ztuw1eh1niy0ah1dher0kay1ndah1vdih1sah0plah0nhhweh1dher0ah  |  hyp: ae1ztuw1leh1fttuw1lih1tah0lpaa1rtah1vdhruw1mthiy0ruw1mah1vdh
+[ 185] PER: 0.697 (cum: 0.712)  RTF: 0.0419 (cum: 0.0238)  |  ref: per1lsao1ae1ndgey1zdih2nteh1ntliy0bah1tneh1ver0sao1ttuw2mey1  |  hyp: per1sah0ndper1pah0lkwih1kliy0tuw1ih2ns
+[ 190] PER: 0.804 (cum: 0.714)  RTF: 0.0129 (cum: 0.0239)  |  ref: thiy0pih1riy0ah0dwah0zhhaa1rdliy0ih1fae1taa2ler1liy0er0dhah0  |  hyp: thiy0pih1riy0er0ah1vkah0nsih1der0ah0bih1shah0ntuw1riy0prah0z
+[ 195] PER: 0.615 (cum: 0.714)  RTF: 0.0282 (cum: 0.0238)  |  ref: kah1mdheh1rfao1rae1ndleh1tah1sflih1ngmah1dae1tdheh1m  |  hyp: kah1mih0ngkah1mih0ngdheh1m
+[ 200] PER: 0.758 (cum: 0.715)  RTF: 0.0180 (cum: 0.0237)  |  ref: lih1ftih0ngthiy0ay1er0nhhae1mer0dhae1thhah1ngah0tthiy0pao1rt  |  hyp: thiy0nuw1thiy0preh1stah1vsah1mrih1ngih1fih1nbih0fao1rhhih0ss
+[ 205] PER: 0.752 (cum: 0.716)  RTF: 0.0156 (cum: 0.0235)  |  ref: lih1tah0lper1lhhuw1waa1zah0sgrey1tliy0pliy1zdwih0ththiy0gliy  |  hyp: lih1tah0lkow1ldwih0thah0ndblih1ter0ah0paa1ndhmeh1rih0jhthreh
+[ 210] PER: 0.752 (cum: 0.717)  RTF: 0.0141 (cum: 0.0235)  |  ref: dheh1rwer1ah0fyuw1row1zbuh1shah0zhhaw2eh1ver0ae1ndah0nah1mbe  |  hyp: dheh1rwer1breh1dah0dah0ntliy0ah1vthiy0per1sah0nah1vthiy0per1
+[ 215] PER: 0.598 (cum: 0.716)  RTF: 0.0332 (cum: 0.0235)  |  ref: fer0ah0lao1ngtay1mhhiy1hhae1dwih1shttuw1ih0ksplao1rdhbyuw1ta  |  hyp: fer0ah0lao1ngtuw1wih1chih1ztuw1lih1vih0twih1llih1vih0ng
+[ 220] PER: 0.776 (cum: 0.716)  RTF: 0.0153 (cum: 0.0236)  |  ref: ao1ldhmao1rnih0ngdhey1trah1jhdah1pthiy0maw1ntah0npae1thae2nd  |  hyp: ao1ldhow1dhwih1ldrow1dzah1vthiy0pley1nih0nghhih1zpley1sbah1t
+[ 225] PER: 0.614 (cum: 0.715)  RTF: 0.0257 (cum: 0.0236)  |  ref: ae1ndyuw1mah1stbiy0ow1jhow0thiy0ah0nlah1kiy0shiy1ae1dah0d  |  hyp: ae1ndyuw1waa1zshiy1dih0d
+[ 230] PER: 0.809 (cum: 0.716)  RTF: 0.0146 (cum: 0.0237)  |  ref: ih1ttey1ksmiy1seh1vrah0lyih1rztuw1mey1kdhih1smae1jhih0kpaw1d  |  hyp: ih1ttey1ksih1tsmay1twih1lgih1vmer0ow1ver0prow1zah1vrow1
+[ 235] PER: 0.688 (cum: 0.716)  RTF: 0.0250 (cum: 0.0237)  |  ref: yuw1siy1ay1vlih1vdaa2lmay1lay1fwih1thah1ngknah1ngkiy0thiy0sa  |  hyp: thiy0ae1dah0siy1vddheh1rwah0znow1wah1nae1nddheh1rwah0znow1
+[ 240] PER: 0.661 (cum: 0.715)  RTF: 0.0218 (cum: 0.0237)  |  ref: ah0beh1dkwih1ltmey1daa1fpae1chih0zah1vdih1frah0ntkay1ndzah0n  |  hyp: ah0brey1dliy0sow1dheh1rliy1dtah0geh1dher0tah0geh1dher0
+[ 245] PER: 0.625 (cum: 0.715)  RTF: 0.0322 (cum: 0.0239)  |  ref: ow1jhow0ih0gzae1mih0nddhih1skyuh1riy0ah0skah0ntray1vah0nswih  |  hyp: jhow1liy0wah1nwah1nwah1nder0wah1nder0wah1nder0
+[ 250] PER: 0.667 (cum: 0.714)  RTF: 0.0302 (cum: 0.0240)  |  ref: now1ay1fer0gaa1tah0lah0baw1tthiy0brey1nzih0kskley1mddhwuh2ma  |  hyp: naw1weh1lnaa1twih1ndow0dhwih1ndow0wih1mah0n
+[ 255] PER: 0.686 (cum: 0.713)  RTF: 0.0250 (cum: 0.0240)  |  ref: dheh1rkah0nteh1ntshhae1dao1lboy1ldah0wey1liy1vih0ngih0nthbaa  |  hyp: dheh1rkaa1nter0ddheh1rkaa1nsah0ndway1nzah1vpaw1er0
+[ 260] PER: 0.602 (cum: 0.714)  RTF: 0.0314 (cum: 0.0239)  |  ref: mow1stpiy1pah0ltao1ktuw1mah1chsow1ih0tih1zah0rih0liy1ftuw1fa  |  hyp: piy1ter0zpiy1pah0lwao1kttuw1wah1nhhuw1waa1nttuw1duw1ih1twih1
+[ 265] PER: 0.706 (cum: 0.713)  RTF: 0.0256 (cum: 0.0240)  |  ref: dih1rmiy1wah1tah0chae1ter0baa2ksyuh1rgeh1tih0ngtuw1biy0ah1ng  |  hyp: duw1yuw1duw1niy1der0wih0thah0mih1jhah0wah0lkah1mtuw1dhkaa1ma
+[ 270] PER: 0.830 (cum: 0.714)  RTF: 0.0103 (cum: 0.0240)  |  ref: kaa1nstah0ntiy2niy1zah0liy0bih0liy1vddhae1tdhhheh1rah0tih0ks  |  hyp: kaa1nstah0nswih1rzah0pih1rdah0ndser1tah0ndah0ndmay1fey1thih1
+[ 275] PER: 0.783 (cum: 0.715)  RTF: 0.0217 (cum: 0.0239)  |  ref: sih1nsdhpih1riy0ah0dah1vaw1rtey1lthiy0ae1ktih0vspih1rih0tah1  |  hyp: sih1nstah0ntwih0thah0breh1kah0ndwih0thaw1tnow1now1now1nah0si
+[ 280] PER: 0.682 (cum: 0.715)  RTF: 0.0222 (cum: 0.0238)  |  ref: yeh1thhiy1raa1rwiy1wih0dhih1nah0shao1rtrey1njhah1vdhsker0uw1  |  hyp: yeh1twer1yih1rtray1dah1vah0trey1tah0praa1st
+[ 285] PER: 0.780 (cum: 0.715)  RTF: 0.0115 (cum: 0.0238)  |  ref: siy1seh1dah1nkah0spoy1ntih0ngnao1rthah0ndsaw1thae1tthiy0eh1v  |  hyp: siy1mdtuw1siy1dhae1tthiy0raa1ber0tah1vdhfer1st
+[ 290] PER: 0.669 (cum: 0.715)  RTF: 0.0216 (cum: 0.0238)  |  ref: dhhhow1lpaa1rtiy0kraw1dah0dtuw1dhspaa1thhweh1rah1nkah0spoy1n  |  hyp: dhhhow1lpaa1rtah1vdhmaa1rkah0mae1ndah1vdhmaa1rkah0liy0
+[ 295] PER: 0.672 (cum: 0.716)  RTF: 0.0298 (cum: 0.0237)  |  ref: dheh1rwah0zsah1mthih0ngih0nhhih1zeh1rah0ndmae1ner0dhae1tbih0  |  hyp: dheh1rwah0zsah1mah1vthiy0stey1tah1vhhih1zmay1nd
+[ 300] PER: 0.688 (cum: 0.716)  RTF: 0.0357 (cum: 0.0238)  |  ref: thiy0yah1ngmae1nih1zih0nbaa1ndih0jhae1ndmah1chay1fih1rhhih1z  |  hyp: wiy1naw1ay1thiy0kriy1dthiy0kruw1dthiy0kruw1d
+[ 305] PER: 0.740 (cum: 0.717)  RTF: 0.0176 (cum: 0.0237)  |  ref: dih0lih1ver0dih0nah0strao1ngtow1nah1vah0seh1ntah0naw1nstthiy  |  hyp: dih1ldhlih1tah0llih1vdih0lih1ver0siy1nwih0thmah1chae1ndsow1m
+[ 310] PER: 0.750 (cum: 0.717)  RTF: 0.0207 (cum: 0.0237)  |  ref: ih1twah0zsay1lah0ntah0ndgluw1miy0biy1ih0ngteh1nah0ntih0dsow1  |  hyp: ih1twah0zsay1tih0dbay1dhlay1tae1ndlay1kah1vprih1ntuw0
+[ 315] PER: 0.658 (cum: 0.716)  RTF: 0.0224 (cum: 0.0237)  |  ref: ah1nkah0shhuw1hhae1dao0lreh1diy0ah0prow1chtthiy0dao1rih0nreh  |  hyp: aa1nthiy0ah1dher0stih1lwiy1wer1ldih0ndhlaa1jhih0ngaa1ndhlaa1
+[ 320] PER: 0.748 (cum: 0.716)  RTF: 0.0245 (cum: 0.0238)  |  ref: may1per0suw1tseh1rpiy1sfah0lah0ndmay1teh1mper0ay1hhah1mbliy0  |  hyp: may1tbah1tmay1fiy1lih0ngtuw1grey1smeh1nhhuw1hhae1dneh1ver0gr
+[ 325] PER: 0.795 (cum: 0.717)  RTF: 0.0171 (cum: 0.0237)  |  ref: ih1fhhaw2eh1ver0dhey1tey1kyao1rskae1lpae1zay1trah1stah0ndbih  |  hyp: ih1fih1twaa1zih1fih1twuh1dnaa1ttuw1pruw1vfreh1ndzthriy1thih2
+[ 330] PER: 0.605 (cum: 0.717)  RTF: 0.0721 (cum: 0.0238)  |  ref: wih1ldhhhyuh1raa2nzhhiy1rhhih1zgrow1nz  |  hyp: wih0thhher0hheh1rah0nspraw1dzbraw1nz
+[ 335] PER: 0.778 (cum: 0.717)  RTF: 0.0181 (cum: 0.0238)  |  ref: ay1hhae1dao1lwey2znow1nhhih1mtuw1biy0reh1stlah0sih1nhhih0sma  |  hyp: ay1wah0zao1lwey2zah0key1zhah0ntuw1kah0nsih1der0ah0lyuw1zhah0
+[ 340] PER: 0.776 (cum: 0.716)  RTF: 0.0190 (cum: 0.0240)  |  ref: thiy0ow1nliy0duw1plah0key2twih1chih0gzih1stih0dsow1faa1rae1z  |  hyp: thiy0ow1ldmah0ntbay1ah0bah0lmae1nah0stae1ndah0spah0zih1shah0
+[ 345] PER: 0.673 (cum: 0.716)  RTF: 0.0308 (cum: 0.0241)  |  ref: ah0brow1kah0ntih1pah1vleh1dwah0zlay1ih0ngdheh1rao1lsow0  |  hyp: ah0brah1dher0naw1sow0
+[ 350] PER: 0.622 (cum: 0.715)  RTF: 0.0261 (cum: 0.0242)  |  ref: ay1wah0zih0nsah1chah0hher1iy0tuw2kah1mtuw1yuw1yuw1leh1ftyao1  |  hyp: ay1wah0zah0ntsah1chtuw1ber1dah0low1n
+[ 355] PER: 0.648 (cum: 0.714)  RTF: 0.0271 (cum: 0.0243)  |  ref: dheh1rih1znow0ow1pah0nih0ngih0kseh1ptdhwah1npey1nseh1daw1er0  |  hyp: dheh1rih1znow1now1bay1dray1d
+[ 360] PER: 0.578 (cum: 0.712)  RTF: 0.0259 (cum: 0.0245)  |  ref: ae1zah0mae1ter0aa1ffae1kthhiy1kuh1dnaa1tseh1dsow1mzfer0ay1eh  |  hyp: ae1zdhneh1ver0naw1bay1dhsay1dah1vdhsay1dbay1dhdao1r
+[ 365] PER: 0.755 (cum: 0.712)  RTF: 0.0225 (cum: 0.0246)  |  ref: hhow1lmzhheh1ldaw1tah0smao1lchih1pwih0thdhleh1ter0zeh1neh1na  |  hyp: kah1mtuw1hhow1mkah1mzae1fter0wih1lyuw1sey1yuw1siy1yuw1
+[ 370] PER: 0.674 (cum: 0.711)  RTF: 0.0292 (cum: 0.0246)  |  ref: hhow1lmzhheh1ldih0taw1taa1nhhih1zow1pah0npaa1mih0ndhgleh1rah  |  hyp: hhaw1hhae1dah0ndshae1ltuw1dray1twih0thkray1d
+[ 375] PER: 0.635 (cum: 0.711)  RTF: 0.0291 (cum: 0.0246)  |  ref: leh1tah1shhiy1rdhsah0spih1shah0nzay1wih1lluh1kae1fter0dhpruw  |  hyp: leh1tah0lmae1stah0lprih1fah0kruw1s
+[ 380] PER: 0.817 (cum: 0.711)  RTF: 0.0239 (cum: 0.0247)  |  ref: bah1tay1hhae1vah0key1zhah0nah0liy0dah1nthsey1mthih1ngae1tah1  |  hyp: bah1tbay1may1nz
+[ 385] PER: 0.719 (cum: 0.710)  RTF: 0.0556 (cum: 0.0249)  |  ref: ow1nliy0fao1rah0mih1nah0ter0sow1  |  hyp: wiy1frah1mwah1nder0stih1lster1b
+[ 390] PER: 0.704 (cum: 0.709)  RTF: 0.0301 (cum: 0.0249)  |  ref: dhih1sseh1taa1fruw1mzih2skway1tthiy0ow1ldah0stih0ndhkaa1lih0  |  hyp: thiy0seh1tah1vthiy0seh1ter0ah1vthiy0row1zer0ztuw1dheh1rfrah1
+[ 395] PER: 0.419 (cum: 0.708)  RTF: 0.0536 (cum: 0.0252)  |  ref: tuw1maa1row0ih1sthiy0ih0gzae2mah0ney1shah0n  |  hyp: tuw1maa1row0tuw1maa1row0ney1shah0n
+[ 400] PER: 0.722 (cum: 0.708)  RTF: 0.0810 (cum: 0.0253)  |  ref: thfaw1lmaw1dhdfeh1low0ah0tthiy0taa1p  |  hyp: dheh1rfaw1nddheh1rfaa1low0dthiy0taa1pah1vthiy0taa1p
+[ 405] PER: 1.000 (cum: 0.708)  RTF: 0.0753 (cum: 0.0256)  |  ref: now1guh1dmay1dih1rwaa1tsah0n  |  hyp: now1dih1dnaa1tnow1wah1tyuw1waa1ntsah0ndwaa1chah0n
+[ 410] PER: 0.188 (cum: 0.706)  RTF: 0.0484 (cum: 0.0257)  |  ref: ae1ndwah1nmao1rdhih1smao1rnih0ng  |  hyp: ae1ndwah1nah1vdhsmao1rnih0ng
+[ 415] PER: 0.692 (cum: 0.706)  RTF: 0.0389 (cum: 0.0259)  |  ref: now1ser1ser1tah0nliy0naa1t  |  hyp: now1weh1rsuw1now1suw1nnaa1tnaa1t
+[ 420] PER: 0.752 (cum: 0.704)  RTF: 0.0210 (cum: 0.0260)  |  ref: fao1rah0mow1mah0ntgih1lkrih1stwih0thah0prey1zdhhae1ndtray1dt  |  hyp: fao1rmao1rnih0ngtuw1fiy1ter0z
+[ 425] PER: 0.559 (cum: 0.703)  RTF: 0.0390 (cum: 0.0262)  |  ref: hhweh1nay1ah0prow1chtyao1rruw1may1ih0gzae1mah0nddhwih1ndow0  |  hyp: way1lay1kwih1kah0nddhwih1ndow0
+[ 430] PER: 0.653 (cum: 0.703)  RTF: 0.0359 (cum: 0.0262)  |  ref: ah0sah1dah0nih2mpah1lskey1mow1ver0hhih1mtuw2eh1nter0ae1ndsiy  |  hyp: ah0say1nah0liy0druw1thiy0druw1thiy0pruw1vdah1vthiy0pruw1vdz
+[ 435] PER: 0.677 (cum: 0.702)  RTF: 0.0257 (cum: 0.0264)  |  ref: ay1hhae1vah0leh1ter0hhiy1rmih1ster0sow1mzhhwih1chay0row1ttuw  |  hyp: ay1hhae1vah0lih1tah0llih1tah0lreh1stnah0smay1t
+[ 440] PER: 0.759 (cum: 0.703)  RTF: 0.0147 (cum: 0.0264)  |  ref: thiy0saw1thshiy1hhae1dnaa1tthao1tah1vsih1riy0ah0sliy0ae1ndye  |  hyp: thsaw1ndah0saw1rdih1lah0tiy0ae1ndao1lstrao1ngih0nah0low1nz
+[ 445] PER: 0.559 (cum: 0.701)  RTF: 0.0538 (cum: 0.0265)  |  ref: bih1nluh1kih0ngah1ptuw1mzkaw1ntiy0  |  hyp: ae1nddheh1nluh1ktaw1tkaw1ntah0tiy0
+[ 450] PER: 0.736 (cum: 0.700)  RTF: 0.0173 (cum: 0.0265)  |  ref: hhiy1rshiy1wah0ztiy1chih0ngder1tiy0chih1ldrah0nae1ndthiy0sme  |  hyp: thiy0eh1rshiy1praa1blah0nah0bah0lah0bah0lah0bah0lah0bah0l
+[ 455] PER: 0.592 (cum: 0.700)  RTF: 0.0290 (cum: 0.0266)  |  ref: thiy0glih1mer0ih0ngsiy1ah0ao1fdeh1lah0kah0tliy1vzwih1sper0da  |  hyp: thiy0glih1mer0ih0ngsah1chah0wey1tih0dsah1chah0way1ndah1vwao1
+[ 460] PER: 0.720 (cum: 0.699)  RTF: 0.0212 (cum: 0.0266)  |  ref: dow1ntnow1weh1lah1vaa2lthih1ngzih1nwer0dliy0kaa1meh0ntah0dmi  |  hyp: daw1nnow1dhey1riy0byuw1tah0fah0lswih1shyuw1zdtuw1geh1tah0geh
+[ 465] PER: 0.748 (cum: 0.699)  RTF: 0.0170 (cum: 0.0265)  |  ref: naw1fao1rwah1nlih1tah0lhhae1faw1er0shiy1hhae1dbih1nah0wuh1ma  |  hyp: dheh1rfao1rweh1ltuw1tao1kih0ngtuw1tao1kih0ngdheh1mwah1nthih1
+[ 470] PER: 0.841 (cum: 0.700)  RTF: 0.0083 (cum: 0.0266)  |  ref: ae1zshiy1ah0wey1tih0dhher0geh1stsshiy1ser1vey1dthiy0tey1bah0  |  hyp: ae1zhiy1wuh1dkao1rtah1vhher0ser1jhey1nzser1jhdkeh1riy0dmih1s
+[ 475] PER: 0.639 (cum: 0.699)  RTF: 0.0228 (cum: 0.0265)  |  ref: bah1tkreh1sweh2lae1dah0dsih0gnih1fih0kah0ntliy0kah0pae1sih0t  |  hyp: bah1tkwao1rter0ae1zih1fih1tih1zah0rey1zih0zrey1sih0z
+[ 480] PER: 0.720 (cum: 0.700)  RTF: 0.0170 (cum: 0.0265)  |  ref: fao1rchah0nah0tliy0seh1dmih1ster0vae1nder0puw2lnao1rdher0ner  |  hyp: fao1rchah0ntuw1fao1rchah0nzae1ndseh1vrah0lhhae1dmae1ner0z
+[ 485] PER: 0.636 (cum: 0.700)  RTF: 0.0241 (cum: 0.0266)  |  ref: hhiy1pae1ntih0dtuw1now1ih1fshiy1tuw1nuw1ao1rnuw1ae1ndkeh1rdn  |  hyp: hhiy1preh1zah0ntneh1rah0keh1rah0lnuw1nuw1nuw1naa1t
+[ 490] PER: 0.625 (cum: 0.699)  RTF: 0.0316 (cum: 0.0267)  |  ref: dhlah0guw1nhhae1dbih1nleh1vah0lwih0ththiy0day1ksah0wiy1kah0g  |  hyp: thiy0guh1dbih0luw1ih0ngnaw1naw1ndnaw1naw1naw1
+[ 495] PER: 0.732 (cum: 0.698)  RTF: 0.0174 (cum: 0.0267)  |  ref: hhiy1stuh1dah0mow1mah0ntbih0wih1lder0ddheh1nter1ndah0ndrah1s  |  hyp: hhiy1stuh1dah0maa1rchah1vgrey1tah1vmiy1nah1vwih1ndow0lih1tah
+[ 500] PER: 0.737 (cum: 0.698)  RTF: 0.0209 (cum: 0.0267)  |  ref: hhiy1sae1tdaw1nwiy1kbih0wih1lder0dae1ndwah1nthao1twah0zah1pe  |  hyp: hhiy1seh1ddhae1thiy1sow1ow1now1
+[ 505] PER: 0.735 (cum: 0.697)  RTF: 0.0193 (cum: 0.0268)  |  ref: fao1rah0way1lshiy1ley1ih0nhher0cheh1rih0nhhae1piy0driy1miy0p  |  hyp: fao1lway1lwaa1zih0ntriy1tih0ngtriy1t
+[ 510] PER: 0.739 (cum: 0.697)  RTF: 0.0188 (cum: 0.0268)  |  ref: hhiy1daa1rtih0dthruw1thiy0triy1zah0ndpao1zdah0taa1lmae1nstra  |  hyp: daa1rkah0ndih1der0iy0mey1nmey1dmiy1n
+[ 515] PER: 0.524 (cum: 0.697)  RTF: 0.0341 (cum: 0.0267)  |  ref: ae1ndhhwah1tthruw1dhleh1fthhae1ndwih1ndow0  |  hyp: ae1ndweh1ntuw1wah1tduw1now1
+[ 520] PER: 0.761 (cum: 0.698)  RTF: 0.0287 (cum: 0.0266)  |  ref: fao1rthiy0grey1tbaa1rndao1rzaa1rthrow1nway1dow1pah0nae1ndmeh  |  hyp: wer1brey1kwih0thhheh1rah0ndbeh1rih0nghhwih1chay1wuh1dbah1tah
+[ 525] PER: 0.795 (cum: 0.699)  RTF: 0.0122 (cum: 0.0265)  |  ref: thiy0fae1ktdhae1tih1twah0zcher1nih0ngdey1wah0zah0nah1dher0ri  |  hyp: thiy0deh1ththiy0deh1dah1vdhwih1ndow0zmao1rkskway1ldbreh1diy0
+[ 530] PER: 0.667 (cum: 0.698)  RTF: 0.0503 (cum: 0.0267)  |  ref: kow1mdhwuh1lfer0dhwih1tao1zih2ndiy1d  |  hyp: kah1mih0ngwah1nkah1mih0ngdiy1zah0nddiy1d
+[ 535] PER: 0.656 (cum: 0.698)  RTF: 0.0219 (cum: 0.0267)  |  ref: mah1niy0may1ay1er0nztway1ttow1ldpiy1zpuh1tih1tdaw1ntow0wao1r  |  hyp: meh1riy0meh1niy0wah1nder0aw1ndtuw1biy0wao1ter0
+[ 540] PER: 0.732 (cum: 0.698)  RTF: 0.0186 (cum: 0.0268)  |  ref: dih1deh1ver0eh1niy0bah0diy0siy1dhlay1kskriy1mdmih1sih0zpoy1s  |  hyp: eh1vriy0deh1vriy0thih2ngtey1bah0ltey1bah0lzstriy1mih0ng
+[ 545] PER: 0.763 (cum: 0.698)  RTF: 0.0201 (cum: 0.0268)  |  ref: ae1nddheh1rzlih1nah0nih0ndhhhaw1sah0zay1kuh1dweh1lspeh1ryuw1  |  hyp: ae1nddheh1rwah0zsah1mah1vthiy0pih1ktah1vmae1n
+[ 550] PER: 0.701 (cum: 0.698)  RTF: 0.0290 (cum: 0.0267)  |  ref: ay1vstrao1ngah0shuh1rah0nsdhae1tnow1iy1vah0lwih1lhhae1pah0nt  |  hyp: ay1strao1ngay1meh1niy0chih1rah1vdheh1rfay1nddhae1tay1
+[ 555] PER: 0.453 (cum: 0.700)  RTF: 0.0414 (cum: 0.0269)  |  ref: seh1dmih1ster0er1wih0nwih0thhhih1zstey1tliy0kao1rdiy0ae1lah0  |  hyp: seh1dmih1sseh1dmih1ster0seh1dmih1ster0iy0ah1vthiy0aa1bah0tiy
+[ 560] PER: 0.653 (cum: 0.700)  RTF: 0.0241 (cum: 0.0270)  |  ref: now1ser1hhiy1ih1zah0nthhiy1zgaa1ntuw1raa1siy0ter0tuw1siy1mih  |  hyp: nih1rsah1mmih1sih0zkraa1per0aw1tah1vdhwih1kah0wer1ldah0wih1l
+[ 565] PER: 0.658 (cum: 0.700)  RTF: 0.0298 (cum: 0.0270)  |  ref: ow1ser1seh1dmih1sih0zpoy1ser0rae1dher0ah0laa1rmdyuw1wuh1dah0  |  hyp: ay1wih1lseh1dstih1lay1kae1taa2lih1tah0ldih1dah0daa1kter0aa2l
+[ 570] PER: 0.718 (cum: 0.700)  RTF: 0.0174 (cum: 0.0269)  |  ref: dhih1smih1sih0zpoy1ser0seh1dblah1shih0ngae1ndbah0liy1vih0ngd  |  hyp: dhih1smih1sih0zreh1sah0lah0nddih0veh1riy0per1pah0dzah1vhher0
+[ 575] PER: 0.721 (cum: 0.700)  RTF: 0.0135 (cum: 0.0269)  |  ref: thiy0day1nah0mow2ih0leh1ktrih0kmah0shiy1ndhow1smao1lwah0zrow  |  hyp: thiy0bah1tthiy0eh1rah1vdheh1rfao1rwih1chtuw1wih1lbiy0wao1ktt
+[ 580] PER: 0.765 (cum: 0.700)  RTF: 0.0374 (cum: 0.0269)  |  ref: eh1vriy0thih2nghhiy1hhae1zdah1nhhae1zbih1ney1mdae1tdhkaa2nse  |  hyp: eh1vriy0thih2ngtrah1kshah0nkah1ler0dkaa1ler0
+[ 585] PER: 0.786 (cum: 0.700)  RTF: 0.0156 (cum: 0.0268)  |  ref: ah0nleh1shhiy0kuh1dsih0kyuh1rah0neh1njhah0nah1vsmuw1dher0rah  |  hyp: ah1nder0siy1nah1vih0kseh1ptih0dah0neh1ver0stae1tih0kstih1lyu
+[ 590] PER: 0.821 (cum: 0.700)  RTF: 0.0134 (cum: 0.0267)  |  ref: hhiy1suw1nfao1rsao2dhae1tstih1lgrey1ter0ih0kaa1nah0miy0wuh1d  |  hyp: hhiy1siy1mdtuw1kah0nfao1rdhae1tkah1mtuw1riy1zah0nz
+[ 595] PER: 0.803 (cum: 0.701)  RTF: 0.0145 (cum: 0.0267)  |  ref: ay1thih1ngkhhiy1wah0zper0hhae1psmao1rah0priy1shyah0tih0vdhah  |  hyp: ay1thih1ngkay1thih1ngkthiy0wey1tah0wey1fao1rmah1dher0daa1kte
+[ 600] PER: 0.823 (cum: 0.702)  RTF: 0.0132 (cum: 0.0266)  |  ref: dheh1rwah0zih1nfah0nah0tskeh1ptah0sih2zah0mer0aw1ndhhih1maa1  |  hyp: dheh1rwah0zah0veh1riy0waa1ntah0nddheh1rdih0dfrah1mdhtruw1lah
+[ 605] PER: 0.778 (cum: 0.702)  RTF: 0.0127 (cum: 0.0265)  |  ref: ih1ndih0seh1mber0ey0tiy1ney1tiy0ey1tmih1ster0dah1bah0lyuw0jh  |  hyp: ih1ndih0nsah1mtrey1ndih0nprah0peh1ktsih0zah1vdheh1rih1njher0
+[ 610] PER: 0.638 (cum: 0.702)  RTF: 0.0241 (cum: 0.0264)  |  ref: hhiy1feh1lthhiy0wah0zah1pah0geh1nstih0tae2nddhae1tper0hhae1p  |  hyp: hhiy1feh1lthiy1wih1lduw1wih0thah0duw1sah0baw1tbah1ter0
+[ 615] PER: 0.800 (cum: 0.702)  RTF: 0.0126 (cum: 0.0264)  |  ref: eh1vriy0chae1nsshiy1kuh1dstiy1lae1fter0prae1ktah0saw1rzwer1o  |  hyp: ae1teh1vriy0jher1nah0lmae1ner0ah1vdhflao1rzdhway1ldah0baw1t
+[ 620] PER: 0.638 (cum: 0.702)  RTF: 0.0191 (cum: 0.0264)  |  ref: ae1tdhih0sdhbah1ndah0low1pah0ndsah1dah0nliy0ae1ndaw1tpaa1ptf  |  hyp: ae1tthiy0dey1ae1ktpaa1pah0lah0ndsiy1mdtuw1miy1
+[ 625] PER: 0.654 (cum: 0.702)  RTF: 0.0186 (cum: 0.0263)  |  ref: ih1zah0nthhiy1spleh1ndih0dkray1djhae1sper0ih0nih0nteh1nspray  |  hyp: ih1zthiy0sweh1lih0ngah1vyuw1duw1yuw1duw1ih0tduw1ih0t
+[ 630] PER: 0.750 (cum: 0.702)  RTF: 0.0204 (cum: 0.0263)  |  ref: ow1now1jhae1sper0ay1mah0stgow1bay1may1veh1riy0ow1nseh1lf  |  hyp: ay1now1ah0ndjhah1ngkthih1ngk
+[ 635] PER: 0.571 (cum: 0.702)  RTF: 0.0391 (cum: 0.0264)  |  ref: shiy1ae1sktih2mpah1lsih0vliy0ay1dih1dah0ntbih0liy1vyuw1kuh1d  |  hyp: ae1zhiy1ae1sktwah1nah1vhher0brey1sah0ndbaa1tah0mah1dher0faa1
+[ 640] PER: 0.596 (cum: 0.702)  RTF: 0.0211 (cum: 0.0264)  |  ref: ih1tih1zsih1kstiy1nyih1rzsih1nsjhaa1nber1gsah0nday1d  |  hyp: ih1tih1zdhey1seh1dbay1day1d
+[ 645] PER: 0.678 (cum: 0.702)  RTF: 0.0175 (cum: 0.0263)  |  ref: hhiy1wah0zah0spleh1ndih0dfih1gyer0ah1vah0boy1taa1lah0ndstrey  |  hyp: hhiy1wah0zah0stih1nggyah0ler0ae1zah0ntrey1njhdae1tthiy0eh1rs
+[ 650] PER: 0.564 (cum: 0.701)  RTF: 0.0279 (cum: 0.0264)  |  ref: ay1neh1ver0siy1luw1zsih1thow1ver0hhiy1r  |  hyp: ay1neh1ver0sah0pih1r
+[ 655] PER: 0.669 (cum: 0.701)  RTF: 0.0348 (cum: 0.0264)  |  ref: dheh1rwah0ssah1mthih0ngih2ndah0vih1jhah0wah0lah0baw1tthiy0gr  |  hyp: dheh1rwah0zah0sah1mwah1nah1vyuw1zhwah0lsiy1tuw1biy1tuw1tey1l
+[ 660] PER: 0.583 (cum: 0.701)  RTF: 0.0504 (cum: 0.0265)  |  ref: mer0iy1say1d  |  hyp: meh1riy0mey1say1dz
+[ 665] PER: 0.649 (cum: 0.700)  RTF: 0.0318 (cum: 0.0266)  |  ref: jhah1stsmeh1ldhway1ldrow1zih0zdhey1aa1rao1lwey2zsow1spay1siy  |  hyp: naa1tsmah1stnaa1tae1fter0ah0rey1n
+[ 670] PER: 0.671 (cum: 0.700)  RTF: 0.0465 (cum: 0.0268)  |  ref: aa1rah0ntyuw1splae1shtluh1kae1tthiy0spay1der0weh1bzao1low1ve  |  hyp: hhwah1tih1zjhah1stthiy0grae1tah0fay2dah1vthiy0grae1ft
+[ 675] PER: 0.704 (cum: 0.700)  RTF: 0.0443 (cum: 0.0268)  |  ref: ay1dow1ntnow1ao1lah1vdheh1mbah1tay1now1lih1ndah0nzaa1r  |  hyp: ay1hhae1vnow1dih0nthiy0aa1rmzah0nddaa1rkah0nd
+[ 680] PER: 0.744 (cum: 0.700)  RTF: 0.0254 (cum: 0.0268)  |  ref: ow1eh1ver0sow1mah1chow1nliy0hhiy1siy1mzkay1ndao1fstey1dah0nd  |  hyp: ay1lao1ngtuw1dhtriy1tow1ldtriy1ter0liy0
+[ 685] PER: 0.763 (cum: 0.701)  RTF: 0.0390 (cum: 0.0269)  |  ref: shuh1rliy0yuw1aa1rnaa0tthih1ngkih0ngah1vgow1ih0ngao1fdheh1r  |  hyp: yuw1jhuw1nyah0ley2tdheh1rbeh1rah0l
+[ 690] PER: 0.746 (cum: 0.701)  RTF: 0.0215 (cum: 0.0270)  |  ref: sah1mtay1mzay0dow1ntwaa1nttuw1duw1eh1niy0thih2ngae1taa2lae1n  |  hyp: sah1mtay1mzsah1mtay2mzah1vthiy0kao1rner0zah1vthiy0kao1rtah0l
+[ 695] PER: 0.644 (cum: 0.700)  RTF: 0.0205 (cum: 0.0270)  |  ref: ay1kae1ntpley1wih0thyuw1lay1kah0lih1tah0lboy1eh1niy0mao1rhhi  |  hyp: ay1kae1naa0tthih1ngkseh1dsow1liy0meh1riy0mih1sih0zmeh1riy0
+[ 700] PER: 0.723 (cum: 0.700)  RTF: 0.0148 (cum: 0.0270)  |  ref: ay1kae1ntprey1tow0hhae1vdhthih1ngzay1waa1nthhiy1seh1dslow1li  |  hyp: ay1kae1ntay1wih1lnaa1twih1lay1wih1lbiy0fao1rboy1
+[ 705] PER: 0.746 (cum: 0.700)  RTF: 0.0182 (cum: 0.0270)  |  ref: yuw1siy1mae1ngkshah0smay1ah1ngkah0lay1seh1dsiy1ih0nghhih1mka  |  hyp: yuw1skweh1ntiy0wah0zkah0ntih1njher0ah0sih0z
+[ 710] PER: 0.661 (cum: 0.700)  RTF: 0.0309 (cum: 0.0270)  |  ref: dheh1rfao2rdow1nttao1ktuw2miy0ah0baw1tvyuw1zae1ndpraa1speh0k  |  hyp: dheh1rfao1rwer0ddheh1rfao1rih0kspeh1kt
+[ 715] PER: 0.776 (cum: 0.699)  RTF: 0.0163 (cum: 0.0270)  |  ref: thiy0shae1dow2ah1vthiy0rae1ftwah0zklih1rliy0aw1tlay2ndah0paa  |  hyp: thiy0shae1lbiy0wey1z
+[ 720] PER: 0.700 (cum: 0.699)  RTF: 0.0277 (cum: 0.0270)  |  ref: ay1sao2ae0tdhhhae1mber0gmyuw0ziy1ah0mthskeh1lah0tah0nah1vwah  |  hyp: ay1skwao1rter0zwah1nah1vthiy0kih1ngae1ndley1dih0ng
+[ 725] PER: 0.692 (cum: 0.700)  RTF: 0.0261 (cum: 0.0270)  |  ref: thrae1ftwah0zhhiy1vdah1paa0nah0wao1ter0iy0maw1ntah0nae1ndpih  |  hyp: thiy0rae1fter0wer0dae1nddih0skwih1kah1veh1vriy0fae1ns
+[ 730] PER: 0.759 (cum: 0.700)  RTF: 0.0181 (cum: 0.0270)  |  ref: ih1tsjhao1ay2zih0nao1rmah0sae1ndah0kao1rdih0ngtuw2nae1chrah0  |  hyp: ih1tstrah1ksdheh1rwah0znaa1tdhiy1tiy1th
+[ 735] PER: 0.746 (cum: 0.700)  RTF: 0.0158 (cum: 0.0269)  |  ref: dhweh1dher0ih1fwiy1mey1yuw1zdhae1tter1mwih1lchey1njhbih0fao1  |  hyp: wih0ththiy0wih1ler0ao1l
+[ 740] PER: 0.798 (cum: 0.700)  RTF: 0.0180 (cum: 0.0269)  |  ref: thiy0ae2tmah0sfih2rih1zeh1vah0dah0ntliy0chaa1rjhdae1ndser1ch  |  hyp: ae1ndthiy0ae1dah0siy0
+[ 745] PER: 0.795 (cum: 0.701)  RTF: 0.0147 (cum: 0.0268)  |  ref: bah1tih1fwiy1hhae1vnaw1siy1sttuw1ah0dvae1nshhway1duw1wiy1yeh  |  hyp: bah1twiy1riy1dzwer1faa1dher0mow1mah0nt
+[ 750] PER: 0.736 (cum: 0.702)  RTF: 0.0210 (cum: 0.0269)  |  ref: ay1rih0fer1tuw1dhther0maa1mah0ter0ih1tih1ndih0key2tsthfih1gy  |  hyp: ay1faw1nday1faw1ndih1fay1wey1brey1d
+[ 755] PER: 0.688 (cum: 0.702)  RTF: 0.0325 (cum: 0.0269)  |  ref: dhwey1vzray1zah0bah1vaw1rhheh1dz  |  hyp: thwey1wih1ndway1ldz
+[ 760] PER: 0.762 (cum: 0.702)  RTF: 0.0149 (cum: 0.0269)  |  ref: wiy1shae1lbiy0blow1nah1pbah1tnow1thiy0dae1zah0lih0ngdih1skah  |  hyp: wiy1shuh1dbiy0wiy1shuh1dbiy0nay1tliy0bih0liy1vzih1tih1zdaw1n
+[ 765] PER: 0.738 (cum: 0.703)  RTF: 0.0179 (cum: 0.0270)  |  ref: ih1twah0zdhway1trae1bih0trih0ter1nih0ngspleh1ndih0dliy0dreh1  |  hyp: ih1twah0zah0bah1tgih1vzaa1nah0grey1tah0dthiy0deh1sah0nddih0s
+[ 770] PER: 0.627 (cum: 0.702)  RTF: 0.0495 (cum: 0.0271)  |  ref: ay1ao1lmow2stthih1ngkay1kah0nrih0meh1mber0fiy1lih0ngaa2lih1t  |  hyp: ay1may1stih1lfih1ldih1fah0ldih1dah0ldih1fah0ldih0lih1tah0l
+[ 775] PER: 0.692 (cum: 0.702)  RTF: 0.0310 (cum: 0.0271)  |  ref: ih1tah0lbiy0now1yuw1sdheh1rpah1tih0ngdheh1rhheh1dzdaw1nae1nd  |  hyp: ih1tbih0liy1vih0ngah1pkah0laa1rmdbeh1rah0nddih1rer0
+[ 780] PER: 0.467 (cum: 0.702)  RTF: 0.0467 (cum: 0.0271)  |  ref: dhae1twih1lbiy0ah0kwih1rthih1ngtuw1biy1shuh1r  |  hyp: dhae1twiy1wih1lnow1biy0ber1dtuw1biy1spih1r
+[ 785] PER: 0.801 (cum: 0.702)  RTF: 0.0126 (cum: 0.0271)  |  ref: dhkah0ndih1shah0nih1zdhae1tay1wih1lbiy0per0mih1tih0dtuw1mey1  |  hyp: bah1tthiy0dih1shah0nstriy1mer0wih1lay1wih1ltey1kah0ntih1nyuw
+[ 790] PER: 0.784 (cum: 0.701)  RTF: 0.0175 (cum: 0.0272)  |  ref: ah0wer1dshuh1dnaw1biy0seh1dah0baw1tthiy0er0ih1jhah0nah1vluw1  |  hyp: ao1rwer1kwao1rter0ey1shah0n
+[ 795] PER: 0.758 (cum: 0.702)  RTF: 0.0129 (cum: 0.0271)  |  ref: dhlao1rdhhuw1hhae1zgih1vah0nah1spaw1er0tuw2tiy1chae1ndtuw2hh  |  hyp: dhwer1lddhwer1ldmow1sttuw1tuw1tuw1tuw1
+[ 800] PER: 0.756 (cum: 0.701)  RTF: 0.0364 (cum: 0.0272)  |  ref: pao1lkey1mley1ter0ah0ndih1zbih0niy1thah1s  |  hyp: kah0nkwaa1lih0ngah1vfreh1st
+[ 805] PER: 0.652 (cum: 0.701)  RTF: 0.0416 (cum: 0.0272)  |  ref: pao1ltey1kspray1dih0nhhih1zmih1nah0striy0naa1ttuw1hhih1zow1n  |  hyp: pey1ltuw1pey1ltuw1dhprey1zah1vthiy0grey1tgrey1tah1vgrae1zah1
+[ 810] PER: 0.670 (cum: 0.701)  RTF: 0.0358 (cum: 0.0272)  |  ref: hhiy1meh1nshah0nzthiy0ah0paa1sah0lzfer1stbih0kao1zdhey1wer1a  |  hyp: hhiy1hhae1dneh1ver0bay1fer0gaa1tbay1dhbaa1diy0ay1dih0dbay1
+[ 815] PER: 0.690 (cum: 0.701)  RTF: 0.0391 (cum: 0.0273)  |  ref: ay1dih1dnaa1tdheh1nriy1ah0lay2zthiy0ih2mpao1rtah0nsah1vdhmih  |  hyp: ay1duw1naa1tmih1ster0nih1riy0ah0n
+[ 820] PER: 0.699 (cum: 0.701)  RTF: 0.0246 (cum: 0.0273)  |  ref: dhiy1zper0ver1ter0zah1vdhray1chah0snah0sah1vkrih0strih0zih1s  |  hyp: ih1fdhiy1zprah0duw1stae1nddhwer1ksae1nddhwer1kbeh1ld
+[ 825] PER: 0.571 (cum: 0.703)  RTF: 0.0389 (cum: 0.0274)  |  ref: dhih1sshuh1dgow1faa1rih0nshah1tih0ngdhmaw1dhzah1vthfao1lsah0  |  hyp: dhey1shuh1dnaa1tdhpaa1sah0bah0lzah0ndpaa1zah0nz
+[ 830] PER: 0.719 (cum: 0.703)  RTF: 0.0413 (cum: 0.0274)  |  ref: naa1taa2lthiy0gah0ley1shah0nzhhae1dbih0kah1mper0ver1tih0d  |  hyp: naw1now1may1ndpruw1vih0tih0d
+[ 835] PER: 0.856 (cum: 0.703)  RTF: 0.0150 (cum: 0.0273)  |  ref: grey1sbiy0tuw1yuw1ae1ndpiy1sfrah0mgaa1dthfaa1dher0ah0ndfrah0  |  hyp: grey1spreh1st
+[ 840] PER: 0.710 (cum: 0.703)  RTF: 0.0559 (cum: 0.0274)  |  ref: ih0kspih1riy0ah0nspruw1vzdhih0s  |  hyp: ih0kspeh1rih0ngprih1fah0kah0lprih1nseh0s
+[ 845] PER: 0.699 (cum: 0.703)  RTF: 0.0180 (cum: 0.0274)  |  ref: hhiy1key1mdaw1ntuw2er1thlih1vdah0mah1ngmeh1nsah1fer0dwah0zkr  |  hyp: hhiy1key1mtuw1dhfer1stae1nddhae1tmay1fay1ndah0paa1ndhkaa1mpl
+[ 850] PER: 0.694 (cum: 0.703)  RTF: 0.0264 (cum: 0.0274)  |  ref: ae1tdhsey1mtay1mpao1lkah0nfer1mzaw1rkriy1ddhae1tkrih1stih1zv  |  hyp: ae1tthiy0sih1kster0gaa1tah0nddaa1rkgaa1d
+[ 855] PER: 0.653 (cum: 0.703)  RTF: 0.0423 (cum: 0.0274)  |  ref: mow0hhae1mih0dao1lsow0spiy1kshhay1liy0ah1vkrih1st  |  hyp: naw1hhae1dnaa1tbreh1dah0lpreh1st
+[ 860] PER: 0.812 (cum: 0.703)  RTF: 0.0144 (cum: 0.0275)  |  ref: ah2nder0skao1rdhiy1zwer1dzfer0dheh1rfuh1lah1vkah1mfer0tfer0s  |  hyp: aa1ndhih1sih1zah0nz
+[ 865] PER: 0.813 (cum: 0.703)  RTF: 0.0162 (cum: 0.0274)  |  ref: thiy0grey1tnah0sah1vdhrae1nsah0mkrih1stthsah1nah1vgaa1dih1nd  |  hyp: thiy0prih1nsah0s
+[ 870] PER: 0.789 (cum: 0.703)  RTF: 0.0133 (cum: 0.0274)  |  ref: dhih1sae1tah0tuw2dsprih1ngzfrah0mah0fao1lskah0nseh1pshah0nah  |  hyp: thiy0sah1bjhih0ktsmae1ner0zah1vgaa1dah0ndguh1drah0freh1ndwih
+[ 875] PER: 0.779 (cum: 0.703)  RTF: 0.0178 (cum: 0.0274)  |  ref: dhih2nfluw0ah0nswih1ththtih2mey1ah0shhae1zeh1kser0say2zdah0p  |  hyp: thiy0prih1ntih0dbay1dhih1sdih0stae1ndih0ngthiy0
+[ 880] PER: 0.767 (cum: 0.704)  RTF: 0.0241 (cum: 0.0273)  |  ref: dhfae1nsiy0zah1vdhniy1ow0pley1tah0nah0stsaa1row1nliy0ih1ntra  |  hyp: ae1ndthfae1stbih0kao1zih1tbih0gae1ntuw1wih1chdhfer1stsey1ntu
+[ 885] PER: 0.805 (cum: 0.704)  RTF: 0.0108 (cum: 0.0272)  |  ref: wih0thhher0ae1klay1tah0shhiy1ae0knaa1lih0jhih0zdhper0peh1chu  |  hyp: wih0thaw1trih0ksay1tih0dih0nah0seh1ndih0nah0stae1ndriy0prih1
+[ 890] PER: 0.766 (cum: 0.704)  RTF: 0.0184 (cum: 0.0272)  |  ref: bah1tpley1tow0hhae1znaa1tthsey1mmae1ster0iy0ow1ver0hhih1zih2  |  hyp: bah1tkwey1ntah0pih1kcher0hhwih1chhhow1m
+[ 895] PER: 0.798 (cum: 0.704)  RTF: 0.0115 (cum: 0.0271)  |  ref: dheh1rih1zah0waa1ntah1vflow1ae1ndao1fah0nah0diy1feh0ktah1vri  |  hyp: beh1riy0beh1rah0lih0ngdhmuw1nih0ngae1zthiy0reh2prih0fao1rcha
+[ 900] PER: 0.652 (cum: 0.705)  RTF: 0.0207 (cum: 0.0271)  |  ref: ay1wih1lih1ftih0mey1ah0sah0pruw1vzay1ah0pruw1v  |  hyp: ay1wih1lweh1nttuw1ruw1th
+[ 905] PER: 0.716 (cum: 0.705)  RTF: -0.7952 (cum: 0.0261)  |  ref: bah1tthiy0meh1mer0iy0ah1vdheh1reh1ksploy2tshhae1zpae1stah0we  |  hyp: thiy0meh1mber0ah1vdhmae1nwah0ztay1mah1vprih1rz
+[ 910] PER: 0.759 (cum: 0.705)  RTF: 0.0214 (cum: 0.0261)  |  ref: sow1lah0nmaa0rveh1ldae1nddih0zay1er0dtuw1biy0ih0nfao1rmdah1v  |  hyp: sah1mtay1mzsah1mtuw1piy1ter0z
+[ 915] PER: 0.679 (cum: 0.705)  RTF: 0.0240 (cum: 0.0261)  |  ref: thmow1stfey1mah0sah1vdhah0mao1lwah0zdhow1ver0throw2ah1vdhay1  |  hyp: thiy0prah0luw1stah1vdhplay1dtuw1ah0dreh1dih0ts
+[ 920] PER: 0.773 (cum: 0.705)  RTF: 0.0164 (cum: 0.0260)  |  ref: bah1tao0reh1diy0ae1tah0poy1ntih0neh2kah0naa1mih0keh2vah0luw1  |  hyp: bah1ter0bah1ter0dih0lih1jhah0nzah1vthiy0mey1jhbih0kah1nder0d
+[ 925] PER: 0.811 (cum: 0.706)  RTF: 0.0211 (cum: 0.0260)  |  ref: ah1nder0dhtaa0buw1ser1tah0nvih1kchuw0ah0lzae1ndmao1rper0tih1  |  hyp: ae1nddih0ddheh1nser1vah0ntser1vah0ntkah1th
+[ 930] PER: 0.762 (cum: 0.706)  RTF: 0.0158 (cum: 0.0259)  |  ref: thiy0ah0bjheh1kshah0nah1vkao1rspriy0zeh1ntsih2tseh1lfdhae1ti  |  hyp: thiy0ah0dveh1kshah0nzae1ndreh1stah0lzae1ndah0pih1rdtuw1seh1n
+[ 935] PER: 0.719 (cum: 0.706)  RTF: 0.0190 (cum: 0.0259)  |  ref: sow1meh1niy0ah1vdheh1mhhaw2eh1ver0ae1zmey1kah0pthrih0tey1ner  |  hyp: sah1mmeh1rih0sthiy0pey1nah1vthiy0key1shah0nah1vthiy0key1zhah
+[ 940] PER: 0.798 (cum: 0.706)  RTF: 0.0166 (cum: 0.0259)  |  ref: sow1dhow1zao1fah0sih0zhhwih1chaa1rbay1ray1tthiy0praa1per0ih0  |  hyp: seh1dah0lbah1twih0thah0nuw1ah0nzae1ndpreh1sih0vsah0preh1sih0
+[ 945] PER: 0.778 (cum: 0.706)  RTF: 0.0200 (cum: 0.0259)  |  ref: bah1tae1zwiy1dih0seh1ndthsow1shah0lskey1lthiy0poy1ntih1zpreh  |  hyp: bah1tae1zthiy0dih0say1lah0ndway1fah0lweh1ldheh1m
+[ 950] PER: 0.760 (cum: 0.707)  RTF: 0.0173 (cum: 0.0259)  |  ref: dheh1rih1znow1klae1sah0ndnow1kah1ntriy0dhae1thhae1zyiy1ldih0  |  hyp: dheh1rih1znah1thih0ngprih1zah0lwer1aw1taa1rmer0aw1ndtuw1riy1
+[ 955] PER: 0.816 (cum: 0.707)  RTF: 0.0146 (cum: 0.0259)  |  ref: ih1tih1zao1lsow0now1tih0sah0bah0ldhae1tthiy0ser1vah0sah0bih1  |  hyp: ih1zih1tsow1sah1mthih0ngzae1zthiy0preh1zah0ntsah1vdheh1rpaa1
+[ 960] PER: 0.821 (cum: 0.707)  RTF: 0.0135 (cum: 0.0258)  |  ref: bah1tthiy0ae1kchuw0ah0lkao1rsah1vdih0veh1lah0pmah0nthhae1zbi  |  hyp: bah1tthiy0ae1kshah0ntuw1wah1nah1vdheh1rflaw1ndae1zah0nddah1z
+[ 965] PER: 0.620 (cum: 0.708)  RTF: 0.0351 (cum: 0.0258)  |  ref: ae1zyuw1zdih2nthspiy1chah1veh1vriy0dey1lay1fdhwer1dkeh1riy0z  |  hyp: ae1zyuw1sah0zsuw1nah1vthiy0tey1kah1vthiy0key1shah0n
+[ 970] PER: 0.759 (cum: 0.708)  RTF: 0.0184 (cum: 0.0258)  |  ref: ae1ndao1ftah0nhhae1zmay1mah1dher0seh1dway1laa1nhher0lae1pay1  |  hyp: ae1nddhaw1faw1ndnaw1fih1rwah0ztuw1biy0miy1n
+[ 975] PER: 0.755 (cum: 0.708)  RTF: 0.0166 (cum: 0.0259)  |  ref: shiy1ah0tao2riy0ah0ndkler1jhiy0mah0nzdao1ter0wah0zao1lwey2zi  |  hyp: shiy1hhae1dchiy1kway1tah1vwah1nah1vdhway1zah0n
+[ 980] PER: 0.791 (cum: 0.708)  RTF: 0.0184 (cum: 0.0258)  |  ref: ay1ae1mnaa0tdih0priy1shiy0ey2tih0ngih1tweh1nay1sey1dhae1tih2  |  hyp: ay1mnaa1tnaa1tbeh1rah0ler0
+[ 985] PER: 0.732 (cum: 0.708)  RTF: 0.0163 (cum: 0.0258)  |  ref: bah1tduw1naa1tsah0pow1zdhae1tay0dih0speh1rih0jhthiy0gih1ftwi  |  hyp: bah1tduw1naa1tdheh1rwer1dhae1tdheh1rfih1ldtuw1sow1dhae1tkah1
+[ 990] PER: 0.825 (cum: 0.709)  RTF: 0.0156 (cum: 0.0258)  |  ref: ay1now1dhfer1stleh1ter0ay1row1ttuw1yuw1wah0zao1lseh1nslah0st  |  hyp: ae1nddhfer1stbah1tay1dih1dnaa1tnow1tuh1k
+[ 995] PER: 0.807 (cum: 0.709)  RTF: 0.0151 (cum: 0.0258)  |  ref: ah0geh1nay1thae1ngkyuw1dhih1sih1nsah0dah0ntay1sah0pow1zwih1l  |  hyp: ay1dih1dah0ntliy0thiy0fay1ndseh1zah0ntbrey1jh
+[1000] PER: 0.796 (cum: 0.709)  RTF: 0.0144 (cum: 0.0257)  |  ref: ah1vdhih1sseh1kah0ndleh1ter0ao1lsow0shiy1spow1kae1ndtow1ldmi  |  hyp: dhih1sah0nah1dher0gey1vhhae1dbih1ndhbrey1ks
+[1005] PER: 0.686 (cum: 0.709)  RTF: 0.0189 (cum: 0.0257)  |  ref: ay1wih1shih1twuh1drih0ker1ah0geh1nbah1tih1twih1ltey1ktuw1er0  |  hyp: ay1wih1shtuw1meh1niy0strey1njhmah0ntswey1weh1rah0wey1ah0wey1
+[1010] PER: 0.761 (cum: 0.709)  RTF: 0.0198 (cum: 0.0257)  |  ref: ih2ndiy1ddheh1rwer1ow1nliy0wah1ner0tuw1strey1njher0zhhuw1kuh  |  hyp: ae1nddiy1pih0ngruw1mztuw1prih1nsih0zah1vhhih1zow1ld
+[1015] PER: 0.672 (cum: 0.710)  RTF: 0.0191 (cum: 0.0256)  |  ref: ay1ae1mnaa0tguh1dih0nah1ffer0yuw1ae1ndyuw1mah1stbiy0keh1ptfr  |  hyp: ay1mneh1ver0ay1mtuw1tuw1mih1nah0tsah0say1ah0tiy0
+[1020] PER: 0.734 (cum: 0.710)  RTF: 0.0229 (cum: 0.0256)  |  ref: tae1biy0hhae1dteh1ndih0ddheh1mih0ndheh1rchay1ldhhuh2ddhey1ae  |  hyp: kae1tah0nfer0hher0ah0ndeh1niy0ah1vthiy0ey1jhah0ndey1njher0d
+[1025] PER: 0.811 (cum: 0.710)  RTF: 0.0158 (cum: 0.0256)  |  ref: stih1lhher0hhaa1rthhae1drih0siy1vdah0shaa1kih0ndhper0seh1psh  |  hyp: stih1ldheh1rih1zhae1dfuh1lah1vwah1tsah0fih1rfih1rfih1r
+[1030] PER: 0.795 (cum: 0.710)  RTF: 0.0099 (cum: 0.0256)  |  ref: mae1dah0mker0eh1ktih0dmiy1wih0thaa0pey1trah0nay2zih0ngeh1rfe  |  hyp: bah1tdah1nah1vdhwer1ker0ah1vdhney1shah0nztuw1biy0ah0ndtuw1le
+[1035] PER: 0.804 (cum: 0.710)  RTF: 0.0103 (cum: 0.0255)  |  ref: shiy1wah0zaa1ner0ah0bliy0beh1riy0dih0ndhcher1chah1vsey1ntsao  |  hyp: shiy1wah0zah0brah1dher0frah0mdheh1rper1lzah1vthiy0eh1njher0a
+[1040] PER: 0.571 (cum: 0.710)  RTF: 0.0288 (cum: 0.0255)  |  ref: yuw1duw1miy1ah0grey1taa1ner0  |  hyp: yuw1wih1lgaa1tah0n
+[1045] PER: 0.604 (cum: 0.710)  RTF: 0.0245 (cum: 0.0255)  |  ref: ay1sih0tdaw1nah0tah0smao1ltey1bah0lah0wey1ter0kah1mzih2miy1d  |  hyp: ay1siy1mdtuw1miy1ay1wih1shtuw1wih1lay1wih1shtuw1wih1lay1wih1
+[1050] PER: 0.750 (cum: 0.710)  RTF: 0.0180 (cum: 0.0255)  |  ref: may1rih0maa1rkpliy1zih0zhhih1mbah1tay1suw1nprow1vtuw2hhih1md  |  hyp: maa1riy0maa1rkah0bah0lhhae1vbih1npray1dtuw1tray1dtuw1hher0
+[1055] PER: 0.802 (cum: 0.710)  RTF: 0.0186 (cum: 0.0255)  |  ref: aa2ldhiy1zaa1nah0stper1sah0nzeh1rwey1tih0ngdheh1rter1ntuw1ge  |  hyp: ao1ldhiy1zao1lwey2zfeh1low0
+[1060] PER: 0.792 (cum: 0.709)  RTF: 0.0094 (cum: 0.0255)  |  ref: yuw1aa1rnaw1ih0nthiy0ow1nliy0kah1ntriy0ih2ndhwer1ldhhweh1rwi  |  hyp: yuw1now1mao1rnaw1ah0sah0ndbay1dhfer1stkey1sae1nddhfer1stseh1
+[1065] PER: 0.634 (cum: 0.709)  RTF: 0.0172 (cum: 0.0254)  |  ref: hhwah1tser1ay1seh1dtow2hhih1mae1may1fao1rchah0nah0tih0nah1ft  |  hyp: hhwah1twaa1nttuw1sey1yuw1siy1yuw1
+[1070] PER: 0.542 (cum: 0.709)  RTF: 0.0190 (cum: 0.0254)  |  ref: ay1riy0zay1dih1ndhmer0ey1ruw1dey0daw1zpao1rteh0s  |  hyp: ay1riy0zay1er0ay1wah0zpuw1rd
+[1075] PER: 0.693 (cum: 0.709)  RTF: 0.0150 (cum: 0.0254)  |  ref: ih1tser0ih1jhah0nwah0zsmao1lah0jher1mae1nih2nsih0gnyih1fih0k  |  hyp: ih1twer1dih1tsiy1mdtuw1biy0tuw1pah0zih1shah0n
+[1080] PER: 0.738 (cum: 0.710)  RTF: 0.0156 (cum: 0.0253)  |  ref: dheh1ray1zwer1frah1mdhfer1stter1ndih1nae0ntih0sah0pey1shah0n  |  hyp: dheh1ray1zsah1mmeh1riy0nah1thih0ngwer1puh1tdhae1tah0baw1tah0
+[1085] PER: 0.757 (cum: 0.710)  RTF: 0.0191 (cum: 0.0253)  |  ref: suw1nthaw1zah0ndzah1vkah0nver1tshhae1dreh1ntih0dao1rper1chah  |  hyp: suw1nfer0dheh1rpaa1ndah0paa1ndheh1rpih1riy0ah0nzah0ndsih1riy
+[1090] PER: 0.780 (cum: 0.710)  RTF: 0.0141 (cum: 0.0252)  |  ref: biy1ih1tseh1dtuw1thiy0aa1ner0ah1vsah1mah1vthiy0ao1fah0ser0ze  |  hyp: thiy0ih0gzae1ktah0mah0ntah0bah0lkah0meh1rih0dhae1dreh1diy0wa
+[1095] PER: 0.773 (cum: 0.710)  RTF: 0.0145 (cum: 0.0252)  |  ref: ih1twih1lbiy0ah0bzer1vddhae1tah0nao1rgah0nay2zdmaa1bey1dih0d  |  hyp: ih1twuh1dbiy0sih1tiy0dheh1rhhae1pah0nddheh1rhhae1dnaa1ttuw1p
+[1100] PER: 0.632 (cum: 0.710)  RTF: 0.0308 (cum: 0.0252)  |  ref: ao0lreh1diy0ah0nao1rthah0ndah0saw1thwer1tao1ktah1vhhway1naa0  |  hyp: aa1nthiy0riy1liy0waa1zah0baw1ttuw1weh1stah0weh1stah0weh1st
+[1105] PER: 0.729 (cum: 0.710)  RTF: 0.0217 (cum: 0.0252)  |  ref: ae1tdhih2nseh1pshah0nah1vpluh1rah0lmeh1rih0jhah0mah1ngdhlae1  |  hyp: ae1tthiy0ae1ktsdheh1rwah0znaa1tdheh1rwah0zbreh1dah0ns
+[1110] PER: 0.732 (cum: 0.711)  RTF: 0.0162 (cum: 0.0251)  |  ref: thiy0piy1pah0lkah0nteh1stih0ddhiy1zmeh1zher0zwah1nbay1wah1ni  |  hyp: thiy0piy1pah0lkey1sih0zae1ndkey1sih0ngthiy0meh1zher0ah1vdhme
+[1115] PER: 0.595 (cum: 0.711)  RTF: 0.0439 (cum: 0.0251)  |  ref: ih1tstrah0meh1ndah0sliy0weh1lpuh1taa2ntuw1  |  hyp: ih1tstrey1nih1tstrih1ngtuw1ah0nao1rtuw1
+[1120] PER: 0.566 (cum: 0.710)  RTF: 0.0655 (cum: 0.0252)  |  ref: shiy1dah1zah0nttey1kah1pwih0theh1niy0bah0diy0yuw1now1  |  hyp: shiy1tey1kah0nbay1dheh1rbih1diy0now1bah1tnow1
+[1125] PER: 0.646 (cum: 0.710)  RTF: 0.0605 (cum: 0.0252)  |  ref: ay1sey1ser1hheh1riy0dhlih1tah0lger1lzgow1ih0ngfey1mah0sliy0t  |  hyp: prey1stuw1sey1ih0ngwih0thah0chay1ldah0ndshiy1wah0zah0n
+[1130] PER: 0.819 (cum: 0.710)  RTF: 0.0192 (cum: 0.0253)  |  ref: wah2nnay1tweh1nhhiy1ah0ndwih1nih0frih0dwer1sih1tih0ngtah0geh  |  hyp: wah1ndey1hhwah1tdhwih1ldih0dzae1ndae1ndweh1lah0baw1tah0baw1t
+[1135] PER: 0.711 (cum: 0.710)  RTF: 0.0453 (cum: 0.0253)  |  ref: ay1mglae1dshiy1zhheh1ldhher0ow1nsih1ns  |  hyp: ae1ndwah1twih1shih0ngrow1mzah0ndseh1ds
+[1140] PER: 0.722 (cum: 0.710)  RTF: 0.0309 (cum: 0.0253)  |  ref: lae1mwuh1dah0ntkeh1rah0grey1tdiy1lah0baw1tmeh1niy0ah1vdheh1m  |  hyp: wih1lweh1nwih1lfae1nsiy0
+[1145] PER: 0.672 (cum: 0.710)  RTF: 0.0400 (cum: 0.0254)  |  ref: dhow1zfeh1low0zaa1rao1lveh1riy0loy1ah0liy1vah0nmay1nhhao1l  |  hyp: dheh1rwah0zseh1lvzah1vmey1dih0nghhae1dney1mhhow1m
+[1150] PER: 0.852 (cum: 0.710)  RTF: 0.0470 (cum: 0.0254)  |  ref: thae1ngkyuw1bah1tay1dow1ntlay1kih1tsow1weh1lah0zdhih0s  |  hyp: yuw1duw1thiy0eh1rwah0zdheh1rwah0zdheh1rwer1ao1lwey2z
+[1155] PER: 0.625 (cum: 0.710)  RTF: 0.0486 (cum: 0.0254)  |  ref: hhaw1jhaa1liy0ih1twah0zbiy1ih0ngyah1nghhih1ldah0  |  hyp: jhaa1nhhae1djhah1ngkah0lhhih1mdheh1r
+[1160] PER: 0.672 (cum: 0.709)  RTF: 0.0453 (cum: 0.0255)  |  ref: dhey1wer1bow1thrih0meh1mber0ih0ngwah1tdhwuh2mah0nhhae1dseh1d  |  hyp: dhey1wer1bih1liy0yuw1wih1lgeh1tyuw1wih1lbiy0lah1vah1v
+[1165] PER: 0.512 (cum: 0.709)  RTF: 0.0324 (cum: 0.0255)  |  ref: hhweh1nshiy1fih1nih0shtae2lah0gzae1nder0shuh1khhih0mseh1lfaw  |  hyp: hhweh1nshiy1hhae1dreh1dah0liy0reh1dah1vrih1ver0iy0
+[1170] PER: 0.688 (cum: 0.709)  RTF: 0.0198 (cum: 0.0256)  |  ref: hhiy1stuh1dah0lih1tah0lbih0hhay1ndhher0ah0ndtray1dtuw1steh1d  |  hyp: hhiy1stih1ldhlih1tah0lstih1lhhiy1hhae1dsaa1row0zaa1raa1row0
+[1175] PER: 0.664 (cum: 0.709)  RTF: 0.0272 (cum: 0.0256)  |  ref: thstaa1pah0tkwiy1nztaw2nthiy0tiy1diy0ah0spae1sih0jhah0pthiy0  |  hyp: thstaa1ptthiy0staa1ptih0ngah1vdrih1frah0ntih2mpey1shah0nz
+[1180] PER: 0.737 (cum: 0.709)  RTF: 0.0375 (cum: 0.0257)  |  ref: ay1feh1ltih2tih0nmay1bow1nzweh1nay1wow1kdhih1smao1rnih0ngdha  |  hyp: ay1feh1lttuw1wer1ktaa1ptah0ter1nah0l
+[1185] PER: 0.750 (cum: 0.709)  RTF: 0.0347 (cum: 0.0258)  |  ref: ae2lah0gzae1nder0liy1ndfao1rwer0dah0ndwao1rmdhhih1zhhae1ndzb  |  hyp: sow1jheh1ntah0lbley1ber0bluw1wih0ththiy0blae1k
+[1190] PER: 0.614 (cum: 0.709)  RTF: 0.0418 (cum: 0.0258)  |  ref: hhiy1puh1ldah1pah0wih1ndow0ah0zih1fthiy0eh1rwer1hheh1viy0  |  hyp: thiy0piy1pah0lhhae1vreh1diy0hhae1vriy0
+[1195] PER: 0.580 (cum: 0.708)  RTF: 0.0498 (cum: 0.0259)  |  ref: ih1twah0zmay2seh1lfay1wah0zdih0fay1ih0nghhih1ldah0  |  hyp: ih1twah0zah0mih1twah0zfay1nddhae1tfay1ndheh1ldhih1m
+[1200] PER: 0.639 (cum: 0.708)  RTF: 0.0528 (cum: 0.0260)  |  ref: wer1ah0ntyuw1hhae1piy0dheh1nae1tao1l  |  hyp: tuw1wah1ttuw1ae1ndaa2l
+[1205] PER: 0.625 (cum: 0.707)  RTF: 0.0405 (cum: 0.0260)  |  ref: yeh1shhih1ldah0ay2now1dhae1thhiy1seh1dsih1mpliy0  |  hyp: yeh1sah0ndsih1mpah0liy0
+[1210] PER: 0.690 (cum: 0.707)  RTF: 0.0327 (cum: 0.0260)  |  ref: ae2lah0gzae1nder0row1zah0ndshuh1khhih0mseh1lfae1nggrah0liy0y  |  hyp: ay1wih1lduw1seh1dkah1mih0ngkaa1ntuw1lay1kkaa1lih0n
+[1215] PER: 0.705 (cum: 0.707)  RTF: 0.0197 (cum: 0.0261)  |  ref: dhsay1taa1fyuw1baa1rtliy0tuw1siy1yuw1lih1vih0ngah0ndhhae1piy  |  hyp: thiy0say1dah1vthiy0say1dneh1ver0weh1nay1kae1nstuw1miy1
+[1220] PER: 0.640 (cum: 0.707)  RTF: 0.0438 (cum: 0.0261)  |  ref: wiy1vtao1rcher0diy1chah1dher0ih0nah1ffer0tah0nay1t  |  hyp: wiy1wer1tuw1tao1rdwih0thmay1fay1t
+[1225] PER: 1.167 (cum: 0.707)  RTF: 0.0516 (cum: 0.0262)  |  ref: hhwah1tih1zslae1ng  |  hyp: yuw1waa1nttuw1spleh1ngkthih0ng
+[1230] PER: 0.760 (cum: 0.708)  RTF: 0.0143 (cum: 0.0262)  |  ref: hhweh1nih1tih1zah0kweh1schah0nah1vprow1bih0ngah0wuw1ndah0gah  |  hyp: hhwah1tih1zih1twah0zsay1tih0dtuw1suw1nbah1tthiy0baa1diy0
+[1235] PER: 0.614 (cum: 0.708)  RTF: 0.0216 (cum: 0.0262)  |  ref: naw1hhweh1nhhae1zhhao1rer0eh1ver0ih0kskluw1dih0dstah1diy0  |  hyp: now1now1now1dih0dstih1ldiy0ah0dstih1liy0
+[1240] PER: 0.619 (cum: 0.708)  RTF: 0.0581 (cum: 0.0262)  |  ref: ih1tih1zdhlae1nggwah0jhah1vreh1chih0dnah0s  |  hyp: ih1twah0zih1tih1znah1thih0ng
+[1245] PER: 0.556 (cum: 0.707)  RTF: 0.0277 (cum: 0.0262)  |  ref: ae1ljhah0brah0meh1dah0sah0nbaa1tah0niy0hhae1viy1chdheh1rslae  |  hyp: ae1ndjhah1jhdheh1rhhae1dbih1nah0speh1rih0ngdheh1rslay1tih0ng
+[1250] PER: 0.556 (cum: 0.708)  RTF: 0.0275 (cum: 0.0262)  |  ref: tuw1dhih0swiy0rih0play1ih1nwah1nwer1dow1nliy0  |  hyp: tuw1trah0dih1stah0tiy0ow1nliy0ow1nliy0
+[1255] PER: 0.718 (cum: 0.708)  RTF: 0.0165 (cum: 0.0262)  |  ref: dhey1kaa1nstah0tuw2ttuw1dih1frah0ntao1rder0zah1vfae1ktshhwih  |  hyp: thiy0kaa1nsah0lah0ntstah1vbiy1chttuw1fao1rthriy1thiy0riy1zah
+[1260] PER: 0.791 (cum: 0.708)  RTF: 0.0099 (cum: 0.0261)  |  ref: wah1nper0siy1vzwih0thaw1tah2nder0stae1ndih0ngih0tah0hhih1diy  |  hyp: wah1nwah1nwah1nder0wah1nseh1nder0mih1rliy0meh1rih0d
+[1265] PER: 0.542 (cum: 0.707)  RTF: 0.0810 (cum: 0.0262)  |  ref: luh1kklow1sliy0ah0tlay1f  |  hyp: kwih1klah0stliy0way1f
+[1270] PER: 0.729 (cum: 0.707)  RTF: 0.0193 (cum: 0.0262)  |  ref: dheh1rih1zhhaa1rdliy0wah1ndey1aw1tah1vaa1hhah1ndrih0dhhwih1c  |  hyp: dheh1rhhaa1rtah0ndsah1mih0niy0
+[1275] PER: 0.529 (cum: 0.707)  RTF: 0.0308 (cum: 0.0254)  |  ref: dhae1tih1zway1wiy1kray1eh2jhyuw0key1shah0nsay1ah0ns  |  hyp: dhae1twah0zdhae1tdhae1twah0zay1ah0ns
+[1280] PER: 0.688 (cum: 0.707)  RTF: 0.0210 (cum: 0.0254)  |  ref: tuw1ber1nwih0thaw1tsiy1sih0ngtuw1flay1dheh0rih1nlay1zdhmaa1r  |  hyp: tuw1bruw1dtuw1mao1rah1vmao1rfiy1chih0ngz
+[1285] PER: 0.662 (cum: 0.707)  RTF: 0.0316 (cum: 0.0253)  |  ref: hhiy1wah0zah2nah0bah0ltuw1dih2say1dih0gzae1ktliy0wah1tih1tsh  |  hyp: hhiy1wah0zbih1gbiy1ih0ngbiy1ih0ng
+[1290] PER: 0.783 (cum: 0.707)  RTF: 0.0149 (cum: 0.0253)  |  ref: fih1lah0pdheh1rfao2rreh1ddih1lah0jhah0ntliy0ih0nthiy0ae1ster  |  hyp: dheh1rwih1lbih1ldih0ndhwer1kdhae1tyuw1zdtuw1yuw1z
+[1295] PER: 0.581 (cum: 0.707)  RTF: 0.0360 (cum: 0.0253)  |  ref: weh1lay1mgow1ih0ngae1zah0neh1njhah0nih1ryuw1kah0ngow1ah0zwah  |  hyp: weh1laa2ldhih1swuh1dbiy0wah1nih1twah0zwah1nwaa1zwah1n
+[1300] PER: 0.772 (cum: 0.707)  RTF: 0.0187 (cum: 0.0253)  |  ref: thiy0nay1twah0zspeh1ntih0npae1kih0ngah1pah0ndray1tih0ngleh1t  |  hyp: thiy0way1ldnaa1tkey1mnaa1twah1nsreh1dzfreh1ndz
+[1305] PER: 0.474 (cum: 0.706)  RTF: 0.0279 (cum: 0.0253)  |  ref: shiy1wah0ztay1er0dah1vah1dher0thih1ngz  |  hyp: shiy1wah0ztuw1thih1ngkih0ngz
+[1310] PER: 0.734 (cum: 0.707)  RTF: 0.0219 (cum: 0.0253)  |  ref: dhay1wey1zgrey1tliy0tray1miy0ruw1thae1ndaa2ldhay1riy0ley1sha  |  hyp: dhae1twey1ley1shah0nzih2n
+[1315] PER: 0.741 (cum: 0.706)  RTF: 0.0289 (cum: 0.0253)  |  ref: dhiy1stah1diy0meh1dah0sah0n  |  hyp: bih0liy1vih0ngmeh1n
+[1320] PER: 0.483 (cum: 0.706)  RTF: 0.0326 (cum: 0.0253)  |  ref: ih1fay1kah0ngeh1tpey1shah0nts  |  hyp: ih1twaa1zpey1shah0nz
+[1325] PER: 0.819 (cum: 0.706)  RTF: 0.0113 (cum: 0.0253)  |  ref: dheh1rser1tah0nliy0waa1znow0eh1ndtuw1ih0tae1ndiy1vah0nruw1th  |  hyp: dheh1rser1tah0nliy0sao1rpih0ngaw1tah1vgreh1st
+[1330] PER: 0.457 (cum: 0.706)  RTF: 0.0248 (cum: 0.0253)  |  ref: ae1ndthiy1wow1ntgow1hhway1shuh1day1  |  hyp: ae1ndae1tthiy0way1shuh1dbay1
+[1335] PER: 0.639 (cum: 0.706)  RTF: 0.0314 (cum: 0.0253)  |  ref: faa1dher0dhiy1zah0njhah1sttuw1fih1lah0phhiy1zgow1ih0ngih1ntu  |  hyp: faa1rah0fay1rwah0znah0sbih1gnah0tnah0snah0s
+[1340] PER: 0.785 (cum: 0.706)  RTF: 0.0367 (cum: 0.0253)  |  ref: ae1ndih1fay1hhae1dah0fao1rchah0nwuh1ddhiy1waa1ntmiy0tuw1liy1  |  hyp: ae1nddheh1rdih0spley1nd
+[1345] PER: 0.595 (cum: 0.706)  RTF: 0.0499 (cum: 0.0253)  |  ref: mih1smih1lner0zhheh1lthih1znaa1tguh1d  |  hyp: mih1sih0zmae1dnaa1tguh1dnaa1tguh1dnaa1tguh1d
+[1350] PER: 0.609 (cum: 0.705)  RTF: 0.0297 (cum: 0.0253)  |  ref: per0hhae1psay1ae1mmih0stey1kah0nae1nser0dshiy1  |  hyp: per0hhae1psih0ngtuw1miy1
+[1355] PER: 0.614 (cum: 0.705)  RTF: 0.0268 (cum: 0.0253)  |  ref: ih1fshiy1dah1znaa1tnow1hhaw1tow2eh1stah0mey2thher0ow1nvae1ly  |  hyp: ih1fshiy1ih1znaa1tbay1duw1ay1duw1ih0t
+[1360] PER: 0.658 (cum: 0.705)  RTF: 0.0260 (cum: 0.0253)  |  ref: ah0geh1nhhiy1ser1chthhih0sow1nthao1tsnao1rih2nah0feh1kchuw0a  |  hyp: ae1ndgeh1tah0sspiy1tbih0fao1rbih0fao1r
+[1365] PER: 0.707 (cum: 0.705)  RTF: 0.0180 (cum: 0.0253)  |  ref: yeh1sdeh1ddhiy1zfao0ryih1rzae1nah0guh1djhaa1bfer0hher0tuw1  |  hyp: yeh1sae1ndyeh1stuw1tuw1
+[1370] PER: 0.615 (cum: 0.705)  RTF: 0.0285 (cum: 0.0253)  |  ref: dah1nhhiy1ey1ntdah1nah0thih1nghhiy1dao1ter0sah0nshhiy0wah0zb  |  hyp: daw1ntuw1daw1nhhih1zbao1rnbao1rn
+[1375] PER: 0.724 (cum: 0.705)  RTF: 0.0196 (cum: 0.0253)  |  ref: ao1lwey2zih1rah0tah0bah0lkow1ldih2ndih1frah0nthhiy1hhae1dgro  |  hyp: ow1ldwih1lae1zdhae1tlae1stsiy1wah1naa1nmay1ndaa1n
+[1380] PER: 0.665 (cum: 0.705)  RTF: 0.0249 (cum: 0.0253)  |  ref: sih1rah0ldheh1rmah1stbiy0sah1mbeh1ter0wey1ah1vduw1ih0ngay1jh  |  hyp: ser1tah0nliy0ae1nddhae1twah1nah1vdheh1mae1nddhey1now1bay1dhb
+[1385] PER: 0.784 (cum: 0.706)  RTF: 0.0156 (cum: 0.0253)  |  ref: nae1nsiy0zker1liy0cheh1snah2tkraa1pshow1nih0nthsah1nah0ndaa1  |  hyp: nuw1nznaa1tah0lay1kah1vtrae1ngkah0lz
+[1390] PER: 0.742 (cum: 0.706)  RTF: 0.0162 (cum: 0.0252)  |  ref: dhey1bih0gae1nwih0thdhwah1nih0nthfae1mah0liy0sih1tih0ngruw1m  |  hyp: dhey1bih0gae1ntuw1mih1ster0fer1stmih1ster0fer1stpaa1pyah0ley
+[1395] PER: 0.750 (cum: 0.706)  RTF: 0.0147 (cum: 0.0252)  |  ref: aa1lah0vhhae1dpey1ntih0ddhmaa1tow2aa1nah0lao1ngneh1row0pae1n  |  hyp: ay1lah1vaw1er0gih1vih0ngah0geh1ndih0ngdih1dnah0fao1rbih0fao1
+[1400] PER: 0.650 (cum: 0.706)  RTF: 0.0216 (cum: 0.0252)  |  ref: ae1tdhae1tmow1mah0ntthiy0jheh1nah0lmah0neh1nter0dbeh1rih0nga  |  hyp: ae1ndae1tdhae1tkah0nsih1der0dbay1ah0kah0nseh1lfah0ndbeh1l
+[1405] PER: 0.706 (cum: 0.706)  RTF: 0.0258 (cum: 0.0252)  |  ref: wiy1shah1taw1er0ay1zthflaw1er0zbluw1maa1nwiy1mer1mer0bah1tth  |  hyp: wiy1shae1lwiy1shae1lstih1lbiy0bih0hhay1ndih1dstih1ldih1tstih
+[1410] PER: 0.752 (cum: 0.706)  RTF: 0.0239 (cum: 0.0252)  |  ref: wah1nsih0nae1kshah0nhhiy1wah0zliy1dih0ngah0dih0tae1chmah0nta  |  hyp: wah1nswah1ndih0dtreh1nchih0ng
+[1415] PER: 0.775 (cum: 0.706)  RTF: 0.0123 (cum: 0.0252)  |  ref: thiy0baa1ndah1vyuw1nyah0ndhah1sih0feh1ktih0dkuh1dneh1ver0biy  |  hyp: thiy0baa1diy0bah1tdheh1rbih0kao1zdhey1klay1mdah1vhher0aa1rfe
+[1420] PER: 0.701 (cum: 0.707)  RTF: 0.0278 (cum: 0.0252)  |  ref: shiy1ih1zah1nder0sey1lbah1tshiy1ih1zkaw1nttih0mah0sheh1fsyaa  |  hyp: ae1zshiy1hhae1dah0ntih1twah0zray1ttuw1ray1tway1d
+[1425] PER: 0.744 (cum: 0.707)  RTF: 0.0237 (cum: 0.0252)  |  ref: ah0neh1row0chae1nah0lfao1rmdah0pae1sih0jhthruw1dhrih1jhah1vr  |  hyp: ae1nddheh1rwer1kah0nsiy1ldih0nthiy0klow1zah1vdhkaa1twao1ter0
+[1430] PER: 0.537 (cum: 0.706)  RTF: 0.0282 (cum: 0.0252)  |  ref: nah1thih0ngmao1rdhae1nyuw1now1yuh0rseh1lf  |  hyp: naa1tmah1chtuw1hhih0mseh1lf
+[1435] PER: 0.583 (cum: 0.706)  RTF: 0.0439 (cum: 0.0252)  |  ref: yuw1wih1ltey1kmiy1aa1nbao1rdkaw1ntwih1lyuw1naa1t  |  hyp: tuw1wih1lwih1ltuw1wih1lnaa1tyuw1aa1rmiy0naa1t
+[1440] PER: 0.818 (cum: 0.706)  RTF: 0.0110 (cum: 0.0252)  |  ref: ah0slay1tdih2mah0nuw1shah0nih0ndhih0kseh1sih0vliy0hhay1teh1m  |  hyp: ah0say1ah0tiy0ae1fter0weh1dher0dhae1twiy1wah0zreh1stih0dwih0
+[1445] PER: 0.646 (cum: 0.706)  RTF: 0.0329 (cum: 0.0252)  |  ref: stiy1mah1pah0ndkae1nvah0sspreh1ddhskuw1ner0staa1rtih0diy1stw  |  hyp: stiy1pstao1riy0zwer1dzthiy0iy1dzwer1dz
+[1450] PER: 0.800 (cum: 0.707)  RTF: 0.0142 (cum: 0.0251)  |  ref: thiy0er1thhhae1zah0ndaw1tih0dliy0eh1nter0dah0paa1nah0nuw1ao1  |  hyp: thiy0ah0fih1rzshiy1krih1mih0ngsah1msah1m
+[1455] PER: 0.595 (cum: 0.707)  RTF: 0.0285 (cum: 0.0251)  |  ref: wuh1dnaa1tdhlao1ftiy0ah0steh1mah0nah0nsah0zah1vthsih1tiy0ae1  |  hyp: naa1twah1tnaa1tbih0liy1vdheh1mbih0liy1vih1zih1zah0beh2l
+[1460] PER: 0.781 (cum: 0.707)  RTF: 0.0154 (cum: 0.0251)  |  ref: ih1tsdeh1pthrih0mey1ndih2nveh1riy0ah0bah0lstih1lfao1rao1rae1  |  hyp: ih1tsdih1dnaa1tfay1ndzah1vdheh1rmeh1mber0ah1vdheh1rkay1ndtay
+[1465] PER: 0.719 (cum: 0.706)  RTF: 0.0273 (cum: 0.0252)  |  ref: threh2stah1vyuw1ao1fah0vay1kih0nghhiy1hhae1dthriy1shih1ps  |  hyp: thiy0reh1stih0dthiy0reh1stah1vrey1jh
+[1470] PER: 0.550 (cum: 0.706)  RTF: 0.0497 (cum: 0.0252)  |  ref: ay1pey1ntih0dthiy0ay1zreh1dfer0ae1ngger0  |  hyp: ah0pih1nah0pih1nah0pfreh1ndfer0hher0
+[1475] PER: 0.606 (cum: 0.706)  RTF: 0.0558 (cum: 0.0253)  |  ref: hhiy1ih1zbah1tah0boy1dhmeh1nseh1d  |  hyp: ih1tih1zbah1tih1fyuw1aa1rah0nddheh1nseh1d
+[1480] PER: 0.667 (cum: 0.706)  RTF: 0.0354 (cum: 0.0254)  |  ref: may1drae1gah0nzbeh1liy0ih1zneh1ver0fuh1lah0ndaa1nbao1rdweh1n  |  hyp: ay1dray1dah0nddray1tuw1dhwih1ndow0wih1lgow1tuw1gow1tuw1
+[1485] PER: 0.675 (cum: 0.706)  RTF: 0.0330 (cum: 0.0254)  |  ref: ih1twah0zsow1daa1rkdhae1tay1kuh1dsiy1nah1thih0ngbah1tah0fyuw  |  hyp: yuw1wah0zdeh1dah0baw1tdhwao1rnih0ngdhwao1rdher0
+[1490] PER: 0.583 (cum: 0.706)  RTF: 0.0335 (cum: 0.0254)  |  ref: aa1nah0beh1nchih0nah0faa1rkao1rner0wer1ah0dah1zah0npiy1pah0l  |  hyp: ae1ndah0paa1ndheh1mtuw1gow1tah0geh1dher0tah0geh1dher0
+[1495] PER: 0.629 (cum: 0.706)  RTF: 0.0579 (cum: 0.0255)  |  ref: yuw1wuh1dnaa1tiy1twih0thah1syuw1kae1naa0tsey1now1tow0hhae1fa  |  hyp: yuw1wuh1dnaa1twiy1wuh1dnaa1ttuw1hhih1mtuw1hhih1rhhiy1row0
+[1500] PER: 0.705 (cum: 0.706)  RTF: 0.0281 (cum: 0.0255)  |  ref: hhiy1shae1lnaa1tliy1vyuw1dey1er0nay1thhweh1dher0yuw1aa1rwer1  |  hyp: yuw1naa1tah0law1dpley1stwer1sliy0ih0ng
+[1505] PER: 0.623 (cum: 0.705)  RTF: 0.0363 (cum: 0.0256)  |  ref: dheh1ray1zdae1nstbih1gthao1rliy1fstuh1dah1pah0ndstreh1chthhi  |  hyp: dheh1ray1ztreh1lftah0nddheh1rwer1kah0nddheh1r
+[1510] PER: 0.662 (cum: 0.705)  RTF: 0.0564 (cum: 0.0257)  |  ref: bay1dhhhae1mer0ah1vthao1rshaw1tih0dgrih1mhhih1rih1znow1stih1  |  hyp: bah1tay1hhae1vnaa1tkih1ngdaw1nsiy1nkaw1nter0kih1ngdaw1n
+[1515] PER: 0.670 (cum: 0.705)  RTF: 0.0277 (cum: 0.0257)  |  ref: ay1tuh1kfay1vgrey1tbrey1slih0tsah1vgow1ldfrah0maw1rtreh1zher  |  hyp: ay1kae1lchay1ldjhuw1ntuw1dheh1mtuw1dheh1m
+[1520] PER: 0.632 (cum: 0.705)  RTF: 0.0330 (cum: 0.0257)  |  ref: ah0raa1ber0vay1kih0ngseh1dthiy0kih1ngae1ndskaw1ldah0tmiy0  |  hyp: ah1vah0rae1dher0dih1dnaa1tmiy1ndih0d
+[1525] PER: 0.481 (cum: 0.705)  RTF: 0.0551 (cum: 0.0258)  |  ref: ae1ndwuh1dhhiy1naa1tbiy1ah0guh1dgih1ftfer0aw1rbey1biy0  |  hyp: ae1ndwiy1wuh1dnaa1tnaa1tbeh1rah0fer0bey1diy0
+[1530] PER: 0.726 (cum: 0.704)  RTF: 0.0597 (cum: 0.0258)  |  ref: sow1ay1lih1vdah0ndnaw1ah0myao1rtuw1ththrao1lweh1lih0tih1zdhl  |  hyp: fay1nddhlay1tah1vdhwao1ter0zah1vwao1ktah0wao1kah1vwao1kah0lw
+[1535] PER: 0.634 (cum: 0.704)  RTF: 0.0297 (cum: 0.0258)  |  ref: shiy1say1ndtuw2miy1wih0thah0gow1stliy0sah0leh1mnah0tiy0tuw1t  |  hyp: shiy1fay1ndshiy1pley1dih0ddheh1mtuw1hher0faa1dher0hher0gaa1t
+[1540] PER: 0.750 (cum: 0.704)  RTF: 0.0288 (cum: 0.0258)  |  ref: fih1lah0pleh1frah0ngkdhih1sih1smay1ow1ver0luh2ker0mih1ster0y  |  hyp: bah1tdhae1tprih1lah0bah0lyuw1mae1ndfao1rmer0z
+[1545] PER: 0.829 (cum: 0.705)  RTF: 0.0116 (cum: 0.0259)  |  ref: ah0prih1tiy0ger1lah0ndsow0faa1rah0zay1kuh1djhah1jhbay1ah0pih  |  hyp: ah0priy1dih0ngtuw1skray1ber0zweh1lah0trey1ndah0ndstrah1kshah
+[1550] PER: 0.649 (cum: 0.704)  RTF: 0.0479 (cum: 0.0259)  |  ref: hhweh1nay1ah0dreh1sthhih1mhhiy1ae1nser0dkah0nstrey1ndliy0  |  hyp: hhwah1tay1duw1naa1tih2nstrey1njhdih0ng
+[1555] PER: 0.704 (cum: 0.704)  RTF: 0.0295 (cum: 0.0259)  |  ref: ney0ow1miy0shuh1khher0fao1rfih2ngger0riy0prow1chfah0liy0ae1t  |  hyp: thiy0ow1nliy0ah0dreh1diy0faa1rchttuw1drih1ldrih1ngkshah0ntuw
+[1560] PER: 0.658 (cum: 0.704)  RTF: 0.0314 (cum: 0.0260)  |  ref: bah1tdhih1ssah1bjhih0ktwih1lbiy0mao1rpraa1per0liy0dih0skah1s  |  hyp: thiy0chih1ldrah0nzah1vthiy0dey1zah1vthiy0grey1ter0kay1nd
+[1565] PER: 0.814 (cum: 0.704)  RTF: 0.0126 (cum: 0.0260)  |  ref: sih0kyuh1rah0shhiy0thao1tih0nthiy0keh1rfah0lae0dmih2nih0stre  |  hyp: sih1kstih1lsih1tiy0ae1nddhkeh1rah0ler0frah1mdhih1sih1zfaw1nd
+[1570] PER: 0.741 (cum: 0.705)  RTF: 0.0198 (cum: 0.0259)  |  ref: row0daa1lfow0er0ay1vdae1thhih1zow1nhhaw1swih0dhaw1teh1niy0ih  |  hyp: wer1bah1truw1liy0ah0ndkae1ntkeh1rih0nghhih1zbeh1rih0ng
+[1575] PER: 0.532 (cum: 0.704)  RTF: 0.0478 (cum: 0.0260)  |  ref: shiy1faw1nddhdao1rbah1tih1twah0zlaa1ktaw1tsay1d  |  hyp: shiy1faw1nddheh1rfae1ktsay1dow1nt
+[1580] PER: 0.717 (cum: 0.705)  RTF: 0.0193 (cum: 0.0260)  |  ref: aa1nthkaa1ntreh0riy0hhiy1rih0zaa1lvdtuw1teh1ldhah0mdhae1trih  |  hyp: aa1ndhkaa1ntreh0riy0zah1vhhih1zae1ndae1zdheh1nhhuw1gow1ih0ng
+[1585] PER: 0.757 (cum: 0.705)  RTF: 0.0131 (cum: 0.0259)  |  ref: shiy1miy1nway2lpae1sthher1lay1fwih0thhher0peh1rah0ntsih0nths  |  hyp: shiy1mey1njher0dhah0ntay1mih1nah0ster0fao1rchah0nah0fey1th
+[1590] PER: 0.806 (cum: 0.705)  RTF: 0.0124 (cum: 0.0259)  |  ref: luw0ih0zwah0zaw1tah1vdey1njher0ih0nah0fao1rtnay2tih0nah0mah1  |  hyp: wah0zah0lih1tah0llih1sah0ndfrah0mdheh1rae1ndmeh1niy0chay1ldc
+[1595] PER: 0.851 (cum: 0.705)  RTF: 0.0092 (cum: 0.0258)  |  ref: sow1per0swey1sih0vwer1hher0eh0ntriy1tiy0zae1ndsow1strao1nghh  |  hyp: sow1prah0sow1ver0wah1nsah1mwah1nwah1ndrih0ngbiy1ih0ngaw1tah1
+[1600] PER: 0.744 (cum: 0.705)  RTF: 0.0145 (cum: 0.0258)  |  ref: hhih1zmah1dher0hhae1dleh1fthher0tuw1hhih1mae1zbiy1ih0nghher0  |  hyp: mah1dher0ih1zmah1dher0weh1lshiy1weh1nttuw1hhae1vah0dah1nder0
+[1605] PER: 0.815 (cum: 0.706)  RTF: 0.0116 (cum: 0.0258)  |  ref: nao1rwah0srow0daa1lfow0leh1ssah0pray1zddhah0ndhey1ae1nddhbeh  |  hyp: now1wah0znow1faw1ndseh1lfweh1lkah0mpley1ntuw1sih1twaa1zih1tw
+[1610] PER: 0.679 (cum: 0.705)  RTF: 0.0187 (cum: 0.0258)  |  ref: hhwah2teh1ver0lao1rdcheh1lfer0dseh1dmih1sbrae1ndah0nrih0siy1  |  hyp: hhweh1dher0eh1ver0wih0thah0ndwih0thah0nay1smay1l
+[1615] PER: 0.809 (cum: 0.705)  RTF: 0.0143 (cum: 0.0258)  |  ref: ae1ndhhiy1pley1stih1tih2ndhae1tjheh1ntah0lmah0nzfih1ngger0zh  |  hyp: ae1ndpley1sih0ngpley1stteh1lhhih1zmuw1vih0ng
+[1620] PER: 0.523 (cum: 0.705)  RTF: 0.0504 (cum: 0.0258)  |  ref: hhiy1znaa1tah0mae1nfer0kah1ntriy0kwao1rter0z  |  hyp: hhiy1hhae1znaa1tkwao1rter0kwao1rter0zwer1ker0z
+[1625] PER: 0.730 (cum: 0.705)  RTF: 0.0252 (cum: 0.0258)  |  ref: ae1ndhhiy1ae1dah0dsah1mthih0ngstih1lleh1skaa2mplah0meh1nter0  |  hyp: ae1ndthiy0ae1nter0nuw1n
+[1630] PER: 0.613 (cum: 0.705)  RTF: 0.0303 (cum: 0.0258)  |  ref: yeh1ssow1dhey1sey1dbah1tdhae1twuh1day1thih1ngkhhae1vbih1nwer  |  hyp: yeh1syeh1sbaa1tah0ndwer1bao1rndah1vdhnao1rs
+[1635] PER: 0.664 (cum: 0.705)  RTF: 0.0261 (cum: 0.0258)  |  ref: dheh1rwao1kkah0ntih1nyuw0dsay1lah0ntfer0dhgrey1ter0paa1rtnay  |  hyp: dheh1rwer1lah1vdheh1rwer1thiy0ah1dher0ae1tthiy0ah1dher0seh1d
+[1640] PER: 0.629 (cum: 0.705)  RTF: 0.0262 (cum: 0.0258)  |  ref: maa1rkmay1wer1dzyuw1lfay1ndhhih1mtuw1strao1ngfer0yuw1ay1ae1n  |  hyp: maa1rkwah0lmaa1rktuw1yuw1ay1ae1ndtuw1duw1yuw1duw1
+[1645] PER: 0.735 (cum: 0.705)  RTF: 0.0224 (cum: 0.0258)  |  ref: may1beh1dwah0zah2nih0kseh1pshah0nah0bliy0kah1mfer0tah0bah0lb  |  hyp: may1beh1dmay1beh1ndhae1tdheh1rmaa1row0maa1row0er0
+[1650] PER: 0.556 (cum: 0.705)  RTF: 0.0455 (cum: 0.0259)  |  ref: ay1bow1ldliy0lay1tih0dmay1cheh1ruw1t  |  hyp: ay1bow1thmay1ndray1tuw1riy0truw1t
+[1655] PER: 0.751 (cum: 0.705)  RTF: 0.0168 (cum: 0.0259)  |  ref: ih1twah0znaa1tveh1riy0mah1chpae1stih0leh1vah0ndhae1tmao1rnih  |  hyp: ih1twah0zah0klih1rih0ngfrah0meh1rih0jhih0nfao1rm
+[1660] PER: 0.698 (cum: 0.705)  RTF: -0.9036 (cum: 0.0253)  |  ref: dhih1strae1nziy0ah0ntsprih1ngae1ndlay1tih0ngah1paa1rbyuw1tah  |  hyp: dhih1schaa1rjhih0ngbih0gah1nzah0ndsih1nsah0nz
+[1665] PER: 0.674 (cum: 0.705)  RTF: 0.0178 (cum: 0.0253)  |  ref: puw1rrey1chah0lhher0ney1cher0riy0koy1ldfrah0mdih0siy1tae1nds  |  hyp: puw1row1liy0ae1zmah1dher0ae1zshiy1dih1dnaa1tgeh1tshiy1dreh1d
+[1670] PER: 0.650 (cum: 0.705)  RTF: 0.0381 (cum: 0.0253)  |  ref: yeh1sseh1drey1chah0l  |  hyp: yeh1ssah1chah0jheh1riy0
+[1675] PER: 0.702 (cum: 0.705)  RTF: 0.0249 (cum: 0.0252)  |  ref: ae1ndshiy1thruw1hher0aa1rmzraw1ndhher0kah1zah0nzneh1kae1ndbr  |  hyp: ae1ndshiy1friy1dtuw1blah1stah0ndtuw1yuw1ztuw1yuw1ztuw1
+[1680] PER: 1.000 (cum: 0.705)  RTF: 0.0653 (cum: 0.0253)  |  ref: thae1ngkyuw1dao1rkah0sdih1r  |  hyp: dheh1ndheh1naa1rkyuh1rah0stuw1stih1riy0er0
+[1685] PER: 0.662 (cum: 0.705)  RTF: 0.0263 (cum: 0.0253)  |  ref: ao1lsow0dheh1rwah0sah0strih1plih0ngpey1jhhhuw1ter1ndih1ntuw0  |  hyp: ah0sseh1lvzwah1twih1ltuw1miy1tuw1miy1
+[1690] PER: 0.709 (cum: 0.705)  RTF: 0.0179 (cum: 0.0253)  |  ref: lay1kah0znaa1tyah1ngmae2ster0dhow1ay1ah0mah0now1ldmae2n  |  hyp: leh1kah0zih1znaw1mae1n
+[1695] PER: 0.756 (cum: 0.705)  RTF: 0.0273 (cum: 0.0253)  |  ref: wah1tih1zdhtuw1mah0ltah0ndray1ah0tih0ngkray1daw1tdhskway1rah  |  hyp: hhwah1twuh1dah0sliy0ae1ndbih0fao1rah0nddih0zeh1lthaw1zah0nd
+[1700] PER: 0.683 (cum: 0.705)  RTF: 0.0412 (cum: 0.0254)  |  ref: ih1tih1ziy0nah1fseh1djhao1rjhgey1mweh2lshaa1rpliy0ae1ndhhiy0  |  hyp: ih1tih1zshiy1ter1ndter1ndthiy0paa1ndah0paa1ndhpraw1ndah0paa1
+[1705] PER: 0.669 (cum: 0.704)  RTF: 0.0308 (cum: 0.0254)  |  ref: spow1kthiy0skway1er0luw1zih0ngao1lpey1shah0nsae1ndih1twah0zt  |  hyp: thspow1kah0ndiy1dher0dhae1tdhkaa1nsah0lah0ntkaa2nsah0lah0ntk
+[1710] PER: 0.651 (cum: 0.704)  RTF: 0.0442 (cum: 0.0254)  |  ref: thiy0skway1rhheh1lpttuw1thrah1stthah0mao1lih1nah0ndeh1nter0d  |  hyp: dhih1swer1fluw0ah0ndpliy1tih0nghhih0mseh1lf
+[1715] PER: 0.672 (cum: 0.704)  RTF: 0.0415 (cum: 0.0255)  |  ref: ah0maa1ntfih1sheh1taa0maa1ntfih1sheh1tgey1mweh2ltuw1dhreh1sk  |  hyp: ah1vmah1niy0ah1dher0kyuw1zdtuw1yuw1
+[1720] PER: 0.667 (cum: 0.705)  RTF: 0.0277 (cum: 0.0255)  |  ref: ae1ndmay1nih1zwih1lstuw1tliy0shae1lwiy0biy1kaa1mrae2dz  |  hyp: ae1ndmay1ndih1zmay1ndreh1ds
+[1725] PER: 0.560 (cum: 0.704)  RTF: 0.0445 (cum: 0.0255)  |  ref: ih1twih1lnaa1tbiy0sey1ffer0yuw1tuw1stey1hhiy1rnaw1  |  hyp: ih1twaa1zih1twaa1znaw1yuw1hheh1rnaw1
+[1730] PER: 0.761 (cum: 0.704)  RTF: 0.0172 (cum: 0.0255)  |  ref: hhae1vyao1rwih1lchay1ldih1fthiy0boy1ao1lsow0wih1lzih0tmaa1nt  |  hyp: hhae1vyuw1hhae1vtuw1dah1ndheh1rjhah1stah0zdheh1n
+[1735] PER: 0.738 (cum: 0.704)  RTF: 0.0207 (cum: 0.0255)  |  ref: mih1strih0sfih0tsuw2thhhae1dbih1nkeh1riy0dao2fbay1dhsheh1rah  |  hyp: mih1ster0mih1ster0mih1ster0mih1ster0hhae1dae1nddhmaa1rkshiy0
+[1740] PER: 0.667 (cum: 0.704)  RTF: 0.0632 (cum: 0.0256)  |  ref: ih1twih1lbiy0now1dih0sah0poy1ntmah0nttuw1miy1  |  hyp: ih1tbih0lih1tah0lbih0twiy1ntuw1miy1tuw1miy1tuw1miy1
+[1745] PER: 0.721 (cum: 0.704)  RTF: 0.0274 (cum: 0.0256)  |  ref: dheh1rbih0feh1lah0nae1ngkshah0sih2nter0vyuw2mih1strih0sfih0t  |  hyp: dheh1rwer1bih0fao1rdhih1skway1tthiy0breh1thah1vbreh1th
+[1750] PER: 0.324 (cum: 0.704)  RTF: 0.0435 (cum: 0.0256)  |  ref: neh1ver0dhae1tser1hhiy1hhae1dseh1d  |  hyp: neh1ver0neh1ver0fyuw1hhae1dseh1d
+[1755] PER: 0.682 (cum: 0.705)  RTF: 0.0244 (cum: 0.0257)  |  ref: ae1zeh1niy0ih0nih1ngglah0nday1wuh1dsey1seh1dgey1mweh2lpraw1d  |  hyp: ae1zih1twah0zah0nae1nddih0zdeh1thih1zdeh1th
+[1760] PER: 0.656 (cum: 0.704)  RTF: 0.0340 (cum: 0.0257)  |  ref: wiy1wih1lgow1aw1ttah0geh1dher0tuw1dhbaw1er0dheh1rih1sah0wey1  |  hyp: yuw1wih1lgih1vyuw1wih1lnaa1tweh1ntuw1wih1ndow0
+[1765] PER: 0.679 (cum: 0.704)  RTF: 0.0394 (cum: 0.0257)  |  ref: dhey1dheh1nriy0nuw1ddheh1rjher1niy0ae1ndah2nder0dhbeh1ter0la  |  hyp: dheh1rwer1nih0ngdheh1rwah0ztuw1ruw1thruw1thruw1thruw1thruw1t
+[1770] PER: 0.767 (cum: 0.704)  RTF: 0.0297 (cum: 0.0257)  |  ref: fih1tsuw2thshhae1ndreh1stah0dae1tlae1stah0paa1ndhtaa1prah1ng  |  hyp: thiy0dih0fyuw1siy1key1mtuw1kih1ngkih1ngkih1ntuw0hhih1mkih1ng
+[1775] PER: 0.696 (cum: 0.704)  RTF: 0.0279 (cum: 0.0257)  |  ref: kray1dhhiy0wey1vih0ngdhlae1nther0nbih0fao1rhhih1mtuw1mey1ksh  |  hyp: kray1dkray1dah0ndduw1now1freh1ndtuw1hhih1mtuw1hhih1m
+[1780] PER: 0.753 (cum: 0.704)  RTF: 0.0215 (cum: 0.0258)  |  ref: raa1bah0nfih0tsuw2thsao1dhae1thhih0sdaw1tsah1vwao1rah0ntah0n  |  hyp: rae1pah0ndraa1pih0ngbih0fao1rdhey1key1mbih0key1m
+[1785] PER: 0.688 (cum: 0.704)  RTF: 0.0224 (cum: 0.0258)  |  ref: aw1tih0ndhwuh1dzstuh1dah0nay1slih1tah0lfer1triy1  |  hyp: ae1nddheh1nwih0thaw1tfreh1ndriy0
+[1790] PER: 0.706 (cum: 0.704)  RTF: 0.0204 (cum: 0.0257)  |  ref: ow1dhae1tmey1dhhih1msow1ae1nggriy0  |  hyp: ow1nliy0grey1ter0iy0
+[1795] PER: 0.773 (cum: 0.704)  RTF: 0.0347 (cum: 0.0257)  |  ref: rih0jhoy1sih0ndhay1grow1thseh1dthsah1nbiy2mz  |  hyp: wih1lriy0ter1ndbih0sah1vbiy1ih0ngzbah1tnah1nz
+[1800] PER: 0.704 (cum: 0.704)  RTF: 0.0225 (cum: 0.0257)  |  ref: wer1ay1ih0ndhwao1rmruw1mwih0thao1ldhspleh1nder0ah0ndmae0gnih  |  hyp: ao1ray1wih1lay1dih1nsah0ns
+[1805] PER: 0.579 (cum: 0.704)  RTF: 0.0161 (cum: 0.0257)  |  ref: bah1tthiy0triy1dih0dnaa1trih0jhoy1sae0tao1lhhiy1gruw1ae1ndgr  |  hyp: bah1tdhae1tthiy0chih1rwah0zgruw1ah0ndgruw1ah0ndsah1mer0
+[1810] PER: 0.764 (cum: 0.704)  RTF: 0.0133 (cum: 0.0257)  |  ref: thiy0triy1ow1nliy0key1mtuw1hhih0mseh1lfweh1nhhiy1wah0zah0nlo  |  hyp: thiy0trey1lah1vhhae1driy0triy1zwaa1nttuw1thiy0ah1dher0waa1z
+[1815] PER: 0.680 (cum: 0.704)  RTF: 0.0269 (cum: 0.0257)  |  ref: per0hhae1psthiy0ah1dher0triy1zfrah0mdhfao1rah0stwih1lkah1mtu  |  hyp: per0hhae1psper0hhae1psmey1dmiy0
+[1820] PER: 0.366 (cum: 0.705)  RTF: 0.0320 (cum: 0.0258)  |  ref: bah1tay1shae1lteh1low1nliy0wah1nstao1riy0  |  hyp: bah1tay1shae1lnaa1tstao1riy0
+[1825] PER: 0.617 (cum: 0.704)  RTF: 0.0231 (cum: 0.0258)  |  ref: ah0nddhhhow1lnay1tthiy0triy1stuh1dstih1lae1ndih0ndiy1pthao1t  |  hyp: ae1nddhhhow1ldfaa1low0dfao1ttuw1thao1t
+[1830] PER: 0.778 (cum: 0.704)  RTF: 0.0117 (cum: 0.0258)  |  ref: tay1mih0nah1fhhae1dhhiy1tuw1fer0hhih1zrih0fleh1kshah0nzfer0d  |  hyp: tay1mtay1mzpae1stih0dih0tih1twah0zah0guh1dah0wey1ah0wey1ah0w
+[1835] PER: 0.797 (cum: 0.704)  RTF: 0.0172 (cum: 0.0258)  |  ref: dhey1snah1ftah0baw1tthfer1triy1ae1ndrah1sah0ldah0mah1ngdhbra  |  hyp: dhey1speh1ktih0dz
+[1840] PER: 0.692 (cum: 0.704)  RTF: 0.0211 (cum: 0.0258)  |  ref: ae1nddheh1nhhiy1tow1ldao1lah0baw1thhih1zyuw1thah0ndthlih1tah  |  hyp: ae1nddhey1luh1ktah1vdhlay1fbih0lao1rdtuw1dheh1nseh1nt
+[1845] PER: 0.500 (cum: 0.704)  RTF: 0.0286 (cum: 0.0258)  |  ref: ih1tih1zah0veh1riy0stuw1pih0dstao1riy0  |  hyp: ih1tkah0ntih1tpaa1rtiy0stao1riy0
+[1850] PER: 0.680 (cum: 0.704)  RTF: 0.0276 (cum: 0.0258)  |  ref: naw0dhae1ttuw1ih1zow1ver0  |  hyp: naw1now1naw1feh1rbeh1riy0
+[1855] PER: 0.699 (cum: 0.704)  RTF: 0.0196 (cum: 0.0258)  |  ref: thiy0gow1ldah0nstaa1rah1vtih1nsah0lwah0zstih1laa0nthtaa1pah1  |  hyp: thiy0grey1tah0ldih0dsah1nshay2nzah1vshay1n
+[1860] PER: 0.788 (cum: 0.704)  RTF: 0.0167 (cum: 0.0257)  |  ref: keh1nih0thah0ndbeh1thrih0frey1ndfrah0mteh1lih0ngthah1dher0ge  |  hyp: ae1nddheh1nrow1dah1vrow1ldrih1skah0nklow1sliy0fao1rchah0nih0
+[1865] PER: 0.720 (cum: 0.704)  RTF: 0.0233 (cum: 0.0257)  |  ref: hhiy1wah0zsaa1fthhaa1rtih0dah0ndih2mpeh1chuw0ah0sseh1dbeh1th  |  hyp: hhiy1wah0zsiy1mdtuw1biy1ih0ngae1ndkaa1tkao1ld
+[1870] PER: 0.582 (cum: 0.704)  RTF: 0.0474 (cum: 0.0258)  |  ref: wiy1wih1shtuw1tao1kwih0thhhih1mae1nser0dkeh1nih0thtao1k  |  hyp: wiy1wih1lwiy1wih1shtteh1lkah1mtaa1lkkaa1ttao1kt
+[1875] PER: 0.674 (cum: 0.704)  RTF: 0.0268 (cum: 0.0258)  |  ref: sah1mtay2mzay1mdhae1tyer1nih0ngfer0ah0smow1kay1mnih1rliy0kre  |  hyp: sah1mtay2mzsah1mtay2mzwer1weh1dher0weh1dher0dheh1rweh1dher0
+[1880] PER: 0.697 (cum: 0.703)  RTF: 0.0257 (cum: 0.0258)  |  ref: sih0tdaw1npliy1zseh1dgey1tsih0nah0chih1rfah0lah0ndpleh1zah0n  |  hyp: tuw1kae1ptah0ltuw1hhih1zah0ndpih1rih0cher0
+[1885] PER: 0.718 (cum: 0.703)  RTF: 0.0297 (cum: 0.0258)  |  ref: dheh1nraa1jher0zwuh1dah0ntduw1eh1niy0thih2ngbah1tliy1dhher0e  |  hyp: dhae1twaa1zray1tae1ndtuw1dhrey1sah1per0ih0ngah1ptuw1ruw1m
+[1890] PER: 0.694 (cum: 0.703)  RTF: 0.0301 (cum: 0.0259)  |  ref: ay1wah0zbuh1kkiy2per0sow1ih0twah0ziy1ziy0tuw1geh1tah0blae1ng  |  hyp: ay1wah0zbih1gfao1rthsih1nter0nah0strey1njher0
+[1895] PER: 0.567 (cum: 0.703)  RTF: 0.0495 (cum: 0.0259)  |  ref: ih1twow1ntbiy0mah1chbah1tay1mgrey1tfah0ltow0fay1ndah0freh1nd  |  hyp: ih1twih1lbiy0wih1lbiy0wih1lbiy0wih1lbiy0freh1nd
+[1900] PER: 0.608 (cum: 0.703)  RTF: 0.0354 (cum: 0.0259)  |  ref: sah1mger1lhhah0zbih1nhhih1rtway1stuw2ih1nter0vyuw2may1meh1na  |  hyp: sah1mgow1ldah0ndmae1ter0ztuw1mih1ttuw1mih1ter0wih1thmih1ter0
+[1905] PER: 0.935 (cum: 0.703)  RTF: 0.0544 (cum: 0.0260)  |  ref: ay1lpey1aa2ldhkaa1stsbih0say1dz  |  hyp: ah0pey1ldaw1tthiy0say1tah1vhhih0sbray1tah0ns
+[1910] PER: 0.720 (cum: 0.703)  RTF: 0.0530 (cum: 0.0260)  |  ref: beh1thah0niy1ziy0ae1thhih0ssay1lah0nsnah1jhdhhih1m  |  hyp: thiy0bae1ngkfrah0mmih1shah0n
+[1915] PER: 0.866 (cum: 0.703)  RTF: 0.0149 (cum: 0.0260)  |  ref: wah1nah1vmih1ster0hhaa1pkih0nzih0zfer1sttae1sksae1fter0kao1l  |  hyp: wah1nder0fah0lwah1nkah0mih1rplih1st
+[1920] PER: 0.661 (cum: 0.703)  RTF: 0.0283 (cum: 0.0260)  |  ref: ae1nddhih0swah0zhhway1keh1nih0thah0ndbeh1thdih0skah1ver0dhhi  |  hyp: ae1nddheh1nwah0zwah1nih1ndhwah1nah1vthiy0baa1diy0
+[1925] PER: 0.670 (cum: 0.703)  RTF: 0.0272 (cum: 0.0260)  |  ref: tey1bah0lzwer1spreh1daa1ndhlao1nae1ndah0dey1ntiy0bah1tsah0bs  |  hyp: tey1lzah0ndtey1bah0lwah0ztuw1biy0ser1vzthiy0er1th
+[1930] PER: 0.713 (cum: 0.703)  RTF: 0.0250 (cum: 0.0260)  |  ref: shiy1wah0zveh1riy0faa1ndah1vthiy0yah1ngley1diy0zhhuw1mshiy1h  |  hyp: wah0znuw1fih1rae1nddheh1rwah0zmih1ster0fey1sah0fah0lbey1ber0
+[1935] PER: 0.886 (cum: 0.703)  RTF: 0.0692 (cum: 0.0261)  |  ref: bah1tih1tkae1ntbiy1prah0teh1stih0dthiy0ger1l  |  hyp: bah1tdhey1key1mtuw1thiy0kreh1stthiy0grey1tah1vthiy0krih1stah
+[1940] PER: 0.513 (cum: 0.703)  RTF: 0.0535 (cum: 0.0261)  |  ref: ih0lih1zah0paa1rsah0nzshuh1khher0hheh1d  |  hyp: bay1dhlay1tah0llay1zshuh1dstih1khher0hheh1d
+[1945] PER: 0.718 (cum: 0.703)  RTF: 0.0492 (cum: 0.0261)  |  ref: hher0ay1zwaa1nder0dtuw1dhmey1dzhhae2ndz  |  hyp: hhway1hher0ay1zprah0teh1ndih0dtuw1hhih1mz
+[1950] PER: 0.696 (cum: 0.703)  RTF: 0.0316 (cum: 0.0261)  |  ref: ih0lih1zah0klow1zdthiy0dao1rbih0hhay1ndhher0wih0thah0dih0say  |  hyp: ay1lae1zah0lih1tah0lklih1tah0lwao1ktih0ndhwao1kih0ng
+[1955] PER: 0.716 (cum: 0.703)  RTF: 0.0186 (cum: 0.0261)  |  ref: shiy1taa1thher1dao1ter0dheh1nbay1hher0ow1nah0feh1kshah0nfao1  |  hyp: shiy1tuh1kdheh1rhhae1dbih1nkah1mfer0tah0wey1biy1ih0ngfao1rdh
+[1960] PER: 0.708 (cum: 0.703)  RTF: 0.0237 (cum: 0.0261)  |  ref: ih1tih1zyuw1hhuw1aa1rmih0stey1kah0nraa0uw1lay1hhae1vreh1dhhi  |  hyp: ih1tih1zyuw1duw1nae1fter0ah0nae1sktbih1lbow1thah0low1lddheh1
+[1965] PER: 0.790 (cum: 0.702)  RTF: 0.0132 (cum: 0.0262)  |  ref: bah1tkah0ntih1nyuw0draa0uw1lnaa1tih2nter0ah1ptih0dbay1dhih1s  |  hyp: blaa1kah0mae1ndah1vhhih1zbreh1dih0ngdih0striy1tih0ngdih0seh1
+[1970] PER: 0.779 (cum: 0.702)  RTF: 0.0165 (cum: 0.0261)  |  ref: ah0paa1nthiy0laa1rjhskweh1rih0nfrah1ntah1vdhhhow0teh1lthiy0s  |  hyp: ah0paa1lah0mzseh1dbah1tflae1kchuw0ah0liy0ah0ndfreh1ndztuw1le
+[1975] PER: 0.657 (cum: 0.702)  RTF: 0.0363 (cum: 0.0261)  |  ref: naw1wah1twah0zthseh1nsah1vih0ttuw1ih1nah0sah0ntbey1biy0zlay1  |  hyp: tuw1duw1naa1twah1tih1twah0znaa1tlay1kdhae1tlae1k
+[1980] PER: 0.769 (cum: 0.702)  RTF: 0.0272 (cum: 0.0262)  |  ref: ay1thao1twiy1wer1stah1mptah0geh1nweh1nay1fer1stsao2dhae1tpih  |  hyp: ay1wih1lsiy1hhiy1waa1zae1fter0weh1lkah0lao1ng
+[1985] PER: 0.725 (cum: 0.702)  RTF: 0.0367 (cum: 0.0262)  |  ref: ih1tkae1nthher1teh1niy0thih2ngay1mshuh1rfer0wiy1wow1ntdih0st  |  hyp: hhiy1key1mtuw1keh1rbah1taa2ldhow1zae1ndaa2ldhow1zaa2l
+[1990] PER: 0.528 (cum: 0.702)  RTF: 0.0597 (cum: 0.0262)  |  ref: hhiy1mey1ksih1tsao1rtah1vkow1ziy0er0  |  hyp: hhiy1mey1ksah0paa1nyao1rkah1mzyuw1ow1n
+[1995] PER: 0.641 (cum: 0.702)  RTF: 0.0295 (cum: 0.0262)  |  ref: ae1ndmay1paa1kah0tmah1niy0ih1zgeh1tih0nglow1ah0geh1nae1ndyuw  |  hyp: ae1nday1praa1mah0niy0ae1zyuw1leh1ftyuw1zwih1lyuw1
+[2000] PER: 0.716 (cum: 0.702)  RTF: 0.0254 (cum: 0.0262)  |  ref: weh1lay1mkah0nvih1nstdhae1tthbao1rdih0dah1phhaw1smih1ster0iy  |  hyp: weh1lweh1ldhey1naa1tdheh1rwih1lnaa1tbah1tmah1chah0lih1tah0ll
+[2005] PER: 0.794 (cum: 0.702)  RTF: 0.0132 (cum: 0.0262)  |  ref: thiy0stao1riy0ah1vih0tsiy1vah0lih2nfluw0ah0nskey1mbae1ktuw1m  |  hyp: thstao1riy0wih1ldih0dnaa1twih1lseh1dseh1dd
+[2010] PER: 0.747 (cum: 0.702)  RTF: 0.0138 (cum: 0.0262)  |  ref: ay1ah0wow1ktuw1kaa1nshah0snah0sfay1tih0ngae1tfer1stih0tsiy1m  |  hyp: ay1ow1ldow1ntwih0thdhae1tay1wah0zdhfay1ntuw1miy1ih1twah0zpae
+[2015] PER: 0.654 (cum: 0.702)  RTF: 0.0179 (cum: 0.0262)  |  ref: ih1ndhlay1tah1vthiy0muw1nay1sao1ah0nay1freh1dwih0thblah1dae1  |  hyp: ih0ndhlay1nih0ngwah0zao1lwey2ztuw1skah1ler0kah1ler0
+[2020] PER: 0.696 (cum: 0.702)  RTF: 0.0308 (cum: 0.0263)  |  ref: vow1lteh1rpih1ktah1psah1mthih0ngfrah1mthiy0graw1ndah0ndluh1k  |  hyp: ao1ldhchey1mtuw1luh1kih0tdah1nih0t
+[2025] PER: 0.653 (cum: 0.701)  RTF: 0.0318 (cum: 0.0263)  |  ref: may1tah1ngrah0fyuw1zdtow2aa0rtih1kyah0ley2tmay1paw1er0ah1vsp  |  hyp: tay1mtay1mtuw1teh1lah1vlae1fter0lae1ftmiy1
+[2030] PER: 0.706 (cum: 0.701)  RTF: 0.0263 (cum: 0.0263)  |  ref: tuw1sah0pow1zdhae1tthiy0aa1bjheh0ktah1vdhih1swer1kih1ztuw1ey  |  hyp: tuw1prah0suw1mstey1ih0ngih1ntuw0dhney1cher0ae1ndney1cher0ae1
+[2035] PER: 0.718 (cum: 0.701)  RTF: 0.0149 (cum: 0.0263)  |  ref: dhmah1dher0ih1nmae1nih0jhih0ngdhkey1sih1ndhih1swey1rih0lay1z  |  hyp: thiy0mao1rnih0ngkah0nsih1der0iy0ah1vhhyuw1mah0nttuw1feh1ksha
+[2040] PER: 0.724 (cum: 0.701)  RTF: 0.0286 (cum: 0.0263)  |  ref: deh1lah0hhae1dah0yah1ngsih1ster0ney1mdmer0iy1ah0ae1ndah0kah1  |  hyp: dih1ddih1lhhuw1wah0zweh1nchey1njhdwih0thchey1njhdih0ng
+[2045] PER: 0.659 (cum: 0.701)  RTF: 0.0227 (cum: 0.0263)  |  ref: ay1ih0kspeh1ktyuw1hhae1vbih1nah0veh1riy0guh1dger1lae1ndeh1la  |  hyp: ay1ae1ktih0dstih1lshiy1wer1yuw1ae1zyuw1wer1ld
+[2050] PER: 0.750 (cum: 0.701)  RTF: 0.0143 (cum: 0.0263)  |  ref: sow1sey1ih0ngshiy1leh1ddhwey1aa1ntih1ptow2faa1low0dbay1dhchi  |  hyp: sow1sow1dhruw1mae1nddhruw1mae1nddhruw1mdheh1rdheh1rwer1
+[2055] PER: 0.442 (cum: 0.701)  RTF: 0.0505 (cum: 0.0263)  |  ref: dhae1tih1zkah0mpeh1rah0tih0vliy0nah1thih0ng  |  hyp: dhae1tyuw1hhae1vnah1thih0ngnah1thih0ng
+[2060] PER: 0.511 (cum: 0.701)  RTF: 0.0603 (cum: 0.0263)  |  ref: bah1tae1nder0zkeh1rdnah1thih0ngah0baw1tdhae1t  |  hyp: bah1tih1twah0zah0baw1tdhae1tdhae1tdhae1t
+[2065] PER: 0.750 (cum: 0.701)  RTF: 0.0210 (cum: 0.0261)  |  ref: siy1ih0ngdhae1tay1ae1msow1fay1nay1mey1ae1zweh1lgow1ae1ndvih1  |  hyp: siy1mdtuw1thiy0kih1ng
+[2070] PER: 0.738 (cum: 0.701)  RTF: 0.0173 (cum: 0.0260)  |  ref: aa1nhhyuw1jhsih1lver0plae1ter0zwer1pih1rah0mih0dzah1vtaa1rts  |  hyp: ah0fyuw1aa1nfyuw1wer1reh1dae1ndkae1nttih1ngker0z
+[2075] PER: 0.714 (cum: 0.701)  RTF: 0.0277 (cum: 0.0260)  |  ref: weh1lbah1tnaw1seh1ddhprih1nseh0sae0ndshiy1fih1ldhhih1zpaa1ka  |  hyp: weh1lweh1lkey1ptthiy0kaw1ntah0nae1nddaw1nae1nddheh1rkah0nfyu
+[2080] PER: 0.699 (cum: 0.700)  RTF: 0.0252 (cum: 0.0261)  |  ref: hhiy1daa1rtih0dlay1kah0neh1row0thruw1ao1ldhhhao1lzdaw1nao1lt  |  hyp: daa1rkah0nddreh1diy0zae1ndkriy1stthiy0aa1rmiy0aa1rther0
+[2085] PER: 0.513 (cum: 0.700)  RTF: 0.0377 (cum: 0.0261)  |  ref: bah1thhih1zmah1dher0hhah1gdhhih1mklow1z  |  hyp: bah1tih1zbah1tih1zklow1ks
+[2090] PER: 0.813 (cum: 0.701)  RTF: 0.0178 (cum: 0.0261)  |  ref: leh1thhih1mkah1mih0ndheh1nseh1dthiy0kih1ngae1ndae1zih1fkow1l  |  hyp: wah1nkway1tthiy0dao1rnih0ngah1vthiy0key1mae1zih1fdhey1rih1rz
+[2095] PER: 0.625 (cum: 0.701)  RTF: 0.0287 (cum: 0.0261)  |  ref: ih1tih1zneh1sah0seh2riy0dheh1rfao2rdhae1thhiy1shuh1dkah0mpla  |  hyp: ih1tih1zmah1stah0sah0ntkey1mfrah0mkraw1nd
+[2100] PER: 0.790 (cum: 0.700)  RTF: 0.0146 (cum: 0.0261)  |  ref: dhnuw1zser1kyah0ley2tih0dwih0ththrah0pih1dah0tiy0ah1vlay1tni  |  hyp: thiy0nuw1zthiy0nuw1ah0skreh1dah0dkah0nbih1shah0nbih1n
+[2105] PER: 0.785 (cum: 0.700)  RTF: 0.0131 (cum: 0.0261)  |  ref: hhih1zleh1gzthiy0beh1stshey1ptae1tkao1rtwer1dih0spley1dtuw1g  |  hyp: hhih1zlay1fae1ndih0dfrah0mdhae1tsiy1mddhae1tseh1lf
+[2110] PER: 0.778 (cum: 0.700)  RTF: 0.0125 (cum: 0.0261)  |  ref: say1er0hhiy1seh1dyao1rmae1jhah0stiy0zmow1stdih0vow1tih0dser1  |  hyp: say1rah0nssay1nah0ser1kah0mih1shah0nah1vbeh1ter0beh1dah0l
+[2115] PER: 0.768 (cum: 0.700)  RTF: 0.0147 (cum: 0.0260)  |  ref: dih0sdey1nfah0lah1vah0sah0kseh1sah1vwih1chmae1dah0mshow1dnow  |  hyp: dih0skey1ptbah1tnaa1tbah1tih1fdhey1mah1prih1nseh1s
+[2120] PER: 0.571 (cum: 0.700)  RTF: 0.0312 (cum: 0.0260)  |  ref: duw1yuw1thih1ngksow1shiy1rih0play1dwih0thih2ndih1frah0ns  |  hyp: duw1duw1naa1tduw1thiy0rih1frah0ns
+[2125] PER: 0.689 (cum: 0.700)  RTF: 0.0275 (cum: 0.0261)  |  ref: shiy1dheh1nrow1zhhah1mih0ngthiy0eh1rtuw1wih1chshiy1wah0zpreh  |  hyp: shiy1hhae1dnaa1tshiy1dih0dnaa1tbae1kah0dvae1ns
+[2130] PER: 2.583 (cum: 0.701)  RTF: 0.0731 (cum: 0.0261)  |  ref: ih2ndiy1daa1  |  hyp: ae1ndbih0gih1nih0ngtuw1biy1ih0ngaw1tah1v
+[2135] PER: 0.705 (cum: 0.701)  RTF: 0.0445 (cum: 0.0261)  |  ref: hhwah1tao0lreh1diy0hhiy1rdhey1seh1dtow0hher0  |  hyp: way1lay1duw1naa1tseh1dtuw1hher0seh1dher0
+[2140] PER: 0.761 (cum: 0.701)  RTF: 0.0120 (cum: 0.0261)  |  ref: ay1ae1mah0wuh1mah0nae1nddheh1raa1rfyuw1lay1kmiy0hhuw0eh1ver0  |  hyp: ay1wih1lay1wih1lmeh1riy0fer0yuw1naa1ttuw1leh1tih0ngah0feh1nc
+[2145] PER: 0.765 (cum: 0.701)  RTF: 0.0178 (cum: 0.0261)  |  ref: tow0sey1nah1thih0ngseh1dmaa1ntah0ley1sow1dhae1tweh1nmae2dah0  |  hyp: tuw1sey1ntuw1sey1mtuw1dheh1rwah0zah0dah1zah0nt
+[2150] PER: 0.623 (cum: 0.701)  RTF: 0.0220 (cum: 0.0261)  |  ref: yeh1sbah1tper0hhae1psay1fray1tah0ndhher0ih0nwah1twey1  |  hyp: yeh1syeh1sah0wey1weh1lah0wey1
+[2155] PER: 0.796 (cum: 0.701)  RTF: 0.0151 (cum: 0.0261)  |  ref: ow1ay1ae1mspiy1kih0ngsih1riy0ah0sliy0riy0play1dmaa1ntah0ley1  |  hyp: ay1ae1mskey1mtuw1dhkwao1rter0iy0zwih1lwey1z
+[2160] PER: 0.744 (cum: 0.701)  RTF: 0.0153 (cum: 0.0261)  |  ref: thiy0mer1gae1nser0hhae1dah0kreh1stih0dhheh1dah1vih2rah0deh1s  |  hyp: thiy0rih1jhah0nah1vkaa1lah0say1dih0dfay1ndsah1mfay1ndwih0ths
+[2165] PER: 0.667 (cum: 0.701)  RTF: 0.0339 (cum: 0.0261)  |  ref: ih1tmay1thhae1vsiy1mddhae1tah0traw1tah1vdhih1ssay1zwah0zah0f  |  hyp: ae1ndwah1tsiy1mdtuw1strih1ngkah0ljheh1ner0ah0lmah0n
+[2170] PER: 0.690 (cum: 0.701)  RTF: 0.0193 (cum: 0.0261)  |  ref: ih1nfae1kthhiy1hhae1djhah1stfih1nih0shtih0tdhlae1stah1vdhtra  |  hyp: ih0nfae1ktih0ngdheh1rwah0zjheh1ntah0lwih0thah0kaa1mah0nah1vh
+[2175] PER: 0.632 (cum: 0.701)  RTF: 0.0354 (cum: 0.0261)  |  ref: strey1twey2dhhhao1kglay1dih0dfrah0mhhih0sper1chae0nddaa1rtih  |  hyp: strey1njhwey1tih0dae1fter0dhbae1ktuw1hhih1mhhih1m
+[2180] PER: 0.797 (cum: 0.701)  RTF: 0.0126 (cum: 0.0261)  |  ref: bah1tae1zbih0fao1rdhliy1pih0ngwey1vzah1vdhrae1pah0dzwer1tuw1  |  hyp: bah1tay1lae1zay1wer1sprih1tiy0ae1ndwah1nduw1ih0ngtuw1streh1k
+[2185] PER: 0.669 (cum: 0.700)  RTF: 0.0298 (cum: 0.0261)  |  ref: thiy0drae1gah0paa1nhhih1zbiy1kae1nddhlay1tcheh1kah0paa1nhhih  |  hyp: thiy0dray1vih0ngae1ndpuh1tae1tdhpow1ldah0paa1nhhow1lih0ng
+[2190] PER: 0.560 (cum: 0.701)  RTF: 0.0324 (cum: 0.0261)  |  ref: yao1rpley1mah1stbiy0naa1tmih1rliy0ah0guh1dpley1bah1tah0sah0k  |  hyp: nao1rpley1nih0ngtuw1seh1sah0lweh1sah0lweh1l
+[2195] PER: 0.742 (cum: 0.701)  RTF: 0.0297 (cum: 0.0261)  |  ref: leh1ndmiy1yao1rih1rfao1rteh1nmih1nah0tsae1ndyuw1shae1ller1nj  |  hyp: wiy1meh1riy0ah0ndkrae1ftae1zpraa1fah0tih0v
+[2200] PER: 0.441 (cum: 0.700)  RTF: 0.0427 (cum: 0.0262)  |  ref: wiy1maa1der0nzhhaw2eh1ver0siy1thiy0ah0bser1dah0tiy0ah1vih0t  |  hyp: wiy1maa1rvah0lmah0ndsae1tih0kyuh1rah0tiy0ah1vih0t
+[2205] PER: 0.736 (cum: 0.700)  RTF: 0.0278 (cum: 0.0261)  |  ref: ih0nthiy0maa1der0nweh1lkah0nstrah1ktih0dpley1hhiy1sih1mpliy0  |  hyp: ae1ndmaa1rih0ngah0ndah0ndmao1rnih0ngmao1rnih0ngae1ndmao1rnah
+[2210] PER: 0.685 (cum: 0.700)  RTF: 0.0217 (cum: 0.0262)  |  ref: yuw1gey1vmiy1dah1bah0lfay1vay1waa1ntdah1bah0lnay1nhhae1low0i  |  hyp: yuw1duw1yuw1duw1yuw1hhae1vbih1nih0tspih1rih0ng
+[2215] PER: 0.677 (cum: 0.700)  RTF: 0.0500 (cum: 0.0262)  |  ref: laa1rksper2bih1tmiy0ah0geh1ndhih1smao1rnih0ngfer0thther1dtay  |  hyp: ah0laa1rkah0laa1sper0ah0lfay1er0dtay1mfay1rah0teh1mptay1m
+[2220] PER: 0.667 (cum: 0.700)  RTF: 0.0654 (cum: 0.0262)  |  ref: riy0lae1psih0zih1ntuw0say1lah0nsfer0dhreh1stah1vdhiy1vnih0ng  |  hyp: rae1ptih0twah0zbrih1ngih0ngbyuw1tah0fah0lah0n
+[2225] PER: 0.798 (cum: 0.700)  RTF: 0.0175 (cum: 0.0262)  |  ref: ah0stey1jhmiy1lih1zpaa1pyah0ler0bih0kao1zih1tpruw1vztuw1thiy  |  hyp: ae1zsey1mtuw1sey1kah0nbah1tyuw1lay1kyuw1thih1ngkyuw1nuw1yuw1
+[2230] PER: 0.737 (cum: 0.700)  RTF: 0.0183 (cum: 0.0262)  |  ref: tuw1bay1tseh1rmey1dae1ndthiy0breh1dih1zkrah1mbah0ldwih0thah0  |  hyp: tuw1wah1tduw1tuw1grey1tgriy1nah0sah1vdhmow1mah0ntah1vthiy0ae
+[2235] PER: 0.703 (cum: 0.700)  RTF: 0.0172 (cum: 0.0263)  |  ref: dhae1tsah1mer0zeh2mah0grey1shah0nhhaw2eh1ver0biy1ih0ngmey1nl  |  hyp: dheh1rwer1sah1mtay2mzrey1chah0liy0thiy0grey1tah0paa1rtiy0z
+[2240] PER: 0.795 (cum: 0.700)  RTF: 0.0133 (cum: 0.0262)  |  ref: hhih1zriy0seh1pshah0nspiy1chae1tweh1stpao2rtih0nwih1chhhiy1m  |  hyp: seh1kah0ndleh1jhih0ster0pey1ser0aa1ner0ah0griy1der0z
+[2245] PER: 0.671 (cum: 0.701)  RTF: 0.0267 (cum: 0.0262)  |  ref: seh1ver0ah0lhhah1nder0dfriy1stey1tmeh1npraa1mptliy0rih0spaa1  |  hyp: seh1vrah0lneh1ver0dih0stah1ngih0ngz
+[2250] PER: 0.772 (cum: 0.701)  RTF: 0.0116 (cum: 0.0262)  |  ref: sheh1rih0fjhow1nzhhae1dhhih1zpaa1kah0tsao1lwey2zfuh1lah1vrih  |  hyp: chae1pter0cheh1rwah0zah0kah0lih1shah0nah1vdhfiy1tbay1ah0pray
+[2255] PER: 0.763 (cum: 0.701)  RTF: 0.0161 (cum: 0.0262)  |  ref: frah1mdhiy1zah0geh1nsprae1ngbeh1rah0key2dih0dae1ndfao1rtah0f  |  hyp: fer0dhiy1zih0kspriy1mzkae1ptah0nskae1ndah0paa1rtah1vpraa1bah
+[2260] PER: 0.667 (cum: 0.701)  RTF: 0.0192 (cum: 0.0262)  |  ref: fuh1tnow2tsah1mner0tuw1shae1nah0nmey1tweh1lfthey0tiy1nfih1ft  |  hyp: fer0dheh1ntey1kah0ntih1kyah0ler0tuw1sih1ks
+[2265] PER: 0.784 (cum: 0.701)  RTF: 0.0117 (cum: 0.0262)  |  ref: dhfriy1stey1thhow0teh1lah0stow1nbih1ldih0ngih1ndih0meh1nshah  |  hyp: thfreh1shiy1seh1dbay1ah0kaa1kyah0ley2tih0daa1rkah0bah0lwih1l
+[2270] PER: 0.767 (cum: 0.701)  RTF: 0.0165 (cum: 0.0262)  |  ref: hhae1fah0naw1er0ley1ter0ter1nih0ngah0deh1fiy1rtuw1aa2lrih0ma  |  hyp: ae1fter0naw1dhpray1vah0tthiy0priy0friy1stah1vdhriy1daa1ntuw1
+[2275] PER: 0.784 (cum: 0.701)  RTF: 0.0151 (cum: 0.0262)  |  ref: riy2low1key0tih0dfuh1tnow2tgah1ver0ner0raa1bah0nsah0nbiy1ih0  |  hyp: riy0rih1liy0biy1stthiy0nuw1ntuw1mih1zer0tuw1mih1zer0iy0
+[2280] PER: 0.759 (cum: 0.701)  RTF: 0.0117 (cum: 0.0261)  |  ref: dhow1throw1nih1ntuw0prih1zah0nfer0dhih1seh1nter0pray2zae0ndd  |  hyp: dheh1rwah0zrih0fay1ndtey1ksah1mtay1mzbih1ldih0nkeh1rih0kter0
+[2285] PER: 0.807 (cum: 0.701)  RTF: 0.0097 (cum: 0.0261)  |  ref: dreh1dih0ngdhsuw0pih1riy0er0paw1er0ah1vaa1rgay2lhhuw1hhae1vi  |  hyp: dreh1diy0dreh1dfao1rsah1mwah1naa1rmiy0thiy0grey1tkih1ngztuw1
+[2290] PER: 0.743 (cum: 0.701)  RTF: 0.0198 (cum: 0.0261)  |  ref: bay1ah0kwih1kae1ndah2nih0kspeh1ktih0dmaa1rchmaa1ntrow2zhhey1  |  hyp: bay1ah0pae1nyah0ntih1ntuw0dhlaa1kwah0zah1vthfrah1mwih0thhher
+[2295] PER: 0.757 (cum: 0.701)  RTF: 0.0194 (cum: 0.0260)  |  ref: dhow1dhdih1sah0plah0nah1vthfao1rmer0paa2rlah0meh1nter0iy0aa1  |  hyp: dhey1dih0dnah0sdhey1dih0dtuw1mao1rah0lbay1thiy0iy1zah0kseh1p
+[2300] PER: 0.722 (cum: 0.701)  RTF: 0.0156 (cum: 0.0260)  |  ref: dhey1ih0nfao1rmddhih1ngglih0shpaa2rlah0mah0ntah1vdhih1sah2ni  |  hyp: dhey1thih1ngkdhey1shuh1dseh1dae1ndwih0ththiy0kih1ngwih0ththi
+[2305] PER: 0.727 (cum: 0.702)  RTF: 0.0223 (cum: 0.0260)  |  ref: hhae1vmer1siy0lao1rdaa1nmiy0ay2prey1fao1rmeh1nwuh1dmiy1dih0v  |  hyp: hhae1dnaa1tnaw1wiy1dih0dnaa1twih0thaw1taa2ldheh1raa1row0
+[2310] PER: 0.766 (cum: 0.702)  RTF: 0.0115 (cum: 0.0260)  |  ref: ih1feh1niy0stih1lrih0tey1ndrae1ngker0ah0geh1nsthhih1mih0nhhi  |  hyp: ih1fay1kah0npaa1rtmah0ntae1ndpruw1dah0ntae1ndwih0thkrih1sah0
+[2315] PER: 0.484 (cum: 0.702)  RTF: 0.0555 (cum: 0.0260)  |  ref: ae1ndwah1tsao1rtah1veh1vah0dah0nsih1zlaa1jhih0kliy0paa1sah0b  |  hyp: ae1ndwah1nweh1rsah1mpaa1sah0bah0lpaa1sah0bah0lpaa1sah0bah0lp
+[2320] PER: 0.636 (cum: 0.702)  RTF: 0.0295 (cum: 0.0260)  |  ref: bah1tay1duw1naa1tthih1ngksah1chah0nih2nfer0ah0nsih1zwao1rah0  |  hyp: bah1tay1mnaa1tbah1tay1waa1zwer1tuw1
+[2325] PER: 0.775 (cum: 0.702)  RTF: 0.0126 (cum: 0.0259)  |  ref: ih0nah0nih1mih0jhah1vah0weh1lnow1nfey1sfer0ih0gzae1mpah0lsah  |  hyp: ih1nae1ndih1ndhmao1rdhah0nyao1rmah1vthiy0kah0nfih1riy0er0paa
+[2330] PER: 0.714 (cum: 0.702)  RTF: 0.0149 (cum: 0.0259)  |  ref: dheh1rih1zah1vkao1rsah0dih1frah0nsbih0twiy1nnow1ih0ngthiy0te  |  hyp: dheh1rih1zveh1riy0reh2per0ey1shah0nah1vreh2per0ey1shah0nah1v
+[2335] PER: 0.673 (cum: 0.702)  RTF: 0.0258 (cum: 0.0259)  |  ref: ih0ndhih1skey1sae1zih0nmow1stah1dher0zhhwah1tmey1biy1tey1kah  |  hyp: ae1nddhih1skey1mrae1dher0ah1vrey1ver0ah1vveh1riy0
+[2340] PER: 0.774 (cum: 0.702)  RTF: 0.0164 (cum: 0.0259)  |  ref: ay1kah0nseh1ttow2wer1knaw1tuw1rih0meh1mber0thih1ngzay1neh1ve  |  hyp: ay1kah0nseh1lfwah1tay1hhae1zney1mbih1nduw1tuw1duw1yuw1duw1tu
+[2345] PER: 0.790 (cum: 0.702)  RTF: 0.0162 (cum: 0.0259)  |  ref: ih1tih1zbay1now1miy1nzao1lwey2zrih0lay1ah0bah0lao1lmow2steh1  |  hyp: ih1tih1zbah1tih1tih1zah0hheh1rah0kseh1ptbih0fao1r
+[2350] PER: 0.750 (cum: 0.702)  RTF: 0.0199 (cum: 0.0259)  |  ref: wiy1aa1rah1vkao1rsih0nfae1ktey1bah0ltuw1jhah1jhhhweh1nwiy1re  |  hyp: wiy1aa1rriy0zah1vdhae1tnay1tow1ver0bow1thae1ndow1ver0bow1thi
+[2355] PER: 0.793 (cum: 0.702)  RTF: 0.0100 (cum: 0.0259)  |  ref: ah1vkao1rsdhwer1dzdhih1shhae1zih0gzih1stih0dbih0fao1raa1rah0  |  hyp: ah1vkao1rsah1vwih1chwah0zah0bah1tdhae1tfaa1low0hhwih1chhhae1
+[2360] PER: 0.706 (cum: 0.702)  RTF: 0.0200 (cum: 0.0258)  |  ref: ay1hhae1vkah1mtuw1yao1rshao1rzmih1ster0preh1zah0dah0ntwih0th  |  hyp: ay1kae1naa0tthih1ngkih0ngah1vthih1ngzae1ndpreh1zah0ntwer1ld
+[2365] PER: 0.625 (cum: 0.702)  RTF: 0.0185 (cum: 0.0258)  |  ref: now1daw1tih0npraa1seh0sah1vtay1mdhley1diy0zwih1lfaa1low0  |  hyp: now1dih1dnaa1tnow1faa1low0
+[2370] PER: 0.681 (cum: 0.702)  RTF: 0.0222 (cum: 0.0258)  |  ref: ser1keh1nih0ngtah0now1vah0lih2sah0veh1riy0fay1npley1er0seh1d  |  hyp: ser1tah0ntkeh1rih0tway1lay1f
+[2375] PER: 0.750 (cum: 0.702)  RTF: 0.0158 (cum: 0.0258)  |  ref: dheh1ndheh1rwer1thriy1er0fao1rliy1dih0ngmeh1nah1vthiy0kah0my  |  hyp: dheh1rwer1neh1ver0faa1dher0zmaa1row0ley1diy0z
+[2380] PER: 0.718 (cum: 0.702)  RTF: 0.0147 (cum: 0.0258)  |  ref: hhaw1mah1chah1viy1vah0lah1vriy1lah0kaa1mplih0shtiy1vah0lhhae  |  hyp: hhaw1mah1chah0ndkae1naa0tbiy1ey1tah0dey1z
+[2385] PER: 0.739 (cum: 0.702)  RTF: 0.0336 (cum: 0.0258)  |  ref: thih1ngkih0ngah1vao1ldhih0say1weh1nttow0sliy1p  |  hyp: ae1ndkey1mtuw1kwih1tah0sliy0liy0
+[2390] PER: 0.706 (cum: 0.702)  RTF: 0.0186 (cum: 0.0258)  |  ref: naa1taa2daw1tbah1thhae1dyao1rfao1rsbih1now1nliy0dah1bah0lao1  |  hyp: naa1tay1naa1tthih1ngkay1shuh1dnaa1twih0thyuw1wih0thyuw1wih1l
+[2395] PER: 0.708 (cum: 0.702)  RTF: 0.0245 (cum: 0.0258)  |  ref: ay1kah0nah0shuh1ryuw1hhiy1hhae1znaa1tiy1vah0nah0law1dmiy1tuw  |  hyp: ay1shae1lneh1kah0ndbay1dhbao1rnbao1rnbao1rd
+[2400] PER: 0.715 (cum: 0.702)  RTF: 0.0161 (cum: 0.0258)  |  ref: ay1wah0ztuw2biy0tey1kah0nah0wey1ae1ndkeh1riy0dtow0ih1ngglah0  |  hyp: ay1wih1lsiy1nah0paa1ndhpraw1dah1vdhpaa1nwih1ch
+[2405] PER: 0.661 (cum: 0.702)  RTF: 0.0229 (cum: 0.0258)  |  ref: luw0teh1nah0ntkrao1striy1zih1zah0veh1riy0gae1lah0ntao1fah0se  |  hyp: tuw1kae1ntwih0thah0fao1rah0ser1vah0l
+[2410] PER: 0.750 (cum: 0.702)  RTF: 0.0455 (cum: 0.0258)  |  ref: dhleh1ter0rae1nah0sfaa1low0z  |  hyp: dhleh1ter0leh1ter0faa1low0dfaa1low0zfaa1low0z
+[2415] PER: 0.702 (cum: 0.702)  RTF: 0.0233 (cum: 0.0258)  |  ref: bah1tih1tih1zser0may1zddhae1tyuw1wih1lfay1nddih1fah0kah0ltiy  |  hyp: bah1tih1zbah1tih1zah0gah1ver0ner0kah1ver0dah0geh1dher0
+[2420] PER: 0.729 (cum: 0.702)  RTF: 0.0265 (cum: 0.0258)  |  ref: ae1nday1hhae1vnow1wah1nreh1diy0tuw1hhuw1may1kah0ngih1vah1pth  |  hyp: ae1ndnaw1meh1niy0naw1tah0geh1dher0
+[2425] PER: 0.798 (cum: 0.702)  RTF: 0.0160 (cum: 0.0258)  |  ref: ih1fyuw1wih1lgih1vah0syao1rpraa1mah0stuw1miy1tkae1ptah0nbae1  |  hyp: yuw1wih1lbiy0dih1dyuw1wih1lnaa1tstrah1kcher0wih1lz
+[2430] PER: 0.669 (cum: 0.702)  RTF: 0.0192 (cum: 0.0258)  |  ref: ah1vdhih1spaa1rtiy0eh1dwer0dah0boy1ah1vseh1vah0ntiy1nkao1ldf  |  hyp: ah1vdhih1sway1ldbay1hheh1ldbay1hheh1ldbay1hheh1lpih0ng
+[2435] PER: 0.667 (cum: 0.702)  RTF: 0.0296 (cum: 0.0258)  |  ref: ah0zyuw1zhah0wah0lnah1thih0ngwah0zdah1nih0ndhwey1ah1vpah1nih  |  hyp: ae1zwiy1wah0zah0maa1rchmah0nt
+[2440] PER: 0.785 (cum: 0.702)  RTF: 0.0199 (cum: 0.0252)  |  ref: ae1ztuw2hhih1zey1jhae1ndao1lsow0dhney1mah1vhhih1zmae1ster0jh  |  hyp: ae1zah0suw1nae1zah0sah1fer0tweh1ltuw1may1t
+[2445] PER: 0.723 (cum: 0.702)  RTF: 0.0184 (cum: 0.0252)  |  ref: niy1mow0bih1ldzah0fae1byah0lah0sfyuw1cher0ih1stih0ksah1bmer0  |  hyp: mey1biy0mey1bah0ldhae1tdheh1ndhae1tdheh1rih1zah0pih1rah0nser
+[2450] PER: 0.667 (cum: 0.702)  RTF: 0.0304 (cum: 0.0252)  |  ref: bah1tmah1chaa1fthiy0naa1vah0lzbruw1dih0ngpaw1er0kah1mzfrah1m  |  hyp: bah1tdhae1tsiy1mdtuw1miy1nnaw1miy1now1
+[2455] PER: 0.771 (cum: 0.703)  RTF: 0.0136 (cum: 0.0252)  |  ref: fer0meh1niy0dheh1ndhih1sbuh1khhae1zbih1nah0sao1rsah1vfae1sah  |  hyp: fer0mey1dah0nah1dher0wah1nah1vdhwih1ndow0zshay1nae1ndsteh1pt
+[2460] PER: 0.614 (cum: 0.703)  RTF: 0.0389 (cum: 0.0253)  |  ref: miy1ter0rah1fliy0wah1nyaa1rdthriy1ih1nchih0z  |  hyp: meh1riy0ae1ndreh1kah0ndeh1nshah0nz
+[2465] PER: 0.731 (cum: 0.703)  RTF: 0.0191 (cum: 0.0253)  |  ref: ay1wao1ntih0dnah1thih0ngmao1rdhae1ntuw1siy1may1kah1ntriy0ah0  |  hyp: ay1wah1nder0dtuw1krao1stah0nzah1vdhlih1tah0lkah0ndih1shah0n
+[2470] PER: 0.500 (cum: 0.702)  RTF: 0.0595 (cum: 0.0253)  |  ref: ae1ndyeh1twah1tah0fay1ngae1lah0ntlae1d  |  hyp: ae1ndyeh1tweh1nyuw1blae1k
+[2475] PER: 0.732 (cum: 0.702)  RTF: 0.0199 (cum: 0.0253)  |  ref: hhiy1wah0zah0fah0nae1tih0kaa0nfao0rmae1lah0tiy0ae1ndhhiy1ow1  |  hyp: hhiy1wah0zsah0spreh1dih0dae1nddheh1rpay1rzah0nd
+[2480] PER: 0.730 (cum: 0.702)  RTF: 0.0424 (cum: 0.0253)  |  ref: wah0ldiy1lwih0thdheh1mley1ter0hhwah1t  |  hyp: wiy1dih1dnaa1tduw1yuw1wah1twaa1ntwah1t
+[2485] PER: 0.723 (cum: 0.702)  RTF: 0.0273 (cum: 0.0253)  |  ref: yuw1siy1may1freh1ndih1tsah0nih1shuw0ah1vthiy0maa1nster0dhnow  |  hyp: ih1fyuw1sih1tih1znaa1twao1rwaa1low0
+[2490] PER: 0.766 (cum: 0.702)  RTF: 0.0167 (cum: 0.0254)  |  ref: ay1ow1pah0ndah0lay1nah1vkreh1dih0tsah0fih1shah0nttuw1kah1ver  |  hyp: ay1wih1lnaa1twih1lay1wih1lkah0nteh1nter0drae1ch
+[2495] PER: 0.727 (cum: 0.702)  RTF: 0.0213 (cum: 0.0254)  |  ref: ay1wah0zweh1lsae1tah0sfay2dwih0thmay1kae1bah0nhhwih1chwah0zl  |  hyp: ay1wah0zweh1lay1wah0zmih1ster0meh1stnah0s
+[2500] PER: 0.777 (cum: 0.702)  RTF: 0.0159 (cum: 0.0253)  |  ref: thaw1zah0ndzah1vhhae1ngker0chah0fswer1wey1vih0ngah0bah1vdhiy  |  hyp: dhae1tdheh1rhhae1zmay1pae1stah1vdhwer1dzah1vdhwih1dher0yih1r
+[2505] PER: 0.731 (cum: 0.702)  RTF: 0.0216 (cum: 0.0253)  |  ref: ae1zsuw1nae1zdhey1eh1nter0dthiy0ruw1mah1vthiy0grey1tnay2fthb  |  hyp: ae1zsuw1nae1ztuw1spleh1ndah0fay2ih0ng
+[2510] PER: 0.623 (cum: 0.702)  RTF: 0.0397 (cum: 0.0253)  |  ref: mao1rnih0nger1lzhhow1pyiy1fiy1lah0zweh1lah0zyiy1luh1k  |  hyp: blae1ndih0ngah1pih1zyuw1luh1ktyuw1kuh1d
+[2515] PER: 0.654 (cum: 0.702)  RTF: 0.0188 (cum: 0.0254)  |  ref: thiy0ay0diy1ah0ah1vpae1chih0ngkae1pah0nbih1ltuw1ah0gow1twah0  |  hyp: thiy0ay0diy1ah0ah1vthiy0ay0diy1ah0ae1nddheh1ndhmaa1rker0ah1v
+[2520] PER: 0.792 (cum: 0.703)  RTF: 0.0142 (cum: 0.0254)  |  ref: bih0fao1reh1niy0kuh1dstaa1phhih1mhhiy1bah1tih0dhhih1zmae1jha  |  hyp: bah1tthiy0fao1rih1nsah1vthiy0key1msow1mah1ngger0ih0ngrow1m
+[2525] PER: 0.642 (cum: 0.703)  RTF: 0.0249 (cum: 0.0253)  |  ref: kah1mah0ndgeh1tdhbuh1ruw1shiy1seh1dgow1ih0ngtah0wao1rddhbeh1  |  hyp: kah0nkah1mih0ngtuw1ih2nvih1jhah0ney1shah0nz
+[2530] PER: 0.781 (cum: 0.703)  RTF: 0.0120 (cum: 0.0253)  |  ref: sih1nslae1stther1zdey2ay1gih1pgih0sih1zah0lhhae1vbih1ndhlao1  |  hyp: seh1nsih0nslih1tah0lbah1tdhlih1tah0lkaa1ntrah0stah0wey1aa2lw
+[2535] PER: 0.472 (cum: 0.703)  RTF: 0.0485 (cum: 0.0253)  |  ref: yuw1aa1rmey1trih0play1dthiy0sey1ler0  |  hyp: yuw1aa1ryuw1aa1ryuw1sey1ler0
+[2540] PER: 0.867 (cum: 0.703)  RTF: 0.0686 (cum: 0.0254)  |  ref: thfao1rmer0buw1luh2ruw0grow1nd  |  hyp: thfaa1rmer0thiy0grey1tgruw1gruw1gruw1gruw1gruw1
+[2545] PER: 0.758 (cum: 0.703)  RTF: 0.0320 (cum: 0.0254)  |  ref: dhae1tiy1vnih0ngtraa1tgey1vah0grae1ndbao2lih0ndhpae1lah0stuw  |  hyp: dhae1tdhae1tyuw1mah1stpiy1pah0lwer1dzbay1wer1dih0dbay1
+[2550] PER: 0.757 (cum: 0.703)  RTF: 0.0118 (cum: 0.0254)  |  ref: ih0nah0sah1nseh2tglow1ih0ngah1vkrih1msah0nae1ndgow1ldshiy1la  |  hyp: ae1nddhih1stah1ngkah0lay2zdthiy0gruw1lzwah0zfey1ldah0low1nbo
+[2555] PER: 0.692 (cum: 0.703)  RTF: 0.0309 (cum: 0.0254)  |  ref: ow1ver0dhtrae1klay1ndsih1tiy0striy1tthiy0yah1ngmeh1nthiy0gri  |  hyp: dhow1dhveh1riy0jher1niy0mae1nhhae1z
+[2560] PER: 0.581 (cum: 0.703)  RTF: 0.0236 (cum: 0.0253)  |  ref: dhae1twaa1zbah1trah1slih0ngah1vdrih1pih0ngplae1ntsih0ndhdaa1  |  hyp: dhae1twah0zdheh1rwah0zaa1rdah0daa1rk
+[2565] PER: 0.486 (cum: 0.703)  RTF: 0.0418 (cum: 0.0254)  |  ref: hhway1fey1dzdhlow1tah0sah1vdhwao1ter0  |  hyp: hhway1thih1ngksah0wao1ter0wao1ter0
+[2570] PER: 0.775 (cum: 0.703)  RTF: 0.0095 (cum: 0.0254)  |  ref: dhlih1liy0ah1vdhvae1liy0briy1dhih0ngih1ndhhhah1mbah0lgrae1sa  |  hyp: dhlih1tah0lwey1tih0dsah1mthih0ngtuw1weh1ltuw1weh1lmay1per1ch
+[2575] PER: 0.723 (cum: 0.703)  RTF: 0.0136 (cum: 0.0253)  |  ref: bah1ttheh1lih1zlay1kah0fey1ntklaw1dkih1ndah0ldae1tthray1zih0  |  hyp: bah1tdhae1tdheh1rbah1tsah1mrih0nglay1kliy0pley1s
+[2580] PER: 0.654 (cum: 0.703)  RTF: 0.0218 (cum: 0.0253)  |  ref: thiy0klaw1ddheh1nshuw1dhhih1zgow1ldah0nhheh1dae1ndhhih1zbray  |  hyp: thiy0klae1dthiy0klae1dah0ndmer1ser0er0z
+[2585] PER: 0.642 (cum: 0.703)  RTF: 0.0252 (cum: 0.0253)  |  ref: kah1mfao1rthwer1mah0nddhsay1lah0ntvae1liy0tuw1dhay1peh1nsih0  |  hyp: fao1rwah1tkah0mpliy1twih0thkwiy1n
+[2590] PER: 0.559 (cum: 0.703)  RTF: 0.0236 (cum: 0.0253)  |  ref: ae1ndley1miy1daw1nih0ndhay1kow1ldbeh1dae1ndliy1vmay1shay1nih  |  hyp: ae1ndley1diy0ah0ndley1diy0shaa1tih0ngshray1tah0lao1ng
+[2595] PER: 0.732 (cum: 0.703)  RTF: 0.0163 (cum: 0.0253)  |  ref: ay1sih1tbih0niy1thdhay1luh1ksah0schih1ldrah0nduw1ih0ndhnuw1n  |  hyp: ay1sih1tsthiy0truw1thiy0truw1thiy0kwih1kah0lah0ndjheh1ntah0l
+[2600] PER: 0.568 (cum: 0.703)  RTF: 0.0244 (cum: 0.0253)  |  ref: ow1pah0ndhay1hhaa1rtway1dae1ndfow1ldwih0dhih1ndhweh1twih1ngz  |  hyp: ow1pah0ndow1pah0ndwiy1wih1ndzah1vdhway1tah1vaw1rthao1t
+[2605] PER: 0.950 (cum: 0.703)  RTF: 0.0526 (cum: 0.0253)  |  ref: ae1ndlah1vbiy1fao1ls  |  hyp: ae1nddhlae1ndfuh1lah1vfuh1lah1vz
+[2610] PER: 0.620 (cum: 0.703)  RTF: 0.0190 (cum: 0.0253)  |  ref: dih1rah0sttiy1chmiy1sow1tuw1pao1raw1tgrae1tah0tuw2dah0sdhaw1  |  hyp: dih1rah0nddih1rae1sktae1zdhaw1ae1zah0duh1rih0ng
+[2615] PER: 0.731 (cum: 0.703)  RTF: 0.0153 (cum: 0.0253)  |  ref: ow1tuw1shuw1tmay1sow1lzfuh1lmiy1nih0ngih1ntuw0fyuw1cher0yih1  |  hyp: ow1dhae1twah1nder0ddhae1tthiy0ray1tfah0llay1kyuh1rah0pih1rdy
+============================================================
+Evaluation complete — 2620 samples
+PER: 0.7028
+RTF: 0.0253
+============================================================
+Per-sample results saved to: /test21/conformer-rnnt-asr-attn/results/logs/a4-ple.greedy.per_sample.csv
+RESULT per=0.7028 rtf=0.0253 n=2620 ckpt=val-attn-ple-hard-r0.27-epoch=15-step=9900.ckpt

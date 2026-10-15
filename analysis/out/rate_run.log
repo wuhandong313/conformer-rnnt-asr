@@ -1,0 +1,15 @@
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Checkpoint: /test21/conformer-rnnt-asr/exp/checkpoints/val-epoch=42-step=26700.ckpt | subset: test-clean
+[50] done
+[100] done
+[150] done
+[200] done
+[250] done
+[300] done
+Saved: analysis/out/rate_distribution_savgol_anchor.csv (300 utterances)
+detector       mean      std      p10      p50      p90
+naive         0.391    0.026    0.361    0.394    0.421
+fir           0.246    0.027    0.207    0.250    0.276
+savgol        0.274    0.025    0.244    0.275    0.302
+matplotlib not available — skipping plot

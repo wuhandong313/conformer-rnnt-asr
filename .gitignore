@@ -56,3 +56,7 @@ _probe*.py
 .codebuddy/
 
 remote-access.md
+
+# Preserve runtime and credential exclusions from the server.
+.env
+.venv*/
