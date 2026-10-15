@@ -1,0 +1,28 @@
+{
+  "status": "training",
+  "config": "configs/server_phone69_460h_stride4_none_s42_e50.yaml",
+  "config_sha256": "49d108791996f272496dec750be1845c0e6b1f4b2e6a210ff9e08cec99006add",
+  "code_commit": "618421d627ca2d54a771c20fe4a927dd009d8dd1",
+  "pid": 67573,
+  "started_at": "2026-10-15T15:07:50.882381+00:00",
+  "epochs": 50,
+  "early_stopping": false,
+  "max_token_limit": 24500,
+  "train_subset": [
+    "train-clean-100",
+    "train-clean-360"
+  ],
+  "val_subset": "dev-clean",
+  "test_subset": "test-clean",
+  "tokenizer": "phone69",
+  "resume_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/epoch_boundary_before_batch_resize_20261015T143222Z.ckpt",
+  "internal_dim": 128,
+  "num_heads": 8,
+  "previous_max_token_limit": 8000,
+  "resume_global_step": 8216,
+  "resume_completed_epochs": 4,
+  "resume_at_epoch_boundary": true,
+  "updated_at": "2026-10-15T15:11:24.501830+00:00",
+  "epoch": 5,
+  "global_step": 8500
+}
