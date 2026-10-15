@@ -1,0 +1,46 @@
+{
+  "budget": 8000,
+  "batches_per_epoch": 444,
+  "utterances": 28539,
+  "selected_batches": [
+    0,
+    428,
+    442
+  ],
+  "results": [
+    {
+      "batch_index": 0,
+      "utterances": 36,
+      "phones": 7859,
+      "max_feature_frames": 2453,
+      "max_target_phones": 271,
+      "peak_allocated_GiB": 47.91214942932129,
+      "peak_reserved_GiB": 49.73046875,
+      "seconds": 1.9416307541541755,
+      "loss": 11000.6806640625
+    },
+    {
+      "batch_index": 428,
+      "utterances": 127,
+      "phones": 7997,
+      "max_feature_frames": 1481,
+      "max_target_phones": 64,
+      "peak_allocated_GiB": 45.436166286468506,
+      "peak_reserved_GiB": 46.791015625,
+      "seconds": 0.7383087119087577,
+      "loss": 9538.486328125
+    },
+    {
+      "batch_index": 442,
+      "utterances": 357,
+      "phones": 7984,
+      "max_feature_frames": 537,
+      "max_target_phones": 26,
+      "peak_allocated_GiB": 36.01446771621704,
+      "peak_reserved_GiB": 36.853515625,
+      "seconds": 1.478232990950346,
+      "loss": 15445.568359375
+    }
+  ],
+  "status": "passed"
+}

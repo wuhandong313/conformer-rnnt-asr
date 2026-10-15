@@ -1,0 +1,16 @@
+Seed set to 42
+[CustomDataset:train-clean-100] RNNT numel guard (V=70, limit=1.9e+09): batches 593 -> 593, worst batch est. 1.19e+09 elements
+{"batch_index": 0, "utterances": 27, "phones": 5958, "max_feature_frames": 2453, "max_target_phones": 271, "peak_allocated_GiB": 36.012879371643066, "peak_reserved_GiB": 37.525390625, "seconds": 1.775831330101937, "loss": 8408.755859375}
+{"batch_index": 564, "utterances": 82, "phones": 5996, "max_feature_frames": 1589, "max_target_phones": 74, "peak_allocated_GiB": 33.55479717254639, "peak_reserved_GiB": 34.359375, "seconds": 0.5765522089786828, "loss": 7060.5224609375}
+{"batch_index": 591, "utterances": 267, "phones": 5983, "max_feature_frames": 537, "max_target_phones": 25, "peak_allocated_GiB": 26.86176824569702, "peak_reserved_GiB": 27.482421875, "seconds": 0.5026311110705137, "loss": 11422.576171875}
+Seed set to 42
+[CustomDataset:train-clean-100] RNNT numel guard (V=70, limit=1.9e+09): batches 444 -> 444, worst batch est. 1.59e+09 elements
+{"batch_index": 0, "utterances": 36, "phones": 7859, "max_feature_frames": 2453, "max_target_phones": 271, "peak_allocated_GiB": 47.91214942932129, "peak_reserved_GiB": 49.73046875, "seconds": 1.9416307541541755, "loss": 11000.6806640625}
+{"batch_index": 428, "utterances": 127, "phones": 7997, "max_feature_frames": 1481, "max_target_phones": 64, "peak_allocated_GiB": 45.436166286468506, "peak_reserved_GiB": 46.791015625, "seconds": 0.7383087119087577, "loss": 9538.486328125}
+{"batch_index": 442, "utterances": 357, "phones": 7984, "max_feature_frames": 537, "max_target_phones": 26, "peak_allocated_GiB": 36.01446771621704, "peak_reserved_GiB": 36.853515625, "seconds": 1.478232990950346, "loss": 15445.568359375}
+PROBE_DONE
+Seed set to 42
+[CustomDataset:train-clean-100] RNNT numel guard (V=70, limit=1.9e+09): batches 354 -> 355, worst batch est. 1.9e+09 elements
+{"batch_index": 0, "utterances": 43, "phones": 9323, "max_feature_frames": 2453, "max_target_phones": 271, "peak_allocated_GiB": 57.138206481933594, "peak_reserved_GiB": 59.1796875, "seconds": 2.1987014752812684, "loss": 13230.5947265625}
+{"batch_index": 343, "utterances": 161, "phones": 9998, "max_feature_frames": 1481, "max_target_phones": 63, "peak_allocated_GiB": 57.16001510620117, "peak_reserved_GiB": 58.544921875, "seconds": 1.025281900074333, "loss": 12211.6376953125}
+{"batch_index": 354, "utterances": 473, "phones": 9594, "max_feature_frames": 572, "max_target_phones": 25, "peak_allocated_GiB": 50.36464834213257, "peak_reserved_GiB": 51.263671875, "seconds": 0.8985372660681605, "loss": 19353.5234375}

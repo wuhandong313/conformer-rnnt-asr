@@ -24,6 +24,32 @@ REPO = Path(__file__).resolve().parents[2]
 CONFIG = REPO / "configs/server_phone69_100h_none.yaml"
 
 
+def resume_metadata(state_path, cfg):
+    """Require an explicit full checkpoint and an idle, unfinished run."""
+    source = cfg["paths"].get("from_checkpoint")
+    if not state_path.exists():
+        if source:
+            raise RuntimeError("Resume requires the original run.json")
+        return {}, {}
+    previous = json.loads(state_path.read_text())
+    if not source or previous["status"] == "completed":
+        raise RuntimeError("Existing experiment requires an explicit resume checkpoint")
+    for key in ("pipeline_pid", "child_pid"):
+        if previous.get(key) and Path(f"/proc/{previous[key]}").exists():
+            raise RuntimeError(f"Previous {key} is still alive")
+    import torch
+    checkpoint = torch.load(source, map_location="cpu", weights_only=False)
+    if not checkpoint.get("optimizer_states") or not checkpoint.get("lr_schedulers"):
+        raise RuntimeError("Resume checkpoint must include optimizer and scheduler state")
+    progress = checkpoint["loops"]["fit_loop"]["epoch_progress"]["current"]
+    old_budget = previous.get("max_token_limit", 4000)
+    if old_budget != cfg["data"]["max_token_limit"] and progress["ready"] != progress["completed"]:
+        raise RuntimeError("Changing the batch budget requires a completed epoch boundary")
+    metadata = {"resume_checkpoint": str(source), "resume_global_step": checkpoint["global_step"],
+                "resume_epoch": progress["completed"], "previous_max_token_limit": old_budget}
+    return previous, metadata
+
+
 def main():
     os.chdir(REPO)
     cfg = yaml.safe_load(CONFIG.read_text())
@@ -39,8 +65,12 @@ def main():
     lock = (exp / "pipeline.lock").open("w")
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     state_path = exp / "run.json"
-    if state_path.exists():
-        raise RuntimeError(f"Experiment already exists: {state_path}; refusing to overwrite")
+    previous, resumed = resume_metadata(state_path, cfg)
+    if previous:
+        history = exp / "run_history"
+        history.mkdir(exist_ok=True)
+        (history / f"attempt_{previous.get('attempt', 1)}.json").write_text(
+            json.dumps(previous, indent=2) + "\n")
     logs = exp / "logs"
     logs.mkdir(exist_ok=True)
     state = {
@@ -53,6 +83,11 @@ def main():
         "tokenizer": "phone69", "compression": "none", "seed": cfg["seed"],
         "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES", "all"),
         "started_at": datetime.now(timezone.utc).isoformat(),
+        "original_started_at": (previous.get("original_started_at") or previous.get("started_at")
+                                or datetime.now(timezone.utc).isoformat()),
+        "attempt": (previous.get("attempt", 1) if previous else 0) + 1,
+        "max_token_limit": cfg["data"]["max_token_limit"],
+        **resumed,
     }
 
     def save(**updates):
@@ -64,7 +99,9 @@ def main():
         print(json.dumps(updates), flush=True)
 
     def run_stage(stage, command, filename):
-        with (logs / filename).open("w") as log:
+        with (logs / filename).open("a") as log:
+            log.write(f"\n--- attempt {state['attempt']} at {state['started_at']} ---\n")
+            log.flush()
             proc = subprocess.Popen(command, cwd=REPO, stdout=log, stderr=subprocess.STDOUT)
             save(status=stage, child_pid=proc.pid, active_log=str(logs / filename))
             rc = proc.wait()

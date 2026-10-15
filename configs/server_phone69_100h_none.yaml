@@ -4,7 +4,7 @@ paths:
   dataset_path: "/test21/librispeech"
   global_stats_path: "/test21/librispeech/global_stats.json"
   exp_dir: "./exp_phone69_100h_none_s42_e40"
-  from_checkpoint: null
+  from_checkpoint: "./exp_phone69_100h_none_s42_e40/checkpoints/epoch_boundary_before_batch_resize.ckpt"
 
 tokenizer:
   type: phone69
@@ -58,7 +58,7 @@ data:
     time_mask_prob: 0.2
   transcript_suffix: "-ph"
   strip_spaces: false
-  max_token_limit: 4000  # real phone tokens, not characters
+  max_token_limit: 10000  # real phones per dynamic batch; raised from 4000 after epoch 3
   rnnt_numel_limit: 1900000000
   rnnt_frames_per_char: 3.0
   num_workers: 20
