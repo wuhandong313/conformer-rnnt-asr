@@ -1,5 +1,5 @@
 {
-  "status": "training",
+  "status": "trained",
   "config": "configs/server_phone69_460h_stride4_none_s42_e50.yaml",
   "config_sha256": "49d108791996f272496dec750be1845c0e6b1f4b2e6a210ff9e08cec99006add",
   "code_commit": "618421d627ca2d54a771c20fe4a927dd009d8dd1",
@@ -22,7 +22,8 @@
   "resume_global_step": 8216,
   "resume_completed_epochs": 4,
   "resume_at_epoch_boundary": true,
-  "updated_at": "2026-10-15T15:11:24.501830+00:00",
-  "epoch": 5,
-  "global_step": 8500
+  "updated_at": "2026-10-15T23:26:02.215333+00:00",
+  "epoch": 50,
+  "global_step": 60564,
+  "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/val-none-epoch=49-step=60426.ckpt"
 }
