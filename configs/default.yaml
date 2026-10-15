@@ -14,21 +14,19 @@
 # ---------------------------------------------------------------------------
 paths:
   # LibriSpeech 数据集根目录 (内含 LibriSpeech/ 子目录)
-  dataset_path: "./librispeech"
+  dataset_path: "./librispeech/Librispeech_phoneme_transcription"
+
+  # SentencePiece BPE 模型文件路径 (用于文本 tokenize / detokenize)
+  sp_model_path: "spm_bpe_74.model"
 
   # 全局特征统计文件路径 (JSON: mean + invstddev, 由 global_stats.py 生成)
-  global_stats_path: "./librispeech/global_stats.json"
+  global_stats_path: "global_stats.json"
 
   # 实验输出目录 (checkpoints、logs 都保存在这里)
-  exp_dir: "./exp_ipa"
+  exp_dir: "./exp"
 
   # 从某个 checkpoint 恢复训练 (null = 从头训练, 或填 .ckpt 路径)
   from_checkpoint: null
-
-# 固定 IPA 音素词表；无需训练或加载 SentencePiece。
-tokenizer:
-  type: "ipa"
-  vocab_path: "configs/ipa_vocab.json"
 
 # ---------------------------------------------------------------------------
 # 模型架构参数
@@ -41,8 +39,8 @@ model:
   # 编码器输出维度 (传给 Joiner 的向量维度)
   encoding_dim: 512
 
-  # 固定 IPA 音素数 (不含 blank，实际输出为 42 类)
-  num_symbols: 41
+  # SentencePiece 词表大小 (不含 blank, blank 会自动 +1)
+  num_symbols: 74
 
   # === 时间降采样 ===
   # 输入线性投影后的维度
@@ -155,10 +153,6 @@ training:
 # 数据配置
 # ---------------------------------------------------------------------------
 data:
-  # prepare_ipa.py 生成的 *-ipa.trans.txt；保留音素间空格。
-  transcript_suffix: "-ipa"
-  strip_spaces: false
-
   # 音频采样率 (Hz)
   sample_rate: 16000
 

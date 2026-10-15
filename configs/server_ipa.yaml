@@ -1,7 +1,8 @@
 # LibriSpeech 960h fixed IPA: same encoder/predictor as the word none baseline.
-# Run prepare_ipa.py first; no SentencePiece model or BPE training is used.
+# Reads external <subset_with_underscores>/ipa labels; no data files are generated.
 paths:
   dataset_path: "/test21/librispeech"
+  ipa_labels_path: "/test21/librispeech"
   global_stats_path: "/test21/librispeech/global_stats.json"
   exp_dir: "./exp_ipa_960h_none"
   from_checkpoint: null
@@ -9,11 +10,12 @@ paths:
 tokenizer:
   type: "ipa"
   vocab_path: "configs/ipa_vocab.json"
+  features_path: "configs/ipa_articulatory_features.json"
 
 model:
   input_dim: 80
   encoding_dim: 512
-  num_symbols: 41  # excludes blank; output classes = 42
+  num_symbols: 38  # excludes blank; output classes = 39
   time_reduction_input_dim: 128
   time_reduction_stride: 4
   right_context_length: 4
@@ -63,7 +65,8 @@ data:
     freq_mask_param: 27
     time_mask_param: 100
     time_mask_prob: 0.2
-  transcript_suffix: "-ipa"
+  ipa_label_filename: "ipa"
+  transcript_suffix: "-ipa"  # only used by legacy per-chapter readers
   strip_spaces: false
   rnnt_numel_limit: 1900000000
   rnnt_frames_per_char: 3.0

@@ -29,7 +29,7 @@ class IPAIntegrationTests(unittest.TestCase):
         self.kwargs = dict(
             librispeech_path=str(self.root), global_stats_path=str(stats),
             tokenizer_type="ipa", strip_spaces=False, transcript_suffix="-ipa",
-            num_symbols=41, input_dim=8, n_mels=8, encoding_dim=8,
+            num_symbols=38, input_dim=8, n_mels=8, encoding_dim=8,
             time_reduction_input_dim=8, num_heads=2, ffn_dim=16,
             num_layers_block1=1, num_layers_block2=1,
             depthwise_conv_kernel_size=3, compression_filter="none",
@@ -49,10 +49,10 @@ class IPAIntegrationTests(unittest.TestCase):
         with patch("builtins.__import__", side_effect=reject_spm):
             model = LibriSpeechRNNTModule(**self.kwargs)
             targets, lengths = model._extract_labels([
-                (None, 16000, "tʃ aɪ l d"), (None, 16000, "ɑ ə"),
+                (None, 16000, "t͡ʃ a j l d"), (None, 16000, "ɑ ə"),
             ])
-            self.assertEqual(lengths.tolist(), [4, 2])
-            self.assertEqual(targets[1].tolist(), [0, 39, 41, 41])
+            self.assertEqual(lengths.tolist(), [5, 2])
+            self.assertEqual(targets[1].tolist(), [25, 27, 38, 38, 38])
             batch = Batch(torch.randn(2, 36, 8), torch.tensor([32, 24], dtype=torch.int32),
                           targets, lengths)
             with patch.object(model, "log"):
@@ -61,6 +61,15 @@ class IPAIntegrationTests(unittest.TestCase):
             loss.backward()
             self.assertTrue(any(p.grad is not None and p.grad.abs().sum() > 0
                                 for p in model.model.parameters()))
+
+    def test_articulatory_labels_have_24_features_and_mask_padding(self):
+        model = LibriSpeechRNNTModule(**self.kwargs)
+        vectors, mask = model._extract_articulatory_labels([
+            (None, 16000, "t͡ʃ a j l d"), (None, 16000, "ɹ̩"),
+        ])
+        self.assertEqual(tuple(vectors.shape), (2, 5, 24))
+        self.assertEqual(mask[1].tolist(), [True, False, False, False, False])
+        self.assertTrue(torch.all(vectors[1, 1:] == 0))
 
     def test_checkpoint_rejects_word_or_reordered_ipa_inventory(self):
         model = LibriSpeechRNNTModule(**self.kwargs)
@@ -75,21 +84,25 @@ class IPAIntegrationTests(unittest.TestCase):
 
     def test_decoding_keeps_phone_zero_and_removes_only_blank(self):
         tokenizer = FixedIPATokenizer()
-        hypothesis = ([41, 0, 7, 5, 41], None, None, 0.0)
+        hypothesis = ([38, 0, 17, 32, 38], None, None, 0.0)
         text, _, ids = post_process_hypos([hypothesis], tokenizer)[0]
-        self.assertEqual(text, "ɑ tʃ aɪ")
-        self.assertEqual(ids, [0, 7, 5])
+        self.assertEqual(text, "a t͡ʃ ɹ̩")
+        self.assertEqual(ids, [0, 17, 32])
 
     def test_batch_budget_uses_phone_counts(self):
         chapter = self.root / "LibriSpeech/train-clean-100/1/2"
         chapter.mkdir(parents=True)
-        (chapter / "1-2-ipa.trans.txt").write_text("1-2-0000 tʃ aɪ l d\n1-2-0001 ə ɚ\n")
+        labels = self.root / "external_labels/train_clean_100"
+        labels.mkdir(parents=True)
+        (labels / "ipa").write_text("1-2-0000 t͡ʃ a j l d\n1-2-0001 ə ɹ̩\n")
         for uid in ("1-2-0000", "1-2-0001"):
             (chapter / f"{uid}.flac").touch()
-        dataset = CustomDataset(LIBRISPEECH(self.root, transcript_suffix="-ipa"),
-                                4, sp_model=FixedIPATokenizer(), strip_spaces=False,
-                                rnnt_vocab=42)
+        dataset = CustomDataset(LIBRISPEECH(self.root, ipa_labels_path=self.root / "external_labels"),
+                                5, sp_model=FixedIPATokenizer(), strip_spaces=False,
+                                rnnt_vocab=39)
         self.assertEqual(dataset.batches, [[0], [1]])
+        self.assertEqual(dataset.base_dataset.get_metadata(0)[2], "t͡ʃ a j l d")
+        self.assertFalse((chapter / "1-2-ipa.trans.txt").exists())
 
     def test_per_is_corpus_weighted_in_eval(self):
         class FakeModel(torch.nn.Module):
@@ -100,11 +113,11 @@ class IPAIntegrationTests(unittest.TestCase):
 
             def __init__(self):
                 super().__init__()
-                self.predictions = iter(["", "aɪ l d"])
+                self.predictions = iter(["", "a j l"])
 
             def test_dataloader(self):
                 batch = Batch(None, torch.tensor([100]), None, None)
-                return [(batch, ["tʃ"]), (batch, ["aɪ l d"])]
+                return [(batch, ["t͡ʃ"]), (batch, ["a j l"])]
 
             def forward(self, batch):
                 return next(self.predictions)

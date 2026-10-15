@@ -40,4 +40,4 @@ PRs should explain the behavior change, affected configuration, validation comma
 
 Keep credentials in ignored `remote-access.md`. Keep datasets, tokenizer/model binaries, checkpoints, and large experiment outputs untracked. Match tokenizer vocabulary and preprocessing settings to the checkpoint, and use distinct experiment/output paths.
 
-`configs/ipa_vocab.json` is the tracked fixed IPA inventory. IPA labels use whitespace-delimited complete phones in `*-ipa.trans.txt`, generated offline by `prepare_ipa.py`; do not split Unicode characters or mix legacy phoneme conventions. See `docs/ipa_vocabulary_review.md` for the mapping and data audit.
+`configs/ipa_vocab.json` is the tracked fixed IPA inventory. IPA labels use whitespace-delimited complete phones in external Epitran files, read from external `<subset_with_underscores>/ipa` files by `ipa_labels.py`; do not split Unicode characters or mix legacy phoneme conventions. See `docs/ipa_vocabulary_review.md` for the mapping and data audit.

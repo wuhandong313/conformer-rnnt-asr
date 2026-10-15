@@ -12,33 +12,23 @@ class IPATokenizerTests(unittest.TestCase):
         self.tokenizer = FixedIPATokenizer()
 
     def test_complete_phones_roundtrip_and_blank(self):
-        text = "tʃ dʒ aɪ aʊ eɪ oʊ ɔɪ ɝ ɚ ə ɹ ɡ"
+        text = "t͡ʃ d͡ʒ a j o w ə ɹ ɹ̩ ɡ"
         ids = self.tokenizer.encode(text)
-        self.assertEqual(len(ids), 12)
+        self.assertEqual(len(ids), 10)
         self.assertEqual(self.tokenizer.decode(ids), text)
-        self.assertEqual(self.tokenizer.decode([41, *ids, 41]), text)
-        self.assertEqual(self.tokenizer.get_piece_size(), 41)
-        self.assertEqual(self.tokenizer.blank_id, 41)
-        self.assertEqual(self.tokenizer.encode("ɑ æ ʌ"), [0, 1, 2])
+        self.assertEqual(self.tokenizer.decode([38, *ids, 38]), text)
+        self.assertEqual(self.tokenizer.get_piece_size(), 38)
+        self.assertEqual(self.tokenizer.blank_id, 38)
+        self.assertEqual(self.tokenizer.encode("a b d"), [0, 1, 2])
 
-    def test_only_explicit_aliases_are_normalized(self):
-        self.assertEqual(self.tokenizer.tokenize("t͡ʃ d͜ʒ g"), ["tʃ", "dʒ", "ɡ"])
-        for unknown in ("r", "ɻ", "kʰ", "iː", "T", "HH", "tʃaɪld", "ˈæ", "<unk>"):
+    def test_preserves_tie_bars_syllabic_r_and_rejects_other_conventions(self):
+        self.assertEqual(self.tokenizer.tokenize("t͡ʃ   ɹ̩"), ["t͡ʃ", "ɹ̩"])
+        for unknown in ("r", "ɻ", "kʰ", "iː", "T", "HH", "t͡ʃajld", "ˈæ", "<unk>", "aɪ", "ɝ", "ɚ", "tʃ"):
             with self.subTest(unknown=unknown), self.assertRaises(ValueError):
                 self.tokenizer.encode(unknown)
 
-    def test_stress_reductions(self):
-        self.assertEqual(
-            self.tokenizer.convert_arpabet("AH0 AH1 AH2 ER0 ER1 ER2 CH AY1 L D"),
-            "ə ʌ ʌ ɚ ɝ ɝ tʃ aɪ l d",
-        )
-        self.assertEqual(self.tokenizer.convert_arpabet("hh iy1"), "h i")
-        for invalid in ("T1", "SIL", "AX", "AH3", "A", "tʃ"):
-            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
-                self.tokenizer.convert_arpabet(invalid)
-
     def test_shared_encoding_preserves_phone_boundaries(self):
-        self.assertEqual(encode_transcript(self.tokenizer, "tʃ aɪ", False), [7, 5])
+        self.assertEqual(encode_transcript(self.tokenizer, "t͡ʃ a j", False), [17, 0, 8])
 
         class LegacyTokenizer:
             def encode(self, text):

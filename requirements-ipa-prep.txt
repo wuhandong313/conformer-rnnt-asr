@@ -1,2 +1,2 @@
-# Offline word → phoneme label preparation only; training does not import G2P.
-g2p-en==2.1.0
+# Only needed to rebuild the tracked 38 × 24 table, not to read data or train.
+panphon==0.22.2
