@@ -1,4 +1,4 @@
-# no time stride + cosine_diff/learned; 2000-phone budget estimates attention across 2 full-rate + 8 compressed layers.
+# Measured batch budget targeting approximately 90% A100 80 GiB device memory.
 # Approved serial run: all three experiments use internal Conformer width 128 and 8 heads.
 ---
 paths:
@@ -62,7 +62,7 @@ data:
     time_mask_prob: 0.2
   transcript_suffix: -ph
   strip_spaces: false
-  max_token_limit: 2000  # Initial phone-token cap; monitor actual training memory.
+  max_token_limit: 16500  # Measured with real batches and retained allocator cache.
   rnnt_numel_limit: 1900000000
   rnnt_frames_per_char: 3.5
   num_workers: 20

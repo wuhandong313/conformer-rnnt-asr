@@ -1,4 +1,4 @@
-# stride=4 + cosine_diff/learned; 8000-phone budget follows the measured safe 8k probe.
+# Measured batch budget targeting approximately 90% A100 80 GiB device memory.
 # Approved serial run: all three experiments use internal Conformer width 128 and 8 heads.
 ---
 paths:
@@ -62,7 +62,7 @@ data:
     time_mask_prob: 0.2
   transcript_suffix: -ph
   strip_spaces: false
-  max_token_limit: 8000
+  max_token_limit: 68000
   rnnt_numel_limit: 1900000000
   rnnt_frames_per_char: 3.0
   num_workers: 20
