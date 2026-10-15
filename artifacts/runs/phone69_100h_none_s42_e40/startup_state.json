@@ -1,0 +1,21 @@
+{
+  "status": "training",
+  "config": "configs/server_phone69_100h_none.yaml",
+  "config_sha256": "e81a5acb09bed4a298be4c969e781d05d722b6d254f6416124e500c7adc569c7",
+  "vocab_sha256": "381f0fa6dd78e828ccf68c0f4b5d3988aabb3976753d4ae62ffea7f0359876e6",
+  "code_commit": "54008b15fc89854cb5e424d5698f6e419c0deef7",
+  "pipeline_pid": 23578,
+  "epochs": 40,
+  "early_stopping": false,
+  "train_subset": "train-clean-100",
+  "val_subset": "dev-clean",
+  "test_subset": "test-clean",
+  "tokenizer": "phone69",
+  "compression": "none",
+  "seed": 42,
+  "cuda_visible_devices": "0",
+  "started_at": "2026-10-15T08:27:29.205240+00:00",
+  "updated_at": "2026-10-15T08:27:29.239769+00:00",
+  "child_pid": 23581,
+  "active_log": "/test21/conformer-rnnt-asr/exp_phone69_100h_none_s42_e40/logs/train.log"
+}

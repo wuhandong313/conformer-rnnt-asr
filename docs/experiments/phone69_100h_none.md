@@ -32,3 +32,15 @@ evaluations/metrics.json
 ```
 
 启动器拒绝覆盖已有的 `run.json`。训练中的日志和大 checkpoint 留在实验目录；小型运行记录和日志快照可保存到 `artifacts/` 后同步。训练期间保持 main 的训练源码及本配置不变；运行记录保存启动时的提交和配置哈希。
+
+## 本次启动记录
+
+已于 2026-10-15 16:27:29（Asia/Shanghai）在 tmux `phone69_100h_none_s42_e40` 中启动，训练代码提交为 `54008b1`。实际模型参数为 40,264,262，每轮 894 steps，总计 35,760 steps。真实音频训练/验证 smoke 和 32 项回归测试通过；正式训练已完成验证并保存可加载 checkpoint。训练和最终 PER 评估尚未完成。
+
+启动时的小型日志快照位于 `artifacts/logs/phone69_100h_none_s42_e40.*.log`，状态和资源采样位于 `artifacts/runs/phone69_100h_none_s42_e40/`。这些是固定快照，实时状态以服务器实验目录的 `run.json`、`logs/train.log` 和 `lightning_logs/version_0/metrics.csv` 为准。
+
+tmux 的 `monitor` 窗口上方显示训练日志，下方每 2 秒刷新 GPU 使用情况：
+
+```bash
+tmux attach -t phone69_100h_none_s42_e40
+```

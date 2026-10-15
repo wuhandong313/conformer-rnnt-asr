@@ -1,0 +1,283 @@
+{
+  "status": {
+    "status": "training",
+    "config": "configs/server_phone69_100h_none.yaml",
+    "config_sha256": "e81a5acb09bed4a298be4c969e781d05d722b6d254f6416124e500c7adc569c7",
+    "vocab_sha256": "381f0fa6dd78e828ccf68c0f4b5d3988aabb3976753d4ae62ffea7f0359876e6",
+    "code_commit": "54008b15fc89854cb5e424d5698f6e419c0deef7",
+    "pipeline_pid": 23578,
+    "epochs": 40,
+    "early_stopping": false,
+    "train_subset": "train-clean-100",
+    "val_subset": "dev-clean",
+    "test_subset": "test-clean",
+    "tokenizer": "phone69",
+    "compression": "none",
+    "seed": 42,
+    "cuda_visible_devices": "0",
+    "started_at": "2026-10-15T08:27:29.205240+00:00",
+    "updated_at": "2026-10-15T08:27:29.239769+00:00",
+    "child_pid": 23581,
+    "active_log": "/test21/conformer-rnnt-asr/exp_phone69_100h_none_s42_e40/logs/train.log"
+  },
+  "samples": [
+    {
+      "timestamp": 1792052957.373873,
+      "gpu": {
+        "used_MiB": 16341.0,
+        "total_MiB": 81920.0,
+        "util_percent": 0.0,
+        "power_W": 69.71,
+        "temperature_C": 32.0
+      },
+      "progress": {
+        "epoch_index": 0,
+        "batch_index": 200,
+        "batches_per_epoch": 894,
+        "global_step_estimate": 200,
+        "progress_timing": "01:22<04:44,  2.44it/s, v_num=0"
+      },
+      "metrics": {
+        "Losses/val_loss_epoch": "268.46392822265625",
+        "epoch": "0",
+        "step": "199",
+        "Losses/val_loss_step": "62.074771881103516",
+        "Losses/train_loss_step": "586.578125"
+      },
+      "child_pid": 23581
+    },
+    {
+      "timestamp": 1792052962.6103532,
+      "gpu": {
+        "used_MiB": 19667.0,
+        "total_MiB": 81920.0,
+        "util_percent": 54.0,
+        "power_W": 271.28,
+        "temperature_C": 38.0
+      },
+      "progress": {
+        "epoch_index": 0,
+        "batch_index": 202,
+        "batches_per_epoch": 894,
+        "global_step_estimate": 202,
+        "progress_timing": "01:39<05:40,  2.03it/s, v_num=0"
+      },
+      "metrics": {
+        "Losses/val_loss_epoch": "268.46392822265625",
+        "epoch": "0",
+        "step": "199",
+        "Losses/val_loss_step": "62.074771881103516",
+        "Losses/train_loss_step": "586.578125"
+      },
+      "child_pid": 23581
+    },
+    {
+      "timestamp": 1792052967.7152803,
+      "gpu": {
+        "used_MiB": 25095.0,
+        "total_MiB": 81920.0,
+        "util_percent": 53.0,
+        "power_W": 186.38,
+        "temperature_C": 38.0
+      },
+      "progress": {
+        "epoch_index": 0,
+        "batch_index": 215,
+        "batches_per_epoch": 894,
+        "global_step_estimate": 215,
+        "progress_timing": "01:44<05:29,  2.06it/s, v_num=0"
+      },
+      "metrics": {
+        "Losses/train_loss_step": "731.37548828125",
+        "epoch": "0",
+        "step": "209",
+        "Losses/val_loss_epoch": "268.46392822265625",
+        "Losses/val_loss_step": "62.074771881103516"
+      },
+      "child_pid": 23581
+    },
+    {
+      "timestamp": 1792052972.8673542,
+      "gpu": {
+        "used_MiB": 25097.0,
+        "total_MiB": 81920.0,
+        "util_percent": 57.0,
+        "power_W": 242.27,
+        "temperature_C": 41.0
+      },
+      "progress": {
+        "epoch_index": 0,
+        "batch_index": 228,
+        "batches_per_epoch": 894,
+        "global_step_estimate": 228,
+        "progress_timing": "01:49<05:20,  2.08it/s, v_num=0"
+      },
+      "metrics": {
+        "Losses/train_loss_step": "509.4110107421875",
+        "epoch": "0",
+        "step": "219",
+        "Losses/val_loss_epoch": "268.46392822265625",
+        "Losses/val_loss_step": "62.074771881103516"
+      },
+      "child_pid": 23581
+    },
+    {
+      "timestamp": 1792052977.9526944,
+      "gpu": {
+        "used_MiB": 25097.0,
+        "total_MiB": 81920.0,
+        "util_percent": 54.0,
+        "power_W": 287.92,
+        "temperature_C": 40.0
+      },
+      "progress": {
+        "epoch_index": 0,
+        "batch_index": 241,
+        "batches_per_epoch": 894,
+        "global_step_estimate": 241,
+        "progress_timing": "01:54<05:10,  2.10it/s, v_num=0"
+      },
+      "metrics": {
+        "Losses/train_loss_step": "184.94786071777344",
+        "epoch": "0",
+        "step": "239",
+        "Losses/val_loss_epoch": "268.46392822265625",
+        "Losses/val_loss_step": "62.074771881103516"
+      },
+      "child_pid": 23581
+    },
+    {
+      "timestamp": 1792052983.051022,
+      "gpu": {
+        "used_MiB": 25097.0,
+        "total_MiB": 81920.0,
+        "util_percent": 70.0,
+        "power_W": 246.83,
+        "temperature_C": 45.0
+      },
+      "progress": {
+        "epoch_index": 0,
+        "batch_index": 255,
+        "batches_per_epoch": 894,
+        "global_step_estimate": 255,
+        "progress_timing": "01:59<05:00,  2.13it/s, v_num=0"
+      },
+      "metrics": {
+        "Losses/train_loss_step": "549.8856201171875",
+        "epoch": "0",
+        "step": "249",
+        "Losses/val_loss_epoch": "268.46392822265625",
+        "Losses/val_loss_step": "62.074771881103516"
+      },
+      "child_pid": 23581
+    },
+    {
+      "timestamp": 1792052988.208491,
+      "gpu": {
+        "used_MiB": 25109.0,
+        "total_MiB": 81920.0,
+        "util_percent": 71.0,
+        "power_W": 338.77,
+        "temperature_C": 46.0
+      },
+      "progress": {
+        "epoch_index": 0,
+        "batch_index": 269,
+        "batches_per_epoch": 894,
+        "global_step_estimate": 269,
+        "progress_timing": "02:05<04:50,  2.15it/s, v_num=0"
+      },
+      "metrics": {
+        "Losses/train_loss_step": "678.5963745117188",
+        "epoch": "0",
+        "step": "259",
+        "Losses/val_loss_epoch": "268.46392822265625",
+        "Losses/val_loss_step": "62.074771881103516"
+      },
+      "child_pid": 23581
+    },
+    {
+      "timestamp": 1792052993.3612084,
+      "gpu": {
+        "used_MiB": 25109.0,
+        "total_MiB": 81920.0,
+        "util_percent": 62.0,
+        "power_W": 149.51,
+        "temperature_C": 42.0
+      },
+      "progress": {
+        "epoch_index": 0,
+        "batch_index": 283,
+        "batches_per_epoch": 894,
+        "global_step_estimate": 283,
+        "progress_timing": "02:10<04:40,  2.17it/s, v_num=0"
+      },
+      "metrics": {
+        "Losses/train_loss_step": "511.9925537109375",
+        "epoch": "0",
+        "step": "279",
+        "Losses/val_loss_epoch": "268.46392822265625",
+        "Losses/val_loss_step": "62.074771881103516"
+      },
+      "child_pid": 23581
+    },
+    {
+      "timestamp": 1792052998.5367496,
+      "gpu": {
+        "used_MiB": 25109.0,
+        "total_MiB": 81920.0,
+        "util_percent": 64.0,
+        "power_W": 338.06,
+        "temperature_C": 47.0
+      },
+      "progress": {
+        "epoch_index": 0,
+        "batch_index": 298,
+        "batches_per_epoch": 894,
+        "global_step_estimate": 298,
+        "progress_timing": "02:15<04:30,  2.20it/s, v_num=0"
+      },
+      "metrics": {
+        "Losses/train_loss_step": "437.07073974609375",
+        "epoch": "0",
+        "step": "289",
+        "Losses/val_loss_epoch": "268.46392822265625",
+        "Losses/val_loss_step": "62.074771881103516"
+      },
+      "child_pid": 23581
+    }
+  ],
+  "window_seconds": 41.16287660598755,
+  "window_steps": 98,
+  "steps_per_second": 2.3807859916608676,
+  "seconds_per_step": 0.4200293531223219,
+  "gpu_util_mean": 53.888888888888886,
+  "gpu_util_min": 0.0,
+  "gpu_util_max": 71.0,
+  "gpu_memory_peak_MiB": 25109.0,
+  "latest": {
+    "timestamp": 1792052998.5367496,
+    "gpu": {
+      "used_MiB": 25109.0,
+      "total_MiB": 81920.0,
+      "util_percent": 64.0,
+      "power_W": 338.06,
+      "temperature_C": 47.0
+    },
+    "progress": {
+      "epoch_index": 0,
+      "batch_index": 298,
+      "batches_per_epoch": 894,
+      "global_step_estimate": 298,
+      "progress_timing": "02:15<04:30,  2.20it/s, v_num=0"
+    },
+    "metrics": {
+      "Losses/train_loss_step": "437.07073974609375",
+      "epoch": "0",
+      "step": "289",
+      "Losses/val_loss_epoch": "268.46392822265625",
+      "Losses/val_loss_step": "62.074771881103516"
+    },
+    "child_pid": 23581
+  }
+}

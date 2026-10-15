@@ -1,0 +1,14 @@
+{
+  "tmux_session": "phone69_100h_none_s42_e40",
+  "training_code_commit": "54008b15fc89854cb5e424d5698f6e419c0deef7",
+  "parameters": 40264262,
+  "batches_per_epoch": 894,
+  "total_steps": 35760,
+  "epochs": 40,
+  "early_stopping": false,
+  "window_seconds": 41.16287660598755,
+  "measured_steps_per_second": 2.3807859916608676,
+  "peak_sampled_memory_MiB": 25109.0,
+  "gpu_util_mean_percent": 53.888888888888886,
+  "initial_val_loss": "268.46392822265625"
+}

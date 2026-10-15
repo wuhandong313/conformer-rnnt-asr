@@ -1,0 +1,35 @@
+Seed set to 42
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/logger_connector.py:76: Starting from v1.9.0, `tensorboardX` has been removed as a dependency of the `pytorch_lightning` package, due to potential conflicts with other packages in the ML ecosystem. For this reason, `logger=True` will use `CSVLogger` as the default logger, unless the `tensorboard` or `tensorboardX` packages are found. Please `pip install lightning[extra]` or one of them to enable TensorBoard support by default
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+Running in `fast_dev_run` mode: will run the requested loop using 1 batch(es). Logging and checkpointing is suppressed.
+BASELINE_PARAMETERS 40264262
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name                | Type          | Params | Mode  | FLOPs
+----------------------------------------------------------------------
+0 | model               | ConformerRNNT | 40.3 M | train | 0    
+1 | loss                | RNNTLoss      | 0      | train | 0    
+2 | train_data_pipeline | Sequential    | 0      | train | 0    
+3 | valid_data_pipeline | Sequential    | 0      | train | 0    
+----------------------------------------------------------------------
+40.3 M    Trainable params
+0         Non-trainable params
+40.3 M    Total params
+161.057   Total estimated model params size (MB)
+368       Modules in train mode
+0         Modules in eval mode
+0         Total Flops
+[CustomDataset:train-clean-100] RNNT numel guard (V=70, limit=1.9e+09): batches 894 -> 894, worst batch est. 7.5e+08 elements
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:434: The 'train_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=111` in the `DataLoader` to improve performance.
+[CustomDataset:dev-clean] RNNT numel guard (V=70, limit=1.9e+09): batches 49 -> 49, worst batch est. 9.71e+08 elements
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:434: The 'val_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=111` in the `DataLoader` to improve performance.
+Training: |          | 0/? [00:00<?, ?it/s]Training: |          | 0/? [00:00<?, ?it/s]Epoch 0:   0%|          | 0/1 [00:00<?, ?it/s]Epoch 0: 100%|██████████| 1/1 [00:02<00:00,  0.33it/s]Epoch 0: 100%|██████████| 1/1 [00:02<00:00,  0.33it/s]
+Validation: |          | 0/? [00:00<?, ?it/s][A
+Validation: |          | 0/? [00:00<?, ?it/s][A
+Validation DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s][A
+Validation DataLoader 0: 100%|██████████| 1/1 [00:00<00:00,  4.55it/s][A
+                                                                      [AEpoch 0: 100%|██████████| 1/1 [00:03<00:00,  0.26it/s]Epoch 0: 100%|██████████| 1/1 [00:03<00:00,  0.26it/s]`Trainer.fit` stopped: `max_steps=1` reached.
+Epoch 0: 100%|██████████| 1/1 [00:03<00:00,  0.26it/s]
+SMOKE_OK {"global_step": 1, "metrics": {"Losses/train_loss": 1763.4798583984375, "Losses/train_loss_step": 1763.47998046875, "Losses/val_loss": 3963.247314453125, "Losses/val_loss_epoch": 3963.247314453125, "Losses/train_loss_epoch": 1763.4798583984375}, "blank": 69, "tokenizer": "phone69", "peak_gpu_MiB": 17072.9189453125}

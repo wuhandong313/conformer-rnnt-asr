@@ -63,6 +63,6 @@ Checkpoint 保存词表指纹与 token 顺序；训练恢复和评估均检查�
 ## 已验证与待完成
 
 - 31 项回归测试通过，包含小模型 RNN-T loss/backward、padding、解码 ID 0、批次音素计数、PER、词表指纹及 word-BPE 路径。
-- 尚未开展 phone69 真实音频完整评估或正式训练；数据、checkpoint 和运行任务未改动。
+- 已启动固定 40 轮、不早停的 clean-100、compression none 基线，完成真实音频 smoke 及首次正式验证；训练和完整 PER 评估仍在进行，见 [实验记录](experiments/phone69_100h_none.md)。
 - 服务器原有修改、调试脚本和小日志已保存并接回各自分支；当前 main 保留新版 phone69/IPA 评估逻辑。
 - 工作树收拢到原仓库，独立实验以分支保留；三端同步方式见 [repository_sync.md](repository_sync.md)。
