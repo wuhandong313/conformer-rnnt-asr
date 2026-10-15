@@ -54,3 +54,6 @@ env/
 remote-access.md
 
 .env
+
+# Large assets retained outside Git (over 10 MiB).
+/papers/divprune-cvpr25-2503.02175.pdf
