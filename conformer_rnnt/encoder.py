@@ -84,6 +84,7 @@ class ConformerEncoder(torch.nn.Module):
         right_context_length: int,
         time_reduction_input_dim: int,
         time_reduction_stride: int,
+        compression_right_context_length: Optional[int] = None,
         num_heads: int,
         ffn_dim: int,
         num_layers_block1: int = 2,
@@ -103,6 +104,11 @@ class ConformerEncoder(torch.nn.Module):
 
         dim = time_reduction_input_dim * time_reduction_stride  # encoder dim
         rc_frames = right_context_length // time_reduction_stride    # reduced right-ctx
+        compression_rc_frames = (
+            right_context_length
+            if compression_right_context_length is None
+            else compression_right_context_length
+        )
 
         # Frontend
         self.input_linear = torch.nn.Linear(input_dim, time_reduction_input_dim, bias=False)
@@ -120,7 +126,7 @@ class ConformerEncoder(torch.nn.Module):
             det_cfg = compression_detector or {"type": "raw"}
             mix_cfg = compression_mixer or {"type": "hard"}
             self.compression = DynamicCompression(
-                right_context_length=right_context_length,
+                right_context_length=compression_rc_frames,
                 detector=det_cfg,
                 mixer=mix_cfg,
                 feature_dim=dim,
@@ -130,7 +136,7 @@ class ConformerEncoder(torch.nn.Module):
             )
         else:
             self.compression = DynamicCompression.from_legacy(
-                right_context_length=right_context_length,
+                right_context_length=compression_rc_frames,
                 compression_filter=compression_filter,
                 hanning_window_size=hanning_window_size,
                 feature_dim=dim,
