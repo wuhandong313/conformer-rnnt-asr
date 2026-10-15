@@ -54,3 +54,9 @@ _probe*.py
 
 # Codebuddy
 .codebuddy/
+
+remote-access.md
+
+.env
+
+.venv*/

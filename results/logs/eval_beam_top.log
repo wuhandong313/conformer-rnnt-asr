@@ -1,0 +1,9 @@
+2026-10-04 03:49:39 max-pool ckpt: 
+2026-10-04 07:02:09 cosine_diff-learned beam20 done
+2026-10-04 10:14:53 fir-seg_avg beam20 done
+2026-10-04 13:19:33 savgol-learned beam20 done
+2026-10-04 13:19:33 ALL BEAM EVALS DONE
+2026-10-04 16:57:53 a4-max-pool beam20 done
+2026-10-05 07:39:04 baseline-none beam20 done
+2026-10-05T10:55:02 max-pool beam20 v2 done
+2026-10-05T15:29:58 baseline-none beam20 v2 done

@@ -1,0 +1,11 @@
+oracle-dp	configs/exp/oracle-dp.yaml	greedy	/test21/conformer-rnnt-asr/exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt
+a4-avg-pool	configs/exp/a4-avg-pool.yaml	greedy
+a4-cosine-diff	configs/exp/a4-cosine-diff.yaml	greedy
+a4-energy	configs/exp/a4-energy.yaml	greedy
+a4-max-pool	configs/exp/a4-max-pool.yaml	greedy
+a4-mmdp	configs/exp/a4-mmdp.yaml	greedy
+a4-ple	configs/exp/a4-ple.yaml	greedy
+a4-random	configs/exp/a4-random.yaml	greedy
+a4-savgol-cal	configs/exp/a4-savgol-cal.yaml	greedy
+a4-topk-diff	configs/exp/a4-topk-diff.yaml	greedy
+a4-uniform	configs/exp/a4-uniform.yaml	greedy

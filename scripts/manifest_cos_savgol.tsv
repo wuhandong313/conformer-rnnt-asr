@@ -1,0 +1,3 @@
+b-cosine_diff_savgol-hard	configs/exp/b-cosine_diff_savgol-hard.yaml	greedy
+b-cosine_diff_savgol-seg_avg	configs/exp/b-cosine_diff_savgol-seg_avg.yaml	greedy
+b-cosine_diff_savgol-learned	configs/exp/b-cosine_diff_savgol-learned.yaml	greedy
