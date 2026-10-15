@@ -1,0 +1,19 @@
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Dropping shared w_vocab alias keys on load: ['model.medusa_heads.w_vocab.weight', 'model.medusa_heads.w_vocab.bias']
+checkpoint: exp_iter2/monitor_eval/val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600-236956656.ckpt
+frame_ms=40 K=2 max_samples=2620
+
+utterances=2618 ref_tokens=190111 loop_skipped=2
+head       att    disp    abst     hit    hit%   repl%  leadP50  leadP90  leadP99  leadAvg    value (ms)
+h1      190111  190103       8  103692   54.55   45.45       40       40       80       32     17.3
+h2      190103  190103       0   66372   34.91   65.09       40       80      160       60     21.0
+
+merged: displayed=380206 hits=170064 hit%=44.73 unscorable=7854
+lead(all hits, ms): P50=40 P90=80 P99=120
+
+LM 先验 vs 头 (同一批样本):
+head    headHit%   LMhit%     gap
+h1         54.55    15.89  +38.65
+h2         34.91     2.56  +32.35
+DISPLAY_DONE

@@ -1,0 +1,28 @@
+{
+  "lossless_checked": 0,
+  "lossless_failures": 0,
+  "medusa_accept_rate": 0.29293355855855857,
+  "medusa_blank_drafts": 0,
+  "medusa_draft_rounds": 3552,
+  "medusa_fallbacks": 2977,
+  "medusa_per_head": [
+    {
+      "accepted": 1506,
+      "blank_drafts": 0,
+      "drafts": 3552,
+      "rate": 0.4239864864864865
+    },
+    {
+      "accepted": 575,
+      "blank_drafts": 0,
+      "drafts": 3552,
+      "rate": 0.16188063063063063
+    }
+  ],
+  "medusa_samples": 100,
+  "medusa_total_accepted": 2081,
+  "medusa_total_drafts": 7104,
+  "num_samples": 100,
+  "per": 0.09351531728605748,
+  "rtf": 0.10970815341170359
+}

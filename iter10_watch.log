@@ -1,0 +1,352 @@
+=== 09-17 09:59 ===
+TRAIN ALIVE ? loss~? | CKPT val-naive-h2-frz-sl1-post-chain-p7-sim-dl-epoch=07-step=20400.ckpt | eval failed
+=== 09-17 10:13 ===
+TRAIN ALIVE ? loss~382.45383 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=00-step=1000.ckpt | h1=0.000 h2=0.000 | overall=0.000 | PER=1.0000 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-17 10:27 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=00-step=2200.ckpt | h1=0.272 h2=0.057 | overall=0.164 | PER=0.4680 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-17 10:42 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=01-step=3400.ckpt | eval failed
+=== 09-17 10:57 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=01-step=4400.ckpt | h1=0.309 h2=0.060 | overall=0.184 | PER=0.2889 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-17 11:13 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=02-step=5800.ckpt | eval failed
+=== 09-17 11:28 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=02-step=7000.ckpt | h1=0.499 h2=0.073 | overall=0.286 | PER=0.6342 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-17 11:44 ===
+TRAIN ALIVE 2634 loss~70.27756 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=03-step=8200.ckpt | h1=0.333 h2=0.098 | overall=0.215 | PER=0.1795 | lossless_fail=0
+=== 09-17 12:00 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=03-step=9600.ckpt | eval failed
+=== 09-17 12:15 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=04-step=10800.ckpt | eval failed
+=== 09-17 12:30 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=04-step=12000.ckpt | h1=0.366 h2=0.116 | overall=0.241 | PER=0.1294 | lossless_fail=0
+=== 09-17 12:46 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=05-step=13200.ckpt | h1=0.379 h2=0.117 | overall=0.248 | PER=0.1271 | lossless_fail=0
+=== 09-17 13:02 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=05-step=14800.ckpt | h1=0.391 h2=0.122 | overall=0.256 | PER=0.1144 | lossless_fail=0
+=== 09-17 13:17 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=06-step=16000.ckpt | h1=0.399 h2=0.141 | overall=0.270 | PER=0.1081 | lossless_fail=0
+=== 09-17 13:33 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=06-step=17000.ckpt | h1=0.396 h2=0.137 | overall=0.266 | PER=0.1062 | lossless_fail=0
+=== 09-17 13:49 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=06-step=18400.ckpt | h1=0.409 h2=0.153 | overall=0.281 | PER=0.1025 | lossless_fail=0
+=== 09-17 14:04 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=07-step=19800.ckpt | h1=0.342 h2=0.122 | overall=0.232 | PER=0.6938 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-17 14:20 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=07-step=21000.ckpt | h1=0.308 h2=0.122 | overall=0.215 | PER=0.5600 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-17 14:36 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=08-step=22000.ckpt | h1=0.411 h2=0.143 | overall=0.277 | PER=0.0969 | lossless_fail=0
+=== 09-17 14:52 ===
+TRAIN ALIVE 2600 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=08-step=23400.ckpt | h1=0.433 h2=0.169 | overall=0.301 | PER=0.0837 | lossless_fail=0
+=== 09-17 15:08 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=09-step=23800.ckpt | eval failed
+=== 09-17 15:24 ===
+TRAIN ALIVE 2493 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=09-step=25800.ckpt | eval failed
+=== 09-17 15:39 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=10-step=27000.ckpt | h1=0.453 h2=0.178 | overall=0.316 | PER=0.0838 | lossless_fail=0
+=== 09-17 15:54 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=10-step=27400.ckpt | eval failed
+=== 09-17 16:10 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=11-step=29000.ckpt | h1=0.442 h2=0.182 | overall=0.312 | PER=0.0760 | lossless_fail=0
+=== 09-17 16:26 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=11-step=30800.ckpt | h1=0.447 h2=0.182 | overall=0.314 | PER=0.0807 | lossless_fail=0
+=== 09-17 16:41 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=11-step=31600.ckpt | h1=0.452 h2=0.178 | overall=0.315 | PER=0.0762 | lossless_fail=0
+=== 09-17 16:57 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=11-step=31600.ckpt | h1=0.452 h2=0.178 | overall=0.315 | PER=0.0762 | lossless_fail=0
+=== 09-17 17:10 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=12-step=33600.ckpt | h1=0.470 h2=0.202 | overall=0.336 | PER=0.0827 | lossless_fail=0
+=== 09-17 17:27 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=13-step=35000.ckpt | h1=0.472 h2=0.196 | overall=0.334 | PER=0.0834 | lossless_fail=0
+=== 09-17 17:43 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=13-step=36600.ckpt | h1=0.445 h2=0.180 | overall=0.313 | PER=0.0806 | lossless_fail=0
+=== 09-17 17:58 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=14-step=37800.ckpt | h1=0.457 h2=0.191 | overall=0.324 | PER=0.0774 | lossless_fail=0
+=== 09-17 18:14 ===
+TRAIN ALIVE 2570 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=14-step=38200.ckpt | h1=0.450 h2=0.180 | overall=0.315 | PER=0.0873 | lossless_fail=0
+=== 09-17 18:29 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=14-step=38200.ckpt | h1=0.450 h2=0.180 | overall=0.315 | PER=0.0873 | lossless_fail=0
+=== 09-17 18:43 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=15-step=41000.ckpt | h1=0.458 h2=0.184 | overall=0.321 | PER=0.0766 | lossless_fail=0
+=== 09-17 18:58 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=16-step=42200.ckpt | h1=0.483 h2=0.206 | overall=0.344 | PER=0.0772 | lossless_fail=0
+=== 09-17 19:14 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=16-step=42200.ckpt | h1=0.483 h2=0.206 | overall=0.344 | PER=0.0772 | lossless_fail=0
+=== 09-17 19:28 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=16-step=44000.ckpt | h1=0.468 h2=0.190 | overall=0.329 | PER=0.0680 | lossless_fail=0
+=== 09-17 19:43 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=16-step=44000.ckpt | h1=0.468 h2=0.190 | overall=0.329 | PER=0.0680 | lossless_fail=0
+=== 09-17 19:57 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=17-step=46800.ckpt | h1=0.477 h2=0.205 | overall=0.341 | PER=0.0791 | lossless_fail=0
+=== 09-17 20:12 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=18-step=48400.ckpt | h1=0.485 h2=0.203 | overall=0.344 | PER=0.0728 | lossless_fail=0
+=== 09-17 20:28 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=17-step=46600.ckpt | eval failed
+=== 09-17 20:44 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=19-step=50600.ckpt | h1=0.489 h2=0.206 | overall=0.347 | PER=0.0752 | lossless_fail=0
+=== 09-17 21:00 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=19-step=50200.ckpt | h1=0.416 h2=0.182 | overall=0.299 | PER=0.3904 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-17 21:16 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=20-step=52800.ckpt | eval failed
+=== 09-17 21:31 ===
+TRAIN ALIVE 2615 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=20-step=52800.ckpt | eval failed
+=== 09-17 21:46 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=21-step=56200.ckpt | h1=0.501 h2=0.213 | overall=0.357 | PER=0.0775 | lossless_fail=0
+=== 09-17 22:01 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=21-step=57400.ckpt | eval failed
+=== 09-17 22:16 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=22-step=58000.ckpt | eval failed
+=== 09-17 22:32 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=22-step=58000.ckpt | eval failed
+=== 09-17 22:48 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=22-step=58000.ckpt | eval failed
+=== 09-17 23:03 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=22-step=58000.ckpt | eval failed
+=== 09-17 23:19 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-17 23:35 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-17 23:48 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 00:02 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 00:16 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 00:29 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 00:43 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 00:57 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 01:10 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 01:24 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 01:37 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 01:52 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 02:06 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 02:19 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 02:33 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 02:47 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 03:00 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 03:14 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 03:28 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 03:41 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 03:55 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 04:08 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 04:22 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 04:36 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 04:49 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 05:03 ===
+TRAIN DEAD ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=63000.ckpt | h1=0.496 h2=0.225 | overall=0.360 | PER=0.0691 | lossless_fail=0
+=== 09-18 05:17 ===
+TRAIN DEAD ? loss~2 | no val ckpt yet
+=== 09-18 05:30 ===
+TRAIN DEAD ? loss~2 | no val ckpt yet
+=== 09-18 05:44 ===
+TRAIN DEAD ? loss~2 | no val ckpt yet
+=== 09-18 05:58 ===
+TRAIN DEAD ? loss~2 | no val ckpt yet
+=== 09-18 06:11 ===
+TRAIN DEAD ? loss~2 | no val ckpt yet
+=== 09-18 06:25 ===
+TRAIN DEAD ? loss~2 | no val ckpt yet
+=== 09-18 06:38 ===
+TRAIN DEAD ? loss~2 | no val ckpt yet
+=== 09-18 06:52 ===
+TRAIN ALIVE ? loss~437.91455 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=00-step=400.ckpt | eval failed
+=== 09-18 07:06 ===
+TRAIN ALIVE ? loss~279.24429 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=00-step=1800.ckpt | h1=0.266 h2=0.058 | overall=0.162 | PER=0.5308 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 07:21 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=01-step=3200.ckpt | h1=0.294 h2=0.059 | overall=0.177 | PER=0.3807 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 07:37 ===
+TRAIN ALIVE ? loss~117.81144 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=01-step=4600.ckpt | eval failed
+=== 09-18 07:52 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=02-step=5800.ckpt | h1=0.298 h2=0.070 | overall=0.184 | PER=0.2335 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 08:08 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=02-step=7200.ckpt | eval failed
+=== 09-18 08:23 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=03-step=8200.ckpt | h1=0.451 h2=0.073 | overall=0.262 | PER=0.5557 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 08:39 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=03-step=9800.ckpt | h1=0.353 h2=0.111 | overall=0.232 | PER=0.1554 | lossless_fail=0
+=== 09-18 08:54 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=04-step=11000.ckpt | eval failed
+=== 09-18 09:10 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=04-step=12400.ckpt | h1=0.359 h2=0.114 | overall=0.237 | PER=0.1299 | lossless_fail=0
+=== 09-18 09:26 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=05-step=14000.ckpt | h1=0.389 h2=0.126 | overall=0.258 | PER=0.1127 | lossless_fail=0
+=== 09-18 09:42 ===
+TRAIN ALIVE 2600 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=05-step=15400.ckpt | eval failed
+=== 09-18 09:58 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=06-step=17000.ckpt | h1=0.417 h2=0.153 | overall=0.285 | PER=0.1063 | lossless_fail=0
+=== 09-18 10:14 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=06-step=18000.ckpt | h1=0.418 h2=0.163 | overall=0.290 | PER=0.0985 | lossless_fail=0
+=== 09-18 10:29 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=07-step=19800.ckpt | h1=0.424 h2=0.162 | overall=0.293 | PER=0.0935 | lossless_fail=0
+=== 09-18 10:45 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=07-step=21000.ckpt | h1=0.417 h2=0.153 | overall=0.285 | PER=0.1002 | lossless_fail=0
+=== 09-18 11:00 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=08-step=22600.ckpt | h1=0.419 h2=0.159 | overall=0.289 | PER=0.0975 | lossless_fail=0
+=== 09-18 11:16 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=09-step=23800.ckpt | h1=0.435 h2=0.168 | overall=0.301 | PER=0.0896 | lossless_fail=0
+=== 09-18 11:32 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=09-step=25000.ckpt | h1=0.429 h2=0.174 | overall=0.301 | PER=0.0826 | lossless_fail=0
+=== 09-18 11:48 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=10-step=27000.ckpt | h1=0.433 h2=0.178 | overall=0.305 | PER=0.0877 | lossless_fail=0
+=== 09-18 12:03 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=10-step=28200.ckpt | h1=0.443 h2=0.184 | overall=0.313 | PER=0.0814 | lossless_fail=0
+=== 09-18 12:19 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=10-step=28800.ckpt | h1=0.436 h2=0.174 | overall=0.305 | PER=0.0942 | lossless_fail=0
+=== 09-18 12:34 ===
+TRAIN ALIVE 2566 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=11-step=31200.ckpt | h1=0.447 h2=0.172 | overall=0.310 | PER=0.0775 | lossless_fail=0
+=== 09-18 12:50 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=12-step=32000.ckpt | h1=0.457 h2=0.183 | overall=0.320 | PER=0.0794 | lossless_fail=0
+=== 09-18 13:05 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=12-step=33600.ckpt | h1=0.467 h2=0.198 | overall=0.333 | PER=0.0814 | lossless_fail=0
+=== 09-18 13:21 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=13-step=35000.ckpt | h1=0.476 h2=0.195 | overall=0.335 | PER=0.0765 | lossless_fail=0
+=== 09-18 13:36 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=13-step=36000.ckpt | eval failed
+=== 09-18 13:53 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=14-step=38200.ckpt | h1=0.463 h2=0.193 | overall=0.328 | PER=0.0769 | lossless_fail=0
+=== 09-18 14:09 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=15-step=39600.ckpt | h1=0.459 h2=0.191 | overall=0.325 | PER=0.0817 | lossless_fail=0
+=== 09-18 14:25 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=15-step=41000.ckpt | h1=0.469 h2=0.189 | overall=0.329 | PER=0.0735 | lossless_fail=0
+=== 09-18 14:40 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=15-step=41200.ckpt | h1=0.475 h2=0.183 | overall=0.329 | PER=0.0730 | lossless_fail=0
+=== 09-18 14:56 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=16-step=43600.ckpt | h1=0.462 h2=0.195 | overall=0.328 | PER=0.0799 | lossless_fail=0
+=== 09-18 15:11 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=16-step=44200.ckpt | h1=0.498 h2=0.204 | overall=0.351 | PER=0.0795 | lossless_fail=0
+=== 09-18 15:27 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=16-step=44200.ckpt | h1=0.498 h2=0.204 | overall=0.351 | PER=0.0795 | lossless_fail=0
+=== 09-18 15:40 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=17-step=46600.ckpt | h1=0.487 h2=0.195 | overall=0.341 | PER=0.0775 | lossless_fail=0
+=== 09-18 15:56 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=18-step=49000.ckpt | h1=0.484 h2=0.208 | overall=0.346 | PER=0.0683 | lossless_fail=0
+=== 09-18 16:12 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=18-step=49400.ckpt | h1=0.474 h2=0.203 | overall=0.338 | PER=0.0638 | lossless_fail=0
+=== 09-18 16:27 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=18-step=49400.ckpt | h1=0.474 h2=0.203 | overall=0.338 | PER=0.0638 | lossless_fail=0
+=== 09-18 16:41 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=20-step=52800.ckpt | h1=0.474 h2=0.201 | overall=0.337 | PER=0.0695 | lossless_fail=0
+=== 09-18 16:56 ===
+TRAIN ALIVE 2431 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=20-step=54000.ckpt | eval failed
+=== 09-18 17:12 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=20-step=54000.ckpt | eval failed
+=== 09-18 17:29 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=20-step=54000.ckpt | eval failed
+=== 09-18 17:45 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=22-step=59000.ckpt | h1=0.498 h2=0.225 | overall=0.361 | PER=0.0661 | lossless_fail=0
+=== 09-18 18:00 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=22-step=59000.ckpt | h1=0.498 h2=0.225 | overall=0.361 | PER=0.0661 | lossless_fail=0
+=== 09-18 18:14 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=22-step=59000.ckpt | h1=0.498 h2=0.225 | overall=0.361 | PER=0.0661 | lossless_fail=0
+=== 09-18 18:28 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=62200.ckpt | h1=0.491 h2=0.224 | overall=0.358 | PER=0.0702 | lossless_fail=0
+=== 09-18 18:43 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=23-step=62200.ckpt | h1=0.491 h2=0.224 | overall=0.358 | PER=0.0702 | lossless_fail=0
+=== 09-18 18:57 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=24-step=65600.ckpt | h1=0.485 h2=0.216 | overall=0.350 | PER=0.0805 | lossless_fail=0
+=== 09-18 19:12 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=25-step=67000.ckpt | h1=0.517 h2=0.224 | overall=0.370 | PER=0.0690 | lossless_fail=0
+=== 09-18 19:28 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=25-step=67000.ckpt | h1=0.517 h2=0.224 | overall=0.370 | PER=0.0690 | lossless_fail=0
+=== 09-18 19:42 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=25-step=67000.ckpt | h1=0.517 h2=0.224 | overall=0.370 | PER=0.0690 | lossless_fail=0
+=== 09-18 19:55 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=26-step=71000.ckpt | h1=0.532 h2=0.275 | overall=0.403 | PER=0.3889 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 20:11 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=26-step=71000.ckpt | h1=0.532 h2=0.275 | overall=0.403 | PER=0.3889 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 20:25 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=26-step=71000.ckpt | h1=0.532 h2=0.275 | overall=0.403 | PER=0.3889 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 20:38 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=26-step=71000.ckpt | h1=0.532 h2=0.275 | overall=0.403 | PER=0.3889 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 20:52 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=26-step=71000.ckpt | h1=0.532 h2=0.275 | overall=0.403 | PER=0.3889 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 21:06 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=26-step=71000.ckpt | h1=0.532 h2=0.275 | overall=0.403 | PER=0.3889 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 21:19 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=26-step=71000.ckpt | h1=0.532 h2=0.275 | overall=0.403 | PER=0.3889 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 21:33 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=26-step=71000.ckpt | h1=0.532 h2=0.275 | overall=0.403 | PER=0.3889 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 21:46 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=26-step=71000.ckpt | h1=0.532 h2=0.275 | overall=0.403 | PER=0.3889 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 22:00 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=26-step=71000.ckpt | h1=0.532 h2=0.275 | overall=0.403 | PER=0.3889 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 22:14 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=26-step=71000.ckpt | h1=0.532 h2=0.275 | overall=0.403 | PER=0.3889 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 22:27 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=26-step=71000.ckpt | h1=0.532 h2=0.275 | overall=0.403 | PER=0.3889 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 22:41 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 22:57 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 23:10 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 23:24 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 23:38 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-18 23:51 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 00:05 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 00:19 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 00:32 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 00:46 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 01:00 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 01:13 ===
+TRAIN ALIVE 2477 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 01:27 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 01:40 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 01:54 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 02:08 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 02:21 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 02:35 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 02:49 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 03:02 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 03:16 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 03:30 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 03:43 ===
+TRAIN ALIVE 2543 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 03:57 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 04:11 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 04:24 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 04:38 ===
+TRAIN ALIVE ? loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0
+=== 09-19 04:51 ===
+TRAIN ALIVE 2634 loss~2 | CKPT val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt | h1=0.592 h2=0.332 | overall=0.462 | PER=0.3820 <<PER_TRANSIENT? | lossless_fail=0

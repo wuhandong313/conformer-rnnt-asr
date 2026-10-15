@@ -1,0 +1,25 @@
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Dropping shared w_vocab alias keys on load: ['model.medusa_heads.w_vocab.weight', 'model.medusa_heads.w_vocab.bias']
+checkpoint: exp_iter2/checkpoints/train-naive-h2-free-sl-post-chain-disp10-epoch=43-step=113700.ckpt
+frame_ms=40 K=2 max_samples=100
+Traceback (most recent call last):
+  File "/test21/conformer-rnnt-asr/scripts/eval_display.py", line 366, in <module>
+    main()
+  File "/test21/conformer-rnnt-asr/scripts/eval_display.py", line 269, in main
+    h_draft, draft_cache = seq.forward_step(
+  File "/test21/conformer-rnnt-asr/conformer_rnnt/medusa.py", line 198, in forward_step
+    x, layer_cache = layer(x, layer_cache, None)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/test21/conformer-rnnt-asr/conformer_rnnt/medusa.py", line 123, in forward
+    h, new_cache = self.attn(self.norm1(x), cache, causal_mask)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/test21/conformer-rnnt-asr/conformer_rnnt/medusa.py", line 94, in forward
+    v = torch.cat([pv, v], dim=2)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 79.15 GiB of which 11.75 MiB is free. Process 110192 has 51.81 GiB memory in use. Process 62824 has 27.31 GiB memory in use. Of the allocated memory 25.13 GiB is allocated by PyTorch, and 1.69 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

@@ -1,0 +1,70 @@
+adam_betas: !!python/tuple
+- 0.9
+- 0.999
+adam_eps: 1.0e-08
+attn_d_model: 256
+attn_dropout: 0.1
+attn_ffn_dim: 1024
+attn_left_context: 1024
+attn_num_heads: 4
+attn_num_layers: 4
+beam_width: 20
+compression_detector:
+  params:
+    threshold: 6.0
+  type: ple
+compression_filter: savgol
+compression_keep_rate: 0.27
+compression_mixer:
+  mode: diff5
+  type: hard
+depthwise_conv_kernel_size: 31
+dropout: 0.1
+encoding_dim: 512
+ffn_dim: 1024
+global_stats_path: /test21/medusa/global_stats.json
+hanning_window_size: 5
+hop_length: 160
+input_dim: 80
+joiner_activation: relu
+learning_rate: 0.0005
+librispeech_path: /test21/medusa
+lstm_dropout: 0.3
+lstm_hidden_dim: 128
+lstm_layer_norm: true
+lstm_layer_norm_epsilon: 0.001
+max_token_limit: 16000
+medusa_ce_weights: !!python/tuple
+- 0.8
+- 0.64
+- 0.512
+- 0.4096
+medusa_kl_weight: 0.05
+medusa_num_heads: 0
+n_fft: 400
+n_mels: 80
+num_heads: 8
+num_layers_block1: 2
+num_layers_block2: 8
+num_lstm_layers: 2
+num_symbols: 74
+num_workers: 20
+predictor_lr_scale: 0.5
+predictor_type: attn
+prefetch_factor: 2
+right_context_length: 4
+rnnt_loss_clamp: 1.0
+rnnt_loss_reduction: mean
+sample_rate: 16000
+sp_model_path: /test21/medusa/spm_bpe_74.model
+spec_aug_freq_mask_param: 27
+spec_aug_time_mask_param: 100
+spec_aug_time_mask_prob: 0.2
+symbol_embedding_dim: 128
+test_subset: test-clean
+time_reduction_input_dim: 128
+time_reduction_stride: 4
+train_subset: train-clean-100
+val_subset: dev-clean
+warmup_steps: 10000
+weight_predictor_mode: diff5
