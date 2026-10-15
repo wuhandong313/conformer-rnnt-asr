@@ -50,7 +50,7 @@ def compute_per(reference: str, hypothesis: str) -> float:
 def run_eval(
     model: LibriSpeechRNNTModule,
     device: torch.device,
-    per_sample_file: str = "eval_per_sample.csv",
+    per_sample_file: str = "artifacts/evaluations/eval_per_sample.csv",
     max_samples: int | None = None,
     output_json: str | None = None,
     check_lossless: bool = False,
@@ -184,6 +184,7 @@ def run_eval(
     logging.info("=" * 60)
 
     # Save per-sample CSV
+    os.makedirs(os.path.dirname(os.path.abspath(per_sample_file)), exist_ok=True)
     with open(per_sample_file, "w", newline="") as f:
         writer = csv.DictWriter(
             f,
@@ -335,7 +336,7 @@ def main():
         help="Write aggregate metrics to a JSON file.",
     )
     parser.add_argument(
-        "--per-sample-file", default="eval_per_sample.csv",
+        "--per-sample-file", default="artifacts/evaluations/eval_per_sample.csv",
         help="CSV path for per-sample PER/RTF and Medusa counters.",
     )
     parser.add_argument(

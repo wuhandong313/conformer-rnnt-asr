@@ -94,7 +94,7 @@ conformer_rnnt/streaming/
 ├── decoder.py         # StreamingGreedyDecoder：事件驱动，帧到达即推进
 └── preview.py         # MedusaPreview：只读 lookahead（不回写任何状态）
 streaming_eval.py      # CLI：流式评测 + --check-offline 一致性断言
-streaming_tests.py     # 可独立运行的测试（无 pytest 依赖，仓库惯例）
+tests/streaming_tests.py     # 可独立运行的测试（无 pytest 依赖，仓库惯例）
 configs/streaming.yaml # 新 config：server.yaml 的 model 部分 + 新 streaming 节
 docs/streaming_design.md
 ```
@@ -176,7 +176,7 @@ streaming:
   窗口内全可见、窗外截断。二者都是流式-离线差异来源，PER 兜底。
 - 参数是实验标定量：验证节的矩阵扫描定稿。
 
-## 测试（streaming_tests.py，独立可跑）
+## 测试（tests/streaming_tests.py，独立可跑）
 
 单元（CPU、小随机模型或随机 mel 即可）：
 1. `ChunkPlan` 对齐：随机参数，chunk 边界 stride 对齐、尾 chunk 处理正确。
@@ -203,6 +203,6 @@ conda `whd` 环境跑 `streaming_eval.py`。数据/checkpoint 都在服务器本
 ## 工作量估计
 
 - `conformer_rnnt/streaming/`（6 文件）：约 600 行
-- `streaming_eval.py` + `streaming_tests.py`：约 300 行
+- `streaming_eval.py` + `tests/streaming_tests.py`：约 300 行
 - `configs/streaming.yaml` + 本文档：少量
 - **现有代码修改：0 行**；分支 `streaming` 已从 `multihead` 创建

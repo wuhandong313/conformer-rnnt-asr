@@ -136,7 +136,7 @@ def evaluate_checkpoint(
         command.extend(["--max-samples", str(max_samples)])
     if check_lossless:
         command.append("--check-lossless")
-    returncode = run_process(command, eval_dir / "eval.log")
+    returncode = run_process(command, eval_dir / "artifacts/logs/eval.log")
     if returncode != 0 or not metrics_path.exists():
         return None
     return load_json(metrics_path)
@@ -243,7 +243,7 @@ def main() -> int:
             check_lossless=False,
         )
         if baseline is None:
-            print("baseline evaluation failed; see", baseline_dir / "eval.log", flush=True)
+            print("baseline evaluation failed; see", baseline_dir / "artifacts/logs/eval.log", flush=True)
             return 2
         baseline_metrics_path.write_text(json.dumps(baseline, indent=2, sort_keys=True))
     baseline_per = float(baseline["per"])
@@ -285,7 +285,7 @@ def main() -> int:
                 flush=True,
             )
 
-            train_log = stage_dir / "train.log"
+            train_log = stage_dir / "artifacts/logs/train.log"
             process = subprocess.Popen(
                 [sys.executable, "train.py", str(config_path)],
                 cwd=REPO,
