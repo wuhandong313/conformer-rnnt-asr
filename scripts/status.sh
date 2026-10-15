@@ -9,6 +9,7 @@ set -u
 SECTION="${1:-all}"
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO"
+mkdir -p "$REPO/artifacts/logs" "$REPO/artifacts/evaluations" "$REPO/artifacts/checkpoints"
 
 show_tmux() {
     echo "═══ tmux sessions ═══"
@@ -24,7 +25,7 @@ show_queue() {
         echo "(no results yet)"
     fi
     echo
-    echo "═══ queue_runner.log (tail 15) ═══"
+    echo "═══ artifacts/logs/queue_runner.log (tail 15) ═══"
     tail -n 15 results/queue_runner.log 2>/dev/null || echo "(no queue log)"
     echo
 }

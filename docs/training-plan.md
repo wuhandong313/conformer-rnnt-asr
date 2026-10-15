@@ -1,6 +1,6 @@
 # 训练计划（GPU 调度）v1.0
 
-> 配套 `research-plan.md` v2.1 §10。硬件：1 × A100-80GB（K8s 容器，`/test21`，conda env `whd`）。
+> 配套 `docs/research-plan.md` v2.1 §10。硬件：1 × A100-80GB（K8s 容器，`/test21`，conda env `whd`）。
 > 实测基准（2026-09-19 attn run）：44.3M 参数 / train-clean-100 / 120 epochs = **76,300 步 ≈ 4.2 h**（302 步/min）；全量 test-clean eval：greedy ≈ 0.5 h，beam-20 ≈ 1 h。
 > **结论先行：单卡 A100 足够。** 全部 P0–P1 实验 ≈ 16–20 个 GPU 日，14 周（98 天）内 GPU 占用率 <20%——瓶颈在基线实现与分析工程，不在算力。调度原则：**GPU 串行排队，工程在 GPU 空窗期推进**。
 
@@ -24,7 +24,7 @@
 | A4 | 十基线（均匀/随机/top-k-diff/能量/max-pool/avg-pool/**PLE**/**cosine-diff**/MMDP）+ 我方主配置 | `configs/exp/a4-*.yaml` | 5 h | 12 | 60 h |
 | — | DP oracle 天花板 | 推理-only，CPU 即可 | 2 h | 1 | 2 h |
 
-> ⚠️ 全部实验以 **attn-predictor 分支**为基座（predictor trunk 4 层自注意力架构，服务器工作目录 `/test21/conformer-rnnt-asr-attn`，其 configs 的 exp_dir 指向主 repo `/test21/conformer-rnnt-asr/exp`）。exp/a3-baseline-seeds 分支仅作文档/analysis 载体，不再跑训练。
+> ⚠️ 全部实验以 **attn-predictor 分支**为基座（predictor trunk 4 层自注意力架构，服务器工作目录 `/test21/conformer-rnnt-asr`，其 configs 的 exp_dir 指向主 repo `/test21/conformer-rnnt-asr/exp`）。exp/a3-baseline-seeds 分支仅作文档/analysis 载体，不再跑训练。
 > **No-Go 条件**（等压缩率对比）：均匀/avg-pool 与主配置打平且 oracle 差距 <5% → 转分析型故事（R1）。
 
 ### 批次 3：B-矩阵消融（第 4–6 周，GPU ≈ 3.5 天）
@@ -55,7 +55,7 @@ D3–D8 泛化补齐（~10 runs）、A6 关键对照（2 × 18 h）、Phase E �
 2. **screen 命名**：`a3-train` / `a4-train` / `b-train` …；监视器沿用 `monitor_iter2.py` 模式，**换批次先清 `monitor_eval/` 缓存**。
 3. **启动模板**：
    ```bash
-   screen -dmS a4-train bash -c 'cd /test21/conformer-rnnt-asr && /root/anaconda3/envs/whd/bin/python train.py configs/exp/a4-ple.yaml 2>&1 | tee exp_a4_train.log'
+   screen -dmS a4-train bash -c 'cd /test21/conformer-rnnt-asr && /root/anaconda3/envs/whd/bin/python train.py configs/exp/a4-ple.yaml 2>&1 | tee artifacts/logs/exp_a4_train.log'
    ```
    串行排队用 `queue_*.sh`（A3 种子已有先例）。
 4. **eval 管线**：每 run 结束后 greedy 全量 test-clean（0.5 h）进队尾；beam-20 只对主配置与关键基线跑（1 h）。

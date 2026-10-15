@@ -90,7 +90,7 @@ oracle) / **oracle 喂样满接受验收** (头恒草拟真实未来 token ⇒ R
 ### 训练配置
 
 `configs/server_attn_multihead.yaml` — 与 server.yaml 仅两处差异:
-`medusa.num_heads: 2`、`exp_dir: /test21/conformer-rnnt-asr-attn/exp_mh`
+`medusa.num_heads: 2`、`exp_dir: /test21/conformer-rnnt-asr/exp_mh`
 (与单头基线 ckpt 隔离)。
 
 ## 复现

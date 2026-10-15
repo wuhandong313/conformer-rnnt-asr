@@ -26,7 +26,7 @@ paths:
   global_stats_path: "/test21/medusa/global_stats.json"
 
   # 实验输出目录 (checkpoints、logs 保存位置)
-  exp_dir: "/test21/conformer-rnnt-asr-attn/exp_mh"
+  exp_dir: "/test21/conformer-rnnt-asr/exp_mh"
 
   # 从某个 checkpoint 恢复训练 (null = 从头训练, 或填 .ckpt 路径)
   from_checkpoint: null
