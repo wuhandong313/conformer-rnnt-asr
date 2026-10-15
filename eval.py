@@ -3,6 +3,7 @@
 
 Usage:
     python eval.py configs/server.yaml --checkpoint exp/checkpoints/val-epoch=02-step=4000.ckpt
+    python eval.py configs/server_lstm_word.yaml --checkpoint exp/checkpoints/best.ckpt --metric wer
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ import torchaudio
 import yaml
 
 from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
+from conformer_rnnt.metrics import format_wer_trace, word_error_counts
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -40,8 +42,8 @@ def load_config(path: str) -> Dict[str, Any]:
 # ═══════════════════════════════════════════════════════════════════════════
 
 
-def compute_per(reference: str, hypothesis: str) -> float:
-    """Phoneme Error Rate — character-level edit distance on raw text."""
+def compute_cer(reference: str, hypothesis: str) -> float:
+    """Compute character error rate using character-level edit distance."""
     if len(reference) == 0:
         return 0.0 if len(hypothesis) == 0 else 1.0
     return torchaudio.functional.edit_distance(reference, hypothesis) / len(reference)
@@ -52,12 +54,28 @@ def compute_per(reference: str, hypothesis: str) -> float:
 # ═══════════════════════════════════════════════════════════════════════════
 
 
-def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file: str = "eval_per_sample.csv", max_utts: int = 0) -> Dict[str, Any]:
+def run_eval(
+    model: LibriSpeechRNNTModule,
+    device: torch.device,
+    per_sample_file: str = "eval_per_sample.csv",
+    max_utts: int = 0,
+    metric: str = "wer",
+    trace_wer: bool = False,
+) -> Dict[str, Any]:
+    if metric not in {"wer", "cer"}:
+        raise ValueError(f"Unsupported evaluation metric: {metric}")
+    if metric == "wer" and model.strip_spaces:
+        raise ValueError("WER requires a word-text config with data.strip_spaces: false")
+    if trace_wer and metric != "wer":
+        raise ValueError("--trace-wer requires WER mode")
+
     model = model.to(device)
     model.eval()
     dataloader = model.test_dataloader()
 
-    total_per = 0.0
+    total_cer = 0.0
+    total_word_errors = 0
+    total_reference_words = 0
     total_rtf = 0.0
     n = 0
     per_sample = []
@@ -67,8 +85,22 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
             if max_utts and n >= max_utts:
                 break
             actual = transcripts[0].lower()
-            if model.strip_spaces:
+            if metric == "cer" and model.strip_spaces:
                 actual = actual.replace(" ", "")
+            if trace_wer:
+                # The test loader concatenates subsets in config order, batch_size=1.
+                sample_idx = idx
+                for subset in dataloader.dataset.datasets:
+                    if sample_idx < len(subset):
+                        metadata = subset.get_metadata(sample_idx)
+                        logging.info("TRACE sample=%d audio=%s sample_rate=%s", idx, metadata[0], metadata[1])
+                        break
+                    sample_idx -= len(subset)
+                logging.info(
+                    "TRACE feature_shape=%s feature_lengths=%s target_lengths=%s beam_width=%s",
+                    tuple(batch.features.shape), batch.feature_lengths.tolist(),
+                    batch.target_lengths.tolist(), model.beam_width,
+                )
 
             # Timing
             t0 = time.time()
@@ -79,42 +111,107 @@ def run_eval(model: LibriSpeechRNNTModule, device: torch.device, per_sample_file
             frame_dur = model._mel_kwargs["hop_length"] / model._mel_kwargs["sample_rate"]
             audio_dur = batch.feature_lengths[0].item() * frame_dur
 
-            # PER: character-level edit distance on raw text
-            per = compute_per(actual, predicted)
             rtf = (t1 - t0) / audio_dur if audio_dur > 0 else 0
 
-            total_per += per
             total_rtf += rtf
             n += 1
-            per_sample.append({"idx": idx, "PER": per, "RTF": rtf, "ref": actual, "hyp": predicted})
+
+            if metric == "wer":
+                word_errors, reference_words = word_error_counts(actual, predicted)
+                sample_wer = (
+                    word_errors / reference_words
+                    if reference_words
+                    else (0.0 if word_errors == 0 else float("inf"))
+                )
+                total_word_errors += word_errors
+                total_reference_words += reference_words
+                per_sample.append({
+                    "idx": idx,
+                    "WER": sample_wer,
+                    "word_errors": word_errors,
+                    "reference_words": reference_words,
+                    "RTF": rtf,
+                    "ref": actual,
+                    "hyp": predicted,
+                })
+                cumulative_rate = (
+                    total_word_errors / total_reference_words
+                    if total_reference_words
+                    else 0.0
+                )
+                sample_rate = sample_wer
+                metric_name = "WER"
+                if trace_wer:
+                    logging.info("\n%s", format_wer_trace(actual, predicted))
+                    logging.info(
+                        "TRACE cumulative WER = %d/%d = %.8f (%.4f%%)",
+                        total_word_errors, total_reference_words, cumulative_rate,
+                        100 * cumulative_rate,
+                    )
+            else:
+                sample_cer = compute_cer(actual, predicted)
+                total_cer += sample_cer
+                per_sample.append({
+                    "idx": idx,
+                    "CER": sample_cer,
+                    "RTF": rtf,
+                    "ref": actual,
+                    "hyp": predicted,
+                })
+                cumulative_rate = total_cer / n
+                sample_rate = sample_cer
+                metric_name = "CER"
 
             if idx % 5 == 0:
-                cum_per = total_per / n if n > 0 else 0
                 cum_rtf = total_rtf / n if n > 0 else 0
                 logging.info(
-                    "[%4d] PER: %.3f (cum: %.3f)  RTF: %.4f (cum: %.4f)  |  ref: %s  |  hyp: %s",
-                    idx, per, cum_per, rtf, cum_rtf,
+                    "[%4d] %s: %.3f (cum: %.3f)  RTF: %.4f (cum: %.4f)  |  ref: %s  |  hyp: %s",
+                    idx, metric_name, sample_rate, cumulative_rate, rtf, cum_rtf,
                     actual[:60], predicted[:60],
                 )
 
-    avg_per = total_per / n if n > 0 else 0
     avg_rtf = total_rtf / n if n > 0 else 0
 
     logging.info("=" * 60)
     logging.info("Evaluation complete — %d samples", n)
-    logging.info("PER: %.4f", avg_per)
+    if metric == "wer":
+        avg_rate = (
+            total_word_errors / total_reference_words
+            if total_reference_words
+            else 0.0
+        )
+        logging.info(
+            "WER: %.4f (%d word errors / %d reference words)",
+            avg_rate,
+            total_word_errors,
+            total_reference_words,
+        )
+    else:
+        avg_rate = total_cer / n if n > 0 else 0.0
+        logging.info("CER: %.4f (mean per-utterance character error rate)", avg_rate)
     logging.info("RTF: %.4f", avg_rtf)
     logging.info("=" * 60)
 
     # Save per-sample CSV
     import csv
     with open(per_sample_file, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["idx", "PER", "RTF", "ref", "hyp"])
+        fieldnames = (
+            ["idx", "WER", "word_errors", "reference_words", "RTF", "ref", "hyp"]
+            if metric == "wer"
+            else ["idx", "CER", "RTF", "ref", "hyp"]
+        )
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(per_sample)
     logging.info("Per-sample results saved to: %s", per_sample_file)
 
-    return {"per": avg_per, "rtf": avg_rtf, "num_samples": n}
+    result = {metric: avg_rate, "rtf": avg_rtf, "num_samples": n}
+    if metric == "wer":
+        result.update({
+            "word_errors": total_word_errors,
+            "reference_words": total_reference_words,
+        })
+    return result
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -141,6 +238,16 @@ def main():
     parser.add_argument("--cpu", action="store_true", help="Force CPU even if config says cuda.")
     parser.add_argument("--max-utts", type=int, default=0, help="Evaluate only the first N utterances (0 = full set).")
     parser.add_argument("--out", default="eval_per_sample.csv", help="Path for the per-sample CSV.")
+    parser.add_argument("--trace-wer", action="store_true", help="Print input metadata, word tokens, DP rows, and WER alignment for every sample.")
+    parser.add_argument(
+        "--metric",
+        choices=("auto", "wer", "cer"),
+        default="auto",
+        help=(
+            "auto selects WER when data.strip_spaces is false, otherwise CER; "
+            "WER lowercases and splits on whitespace, preserving punctuation."
+        ),
+    )
     args = parser.parse_args()
 
     # Config
@@ -154,6 +261,10 @@ def main():
     # Build model from config (architecture, paths — all from YAML)
     logging.info("Building model from config …")
     model = LibriSpeechRNNTModule.from_config(config)
+    metric = args.metric
+    if metric == "auto":
+        metric = "cer" if model.strip_spaces else "wer"
+    logging.info("Evaluation metric: %s", metric.upper())
     logging.info(
         "Decoding: beam_width=%s (%s)",
         model.beam_width,
@@ -179,7 +290,14 @@ def main():
 
     # Eval
     device = torch.device("cpu" if args.cpu else config.get("trainer", {}).get("accelerator", "cuda"))
-    run_eval(model, device, per_sample_file=args.out, max_utts=args.max_utts)
+    run_eval(
+        model,
+        device,
+        per_sample_file=args.out,
+        max_utts=args.max_utts,
+        metric=metric,
+        trace_wer=args.trace_wer,
+    )
 
 
 if __name__ == "__main__":
