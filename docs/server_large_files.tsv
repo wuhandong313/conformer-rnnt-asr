@@ -132,3 +132,5 @@ source_worktree	relative_path	bytes
 /test21/conformer-rnnt-asr-attn	attn_train.log	13497636
 /test21/conformer-rnnt-asr-attn	baseline_none_train.log	13500187
 /test21/conformer-rnnt-asr-attn	results/logs/a4-avg-pool.train.log	12661480
+/test21/conformer-rnnt-asr	papers/divprune-cvpr25-2503.02175.pdf	12038847
+/test21/conformer-rnnt-asr	qwen3.5-0.8b/tokenizer.json	12807982
