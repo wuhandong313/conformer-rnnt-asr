@@ -25,11 +25,11 @@ Experiments run on the internal server at `/test21/conformer-rnnt-asr` (access v
 - **Environment**: always use `conda env whd` (`/root/anaconda3/envs/whd/bin/python`, python 3.10 + torch 2.6 cu124). `soundfile` is required for FLAC loading; the bare `python` on the server is Python 2 — never use it.
 - **Launch training** in a screen session named `iter2-train` (the monitor checks this name; the server has `screen`, not tmux):
   ```bash
-  screen -dmS iter2-train bash -c 'cd /test21/conformer-rnnt-asr && /root/anaconda3/envs/whd/bin/python train.py configs/server_chain.yaml 2>&1 | tee exp_iterN_train.log'
+  screen -dmS iter2-train bash -c 'cd /test21/conformer-rnnt-asr && /root/anaconda3/envs/whd/bin/python train.py configs/server_chain.yaml 2>&1 | tee artifacts/logs/exp_iterN_train.log'
   ```
 - **Periodic monitoring** (server-side watcher; evaluates newest val ckpt every 15 min, appends one status line):
   ```bash
-  screen -dmS iter8-watch bash -c 'for i in $(seq 1 48); do echo "=== $(date +%H:%M) ===" >> /test21/conformer-rnnt-asr/iter8_watch.log; cd /test21/conformer-rnnt-asr && timeout 1900 /root/anaconda3/envs/whd/bin/python scripts/monitor_iter2.py >> /test21/conformer-rnnt-asr/iter8_watch.log 2>&1; sleep 900; done'
+  screen -dmS iter8-watch bash -c 'for i in $(seq 1 48); do echo "=== $(date +%H:%M) ===" >> /test21/conformer-rnnt-asr/artifacts/logs/iter8_watch.log; cd /test21/conformer-rnnt-asr && timeout 1900 /root/anaconda3/envs/whd/bin/python scripts/monitor_iter2.py >> /test21/conformer-rnnt-asr/artifacts/logs/iter8_watch.log 2>&1; sleep 900; done'
   ```
   `monitor_iter2.py` skips ckpts younger than 180 s (Lightning may still be writing them) and caches one JSON per ckpt — purge `exp_iter2/monitor_eval/*` when a new run reuses the same tag/step names, or stale results will be reported.
 - **Warm-start convention**: copy the chosen best ckpt to `BEST_iterN.ckpt`, point `paths.from_checkpoint` at it, and bump the monitor's `TRAIN_LOG`. Warm-starts are weight-only (fresh optimizer/LR warmup); a brief PER transient right after restart is expected and self-heals.

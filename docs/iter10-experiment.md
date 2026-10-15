@@ -160,7 +160,7 @@ cp exp_iter2/checkpoints/<val-*disp*epoch=07*.ckpt> exp_iter2/BEST_iter10.ckpt
 ```bash
 screen -dmS iter2-train bash -c 'cd /test21/conformer-rnnt-asr && \
   /root/anaconda3/envs/whd/bin/python train.py configs/server_display.yaml \
-  2>&1 | tee exp_iter10_train.log'
+  2>&1 | tee artifacts/logs/exp_iter10_train.log'
 ```
 
 ### 5.4 启动监控（screen `iter10-watch`）
@@ -171,13 +171,13 @@ screen -dmS iter2-train bash -c 'cd /test21/conformer-rnnt-asr && \
 ```bash
 rm -rf /test21/conformer-rnnt-asr/exp_iter2/monitor_eval/*
 screen -dmS iter10-watch bash -c 'for i in $(seq 1 48); do \
-  echo "=== $(date +%H:%M) ===" >> /test21/conformer-rnnt-asr/iter10_watch.log; \
+  echo "=== $(date +%H:%M) ===" >> /test21/conformer-rnnt-asr/artifacts/logs/iter10_watch.log; \
   cd /test21/conformer-rnnt-asr && timeout 1900 /root/anaconda3/envs/whd/bin/python \
-  scripts/monitor_iter2.py >> /test21/conformer-rnnt-asr/iter10_watch.log 2>&1; sleep 900; done'
+  scripts/monitor_iter2.py >> /test21/conformer-rnnt-asr/artifacts/logs/iter10_watch.log 2>&1; sleep 900; done'
 ```
 
 注意 `scripts/monitor_iter2.py` 顶部 `TRAIN_LOG` 当前指向
-`exp_iter8h2_train.log`，启动监控前改成 `exp_iter10_train.log`。
+`artifacts/logs/exp_iter8h2_train.log`，启动监控前改成 `artifacts/logs/exp_iter10_train.log`。
 
 ### 5.5 预期现象
 

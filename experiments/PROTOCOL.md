@@ -9,7 +9,7 @@
 
 ## 2. 实验命名与目录
 
-- 实验 ID：`<phase>-<tag>-s<seed>`，如 `a3-none-s42`、`b1-savgol-s42`。phase 对应 research-plan.md 的实验编号（A/B/C/D…）。
+- 实验 ID：`<phase>-<tag>-s<seed>`，如 `a3-none-s42`、`b1-savgol-s42`。phase 对应 docs/research-plan.md 的实验编号（A/B/C/D…）。
 - 每个实验一个配置文件：`configs/exp/<实验ID>.yaml`（从 configs/server.yaml 复制后只改必要字段）。
 - 每个实验一个独立输出目录：配置里 `paths.exp_dir: /test21/conformer-rnnt-asr/exp/<实验ID>/`——ckpt、日志互不污染，可随时整目录删除。
 

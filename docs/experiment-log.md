@@ -389,7 +389,7 @@ lm_weight 0.1 / bnt_weight 0.2 / seq_lr_scale 0.5), 不复用 iter-9 warm-start�
 
 **显示指标** (eval_display, z-loop 防护后; 训练停在 ep44):
 
-口径 A — 100 样本 (`iter10_eval_ep32.log`, ep32 val ckpt step 86600,
+口径 A — 100 样本 (`artifacts/logs/iter10_eval_ep32.log`, ep32 val ckpt step 86600,
 lm 0.1/bnt 0.2, `loop_skipped=1`):
 
 | 头 | disp | abst | hit% | repl% | leadP50/P90/avg (ms) | value (ms) | LM gap |
@@ -397,7 +397,7 @@ lm 0.1/bnt 0.2, `loop_skipped=1`):
 | h1 | 8609 | 0 | **53.72** | 46.28 | 40/40/31 | 16.5 | +39.74 (LM 13.99) |
 | h2 | 8609 | 0 | **34.56** | 65.44 | 40/80/59 | 20.3 | +32.51 (LM 2.04) |
 
-口径 B — 全 test-clean 2620 样本 (`iter10_full_display.log`, 同 ckpt,
+口径 B — 全 test-clean 2620 样本 (`artifacts/logs/iter10_full_display.log`, 同 ckpt,
 `loop_skipped=2`, 2618 句 / ref_tokens 190111):
 
 | 头 | disp | abst | hit% | repl% | leadP50/P90/avg (ms) | value (ms) | LM gap |

@@ -24,7 +24,7 @@ PY = "/root/anaconda3/envs/whd/bin/python"
 CONFIG = os.path.join(REPO, "configs/server_display_scratch.yaml")
 CKPT_DIR = os.path.join(REPO, "exp_iter2/checkpoints")
 EVAL_DIR = os.path.join(REPO, "exp_iter2/monitor_eval")
-TRAIN_LOG = os.path.join(REPO, "exp_iter10_train.log")
+TRAIN_LOG = os.path.join(REPO, "artifacts/logs/exp_iter10_train.log")
 
 
 def latest_ckpt() -> str | None:
