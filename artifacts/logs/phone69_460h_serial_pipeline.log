@@ -1,3 +1,6 @@
 [2026-10-15T13:43:35Z] serial pipeline start; order=configs/server_phone69_460h_stride4_none_s42_e50.yaml configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml
 [2026-10-15T13:43:35Z] waiting for GPU before configs/server_phone69_460h_stride4_none_s42_e50.yaml
 [2026-10-15T13:43:35Z] training configs/server_phone69_460h_stride4_none_s42_e50.yaml in /test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50
+[2026-10-15T15:07:44Z] serial pipeline start; order=configs/server_phone69_460h_stride4_none_s42_e50.yaml configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml
+[2026-10-15T15:07:45Z] waiting for GPU before configs/server_phone69_460h_stride4_none_s42_e50.yaml
+[2026-10-15T15:07:45Z] training configs/server_phone69_460h_stride4_none_s42_e50.yaml in /test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50

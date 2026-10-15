@@ -1,0 +1,71 @@
+{
+  "status": "oom",
+  "config": "configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml",
+  "config_sha256": "6c47edc47ce6bcbc4750883530055a4b97b67947d611da00813cc88acc018251",
+  "code_commit": "a07f34f51670636051443db8b7f5380cf8077bc6",
+  "pid": 66165,
+  "budget": 69000,
+  "rnnt_frames_per_char": 3.0,
+  "results": [],
+  "keep_allocator_cache": true,
+  "selected_batches": [
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 665,
+      "utterances": 2793,
+      "max_feature_frames": 1096,
+      "max_target_phones": 31,
+      "attention_elements": 4385010000,
+      "joint_elements": 469224000
+    },
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 661,
+      "utterances": 1425,
+      "max_feature_frames": 1531,
+      "max_target_phones": 45,
+      "attention_elements": 4330928400,
+      "joint_elements": 477204000
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 0,
+      "utterances": 23,
+      "max_feature_frames": 3265,
+      "max_target_phones": 368,
+      "attention_elements": 317529904,
+      "joint_elements": 131293890
+    },
+    {
+      "dataset_index": 0,
+      "subset": "train-clean-100",
+      "batch_index": 181,
+      "utterances": 671,
+      "max_feature_frames": 1481,
+      "max_target_phones": 67,
+      "attention_elements": 1915785520,
+      "joint_elements": 322589960
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 8,
+      "utterances": 729,
+      "max_feature_frames": 987,
+      "max_target_phones": 65,
+      "attention_elements": 921047760,
+      "joint_elements": 225654660
+    }
+  ],
+  "batches_per_subset": {
+    "train-clean-100": 185,
+    "train-clean-360": 667,
+    "dev-clean": 10
+  },
+  "parameters": 4208267,
+  "gpu_total_GiB": 79.1510009765625,
+  "error": "CUDA out of memory. Tried to allocate 1.75 GiB. GPU 0 has a total capacity of 79.15 GiB of which 1.47 GiB is free. Process 97088 has 77.67 GiB memory in use. Of the allocated memory 77.12 GiB is allocated by PyTorch, and 61.69 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)"
+}

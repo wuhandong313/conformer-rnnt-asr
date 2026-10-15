@@ -1,0 +1,30 @@
+target 80%: configs/server_phone69_460h_stride4_none_s42_e50.yaml budget=21000
+status=passed peak=60.38 GiB
+target 80%: configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml budget=14500
+status=passed peak=60.41 GiB
+target 80%: configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml budget=57000
+status=passed peak=59.79 GiB
+target 80%: configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml budget=62500
+status=failed peak=69.87 GiB
+target 80%: configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml budget=59500
+status=passed peak=64.02 GiB
+{
+  "configs/server_phone69_460h_stride4_none_s42_e50.yaml": {
+    "budget": 21000,
+    "peak_reserved_GiB": 60.384765625,
+    "report": "/test21/conformer-rnnt-asr/output/phone69_460h/resize_probes/server_phone69_460h_stride4_none_s42_e50_target80_b21000.json",
+    "keep_allocator_cache": true
+  },
+  "configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml": {
+    "budget": 14500,
+    "peak_reserved_GiB": 60.40625,
+    "report": "/test21/conformer-rnnt-asr/output/phone69_460h/resize_probes/server_phone69_460h_stride1_cosd_learned_s42_e50_target80_b14500.json",
+    "keep_allocator_cache": true
+  },
+  "configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml": {
+    "budget": 59500,
+    "peak_reserved_GiB": 64.01953125,
+    "report": "/test21/conformer-rnnt-asr/output/phone69_460h/resize_probes/server_phone69_460h_stride4_cosd_learned_s42_e50_target80_b59500.json",
+    "keep_allocator_cache": true
+  }
+}

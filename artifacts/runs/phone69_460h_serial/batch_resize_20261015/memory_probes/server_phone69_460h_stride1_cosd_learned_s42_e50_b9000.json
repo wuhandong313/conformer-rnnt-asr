@@ -1,0 +1,169 @@
+{
+  "status": "passed",
+  "config": "configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml",
+  "config_sha256": "6b52a5b2bda911ea2f13412e5d9443629f20ca375ad9381ad006d07dbb44bf12",
+  "code_commit": "a07f34f51670636051443db8b7f5380cf8077bc6",
+  "pid": 61544,
+  "budget": 9000,
+  "results": [
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 1409,
+      "utterances": 214,
+      "max_feature_frames": 1531,
+      "max_target_phones": 42,
+      "attention_elements": 10449298144,
+      "joint_elements": 268606380,
+      "phones": 8971,
+      "peak_allocated_GiB": 37.3285870552063,
+      "peak_reserved_GiB": 37.521484375,
+      "seconds": 3.378522583283484,
+      "loss": 130596.4140625
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 2,
+      "utterances": 42,
+      "max_feature_frames": 2712,
+      "max_target_phones": 234,
+      "attention_elements": 6413191680,
+      "joint_elements": 508502400,
+      "phones": 8822,
+      "peak_allocated_GiB": 30.104817867279053,
+      "peak_reserved_GiB": 32.078125,
+      "seconds": 2.373978329822421,
+      "loss": 105266.15625
+    },
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 1428,
+      "utterances": 642,
+      "max_feature_frames": 636,
+      "max_target_phones": 19,
+      "attention_elements": 5480153088,
+      "joint_elements": 158188800,
+      "phones": 9000,
+      "peak_allocated_GiB": 39.69122266769409,
+      "peak_reserved_GiB": 39.865234375,
+      "seconds": 3.033235155045986,
+      "loss": 180763.671875
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 0,
+      "utterances": 20,
+      "max_feature_frames": 3265,
+      "max_target_phones": 368,
+      "attention_elements": 4424430400,
+      "joint_elements": 457707600,
+      "phones": 6027,
+      "peak_allocated_GiB": 24.110954761505127,
+      "peak_reserved_GiB": 24.1640625,
+      "seconds": 1.4106986923143268,
+      "loss": 72836.21875
+    },
+    {
+      "dataset_index": 0,
+      "subset": "train-clean-100",
+      "batch_index": 381,
+      "utterances": 143,
+      "max_feature_frames": 1481,
+      "max_target_phones": 64,
+      "attention_elements": 6539307632,
+      "joint_elements": 262862600,
+      "phones": 8983,
+      "peak_allocated_GiB": 27.90606451034546,
+      "peak_reserved_GiB": 29.015625,
+      "seconds": 1.295136261265725,
+      "loss": 124675.625
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 3,
+      "utterances": 49,
+      "max_feature_frames": 2691,
+      "max_target_phones": 194,
+      "attention_elements": 7369967696,
+      "joint_elements": 488929350,
+      "phones": 8999,
+      "peak_allocated_GiB": 30.737422466278076,
+      "peak_reserved_GiB": 32.671875,
+      "seconds": 1.4522537388838828,
+      "loss": 112163.328125
+    }
+  ],
+  "selected_batches": [
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 1409,
+      "utterances": 214,
+      "max_feature_frames": 1531,
+      "max_target_phones": 42,
+      "attention_elements": 10449298144,
+      "joint_elements": 268606380
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 2,
+      "utterances": 42,
+      "max_feature_frames": 2712,
+      "max_target_phones": 234,
+      "attention_elements": 6413191680,
+      "joint_elements": 508502400
+    },
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 1428,
+      "utterances": 642,
+      "max_feature_frames": 636,
+      "max_target_phones": 19,
+      "attention_elements": 5480153088,
+      "joint_elements": 158188800
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 0,
+      "utterances": 20,
+      "max_feature_frames": 3265,
+      "max_target_phones": 368,
+      "attention_elements": 4424430400,
+      "joint_elements": 457707600
+    },
+    {
+      "dataset_index": 0,
+      "subset": "train-clean-100",
+      "batch_index": 381,
+      "utterances": 143,
+      "max_feature_frames": 1481,
+      "max_target_phones": 64,
+      "attention_elements": 6539307632,
+      "joint_elements": 262862600
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 3,
+      "utterances": 49,
+      "max_feature_frames": 2691,
+      "max_target_phones": 194,
+      "attention_elements": 7369967696,
+      "joint_elements": 488929350
+    }
+  ],
+  "batches_per_subset": {
+    "train-clean-100": 395,
+    "train-clean-360": 1430,
+    "dev-clean": 23
+  },
+  "parameters": 4215947,
+  "gpu_total_GiB": 79.1510009765625
+}

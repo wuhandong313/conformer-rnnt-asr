@@ -1,0 +1,146 @@
+{
+  "status": "passed",
+  "config": "configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml",
+  "config_sha256": "6c47edc47ce6bcbc4750883530055a4b97b67947d611da00813cc88acc018251",
+  "code_commit": "a07f34f51670636051443db8b7f5380cf8077bc6",
+  "pid": 63227,
+  "budget": 57000,
+  "rnnt_frames_per_char": 3.0,
+  "results": [
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 680,
+      "utterances": 1288,
+      "max_feature_frames": 1531,
+      "max_target_phones": 47,
+      "attention_elements": 3914551424,
+      "joint_elements": 450078720,
+      "phones": 56989,
+      "peak_allocated_GiB": 59.53588819503784,
+      "peak_reserved_GiB": 59.79296875,
+      "seconds": 6.60609467793256,
+      "loss": 401451.84375
+    },
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 683,
+      "utterances": 2489,
+      "max_feature_frames": 750,
+      "max_target_phones": 29,
+      "attention_elements": 1821868352,
+      "joint_elements": 266571900,
+      "phones": 56993,
+      "peak_allocated_GiB": 50.195603370666504,
+      "peak_reserved_GiB": 59.79296875,
+      "seconds": 7.944225418847054,
+      "loss": 432166.3125
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 0,
+      "utterances": 23,
+      "max_feature_frames": 3265,
+      "max_target_phones": 368,
+      "attention_elements": 317529904,
+      "joint_elements": 131293890,
+      "phones": 6807,
+      "peak_allocated_GiB": 7.089902400970459,
+      "peak_reserved_GiB": 59.79296875,
+      "seconds": 0.7401002328842878,
+      "loss": 43671.37109375
+    },
+    {
+      "dataset_index": 0,
+      "subset": "train-clean-100",
+      "batch_index": 189,
+      "utterances": 881,
+      "max_feature_frames": 1223,
+      "max_target_phones": 58,
+      "attention_elements": 1708322432,
+      "joint_elements": 301997990,
+      "phones": 45380,
+      "peak_allocated_GiB": 35.15289354324341,
+      "peak_reserved_GiB": 59.79296875,
+      "seconds": 2.8250799039378762,
+      "loss": 314055.84375
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 2,
+      "utterances": 82,
+      "max_feature_frames": 2691,
+      "max_target_phones": 195,
+      "attention_elements": 768077600,
+      "joint_elements": 204757280,
+      "phones": 14707,
+      "peak_allocated_GiB": 13.167492389678955,
+      "peak_reserved_GiB": 59.79296875,
+      "seconds": 0.7293452406302094,
+      "loss": 95375.140625
+    }
+  ],
+  "keep_allocator_cache": true,
+  "selected_batches": [
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 680,
+      "utterances": 1288,
+      "max_feature_frames": 1531,
+      "max_target_phones": 47,
+      "attention_elements": 3914551424,
+      "joint_elements": 450078720
+    },
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 683,
+      "utterances": 2489,
+      "max_feature_frames": 750,
+      "max_target_phones": 29,
+      "attention_elements": 1821868352,
+      "joint_elements": 266571900
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 0,
+      "utterances": 23,
+      "max_feature_frames": 3265,
+      "max_target_phones": 368,
+      "attention_elements": 317529904,
+      "joint_elements": 131293890
+    },
+    {
+      "dataset_index": 0,
+      "subset": "train-clean-100",
+      "batch_index": 189,
+      "utterances": 881,
+      "max_feature_frames": 1223,
+      "max_target_phones": 58,
+      "attention_elements": 1708322432,
+      "joint_elements": 301997990
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 2,
+      "utterances": 82,
+      "max_feature_frames": 2691,
+      "max_target_phones": 195,
+      "attention_elements": 768077600,
+      "joint_elements": 204757280
+    }
+  ],
+  "batches_per_subset": {
+    "train-clean-100": 192,
+    "train-clean-360": 685,
+    "dev-clean": 11
+  },
+  "parameters": 4208267,
+  "gpu_total_GiB": 79.1510009765625
+}

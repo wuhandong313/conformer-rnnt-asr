@@ -1,0 +1,144 @@
+{
+  "status": "passed",
+  "config": "configs/server_phone69_460h_stride4_none_s42_e50.yaml",
+  "config_sha256": "477e8b7624248c2cc55a04fd5bb2813b070b9fd31c4b4f7ab28ed0fe2e335a7c",
+  "code_commit": "a07f34f51670636051443db8b7f5380cf8077bc6",
+  "pid": 60974,
+  "budget": 16000,
+  "results": [
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 804,
+      "utterances": 379,
+      "max_feature_frames": 1531,
+      "max_target_phones": 43,
+      "attention_elements": 4447610480,
+      "joint_elements": 447083560,
+      "phones": 15973,
+      "peak_allocated_GiB": 46.23884582519531,
+      "peak_reserved_GiB": 46.53515625,
+      "seconds": 2.6424742992967367,
+      "loss": 232008.9375
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 2,
+      "utterances": 79,
+      "max_feature_frames": 2691,
+      "max_target_phones": 198,
+      "attention_elements": 2862511280,
+      "joint_elements": 740616310,
+      "phones": 14396,
+      "peak_allocated_GiB": 40.70609378814697,
+      "peak_reserved_GiB": 40.85546875,
+      "seconds": 1.004182580858469,
+      "loss": 183152.453125
+    },
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 814,
+      "utterances": 752,
+      "max_feature_frames": 603,
+      "max_target_phones": 23,
+      "attention_elements": 1371708160,
+      "joint_elements": 190767360,
+      "phones": 15986,
+      "peak_allocated_GiB": 29.78791618347168,
+      "peak_reserved_GiB": 29.939453125,
+      "seconds": 0.668687173165381,
+      "loss": 268088.9375
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 0,
+      "utterances": 23,
+      "max_feature_frames": 3265,
+      "max_target_phones": 368,
+      "attention_elements": 1228179760,
+      "joint_elements": 485371530,
+      "phones": 6807,
+      "peak_allocated_GiB": 23.610708236694336,
+      "peak_reserved_GiB": 25.498046875,
+      "seconds": 1.072231377940625,
+      "loss": 86864.3125
+    },
+    {
+      "dataset_index": 0,
+      "subset": "train-clean-100",
+      "batch_index": 217,
+      "utterances": 259,
+      "max_feature_frames": 1481,
+      "max_target_phones": 64,
+      "attention_elements": 2851921520,
+      "joint_elements": 437204950,
+      "phones": 15997,
+      "peak_allocated_GiB": 36.50953388214111,
+      "peak_reserved_GiB": 38.3671875,
+      "seconds": 1.0636612880043685,
+      "loss": 228517.78125
+    }
+  ],
+  "selected_batches": [
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 804,
+      "utterances": 379,
+      "max_feature_frames": 1531,
+      "max_target_phones": 43,
+      "attention_elements": 4447610480,
+      "joint_elements": 447083560
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 2,
+      "utterances": 79,
+      "max_feature_frames": 2691,
+      "max_target_phones": 198,
+      "attention_elements": 2862511280,
+      "joint_elements": 740616310
+    },
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 814,
+      "utterances": 752,
+      "max_feature_frames": 603,
+      "max_target_phones": 23,
+      "attention_elements": 1371708160,
+      "joint_elements": 190767360
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 0,
+      "utterances": 23,
+      "max_feature_frames": 3265,
+      "max_target_phones": 368,
+      "attention_elements": 1228179760,
+      "joint_elements": 485371530
+    },
+    {
+      "dataset_index": 0,
+      "subset": "train-clean-100",
+      "batch_index": 217,
+      "utterances": 259,
+      "max_feature_frames": 1481,
+      "max_target_phones": 64,
+      "attention_elements": 2851921520,
+      "joint_elements": 437204950
+    }
+  ],
+  "batches_per_subset": {
+    "train-clean-100": 225,
+    "train-clean-360": 816,
+    "dev-clean": 15
+  },
+  "parameters": 4207942,
+  "gpu_total_GiB": 79.1510009765625
+}

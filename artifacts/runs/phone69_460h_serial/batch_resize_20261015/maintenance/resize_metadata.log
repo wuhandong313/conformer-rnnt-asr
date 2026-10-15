@@ -1,0 +1,19 @@
+Seed set to 42
+[CustomDataset:train-clean-100] RNNT numel guard (V=70, limit=1.9e+09): batches 444 -> 444, worst batch est. 1.59e+09 elements
+[CustomDataset:train-clean-360] RNNT numel guard (V=70, limit=1.9e+09): batches 1609 -> 1610, worst batch est. 1.82e+09 elements
+[CustomDataset:dev-clean] RNNT numel guard (V=70, limit=1.9e+09): batches 25 -> 26, worst batch est. 1.86e+09 elements
+FLAC metadata cache: 135256 missing headers
+FLAC headers: 10000/135256
+FLAC headers: 20000/135256
+FLAC headers: 30000/135256
+FLAC headers: 40000/135256
+FLAC headers: 50000/135256
+FLAC headers: 60000/135256
+FLAC headers: 70000/135256
+FLAC headers: 80000/135256
+FLAC headers: 90000/135256
+FLAC headers: 100000/135256
+FLAC headers: 110000/135256
+FLAC headers: 120000/135256
+FLAC headers: 130000/135256
+{"status": "metadata_cached", "config": "configs/server_phone69_460h_stride4_none_s42_e50.yaml", "config_sha256": "477e8b7624248c2cc55a04fd5bb2813b070b9fd31c4b4f7ab28ed0fe2e335a7c", "code_commit": "a07f34f51670636051443db8b7f5380cf8077bc6", "pid": 60212, "budget": 8000, "results": [], "cached_utterances": 135256}

@@ -1,0 +1,85 @@
+{
+  "status": "failed",
+  "config": "configs/server_phone69_460h_stride4_none_s42_e50.yaml",
+  "config_sha256": "477e8b7624248c2cc55a04fd5bb2813b070b9fd31c4b4f7ab28ed0fe2e335a7c",
+  "code_commit": "a07f34f51670636051443db8b7f5380cf8077bc6",
+  "pid": 60714,
+  "budget": 24000,
+  "results": [
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 886,
+      "utterances": 567,
+      "max_feature_frames": 1531,
+      "max_target_phones": 43,
+      "attention_elements": 6653813040,
+      "joint_elements": 668855880,
+      "phones": 23975,
+      "peak_allocated_GiB": 69.15959882736206,
+      "peak_reserved_GiB": 69.51171875,
+      "seconds": 2.5653708414174616,
+      "loss": 347442.25
+    }
+  ],
+  "selected_batches": [
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 886,
+      "utterances": 567,
+      "max_feature_frames": 1531,
+      "max_target_phones": 43,
+      "attention_elements": 6653813040,
+      "joint_elements": 668855880
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 3,
+      "utterances": 96,
+      "max_feature_frames": 2470,
+      "max_target_phones": 180,
+      "attention_elements": 2933176320,
+      "joint_elements": 751685760
+    },
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 893,
+      "utterances": 1347,
+      "max_feature_frames": 636,
+      "max_target_phones": 23,
+      "attention_elements": 2758656000,
+      "joint_elements": 362073600
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 0,
+      "utterances": 23,
+      "max_feature_frames": 3265,
+      "max_target_phones": 368,
+      "attention_elements": 1228179760,
+      "joint_elements": 485371530
+    },
+    {
+      "dataset_index": 0,
+      "subset": "train-clean-100",
+      "batch_index": 239,
+      "utterances": 321,
+      "max_feature_frames": 1589,
+      "max_target_phones": 77,
+      "attention_elements": 4067814720,
+      "joint_elements": 697558680
+    }
+  ],
+  "batches_per_subset": {
+    "train-clean-100": 247,
+    "train-clean-360": 895,
+    "dev-clean": 13
+  },
+  "parameters": 4207942,
+  "gpu_total_GiB": 79.1510009765625,
+  "error": "RuntimeError('Probe exceeded reserved-memory safety margin')"
+}

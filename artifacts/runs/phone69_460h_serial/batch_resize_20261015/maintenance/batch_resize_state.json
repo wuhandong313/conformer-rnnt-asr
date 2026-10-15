@@ -1,0 +1,79 @@
+{
+  "status": "resumed",
+  "started_at": "2026-10-15T14:32:20.422584+00:00",
+  "original_pid": 54233,
+  "original_budget": 8000,
+  "epoch": 4,
+  "global_step": 8216,
+  "source_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/last.ckpt",
+  "snapshot_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/before_batch_resize_20261015T143222Z.ckpt",
+  "boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/epoch_boundary_before_batch_resize_20261015T143222Z.ckpt",
+  "checkpoint_epoch": 3,
+  "checkpoint_global_step": 7362,
+  "updated_at": "2026-10-15T15:07:44.953539+00:00",
+  "pid": 65088,
+  "target_boundary_epoch": 4,
+  "completed_epochs": 4,
+  "active_probe": "configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml",
+  "probe_budget": 68000,
+  "selected_budgets": {
+    "configs/server_phone69_460h_stride4_none_s42_e50.yaml": {
+      "budget": 16000,
+      "peak_reserved_GiB": 46.53515625,
+      "report": "/test21/conformer-rnnt-asr/output/phone69_460h/resize_probes/server_phone69_460h_stride4_none_s42_e50_b16000.json"
+    },
+    "configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml": {
+      "budget": 13500,
+      "peak_reserved_GiB": 56.8359375,
+      "report": "/test21/conformer-rnnt-asr/output/phone69_460h/resize_probes/server_phone69_460h_stride1_cosd_learned_s42_e50_b13500.json"
+    },
+    "configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml": {
+      "budget": 48000,
+      "peak_reserved_GiB": 52.208984375,
+      "report": "/test21/conformer-rnnt-asr/output/phone69_460h/resize_probes/server_phone69_460h_stride4_cosd_learned_s42_e50_b48000.json"
+    }
+  },
+  "target_gpu_memory_fraction": 0.9,
+  "target_budgets": {
+    "configs/server_phone69_460h_stride4_none_s42_e50.yaml": {
+      "budget": 22000,
+      "peak_reserved_GiB": 63.853515625,
+      "report": "/test21/conformer-rnnt-asr/output/phone69_460h/resize_probes/server_phone69_460h_stride4_none_s42_e50_target80_b22000.json",
+      "keep_allocator_cache": true
+    },
+    "configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml": {
+      "budget": 15000,
+      "peak_reserved_GiB": 63.2109375,
+      "report": "/test21/conformer-rnnt-asr/output/phone69_460h/resize_probes/server_phone69_460h_stride1_cosd_learned_s42_e50_target80_b15000.json",
+      "keep_allocator_cache": true
+    },
+    "configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml": {
+      "budget": 59500,
+      "peak_reserved_GiB": 64.01953125,
+      "report": "/test21/conformer-rnnt-asr/output/phone69_460h/resize_probes/server_phone69_460h_stride4_cosd_learned_s42_e50_target80_b59500.json",
+      "keep_allocator_cache": true
+    }
+  },
+  "final_budgets": {
+    "configs/server_phone69_460h_stride4_none_s42_e50.yaml": {
+      "budget": 24500,
+      "peak_reserved_GiB": 71.111328125,
+      "report": "/test21/conformer-rnnt-asr/output/phone69_460h/resize_probes/server_phone69_460h_stride4_none_s42_e50_target90_b24500.json",
+      "keep_allocator_cache": true
+    },
+    "configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml": {
+      "budget": 16500,
+      "peak_reserved_GiB": 69.767578125,
+      "report": "/test21/conformer-rnnt-asr/output/phone69_460h/resize_probes/server_phone69_460h_stride1_cosd_learned_s42_e50_target90_b16500.json",
+      "keep_allocator_cache": true
+    },
+    "configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml": {
+      "budget": 68000,
+      "peak_reserved_GiB": 70.298828125,
+      "report": "/test21/conformer-rnnt-asr/output/phone69_460h/resize_probes/server_phone69_460h_stride4_cosd_learned_s42_e50_target90_b68000.json",
+      "keep_allocator_cache": true
+    }
+  },
+  "resumed_at": "2026-10-15T15:07:44.953498+00:00",
+  "resumed_commit": "618421d627ca2d54a771c20fe4a927dd009d8dd1"
+}

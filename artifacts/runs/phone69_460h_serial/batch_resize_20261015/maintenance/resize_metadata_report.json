@@ -1,0 +1,10 @@
+{
+  "status": "metadata_cached",
+  "config": "configs/server_phone69_460h_stride4_none_s42_e50.yaml",
+  "config_sha256": "477e8b7624248c2cc55a04fd5bb2813b070b9fd31c4b4f7ab28ed0fe2e335a7c",
+  "code_commit": "a07f34f51670636051443db8b7f5380cf8077bc6",
+  "pid": 60212,
+  "budget": 8000,
+  "results": [],
+  "cached_utterances": 135256
+}
