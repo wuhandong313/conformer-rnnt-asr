@@ -1,0 +1,33 @@
+watcher start 10-11 13:37:40
+bigdec session gone 10-13 08:35:23
+pipeline done confirmed, pulling 10-13 08:37:11
+From https://gitee.com/wu3134/conformer-rnnt-asr
+ * branch            main       -> FETCH_HEAD
+   c12798d..74f092a  main       -> origin/main
+Updating c12798d..74f092a
+Fast-forward
+ .gitignore                                 |    3 +
+ configs/server_lstm_word_cosd_learned.yaml |  302 ++
+ conformer_rnnt/compression.py              |  306 --
+ conformer_rnnt/compression/__init__.py     |   14 +
+ conformer_rnnt/compression/core.py         |  260 ++
+ conformer_rnnt/compression/detectors.py    |  485 +++
+ conformer_rnnt/compression/mixers.py       |  140 +
+ conformer_rnnt/encoder.py                  |   35 +-
+ conformer_rnnt/lightning_module.py         |    9 +
+ conformer_rnnt/model.py                    |    9 +
+ eval_per_sample_word960.csv                | 5560 ++++++++++++++++++++++++++++
+ eval_per_sample_word960_r2.csv             | 5560 ++++++++++++++++++++++++++++
+ remote-access.md                           |  228 --
+ 13 files changed, 12368 insertions(+), 543 deletions(-)
+ create mode 100644 configs/server_lstm_word_cosd_learned.yaml
+ delete mode 100644 conformer_rnnt/compression.py
+ create mode 100644 conformer_rnnt/compression/__init__.py
+ create mode 100644 conformer_rnnt/compression/core.py
+ create mode 100644 conformer_rnnt/compression/detectors.py
+ create mode 100644 conformer_rnnt/compression/mixers.py
+ create mode 100644 eval_per_sample_word960.csv
+ create mode 100644 eval_per_sample_word960_r2.csv
+ delete mode 100644 remote-access.md
+git pull rc=0 HEAD=74f092a
+launching champion run 10-13 08:37:17

@@ -1,0 +1,21 @@
+Seed set to 42
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+[setup] rnnt_loss_chunk = 'sample'
+[CustomDataset:train-clean-100] RNNT numel guard (V=4001, limit=1.9e+09): batches 1076 -> 2479, worst batch est. 1.9e+09 elements
+[CustomDataset:train-clean-360] RNNT numel guard (V=4001, limit=1.9e+09): batches 3901 -> 9020, worst batch est. 1.9e+09 elements
+[CustomDataset:train-other-500] RNNT numel guard (V=4001, limit=1.9e+09): batches 5175 -> 11490, worst batch est. 1.9e+09 elements
+[phase0] batch B=11 T=398 U_max=52 V=4001
+[phase0] batched=34289.3398 sample=34289.3398 |dloss|=0.000e+00 rel=0.000e+00 |dgrad|max=0.000e+00
+[phase0] EQUIVALENT
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/pytorch_lightning/core/module.py:451: You are trying to `self.log()` but the `self.trainer` reference is not registered on the model yet. This is most likely because the model hasn't been passed to the `Trainer`
+[step   1] loss=  6374.27 peak=24.4G 0.9 it/s elapsed=1s
+[step  20] loss= 51347.16 peak=42.8G 0.4 it/s elapsed=55s
+[step  40] loss= 40123.07 peak=42.8G 0.4 it/s elapsed=112s
+[step  60] loss= 17560.11 peak=42.8G 0.3 it/s elapsed=181s
+[step  80] loss= 32296.76 peak=43.5G 0.3 it/s elapsed=250s
+[step 100] loss= 33813.71 peak=53.5G 0.3 it/s elapsed=334s
+[step 120] loss= 25767.78 peak=53.5G 0.3 it/s elapsed=388s
+[step 140] loss= 33145.27 peak=53.5G 0.3 it/s elapsed=455s
+[step 160] loss= 10104.07 peak=53.5G 0.3 it/s elapsed=523s
+[dbg2] ALL OK — 170 _step fwd+bwd passed, 561s total

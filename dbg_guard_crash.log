@@ -1,0 +1,33 @@
+Seed set to 42
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+[CustomDataset:train-clean-100] RNNT numel guard (V=4001, limit=1.9e+09): batches 1076 -> 2479, worst batch est. 1.9e+09 elements
+[CustomDataset:train-clean-360] RNNT numel guard (V=4001, limit=1.9e+09): batches 3901 -> 9020, worst batch est. 1.9e+09 elements
+[CustomDataset:train-other-500] RNNT numel guard (V=4001, limit=1.9e+09): batches 5175 -> 11490, worst batch est. 1.9e+09 elements
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/pytorch_lightning/core/module.py:451: You are trying to `self.log()` but the `self.trainer` reference is not registered on the model yet. This is most likely because the model hasn't been passed to the `Trainer`
+0: B=11 Tmel=1592 U=52 loss=34506.0 alloc=0.2G reserved=14.2G max=13.6G elapsed=4s
+10: B=10 Tmel=1610 U=66 loss=33587.3 alloc=0.2G reserved=33.0G max=29.0G elapsed=26s
+20: B=17 Tmel=1529 U=50 loss=50944.9 alloc=0.2G reserved=33.0G max=29.0G elapsed=45s
+30: B=8 Tmel=1647 U=68 loss=27010.0 alloc=0.2G reserved=33.0G max=29.0G elapsed=71s
+40: B=13 Tmel=1591 U=56 loss=39906.8 alloc=0.2G reserved=33.0G max=29.0G elapsed=98s
+50: B=10 Tmel=1624 U=60 loss=32445.7 alloc=0.2G reserved=33.0G max=29.0G elapsed=122s
+60: B=5 Tmel=1597 U=68 loss=17680.7 alloc=0.2G reserved=33.0G max=29.0G elapsed=150s
+70: B=8 Tmel=1628 U=73 loss=27550.6 alloc=0.2G reserved=52.6G max=29.0G elapsed=170s
+80: B=10 Tmel=1646 U=62 loss=32723.2 alloc=0.2G reserved=72.9G max=29.7G elapsed=202s
+90: B=12 Tmel=1541 U=52 loss=37274.3 alloc=0.2G reserved=33.7G max=29.7G elapsed=231s
+Traceback (most recent call last):
+  File "/test21/conformer-rnnt-asr-main/dbg_guard_crash.py", line 18, in <module>
+    loss = m._step(b, i, "train")
+  File "/test21/conformer-rnnt-asr-main/conformer_rnnt/lightning_module.py", line 767, in _step
+    loss = self.loss(output, batch.targets, src_lengths, target_lengths)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torchaudio/transforms/_transforms.py", line 1849, in forward
+    return F.rnnt_loss(
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torchaudio/functional/functional.py", line 1818, in rnnt_loss
+    return costs.sum()
+RuntimeError: CUDA error: an illegal memory access was encountered
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+

@@ -1,0 +1,252 @@
+===== rebuild start 2026-10-10 11:20:35 UTC =====
+[1/3] conda create whd (python 3.10)
+Collecting package metadata (current_repodata.json): ...working... done
+Solving environment: ...working... failed with repodata from current_repodata.json, will retry with next repodata source.
+Collecting package metadata (repodata.json): ...working... done
+Solving environment: ...working... done
+
+
+==> WARNING: A newer version of conda exists. <==
+  current version: 4.10.3
+  latest version: 26.9.1
+
+Please update conda by running
+
+    $ conda update -n base -c defaults conda
+
+
+
+## Package Plan ##
+
+  environment location: /root/anaconda3/envs/whd
+
+  added / updated specs:
+    - python=3.10
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    _openmp_mutex-5.1          |           52_gnu           7 KB
+    bzip2-1.0.8                |       h5eee18b_6         262 KB
+    ca-certificates-2026.9.25  |       h06a4308_0         107 KB
+    expat-2.7.1                |       h6a678d5_0         182 KB
+    libxcb-1.17.0              |       h9b100fa_0         430 KB
+    libzlib-1.3.1              |       hb25bd0a_0          59 KB
+    ncurses-6.5                |       h7934f7d_0         1.1 MB
+    openssl-3.0.17             |       h5eee18b_0         5.2 MB
+    packaging-26.3             |  py310h06a4308_0         329 KB
+    pip-26.2.1                 |     pyhc872135_0         1.1 MB
+    pthread-stubs-0.3          |       h0ce48e5_1           5 KB
+    python-3.10.18             |       h1a3bd86_0        26.5 MB
+    readline-8.3               |       hc2a1206_0         471 KB
+    setuptools-84.0.0          |  py310h06a4308_0         968 KB
+    sqlite-3.50.2              |       hb25bd0a_1         1.1 MB
+    tk-8.6.15                  |       h54e0aa7_0         3.4 MB
+    tzdata-2026c               |       he532380_0         117 KB
+    wheel-0.47.0               |  py310h06a4308_0          56 KB
+    xorg-libx11-1.8.12         |       h9b100fa_1         895 KB
+    xorg-libxau-1.0.12         |       h9b100fa_0          13 KB
+    xorg-libxdmcp-1.1.5        |       h9b100fa_0          19 KB
+    xorg-xorgproto-2024.1      |       h5eee18b_1         580 KB
+    zlib-1.3.1                 |       hb25bd0a_0          96 KB
+    ------------------------------------------------------------
+                                           Total:        43.0 MB
+
+The following NEW packages will be INSTALLED:
+
+  _libgcc_mutex      pkgs/main/linux-64::_libgcc_mutex-0.1-main
+  _openmp_mutex      pkgs/main/linux-64::_openmp_mutex-5.1-52_gnu
+  bzip2              pkgs/main/linux-64::bzip2-1.0.8-h5eee18b_6
+  ca-certificates    pkgs/main/linux-64::ca-certificates-2026.9.25-h06a4308_0
+  expat              pkgs/main/linux-64::expat-2.7.1-h6a678d5_0
+  ld_impl_linux-64   pkgs/main/linux-64::ld_impl_linux-64-2.40-h12ee557_0
+  libffi             pkgs/main/linux-64::libffi-3.4.4-h6a678d5_1
+  libgcc-ng          pkgs/main/linux-64::libgcc-ng-11.2.0-h1234567_1
+  libstdcxx-ng       pkgs/main/linux-64::libstdcxx-ng-11.2.0-h1234567_1
+  libuuid            pkgs/main/linux-64::libuuid-1.41.5-h5eee18b_0
+  libxcb             pkgs/main/linux-64::libxcb-1.17.0-h9b100fa_0
+  libzlib            pkgs/main/linux-64::libzlib-1.3.1-hb25bd0a_0
+  ncurses            pkgs/main/linux-64::ncurses-6.5-h7934f7d_0
+  openssl            pkgs/main/linux-64::openssl-3.0.17-h5eee18b_0
+  packaging          pkgs/main/linux-64::packaging-26.3-py310h06a4308_0
+  pip                pkgs/main/noarch::pip-26.2.1-pyhc872135_0
+  pthread-stubs      pkgs/main/linux-64::pthread-stubs-0.3-h0ce48e5_1
+  python             pkgs/main/linux-64::python-3.10.18-h1a3bd86_0
+  readline           pkgs/main/linux-64::readline-8.3-hc2a1206_0
+  setuptools         pkgs/main/linux-64::setuptools-84.0.0-py310h06a4308_0
+  sqlite             pkgs/main/linux-64::sqlite-3.50.2-hb25bd0a_1
+  tk                 pkgs/main/linux-64::tk-8.6.15-h54e0aa7_0
+  tzdata             pkgs/main/noarch::tzdata-2026c-he532380_0
+  wheel              pkgs/main/linux-64::wheel-0.47.0-py310h06a4308_0
+  xorg-libx11        pkgs/main/linux-64::xorg-libx11-1.8.12-h9b100fa_1
+  xorg-libxau        pkgs/main/linux-64::xorg-libxau-1.0.12-h9b100fa_0
+  xorg-libxdmcp      pkgs/main/linux-64::xorg-libxdmcp-1.1.5-h9b100fa_0
+  xorg-xorgproto     pkgs/main/linux-64::xorg-xorgproto-2024.1-h5eee18b_1
+  xz                 pkgs/main/linux-64::xz-5.6.4-h5eee18b_1
+  zlib               pkgs/main/linux-64::zlib-1.3.1-hb25bd0a_0
+
+
+
+Downloading and Extracting Packages
+openssl-3.0.17       | 5.2 MB    |            |   0% openssl-3.0.17       | 5.2 MB    |            |   0% openssl-3.0.17       | 5.2 MB    | 1          |   1% openssl-3.0.17       | 5.2 MB    | 2          |   3% openssl-3.0.17       | 5.2 MB    | 4          |   5% openssl-3.0.17       | 5.2 MB    | 5          |   6% openssl-3.0.17       | 5.2 MB    | 8          |   8% openssl-3.0.17       | 5.2 MB    | #1         |  12% openssl-3.0.17       | 5.2 MB    | #6         |  16% openssl-3.0.17       | 5.2 MB    | #8         |  18% openssl-3.0.17       | 5.2 MB    | ##2        |  22% openssl-3.0.17       | 5.2 MB    | ##7        |  28% openssl-3.0.17       | 5.2 MB    | ###1       |  32% openssl-3.0.17       | 5.2 MB    | ####1      |  41% openssl-3.0.17       | 5.2 MB    | ####6      |  46% openssl-3.0.17       | 5.2 MB    | #####7     |  58% openssl-3.0.17       | 5.2 MB    | #######6   |  76% openssl-3.0.17       | 5.2 MB    | ########6  |  86% openssl-3.0.17       | 5.2 MB    | ########## | 100% openssl-3.0.17       | 5.2 MB    | ########## | 100% 
+tzdata-2026c         | 117 KB    |            |   0% tzdata-2026c         | 117 KB    | #3         |  14% tzdata-2026c         | 117 KB    | ####1      |  41% tzdata-2026c         | 117 KB    | ########## | 100% 
+ncurses-6.5          | 1.1 MB    |            |   0% ncurses-6.5          | 1.1 MB    | 1          |   1% ncurses-6.5          | 1.1 MB    | ########## | 100% ncurses-6.5          | 1.1 MB    | ########## | 100% 
+sqlite-3.50.2        | 1.1 MB    |            |   0% sqlite-3.50.2        | 1.1 MB    | 1          |   1% sqlite-3.50.2        | 1.1 MB    | 4          |   4% sqlite-3.50.2        | 1.1 MB    | ########## | 100% 
+xorg-libxau-1.0.12   | 13 KB     |            |   0% xorg-libxau-1.0.12   | 13 KB     | ########## | 100% xorg-libxau-1.0.12   | 13 KB     | ########## | 100% 
+pip-26.2.1           | 1.1 MB    |            |   0% pip-26.2.1           | 1.1 MB    | 1          |   1% pip-26.2.1           | 1.1 MB    | ########## | 100% pip-26.2.1           | 1.1 MB    | ########## | 100% 
+_openmp_mutex-5.1    | 7 KB      |            |   0% _openmp_mutex-5.1    | 7 KB      | ########## | 100% _openmp_mutex-5.1    | 7 KB      | ########## | 100% 
+readline-8.3         | 471 KB    |            |   0% readline-8.3         | 471 KB    | 3          |   3% readline-8.3         | 471 KB    | ########## | 100% readline-8.3         | 471 KB    | ########## | 100% 
+packaging-26.3       | 329 KB    |            |   0% packaging-26.3       | 329 KB    | 4          |   5% packaging-26.3       | 329 KB    | ########## | 100% 
+libxcb-1.17.0        | 430 KB    |            |   0% libxcb-1.17.0        | 430 KB    | 3          |   4% libxcb-1.17.0        | 430 KB    | ########## | 100% 
+expat-2.7.1          | 182 KB    |            |   0% expat-2.7.1          | 182 KB    | 8          |   9% expat-2.7.1          | 182 KB    | ########## | 100% expat-2.7.1          | 182 KB    | ########## | 100% 
+xorg-xorgproto-2024. | 580 KB    |            |   0% xorg-xorgproto-2024. | 580 KB    | 2          |   3% xorg-xorgproto-2024. | 580 KB    | 5          |   6% xorg-xorgproto-2024. | 580 KB    | ######3    |  63% xorg-xorgproto-2024. | 580 KB    | ########## | 100% xorg-xorgproto-2024. | 580 KB    | ########## | 100% 
+wheel-0.47.0         | 56 KB     |            |   0% wheel-0.47.0         | 56 KB     | ##8        |  28% wheel-0.47.0         | 56 KB     | ########## | 100% 
+setuptools-84.0.0    | 968 KB    |            |   0% setuptools-84.0.0    | 968 KB    | 1          |   2% setuptools-84.0.0    | 968 KB    | ########## | 100% setuptools-84.0.0    | 968 KB    | ########## | 100% 
+tk-8.6.15            | 3.4 MB    |            |   0% tk-8.6.15            | 3.4 MB    |            |   0% tk-8.6.15            | 3.4 MB    | 1          |   1% tk-8.6.15            | 3.4 MB    | #          |  11% tk-8.6.15            | 3.4 MB    | ####3      |  43% tk-8.6.15            | 3.4 MB    | #####8     |  59% tk-8.6.15            | 3.4 MB    | #######2   |  72% tk-8.6.15            | 3.4 MB    | ########4  |  85% tk-8.6.15            | 3.4 MB    | ########## | 100% tk-8.6.15            | 3.4 MB    | ########## | 100% 
+xorg-libxdmcp-1.1.5  | 19 KB     |            |   0% xorg-libxdmcp-1.1.5  | 19 KB     | ########5  |  85% xorg-libxdmcp-1.1.5  | 19 KB     | ########## | 100% 
+ca-certificates-2026 | 107 KB    |            |   0% ca-certificates-2026 | 107 KB    | #4         |  15% ca-certificates-2026 | 107 KB    | ########## | 100% 
+python-3.10.18       | 26.5 MB   |            |   0% python-3.10.18       | 26.5 MB   |            |   0% python-3.10.18       | 26.5 MB   | 1          |   2% python-3.10.18       | 26.5 MB   | 2          |   2% python-3.10.18       | 26.5 MB   | #1         |  11% python-3.10.18       | 26.5 MB   | #4         |  15% python-3.10.18       | 26.5 MB   | #8         |  18% python-3.10.18       | 26.5 MB   | ##         |  21% python-3.10.18       | 26.5 MB   | ##8        |  29% python-3.10.18       | 26.5 MB   | ###2       |  32% python-3.10.18       | 26.5 MB   | ###5       |  35% python-3.10.18       | 26.5 MB   | ###9       |  40% python-3.10.18       | 26.5 MB   | ####2      |  42% python-3.10.18       | 26.5 MB   | ####4      |  44% python-3.10.18       | 26.5 MB   | ####8      |  48% python-3.10.18       | 26.5 MB   | #####1     |  52% python-3.10.18       | 26.5 MB   | #####4     |  55% python-3.10.18       | 26.5 MB   | #####7     |  57% python-3.10.18       | 26.5 MB   | #####9     |  60% python-3.10.18       | 26.5 MB   | ######1    |  62% python-3.10.18       | 26.5 MB   | ######3    |  64% python-3.10.18       | 26.5 MB   | ######8    |  69% python-3.10.18       | 26.5 MB   | #######1   |  72% python-3.10.18       | 26.5 MB   | #######4   |  75% python-3.10.18       | 26.5 MB   | #######7   |  77% python-3.10.18       | 26.5 MB   | #######9   |  80% python-3.10.18       | 26.5 MB   | ########3  |  84% python-3.10.18       | 26.5 MB   | ########6  |  87% python-3.10.18       | 26.5 MB   | ########9  |  89% python-3.10.18       | 26.5 MB   | #########2 |  92% python-3.10.18       | 26.5 MB   | #########5 |  95% python-3.10.18       | 26.5 MB   | #########7 |  98% python-3.10.18       | 26.5 MB   | ########## | 100% python-3.10.18       | 26.5 MB   | ########## | 100% 
+xorg-libx11-1.8.12   | 895 KB    |            |   0% xorg-libx11-1.8.12   | 895 KB    | 1          |   2% xorg-libx11-1.8.12   | 895 KB    | #########6 |  97% xorg-libx11-1.8.12   | 895 KB    | ########## | 100% 
+pthread-stubs-0.3    | 5 KB      |            |   0% pthread-stubs-0.3    | 5 KB      | ########## | 100% pthread-stubs-0.3    | 5 KB      | ########## | 100% 
+zlib-1.3.1           | 96 KB     |            |   0% zlib-1.3.1           | 96 KB     | #6         |  17% zlib-1.3.1           | 96 KB     | ########## | 100% 
+bzip2-1.0.8          | 262 KB    |            |   0% bzip2-1.0.8          | 262 KB    | 6          |   6% bzip2-1.0.8          | 262 KB    | ########## | 100% 
+libzlib-1.3.1        | 59 KB     |            |   0% libzlib-1.3.1        | 59 KB     | ##6        |  27% libzlib-1.3.1        | 59 KB     | ########   |  81% libzlib-1.3.1        | 59 KB     | ########## | 100% 
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+#
+# To activate this environment, use
+#
+#     $ conda activate whd
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+[2/3] pip install (Tsinghua mirror, ~9GB nvidia wheels, 30-50 min)
+Looking in indexes: https://pypi.tuna.tsinghua.edu.cn/simple
+Collecting torch==2.6.0
+  Downloading torch-2.6.0-cp310-cp310-manylinux1_x86_64.whl (766.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 766.7/766.7 MB 3.7 MB/s  0:04:32
+Collecting torchaudio==2.6.0
+  Downloading torchaudio-2.6.0-cp310-cp310-manylinux1_x86_64.whl (3.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 6.9 MB/s  0:00:00
+Collecting numpy
+  Downloading numpy-2.2.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (16.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.8/16.8 MB 5.8 MB/s  0:00:02
+Collecting scipy
+  Downloading scipy-1.15.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (37.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 37.7/37.7 MB 4.5 MB/s  0:00:08
+Collecting sentencepiece
+  Downloading sentencepiece-0.2.2-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (1.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.4/1.4 MB 3.5 MB/s  0:00:00
+Collecting pyyaml
+  Downloading pyyaml-6.0.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (770 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 770.3/770.3 kB 3.2 MB/s  0:00:00
+Collecting soundfile
+  Downloading soundfile-0.14.0-py2.py3-none-any.whl (26 kB)
+Collecting pytorch-lightning
+  Downloading pytorch_lightning-2.6.6-py3-none-any.whl (853 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 853.0/853.0 kB 3.5 MB/s  0:00:00
+Collecting filelock (from torch==2.6.0)
+  Downloading filelock-4.1.0-py3-none-any.whl (133 kB)
+Collecting typing-extensions>=4.10.0 (from torch==2.6.0)
+  Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Collecting networkx (from torch==2.6.0)
+  Downloading networkx-3.4.2-py3-none-any.whl (1.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 5.1 MB/s  0:00:00
+Collecting jinja2 (from torch==2.6.0)
+  Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+Collecting fsspec (from torch==2.6.0)
+  Downloading fsspec-2026.9.0-py3-none-any.whl (221 kB)
+Collecting nvidia-cuda-nvrtc-cu12==12.4.127 (from torch==2.6.0)
+  Downloading nvidia_cuda_nvrtc_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl (24.6 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 24.6/24.6 MB 3.4 MB/s  0:00:07
+Collecting nvidia-cuda-runtime-cu12==12.4.127 (from torch==2.6.0)
+  Downloading nvidia_cuda_runtime_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl (883 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 883.7/883.7 kB 3.6 MB/s  0:00:00
+Collecting nvidia-cuda-cupti-cu12==12.4.127 (from torch==2.6.0)
+  Downloading nvidia_cuda_cupti_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl (13.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.8/13.8 MB 3.8 MB/s  0:00:03
+Collecting nvidia-cudnn-cu12==9.1.0.70 (from torch==2.6.0)
+  Downloading nvidia_cudnn_cu12-9.1.0.70-py3-none-manylinux2014_x86_64.whl (664.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 664.8/664.8 MB 4.9 MB/s  0:02:05
+Collecting nvidia-cublas-cu12==12.4.5.8 (from torch==2.6.0)
+  Downloading nvidia_cublas_cu12-12.4.5.8-py3-none-manylinux2014_x86_64.whl (363.4 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 363.4/363.4 MB 4.6 MB/s  0:01:12
+Collecting nvidia-cufft-cu12==11.2.1.3 (from torch==2.6.0)
+  Downloading nvidia_cufft_cu12-11.2.1.3-py3-none-manylinux2014_x86_64.whl (211.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 211.5/211.5 MB 7.0 MB/s  0:00:30
+Collecting nvidia-curand-cu12==10.3.5.147 (from torch==2.6.0)
+  Downloading nvidia_curand_cu12-10.3.5.147-py3-none-manylinux2014_x86_64.whl (56.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 56.3/56.3 MB 7.8 MB/s  0:00:07
+Collecting nvidia-cusolver-cu12==11.6.1.9 (from torch==2.6.0)
+  Downloading nvidia_cusolver_cu12-11.6.1.9-py3-none-manylinux2014_x86_64.whl (127.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 127.9/127.9 MB 7.1 MB/s  0:00:18
+Collecting nvidia-cusparse-cu12==12.3.1.170 (from torch==2.6.0)
+  Downloading nvidia_cusparse_cu12-12.3.1.170-py3-none-manylinux2014_x86_64.whl (207.5 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 207.5/207.5 MB 7.7 MB/s  0:00:27
+Collecting nvidia-cusparselt-cu12==0.6.2 (from torch==2.6.0)
+  Downloading nvidia_cusparselt_cu12-0.6.2-py3-none-manylinux2014_x86_64.whl (150.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 150.1/150.1 MB 7.6 MB/s  0:00:19
+Collecting nvidia-nccl-cu12==2.21.5 (from torch==2.6.0)
+  Downloading nvidia_nccl_cu12-2.21.5-py3-none-manylinux2014_x86_64.whl (188.7 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 188.7/188.7 MB 6.8 MB/s  0:00:27
+Collecting nvidia-nvtx-cu12==12.4.127 (from torch==2.6.0)
+  Downloading nvidia_nvtx_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl (99 kB)
+Collecting nvidia-nvjitlink-cu12==12.4.127 (from torch==2.6.0)
+  Downloading nvidia_nvjitlink_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl (21.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 21.1/21.1 MB 7.6 MB/s  0:00:02
+Collecting triton==3.2.0 (from torch==2.6.0)
+  Downloading triton-3.2.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (253.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 253.1/253.1 MB 6.5 MB/s  0:00:39
+Collecting sympy==1.13.1 (from torch==2.6.0)
+  Downloading sympy-1.13.1-py3-none-any.whl (6.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 6.6 MB/s  0:00:01
+Collecting mpmath<1.4,>=1.1.0 (from sympy==1.13.1->torch==2.6.0)
+  Downloading mpmath-1.3.0-py3-none-any.whl (536 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 536.2/536.2 kB 7.9 MB/s  0:00:00
+Collecting cffi>=1.0 (from soundfile)
+  Downloading cffi-2.1.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (218 kB)
+Collecting tqdm>=4.57.0 (from pytorch-lightning)
+  Downloading tqdm-4.70.1-py3-none-any.whl (80 kB)
+Collecting torchmetrics>0.7.0 (from pytorch-lightning)
+  Downloading torchmetrics-1.9.0-py3-none-any.whl (983 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 983.4/983.4 kB 9.5 MB/s  0:00:00
+Requirement already satisfied: packaging>=23.0 in ./anaconda3/envs/whd/lib/python3.10/site-packages (from pytorch-lightning) (26.3)
+Collecting lightning-utilities>=0.10.0 (from pytorch-lightning)
+  Downloading lightning_utilities-0.15.3-py3-none-any.whl (31 kB)
+Collecting pycparser (from cffi>=1.0->soundfile)
+  Downloading pycparser-3.11-py3-none-any.whl (51 kB)
+Collecting aiohttp!=4.0.0a0,!=4.0.0a1 (from fsspec[http]>=2022.5.0->pytorch-lightning)
+  Downloading aiohttp-3.14.4-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.9 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.9/1.9 MB 4.5 MB/s  0:00:00
+Collecting aiohappyeyeballs>=2.5.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]>=2022.5.0->pytorch-lightning)
+  Downloading aiohappyeyeballs-2.7.1-py3-none-any.whl (15 kB)
+Collecting aiosignal>=1.4.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]>=2022.5.0->pytorch-lightning)
+  Downloading aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+Collecting async-timeout<6.0,>=4.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]>=2022.5.0->pytorch-lightning)
+  Downloading async_timeout-5.0.1-py3-none-any.whl (6.2 kB)
+Collecting attrs>=17.3.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]>=2022.5.0->pytorch-lightning)
+  Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+Collecting frozenlist>=1.1.1 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]>=2022.5.0->pytorch-lightning)
+  Downloading frozenlist-1.8.0-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (219 kB)
+Collecting multidict<7.0,>=4.5 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]>=2022.5.0->pytorch-lightning)
+  Downloading multidict-6.9.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (303 kB)
+Collecting propcache>=0.2.0 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]>=2022.5.0->pytorch-lightning)
+  Downloading propcache-0.5.4-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (224 kB)
+Collecting yarl<2.0,>=1.25.1 (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]>=2022.5.0->pytorch-lightning)
+  Downloading yarl-1.25.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (118 kB)
+Collecting idna>=2.0 (from yarl<2.0,>=1.25.1->aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]>=2022.5.0->pytorch-lightning)
+  Downloading idna-3.20-py3-none-any.whl (69 kB)
+Collecting MarkupSafe>=2.0 (from jinja2->torch==2.6.0)
+  Downloading markupsafe-3.0.4-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (20 kB)
+Installing collected packages: triton, nvidia-cusparselt-cu12, mpmath, typing-extensions, tqdm, sympy, sentencepiece, pyyaml, pycparser, propcache, nvidia-nvtx-cu12, nvidia-nvjitlink-cu12, nvidia-nccl-cu12, nvidia-curand-cu12, nvidia-cufft-cu12, nvidia-cuda-runtime-cu12, nvidia-cuda-nvrtc-cu12, nvidia-cuda-cupti-cu12, nvidia-cublas-cu12, numpy, networkx, MarkupSafe, idna, fsspec, frozenlist, filelock, attrs, async-timeout, aiohappyeyeballs, scipy, nvidia-cusparse-cu12, nvidia-cudnn-cu12, multidict, lightning-utilities, jinja2, cffi, aiosignal, yarl, soundfile, nvidia-cusolver-cu12, torch, aiohttp, torchmetrics, torchaudio, pytorch-lightning
+
+Successfully installed MarkupSafe-3.0.4 aiohappyeyeballs-2.7.1 aiohttp-3.14.4 aiosignal-1.4.0 async-timeout-5.0.1 attrs-26.1.0 cffi-2.1.1 filelock-4.1.0 frozenlist-1.8.0 fsspec-2026.9.0 idna-3.20 jinja2-3.1.6 lightning-utilities-0.15.3 mpmath-1.3.0 multidict-6.9.1 networkx-3.4.2 numpy-2.2.6 nvidia-cublas-cu12-12.4.5.8 nvidia-cuda-cupti-cu12-12.4.127 nvidia-cuda-nvrtc-cu12-12.4.127 nvidia-cuda-runtime-cu12-12.4.127 nvidia-cudnn-cu12-9.1.0.70 nvidia-cufft-cu12-11.2.1.3 nvidia-curand-cu12-10.3.5.147 nvidia-cusolver-cu12-11.6.1.9 nvidia-cusparse-cu12-12.3.1.170 nvidia-cusparselt-cu12-0.6.2 nvidia-nccl-cu12-2.21.5 nvidia-nvjitlink-cu12-12.4.127 nvidia-nvtx-cu12-12.4.127 propcache-0.5.4 pycparser-3.11 pytorch-lightning-2.6.6 pyyaml-6.0.3 scipy-1.15.3 sentencepiece-0.2.2 soundfile-0.14.0 sympy-1.13.1 torch-2.6.0 torchaudio-2.6.0 torchmetrics-1.9.0 tqdm-4.70.1 triton-3.2.0 typing-extensions-4.16.0 yarl-1.25.1
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+[3/3] verify
+ENV_OK torch 2.6.0+cu124 | pl 2.6.6 | NVIDIA A100-SXM4-80GB
+===== env ready 2026-10-10 11:33:17 UTC - launching training (RESUME_LAST=1) =====

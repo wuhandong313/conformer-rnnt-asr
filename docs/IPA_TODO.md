@@ -10,7 +10,7 @@
 - 38×24 PanPhon 静态特征表，全部 token 完整识别；blank/padding 使用 mask。
 - IPA RNN-T、语料级 PER、词表/特征表 checkpoint 指纹检查。
 - 只读数据审计工具；无标签生成、复制或改写流程。
-- 原 `configs/default.yaml` 保留，使用独立 IPA 配置显式启用此方向。
+- IPA 使用独立配置显式启用；`configs/default.yaml` 当前使用固定 phone69。
 
 方法和读取配置详见 [ipa_vocabulary_review.md](ipa_vocabulary_review.md)。
 
@@ -29,15 +29,15 @@
    checkpoint 保存恢复；不要把此前 41-token 版本的 smoke test 当作本版本的数据验证。
 5. **决定是否加入 ArtV 训练。** 当前仅提供固定 24 维目标和 mask，没有 AP/VIB/ArtV
    辅助损失。若继续，先明确目标时间对齐、连接位置和损失权重，再做小规模对照。
-6. **决定正式实验与同步。** 原 word 基线仍可显式运行；本地代码已同步 Git 远端；恢复方向时
-   核对目标提交，再让服务器 IPA 工作树快进拉取，避免覆盖服务器主实验目录的本地改动。
+6. **决定正式实验与同步。** 原 word 基线仍可显式运行；恢复方向时在服务器原仓库
+   选择 `ipa` 分支并核对目标提交，不再使用独立 IPA 工作树。
 
 ## 本轮停止时的同步状态
 
 最新 38-token 方案已合并至本地 `main`，并同步到 Gitee、GitHub 的 `main` 与 `ipa`。
-服务器仍停留在 `997d07f`，那是已弃用的 41-token 方案，不能拿来代表当前实现。
-服务器 `/test21/conformer-rnnt-asr-ipa` 的旧字典/G2P 生成任务已终止；
-未启动正式 IPA 训练，也未将数据搬入仓库。
+随后已按用户要求收拢工作树，将服务器分支同步到当前方案；旧 `997d07f` 的 41-token
+实现仅保留在历史提交中。旧字典/G2P 生成任务已终止，未启动正式 IPA 训练，也未将数据搬入仓库。
+目录、分支及大文件保存位置见 [repository_sync.md](repository_sync.md)。
 
 ## 基础验证
 

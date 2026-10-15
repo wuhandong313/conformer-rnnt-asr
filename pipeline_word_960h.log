@@ -1,0 +1,56 @@
+[2026-10-06T08:16:10] pipeline start (repo: 66df02e)
+[2026-10-06T08:16:10] waiting for GPU ...
+[2026-10-06T08:16:10] GPU free, starting training
+[2026-10-06T08:18:16] training exit=1
+[2026-10-06T08:18:16] TRAINING FAILED — see word_960h.train.log, abort
+[2026-10-06T09:19:18] pipeline start (repo: 96162c2)
+[2026-10-06T09:19:18] waiting for GPU ...
+[2026-10-06T09:19:18] GPU free, starting training
+[2026-10-06T09:22:10] training exit=1
+[2026-10-06T09:22:10] TRAINING FAILED — see word_960h.train.log, abort
+[2026-10-06T10:25:37] pipeline start (repo: 18b526f)
+[2026-10-06T10:25:37] waiting for GPU ...
+[2026-10-06T10:25:37] GPU free, starting training
+[2026-10-06T10:40:48] pipeline start (repo: 807aff7)
+[2026-10-06T10:40:48] waiting for GPU ...
+[2026-10-06T10:40:48] GPU free, starting training
+[2026-10-06T12:26:06] pipeline start (repo: 107fb8a)
+[2026-10-06T12:26:06] waiting for GPU ...
+[2026-10-06T12:26:06] GPU free, starting training
+[2026-10-06T12:26:12] training attempt 1 exit=1
+[2026-10-06T12:26:17] training attempt 2 exit=1
+[2026-10-06T12:26:22] training attempt 3 exit=1
+[2026-10-06T12:26:22] TRAINING FAILED — see word_960h.train.log, abort
+[2026-10-06T12:32:47] pipeline start (repo: ee2a8c9)
+[2026-10-06T12:32:47] waiting for GPU ...
+[2026-10-06T12:32:47] GPU free, starting training
+[2026-10-06T20:59:28] training attempt 1 exit=1
+[2026-10-06T22:00:04] pipeline start (repo: 06b4f35)
+[2026-10-06T22:00:04] waiting for GPU ...
+[2026-10-06T22:00:04] GPU free, starting training
+[2026-10-06T23:34:49] pipeline start (repo: a7d425b)
+[2026-10-06T23:34:49] waiting for GPU ...
+[2026-10-06T23:34:49] GPU free, starting training
+[2026-10-06T23:59:51] pipeline start (repo: aa8f1fa)
+[2026-10-06T23:59:51] waiting for GPU ...
+[2026-10-06T23:59:51] GPU free, starting training
+[2026-10-07T11:49:07] training attempt 1 exit=0
+[2026-10-07T11:49:07] best ckpt: /test21/conformer-rnnt-asr/exp_word_960h/checkpoints/val-none-epoch=05-step=119000.ckpt
+[2026-10-07T17:26:20] beam20 eval exit=0
+Evaluation complete — 5559 samples
+PER: 0.0880
+RTF: 0.5288
+[2026-10-07T17:26:20] pipeline done
+[2026-10-08T01:24:07] pipeline start (repo: fb4d7a7)
+[2026-10-08T01:24:07] waiting for GPU ...
+[2026-10-08T01:24:07] GPU free, starting training
+[2026-10-08T01:37:32] pipeline start (repo: b10ea32)
+[2026-10-08T01:37:32] waiting for GPU ...
+[2026-10-08T01:37:32] GPU free, starting training
+[2026-10-09T02:43:32] training attempt 1 exit=0
+[2026-10-09T02:43:32] best ckpt: /test21/conformer-rnnt-asr/exp_word_960h/checkpoints/val-none-epoch=09-step=211000.ckpt
+[2026-10-09T18:18:02] beam20 eval exit=0
+Evaluation complete — 5559 samples
+PER: 0.0792
+RTF: 1.4231
+[2026-10-09T18:18:02] pipeline done

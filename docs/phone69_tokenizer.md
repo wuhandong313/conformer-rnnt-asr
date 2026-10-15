@@ -63,6 +63,6 @@ Checkpoint 保存词表指纹与 token 顺序；训练恢复和评估均检查�
 ## 已验证与待完成
 
 - 31 项回归测试通过，包含小模型 RNN-T loss/backward、padding、解码 ID 0、批次音素计数、PER、词表指纹及 word-BPE 路径。
-- 尚未开展真实音频完整评估或正式训练；未改动服务器代码、数据、checkpoint 或运行任务。
-- 服务器 main 有 `eval.py` 和两个 pipeline 脚本的未提交修改；两个脚本与改造前本地 main 一致，`eval.py` 内容不同，更新前应保存并核对，不能直接覆盖。
-- 服务器旧 ipa 工作树可在确认无人使用后清理；本地 main 已包含新版 IPA，无需再合并服务器旧实现。attn-predictor 保留独立，按具体需求挑选改动。
+- 尚未开展 phone69 真实音频完整评估或正式训练；数据、checkpoint 和运行任务未改动。
+- 服务器原有修改、调试脚本和小日志已保存并接回各自分支；当前 main 保留新版 phone69/IPA 评估逻辑。
+- 工作树收拢到原仓库，独立实验以分支保留；三端同步方式见 [repository_sync.md](repository_sync.md)。

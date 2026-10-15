@@ -1,0 +1,17 @@
+Seed set to 42
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+[setup] rnnt_loss_chunk = 'group'
+[CustomDataset:train-clean-100] RNNT numel guard (V=4001, limit=1.9e+09): batches 1076 -> 2479, worst batch est. 1.9e+09 elements
+[CustomDataset:train-clean-360] RNNT numel guard (V=4001, limit=1.9e+09): batches 3901 -> 9020, worst batch est. 1.9e+09 elements
+[CustomDataset:train-other-500] RNNT numel guard (V=4001, limit=1.9e+09): batches 5175 -> 11490, worst batch est. 1.9e+09 elements
+[phase0.0] B=3 ref=9125.18 group=9125.18 rel=1.07e-07 dgrad=1.18e-38
+[phase0.1] B=2 ref=6390.51 group=6390.51 rel=0.00e+00 dgrad=1.18e-38
+[phase0.2] B=19 ref=22299.29 group=22299.29 rel=8.76e-08 dgrad=1.18e-38
+[phase0] EQUIVALENT
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/pytorch_lightning/core/module.py:451: You are trying to `self.log()` but the `self.trainer` reference is not registered on the model yet. This is most likely because the model hasn't been passed to the `Trainer`
+[step    1] loss=  3590.04 peak=9.3G 1.48 it/s elapsed=1s
+[step  200] loss=  6302.08 peak=16.3G 2.60 it/s elapsed=77s
+[step  400] loss=  6704.92 peak=16.3G 2.67 it/s elapsed=150s
+[group stats] batches=500 skipped=66 avg_groups/batch=1.1 avg_group_size=2.7
+[dbg3] ALL OK — 500 group-mode steps passed, 187s (2.68 it/s, contended with the running training)

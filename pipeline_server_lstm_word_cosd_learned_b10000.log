@@ -1,0 +1,4 @@
+[2026-10-14T03:07:09] pipeline start (repo: 74f092a)
+[2026-10-14T03:07:09] waiting for GPU ...
+[2026-10-14T03:07:09] GPU free, starting training
+[2026-10-14T03:20:39] training attempt 1 exit=1

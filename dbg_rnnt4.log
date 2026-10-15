@@ -1,0 +1,35 @@
+A: B=20 T=401 U=63 V=4001 (under 2^31) numel=2053633280 (2^31=2.15e+09) OK
+Traceback (most recent call last):
+  File "<stdin>", line 11, in try_case
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/cuda/__init__.py", line 985, in synchronize
+    return torch._C._cuda_synchronize()
+RuntimeError: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<stdin>", line 14, in try_case
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/cuda/__init__.py", line 985, in synchronize
+    return torch._C._cuda_synchronize()
+RuntimeError: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<stdin>", line 20, in <module>
+  File "<stdin>", line 17, in try_case
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/cuda/memory.py", line 218, in empty_cache
+    torch._C._cuda_emptyCache()
+RuntimeError: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+

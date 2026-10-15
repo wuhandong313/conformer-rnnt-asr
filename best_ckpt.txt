@@ -1,0 +1,1 @@
+/test21/conformer-rnnt-asr/exp_lstm_naive_repro/checkpoints/val-naive-epoch=34-step=22000.ckpt

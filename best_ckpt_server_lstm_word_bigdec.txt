@@ -1,0 +1,1 @@
+/test21/conformer-rnnt-asr/exp_word_960h_bigdec/checkpoints/val-none-epoch=12-step=291900.ckpt

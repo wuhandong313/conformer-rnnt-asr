@@ -1,0 +1,18 @@
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+0 B=22 featT=1604 U_max=63
+Traceback (most recent call last):
+  File "<stdin>", line 11, in <module>
+  File "/test21/conformer-rnnt-asr-main/conformer_rnnt/lightning_module.py", line 667, in _step
+    loss = self.loss(output, batch.targets, src_lengths, target_lengths)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torchaudio/transforms/_transforms.py", line 1849, in forward
+    return F.rnnt_loss(
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torchaudio/functional/functional.py", line 1818, in rnnt_loss
+    return costs.sum()
+RuntimeError: CUDA error: an illegal memory access was encountered
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+

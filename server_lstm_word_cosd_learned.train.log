@@ -1,0 +1,35 @@
+Seed set to 42
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/logger_connector.py:76: Starting from v1.9.0, `tensorboardX` has been removed as a dependency of the `pytorch_lightning` package, due to potential conflicts with other packages in the ML ecosystem. For this reason, `logger=True` will use `CSVLogger` as the default logger, unless the `tensorboard` or `tensorboardX` packages are found. Please `pip install lightning[extra]` or one of them to enable TensorBoard support by default
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+RESUMING from /test21/conformer-rnnt-asr/exp_word_960h_cosd_learned/checkpoints/last.ckpt
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/pytorch_lightning/callbacks/model_checkpoint.py:881: Checkpoint directory /test21/conformer-rnnt-asr/exp_word_960h_cosd_learned/checkpoints exists and is not empty.
+Restoring states from the checkpoint path at /test21/conformer-rnnt-asr/exp_word_960h_cosd_learned/checkpoints/last.ckpt
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name                | Type          | Params | Mode  | FLOPs
+----------------------------------------------------------------------
+0 | model               | ConformerRNNT | 42.8 M | train | 0    
+1 | loss                | RNNTLoss      | 0      | train | 0    
+2 | train_data_pipeline | Sequential    | 0      | train | 0    
+3 | valid_data_pipeline | Sequential    | 0      | train | 0    
+----------------------------------------------------------------------
+42.8 M    Trainable params
+0         Non-trainable params
+42.8 M    Total params
+171.137   Total estimated model params size (MB)
+373       Modules in train mode
+0         Modules in eval mode
+0         Total Flops
+Restored all states from the checkpoint at /test21/conformer-rnnt-asr/exp_word_960h_cosd_learned/checkpoints/last.ckpt
+[rank: 0] Received SIGTERM: 15
+[CustomDataset:train-clean-100] RNNT numel guard (V=4001, limit=1.9e+09): batches 1076 -> 2479, worst batch est. 1.9e+09 elements
+[CustomDataset:train-clean-360] RNNT numel guard (V=4001, limit=1.9e+09): batches 3901 -> 9020, worst batch est. 1.9e+09 elements
+[CustomDataset:train-other-500] RNNT numel guard (V=4001, limit=1.9e+09): batches 5175 -> 11490, worst batch est. 1.9e+09 elements
+[CustomDataset:dev-clean] RNNT numel guard (V=4001, limit=1.9e+09): batches 59 -> 116, worst batch est. 1.9e+09 elements
+[CustomDataset:dev-other] RNNT numel guard (V=4001, limit=1.9e+09): batches 54 -> 97, worst batch est. 1.9e+09 elements
+Training: |          | 0/? [00:00<?, ?it/s]/root/anaconda3/envs/whd/lib/python3.10/site-packages/pytorch_lightning/loops/training_epoch_loop.py:224: You're resuming from a checkpoint that ended before the epoch ended and your dataloader is not resumable. This can cause unreliable results if further training is done. Consider using an end-of-epoch checkpoint or make your dataloader resumable by implementing the `state_dict` / `load_state_dict` interface.
+Training: |          | 8089/? [00:01<00:00, 4314.31it/s]Training: |          | 8089/? [00:01<00:00, 4311.90it/s, v_num=2]Training: |          | 8089/? [00:03<00:00, 2181.83it/s, v_num=2]

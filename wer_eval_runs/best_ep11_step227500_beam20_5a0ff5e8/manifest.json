@@ -1,0 +1,29 @@
+{
+  "run_id": "5a0ff5e8",
+  "session": "word_cosd_wer_5a0ff5e8",
+  "run_dir": "/test21/conformer-rnnt-asr-main/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8",
+  "log": "/test21/conformer-rnnt-asr-main/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/eval.log",
+  "csv": "/test21/conformer-rnnt-asr-main/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/per_sample_wer.csv",
+  "config_snapshot": "/test21/conformer-rnnt-asr-main/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/config.yaml",
+  "checkpoint": "/test21/conformer-rnnt-asr/exp_word_960h_cosd_learned_b14000/checkpoints/val-none-epoch=11-step=227500.ckpt",
+  "metric": "corpus WER",
+  "beam_width": 20,
+  "code_sha256": {
+    "eval.py": "b9ef19fdbb113a0930b73cb766fce34fd5634d4e4737cd6f66004e943d890e6a",
+    "conformer_rnnt/metrics.py": "fe6bbc3718e684582f2be8ee747583ea46e25a46cda9a374c67d38b085ca8c9a",
+    "scripts/word_960h_pipeline.sh": "035bbb1dae25907c219bd6258308392a425ea0f3aa0a74b6d968100f0089e4c2",
+    "scripts/lstm_repro_pipeline.sh": "5fe390515734ce678a86d9ea2707d33cb6b292378e043236bd17d5d2f6baa7a2"
+  },
+  "command": [
+    "/root/anaconda3/envs/whd/bin/python",
+    "-u",
+    "eval.py",
+    "/test21/conformer-rnnt-asr-main/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/config.yaml",
+    "--checkpoint",
+    "/test21/conformer-rnnt-asr/exp_word_960h_cosd_learned_b14000/checkpoints/val-none-epoch=11-step=227500.ckpt",
+    "--metric",
+    "wer",
+    "--out",
+    "/test21/conformer-rnnt-asr-main/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/per_sample_wer.csv"
+  ]
+}

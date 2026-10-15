@@ -1,0 +1,5 @@
+GPU V=4001 blank=4000 sum OK 7284.8369140625
+GPU V=75   blank=74   sum FAIL: rnnt_loss() got an unexpected keyword argument 'V_'
+GPU V=4001 mean             OK 1821.209228515625
+GPU V=4001 sum clamp=0      OK 7284.8369140625
+CPU V=4001 sum             OK 7284.8369140625

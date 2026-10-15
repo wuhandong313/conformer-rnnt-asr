@@ -38,7 +38,7 @@ PRs should explain the behavior change, affected configuration, validation comma
 
 ## Configuration & Artifacts
 
-Keep credentials in ignored `remote-access.md`. Keep datasets, tokenizer/model binaries, checkpoints, and large experiment outputs untracked. Match tokenizer vocabulary and preprocessing settings to the checkpoint, and use distinct experiment/output paths.
+Keep credentials in ignored `remote-access.md`. Keep datasets and files larger than 10 MiB untracked. Small logs, scripts, experiment records and word tokenizer models are synchronized when explicitly requested; runtime caches and environments stay local. Match tokenizer vocabulary and preprocessing settings to the checkpoint, and use distinct experiment/output paths. See `docs/repository_sync.md` for consolidated branches and server paths.
 
 `configs/ipa_vocab.json` is the tracked fixed IPA inventory. IPA labels use whitespace-delimited complete phones in external Epitran files, read from external `<subset_with_underscores>/ipa` files by `ipa_labels.py`; do not split Unicode characters or mix legacy phoneme conventions. See `docs/ipa_vocabulary_review.md` for the mapping and data audit.
 

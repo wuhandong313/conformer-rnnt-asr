@@ -1,0 +1,1 @@
+/test21/conformer-rnnt-asr/exp_word_960h_cosd_learned_b14000/checkpoints/val-none-epoch=11-step=227500.ckpt

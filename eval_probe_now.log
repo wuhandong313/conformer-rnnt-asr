@@ -1,0 +1,72 @@
+Building model from config …
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:62: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Decoding: beam_width=20 (beam=20)
+Loading checkpoint: /test21/conformer-rnnt-asr/exp_word_960h_bigdec/checkpoints/val-none-epoch=12-step=292000.ckpt
+[   0] PER: 0.025 (cum: 0.025)  RTF: 4.0320 (cum: 4.0320)  |  ref: he hoped there would be stew for dinner turnips and carrots   |  hyp: he hoped there would be stew for dinner turnips and carrots 
+[   5] PER: 0.022 (cum: 0.049)  RTF: 3.2603 (cum: 3.5603)  |  ref: the music came nearer and he recalled the words the words of  |  hyp: the music came nearer and he recalled the words the words of
+[  10] PER: 0.067 (cum: 0.040)  RTF: 4.2407 (cum: 3.6626)  |  ref: well now ennis i declare you have a head and so has my stick  |  hyp: well now in this i declare you have a head and so has my sti
+[  15] PER: 0.000 (cum: 0.027)  RTF: 3.1876 (cum: 3.7575)  |  ref: but the dusk deepening in the schoolroom covered over his th  |  hyp: but the dusk deepening in the schoolroom covered over his th
+[  20] PER: 0.029 (cum: 0.024)  RTF: 3.9803 (cum: 3.8091)  |  ref: if a man had stolen a pound in his youth and had used that p  |  hyp: if a man had stolen a pound in his youth and had used that p
+[  25] PER: 0.000 (cum: 0.020)  RTF: 3.3185 (cum: 3.8305)  |  ref: a gentle kick from the tall boy in the bench behind urged st  |  hyp: a gentle kick from the tall boy in the bench behind urged st
+[  30] PER: 0.000 (cum: 0.017)  RTF: 4.5439 (cum: 3.9315)  |  ref: beware of making that mistake  |  hyp: beware of making that mistake
+[  35] PER: 0.000 (cum: 0.026)  RTF: 4.2972 (cum: 3.9844)  |  ref: he had the faith in him that moves mountains  |  hyp: he had the faith in him that moves mountains
+[  40] PER: 0.011 (cum: 0.031)  RTF: 4.2270 (cum: 4.0231)  |  ref: he set off abruptly for the bull walking rapidly lest his fa  |  hyp: he set off abruptly for the bowl walking rapidly lest his fa
+[  45] PER: 0.000 (cum: 0.038)  RTF: 2.6928 (cum: 3.9928)  |  ref: soon the whole bridge was trembling and resounding  |  hyp: soon the whole bridge was trembling and resounding
+[  50] PER: 0.004 (cum: 0.038)  RTF: 3.9480 (cum: 3.9820)  |  ref: it was idle for him to move himself to be generous towards t  |  hyp: it was idle for him to move himself to be generous towards t
+[  55] PER: 0.012 (cum: 0.051)  RTF: 4.2300 (cum: 3.9689)  |  ref: the europe they had come from lay out there beyond the irish  |  hyp: the europe they had come from lay out there beyond the irish
+[  60] PER: 0.000 (cum: 0.086)  RTF: 4.1309 (cum: 3.9747)  |  ref: he stood still in deference to their calls and parried their  |  hyp: he stood still in deference to their calls and parried their
+[  65] PER: 0.053 (cum: 0.095)  RTF: 3.5110 (cum: 3.9580)  |  ref: they unite every quality and sometimes you will find me refe  |  hyp: they unite every quality and sometimes you will find me refe
+[  70] PER: 0.000 (cum: 0.089)  RTF: 4.8942 (cum: 3.9482)  |  ref: then he comes to the beak of it  |  hyp: then he comes to the beak of it
+[  75] PER: 0.004 (cum: 0.085)  RTF: 3.6132 (cum: 3.9057)  |  ref: they are beyond all other works that i know existing depende  |  hyp: they are beyond all other works than i know existing depende
+[  80] PER: 0.004 (cum: 0.080)  RTF: 3.7496 (cum: 3.8845)  |  ref: this at once compels you to understand that the work is to b  |  hyp: this at once compels you to understand that the work is to b
+[  85] PER: 0.005 (cum: 0.076)  RTF: 4.1169 (cum: 3.8801)  |  ref: it will be wholly impossible for you to retain the tranquill  |  hyp: it will be wholly impossible for you to retain the tranquill
+[  90] PER: 0.011 (cum: 0.073)  RTF: 3.8571 (cum: 3.8662)  |  ref: here is an equally typical greek school landscape by wilson   |  hyp: here is an equally typical greek school landscape by wilson 
+[  95] PER: 0.107 (cum: 0.074)  RTF: 2.9141 (cum: 3.8735)  |  ref: there's one and there's another the dudley and the flint  |  hyp: there's one and there's another they're dudley in the flint
+[ 100] PER: 0.000 (cum: 0.079)  RTF: 4.0378 (cum: 3.8826)  |  ref: in both these high mythical subjects the surrounding nature   |  hyp: in both these high mythical subjects the surrounding nature 
+[ 105] PER: 0.008 (cum: 0.076)  RTF: 3.9530 (cum: 3.8883)  |  ref: it is a gleaner bringing down her one sheaf of corn to an ol  |  hyp: it is a gleaner bringing down her one sheaf of corn to an ol
+[ 110] PER: 0.440 (cum: 0.077)  RTF: 3.8265 (cum: 3.8820)  |  ref: harangue the tiresome product of a tireless tongue  |  hyp: that her ranging with the tiresome product of a tire of this
+[ 115] PER: 0.333 (cum: 0.115)  RTF: 2.6469 (cum: 3.8873)  |  ref: heredity the cause of all our faults  |  hyp: her reader too they cards of all our faults
+[ 120] PER: 0.344 (cum: 0.123)  RTF: 2.8324 (cum: 3.8840)  |  ref: husband the next thing to a wife  |  hyp: her husband and the next thing to her wife
+[ 125] PER: 8.600 (cum: 0.218)  RTF: 1.4629 (cum: 3.8644)  |  ref: ay me  |  hyp: were they all right and we knew you who had the
+[ 130] PER: 0.248 (cum: 0.215)  RTF: 3.4995 (cum: 3.8572)  |  ref: o tis the first tis flattery in my seeing and my great mind   |  hyp: oh tis the first tis flattery in my seeing that and my great
+[ 135] PER: 0.024 (cum: 0.222)  RTF: 4.4004 (cum: 3.8611)  |  ref: someone else told a story not particularly effective which i  |  hyp: someone else told story not particularly effective which i s
+[ 140] PER: 0.065 (cum: 0.218)  RTF: 4.3570 (cum: 3.8675)  |  ref: the others resented postponement but it was just his scruple  |  hyp: the others resented postponement but it was just as scruples
+[ 145] PER: 0.000 (cum: 0.213)  RTF: 4.0944 (cum: 3.8592)  |  ref: she was the most agreeable woman i've ever known in her posi  |  hyp: she was the most agreeable woman i've ever known in her posi
+[ 150] PER: 0.000 (cum: 0.217)  RTF: 3.6453 (cum: 3.8628)  |  ref: probably not till the second post  |  hyp: probably not till the second post
+[ 155] PER: 0.000 (cum: 0.212)  RTF: 5.7272 (cum: 3.8781)  |  ref: won't you tell douglas  |  hyp: won't you tell douglas
+[ 160] PER: 0.000 (cum: 0.206)  RTF: 3.2923 (cum: 3.8687)  |  ref: the first of these touches conveyed that the written stateme  |  hyp: the first of these touches conveyed that the written stateme
+[ 165] PER: 0.064 (cum: 0.203)  RTF: 3.3339 (cum: 3.8672)  |  ref: she was young untried nervous it was a vision of serious dut  |  hyp: she was young i'm tried nervous it was the vision of serious
+[ 170] PER: 0.000 (cum: 0.198)  RTF: 2.8861 (cum: 3.8506)  |  ref: but was that all her reward one of the ladies asked  |  hyp: but was that all her reward one of the ladies asked
+[ 175] PER: 0.000 (cum: 0.192)  RTF: 3.5125 (cum: 3.8540)  |  ref: this outward mutability indicated and did not more than fair  |  hyp: this outward mutability indicated and did not more than fair
+[ 180] PER: 0.028 (cum: 0.187)  RTF: 3.8166 (cum: 3.8583)  |  ref: as to any other kind of discipline whether addressed to her   |  hyp: as to any other kind of discipline whether address to her mi
+[ 185] PER: 0.015 (cum: 0.182)  RTF: 5.2072 (cum: 3.8639)  |  ref: pearl saw and gazed intently but never sought to make acquai  |  hyp: pearls saw and gazed intently but never sought to make acqua
+[ 190] PER: 0.021 (cum: 0.178)  RTF: 3.8889 (cum: 3.8657)  |  ref: the period was hardly if at all earlier than that of our sto  |  hyp: the period was hardly if at all earlier than that of our sto
+[ 195] PER: 0.000 (cum: 0.173)  RTF: 4.1603 (cum: 3.8683)  |  ref: come therefore and let us fling mud at them  |  hyp: come therefore and let us fling mud at them
+[ 200] PER: 0.005 (cum: 0.169)  RTF: 3.9160 (cum: 3.8668)  |  ref: lifting the iron hammer that hung at the portal hester prynn  |  hyp: lifting the iron hammer that hung at the portal hester prynn
+[ 205] PER: 0.021 (cum: 0.165)  RTF: 3.8909 (cum: 3.8702)  |  ref: little pearl who was as greatly pleased with the gleaming ar  |  hyp: little pearl who was as greatly pleased with the gleaming ar
+[ 210] PER: 0.004 (cum: 0.162)  RTF: 3.5714 (cum: 3.8652)  |  ref: there were a few rose bushes however and a number of apple t  |  hyp: there were a few rose bushes however and a number of apple t
+[ 215] PER: 0.047 (cum: 0.159)  RTF: 2.9147 (cum: 3.8609)  |  ref: for a long time he had wished to explore the beautiful land   |  hyp: for a long time he wished to explore the beautiful land of o
+[ 220] PER: 0.011 (cum: 0.156)  RTF: 3.9830 (cum: 3.8575)  |  ref: all the morning they trudged up the mountain path and at noo  |  hyp: all the morning they trudged up the mountain path and at noo
+[ 225] PER: 0.000 (cum: 0.153)  RTF: 5.3105 (cum: 3.8746)  |  ref: and you must be ojo the unlucky she added  |  hyp: and you must be ojo the unlucky she added
+[ 230] PER: 0.014 (cum: 0.150)  RTF: 3.7556 (cum: 3.8877)  |  ref: it takes me several years to make this magic powder but at t  |  hyp: it takes me several years to make this magic powder but at t
+[ 235] PER: 0.029 (cum: 0.147)  RTF: 4.3362 (cum: 3.9026)  |  ref: you see i've lived all my life with unc nunkie the silent on  |  hyp: you see i've lived all my life without nunkie the silent one
+[ 240] PER: 0.065 (cum: 0.145)  RTF: 3.5439 (cum: 3.9086)  |  ref: a bed quilt made of patches of different kinds and colors of  |  hyp: a bed quilt made of patches of different kinds and collars o
+[ 245] PER: 0.000 (cum: 0.142)  RTF: 2.9258 (cum: 3.9141)  |  ref: ojo examined this curious contrivance with wonder  |  hyp: ojo examined this curious contrivance with wonder
+[ 250] PER: 0.000 (cum: 0.140)  RTF: 4.8940 (cum: 3.9263)  |  ref: no i forgot all about the brains exclaimed the woman  |  hyp: no i forgot all about the brains exclaimed the woman
+[ 255] PER: 0.000 (cum: 0.137)  RTF: 4.6572 (cum: 3.9328)  |  ref: their contents had all boiled away leaving in the bottom of   |  hyp: their contents had all boiled away leaving in the bottom of 
+[ 260] PER: 0.000 (cum: 0.135)  RTF: 4.7396 (cum: 3.9441)  |  ref: most people talk too much so it is a relief to find one who   |  hyp: most people talk too much so it is a relief to find one who 
+[ 265] PER: 0.102 (cum: 0.133)  RTF: 4.7471 (cum: 3.9536)  |  ref: dear me what a chatterbox you're getting to be unc remarked   |  hyp: dear me what a chatter boxer getting to be uncarked the magi
+[ 270] PER: 0.000 (cum: 0.131)  RTF: 4.5506 (cum: 3.9569)  |  ref: constantine easily believed that the heretics who presumed t  |  hyp: constantine easily believed that the heretics who presumed t
+[ 275] PER: 0.000 (cum: 0.128)  RTF: 4.2881 (cum: 3.9627)  |  ref: since the period of our tale the active spirit of the countr  |  hyp: since the period of our tale the active spirit of the countr
+[ 280] PER: 0.064 (cum: 0.126)  RTF: 2.9858 (cum: 3.9674)  |  ref: yet here are we within a short range of the scaroons and not  |  hyp: yet here we within a short range of the scoreoons and not a 
+[ 285] PER: 0.014 (cum: 0.124)  RTF: 4.2931 (cum: 3.9730)  |  ref: see said uncas pointing north and south at the evident marks  |  hyp: see said uncas pointing north in south at the evident marks 
+[ 290] PER: 0.036 (cum: 0.122)  RTF: 3.3165 (cum: 3.9732)  |  ref: the whole party crowded to the spot where uncas pointed out   |  hyp: the whole party crowded to the spot where uncas pointed out 
+[ 295] PER: 0.000 (cum: 0.120)  RTF: 4.4008 (cum: 3.9849)  |  ref: there was something in his air and manner that betrayed to t  |  hyp: there was something in his air and manner that betrayed to t
+============================================================
+Evaluation complete — 300 samples
+PER: 0.1188
+RTF: 3.9897
+============================================================
+Per-sample results saved to: /test21/conformer-rnnt-asr/eval_per_sample_bigdec_probe.csv
+EVAL_EXIT_0
