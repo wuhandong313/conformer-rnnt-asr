@@ -1,0 +1,16 @@
+{
+  "type": "real-audio CPU smoke, untrained model; loss is not an ASR benchmark",
+  "utterance": "1089-134686-0000",
+  "duration_seconds": 10.435,
+  "english": "HE HOPED THERE WOULD BE STEW FOR DINNER TURNIPS AND CARROTS AND BRUISED POTATOES AND FAT MUTTON PIECES TO BE LADLED OUT IN THICK PEPPERED FLOUR FATTENED SAUCE",
+  "ipa": "h i h oʊ p t ð ɛ ɹ w ʊ d b i s t u f ɔ ɹ d ɪ n ɚ t ɝ n ə p s ə n d k æ ɹ ə t s ə n d b ɹ u z d p ə t eɪ t oʊ z ə n d f æ t m ʌ t ə n p i s ə z t u b i l eɪ d ə l d aʊ t ɪ n θ ɪ k p ɛ p ɚ d f l aʊ ɚ f æ t ə n d s ɔ s",
+  "target_phones": [
+    105
+  ],
+  "output_classes": 42,
+  "blank_id": 41,
+  "loss_finite": true,
+  "backward": "passed",
+  "blank_decode": "passed",
+  "vocab_sha256": "0b8f31e0d43a15a7f4c691c8835fe327855a043352ee2b0f5ed9b3288477f85d"
+}
