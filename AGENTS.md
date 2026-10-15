@@ -8,7 +8,7 @@ This repository implements Conformer-RNN-T speech recognition on LibriSpeech, wi
 - `conformer_rnnt/compression/` separates frame detectors, mixers, and compression orchestration.
 - `train.py` and `eval.py` are entry points; `common.py` provides feature normalization, batching, and decoding utilities.
 - `configs/` holds YAML experiment recipes; `scripts/` contains GPU-server pipelines with machine-specific paths.
-- `papers/` stores research references; root CSV/PNG files record selected experiment results. Focused regression tests live in `tests/`.
+- `papers/` stores research references; `artifacts/` stores logs, metrics and figures, and `assets/` holds small tokenizer models and statistics. Focused regression tests live in `tests/`.
 
 ## Build, Test, and Development Commands
 
