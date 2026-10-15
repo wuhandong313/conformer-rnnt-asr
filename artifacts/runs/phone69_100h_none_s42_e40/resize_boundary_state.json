@@ -1,0 +1,33 @@
+{
+  "epoch": 3,
+  "global_step": 2682,
+  "epoch_progress": {
+    "total": {
+      "ready": 3,
+      "completed": 3,
+      "started": 3,
+      "processed": 3
+    },
+    "current": {
+      "ready": 3,
+      "completed": 3,
+      "started": 3,
+      "processed": 3
+    }
+  },
+  "adam_step": 2682,
+  "learning_rate": 0.00013414999999999998,
+  "scheduler": {
+    "warmup_updates": 10000,
+    "base_lrs": [
+      0.0005
+    ],
+    "last_epoch": 2682,
+    "verbose": false,
+    "_step_count": 2683,
+    "_get_lr_called_within_step": false,
+    "_last_lr": [
+      0.00013414999999999998
+    ]
+  }
+}

@@ -55,6 +55,10 @@ evaluations/metrics.json
 
 10000 预算的探测峰值保留显存为 59.18 GiB，所有 28,539 条训练语音保留。RNNT guard 将 354 个候选 batch 拆成 355 个，未丢弃样本。后续计划更新数为 `2682 + 37 × 355 = 15817`，不再使用最初的 35,760 steps 估算。以上是三个代表性极端 batch 的测试，不等同于遍历所有 batch；正式训练还需留意显存波动。探测 JSON、小日志及恢复后的资源采样见 `artifacts/runs/phone69_100h_none_s42_e40/` 和 `artifacts/logs/`。
 
+2026-10-15 17:03:43（Asia/Shanghai）在同一 tmux 会话恢复，训练提交 `281e5e4`。本地 37 项回归测试通过，服务器上的 6 项恢复/保存检查通过。恢复后 41.64 秒窗口内完成 63 个 batch，约 1.51 batch/s（0.66 s/batch）；GPU 平均利用率 89.1%，采样显存为 62.8–77.9 GiB / 80 GiB。这里是 `nvidia-smi` 的进程占用，包含 PyTorch 缓存，与探测时的峰值已分配显存含义不同。该窗口不包含验证和保存开销，不能直接当作整轮平均速度。
+
+恢复后已完成首次验证，并在 step 2882 保存了新的完整验证 checkpoint；后续训练正常继续。
+
 启动时的小型日志快照位于 `artifacts/logs/phone69_100h_none_s42_e40.*.log`，状态和资源采样位于 `artifacts/runs/phone69_100h_none_s42_e40/`。这些是固定快照，实时状态以服务器实验目录的 `run.json`、`logs/train.log` 和 `lightning_logs/version_0/metrics.csv` 为准。
 
 tmux 的 `monitor` 窗口上方显示训练日志，下方每 2 秒刷新 GPU 使用情况：
