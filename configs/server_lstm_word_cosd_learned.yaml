@@ -23,8 +23,8 @@ paths:
   dataset_path: "/test21/librispeech"
 
   # SentencePiece BPE 模型文件路径 (word-BPE 4000, 960h 全量版, 在 -main worktree 根目录)
-  # 460h 备选: /test21/conformer-rnnt-asr-main/spm_bpe_4000_word.model
-  sp_model_path: "/test21/conformer-rnnt-asr-main/spm_bpe_4000_word_960h.model"
+  # 460h 备选: /test21/conformer-rnnt-asr/spm_bpe_4000_word.model
+  sp_model_path: "/test21/conformer-rnnt-asr/spm_bpe_4000_word_960h.model"
 
   # 全局特征统计文件路径 (JSON: mean + invstddev)
   global_stats_path: "/test21/librispeech/global_stats.json"

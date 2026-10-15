@@ -3,7 +3,7 @@
 ---
 paths:
   dataset_path: "/test21/librispeech"
-  sp_model_path: "/test21/conformer-rnnt-asr-main/spm_bpe_4000_word_960h.model"
+  sp_model_path: "/test21/conformer-rnnt-asr/spm_bpe_4000_word_960h.model"
   global_stats_path: "/test21/librispeech/global_stats.json"
   exp_dir: "/test21/conformer-rnnt-asr/exp_word_960h_cosd_learned_b14000"
   from_checkpoint: 

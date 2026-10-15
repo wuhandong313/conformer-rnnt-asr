@@ -3,10 +3,11 @@
 #   等 GPU 空闲 → 训练 50ep（naive filter + sum loss）→ best val ckpt 直接 beam20 评测
 # 用法: tmux 里 bash scripts/lstm_repro_pipeline.sh（工作目录任意）
 set -u
-REPO=/test21/conformer-rnnt-asr-main
+REPO=/test21/conformer-rnnt-asr
 cd "$REPO"
+mkdir -p "$REPO/artifacts/logs" "$REPO/artifacts/evaluations" "$REPO/artifacts/checkpoints"
 P=/root/anaconda3/envs/whd/bin/python
-LOG="$REPO/pipeline.log"
+LOG="$REPO/artifacts/logs/pipeline.log"
 
 echo "[$(date -u +%FT%T)] pipeline start (repo: $(git rev-parse --short HEAD))" >> "$LOG"
 
@@ -17,7 +18,7 @@ while pgrep -f "^/root/anaconda3/envs/whd/bin/python eval.py configs/server_base
 echo "[$(date -u +%FT%T)] GPU free, starting training" >> "$LOG"
 
 # ── 2) 训练，记录 best val ckpt ──────────────────────────────────────────
-"$P" - > "$REPO/lstm_naive.train.log" 2>&1 <<'PYEOF'
+"$P" - > "$REPO/artifacts/logs/lstm_naive.train.log" 2>&1 <<'PYEOF'
 import torch, yaml
 from pytorch_lightning import seed_everything
 from pytorch_lightning.callbacks import ModelCheckpoint
@@ -42,7 +43,7 @@ PYEOF
 rc=$?
 echo "[$(date -u +%FT%T)] training exit=$rc" >> "$LOG"
 if [ $rc -ne 0 ] || [ ! -s "$REPO/best_ckpt.txt" ]; then
-  echo "[$(date -u +%FT%T)] TRAINING FAILED — see lstm_naive.train.log, abort" >> "$LOG"
+  echo "[$(date -u +%FT%T)] TRAINING FAILED — see artifacts/logs/lstm_naive.train.log, abort" >> "$LOG"
   exit 1
 fi
 BEST=$(cat "$REPO/best_ckpt.txt")
@@ -50,8 +51,8 @@ echo "[$(date -u +%FT%T)] best ckpt: $BEST" >> "$LOG"
 
 # ── 3) beam20 评测（同一 config，保证架构一致）────────────────────────────
 "$P" eval.py configs/server_lstm_naive.yaml --checkpoint "$BEST" \
-  > "$REPO/lstm_naive.beam20.log" 2>&1
+  > "$REPO/artifacts/logs/lstm_naive.beam20.log" 2>&1
 rc=$?
 echo "[$(date -u +%FT%T)] beam20 eval exit=$rc" >> "$LOG"
-grep -E "^CER:|^RTF:|Evaluation complete" "$REPO/lstm_naive.beam20.log" | tail -4 >> "$LOG"
+grep -E "^CER:|^RTF:|Evaluation complete" "$REPO/artifacts/logs/lstm_naive.beam20.log" | tail -4 >> "$LOG"
 echo "[$(date -u +%FT%T)] pipeline done" >> "$LOG"

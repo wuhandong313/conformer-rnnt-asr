@@ -36,7 +36,7 @@
 
 最新 38-token 方案已合并至本地 `main`，并同步到 Gitee、GitHub 的 `main` 与 `ipa`。
 服务器仍停留在 `997d07f`，那是已弃用的 41-token 方案，不能拿来代表当前实现。
-服务器 `/test21/conformer-rnnt-asr-ipa` 的旧字典/G2P 生成任务已终止；
+服务器 `/test21/conformer-rnnt-asr` 的旧字典/G2P 生成任务已终止；
 未启动正式 IPA 训练，也未将数据搬入仓库。
 
 ## 基础验证
