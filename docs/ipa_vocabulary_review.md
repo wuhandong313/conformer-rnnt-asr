@@ -155,3 +155,5 @@ python eval.py configs/server_ipa.yaml --checkpoint /path/to/ipa.ckpt --metric p
 `--subsets train-clean-100 dev-clean test-clean`。它会拒绝旧 IPA 风格标签和 `spn`，
 因此服务器全量数据应采用默认的 `--source words`。
 审核通过后也可运行 `bash scripts/ipa_pipeline.sh` 串联准备、训练、评估。
+流水线支持 `PYTHON`（训练环境）与 `PREP_PYTHON`（离线标签环境）分别配置；
+如果仓库中存在 `.venv-ipa-prep/`，会自动使用它准备标签，训练继续使用原环境。
