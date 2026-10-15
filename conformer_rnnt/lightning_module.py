@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import List, Optional, Tuple, Union
 
 import numpy as np
-import sentencepiece as spm
 import torch
 import torchaudio
 from pytorch_lightning import LightningModule
@@ -31,6 +30,7 @@ from common import (
     WarmupLR,
 )
 from conformer_rnnt.model import conformer_rnnt_model
+from ipa_tokenizer import DEFAULT_VOCAB, FixedIPATokenizer, encode_transcript
 
 
 # ---------------------------------------------------------------------------
@@ -211,10 +211,10 @@ class CustomDataset(torch.utils.data.Dataset):
 
     Args:
         base_dataset: A :class:`LIBRISPEECH` instance.
-        max_token_limit: Maximum total target chars per batch.
-        sp_model: SentencePiece model; giving it enables the overflow guard.
+        max_token_limit: Maximum target phones (IPA) or legacy chars per batch.
+        sp_model: Fixed IPA tokenizer or legacy SentencePiece model.
         rnnt_vocab: RNNT output vocab size V incl. blank (guard needs V > 0).
-        strip_spaces: Space-stripping applied before SPM encoding — must
+        strip_spaces: Space-stripping applied before legacy encoding — must
             match the training label extraction exactly.
         frames_per_char: Conservative encoder-output-frames-per-char ratio
             used to bound T (measured average ≈ 1.75 at 25 fps output).
@@ -236,7 +236,9 @@ class CustomDataset(torch.utils.data.Dataset):
 
         fileid_to_transcript = {}
         idx_target_lengths = [
-            (idx, len(self._transcript(fileid, fileid_to_transcript)))
+            (idx, len(encode_transcript(sp_model, self._transcript(fileid, fileid_to_transcript), strip_spaces))
+             if isinstance(sp_model, FixedIPATokenizer)
+             else len(self._transcript(fileid, fileid_to_transcript)))
             for idx, fileid in enumerate(self.base_dataset._walker)
         ]
 
@@ -285,13 +287,15 @@ class CustomDataset(torch.utils.data.Dataset):
         as ``_extract_labels``; T is bounded conservatively via
         ``chars × frames_per_char``.
         """
-        chars_by_idx = dict(idx_target_lengths)
+        chars_by_idx = {
+            idx: len(fileid_to_transcript[fileid])
+            for idx, fileid in enumerate(self.base_dataset._walker)
+        }
         token_len_by_idx = {}
         for idx, fileid in enumerate(self.base_dataset._walker):
-            text = fileid_to_transcript[fileid].lower()
-            if strip_spaces:
-                text = text.replace(" ", "")
-            token_len_by_idx[idx] = len(sp_model.encode(text))
+            token_len_by_idx[idx] = len(encode_transcript(
+                sp_model, fileid_to_transcript[fileid], strip_spaces
+            ))
 
         kept, dropped = [], []
         worst = 0.0
@@ -403,10 +407,12 @@ class LibriSpeechRNNTModule(LightningModule):
         *,
         # Paths
         librispeech_path: str,
-        sp_model_path: str,
         global_stats_path: str,
+        sp_model_path: Optional[str] = None,
+        tokenizer_type: str = "sentencepiece",
+        ipa_vocab_path: Optional[str] = None,
         # Model — encoder
-        num_symbols: int = 74,
+        num_symbols: Optional[int] = None,
         input_dim: int = 80,
         encoding_dim: int = 512,
         right_context_length: int = 4,
@@ -470,7 +476,7 @@ class LibriSpeechRNNTModule(LightningModule):
         test_subset: Union[str, List[str]] = "test-clean",
         # Data — transcript protocol
         # transcript_suffix: per-chapter transcript filename suffix ("-ph" for
-        # phoneme transcripts, "" for official word transcripts).
+        # ARPABET transcripts, "-ipa" for IPA, "" for official word transcripts).
         # strip_spaces: remove spaces before SPM encoding (phoneme protocol);
         # must be False for word-level SPM models (pieces carry ▁ space marks).
         transcript_suffix: str = "-ph",
@@ -484,6 +490,28 @@ class LibriSpeechRNNTModule(LightningModule):
     ):
         super().__init__()
         self.save_hyperparameters()
+
+        # IPA uses a deterministic phone inventory, with no SPM import/model.
+        self.tokenizer_type = tokenizer_type
+        if tokenizer_type == "ipa":
+            self.tokenizer = FixedIPATokenizer(ipa_vocab_path or DEFAULT_VOCAB)
+            if strip_spaces:
+                raise ValueError("IPA requires data.strip_spaces: false to preserve phone boundaries")
+        elif tokenizer_type == "sentencepiece":
+            import sentencepiece as spm
+            if not sp_model_path:
+                raise ValueError("SentencePiece mode requires paths.sp_model_path")
+            self.tokenizer = spm.SentencePieceProcessor(model_file=sp_model_path)
+        else:
+            raise ValueError(f"Unknown tokenizer type: {tokenizer_type!r}")
+        self.sp_model = self.tokenizer  # Legacy batch/decoding adapter name.
+        self.blank_idx = self.tokenizer.get_piece_size()
+        if num_symbols is not None and num_symbols != self.blank_idx:
+            raise ValueError(
+                f"model.num_symbols={num_symbols} does not match tokenizer size {self.blank_idx} (excluding blank)"
+            )
+        num_symbols = self.blank_idx
+        self.padding_idx = self.blank_idx if tokenizer_type == "ipa" else 1
 
         # ---- Build model ----
         self.model = conformer_rnnt_model(
@@ -520,12 +548,8 @@ class LibriSpeechRNNTModule(LightningModule):
         )
         self._mel_transform = None  # lazy init on CPU
 
-        # ---- Tokenizer (needed before loss — blank_idx derives from it) ----
-        self.sp_model = spm.SentencePieceProcessor(model_file=sp_model_path)
-        self.blank_idx = self.sp_model.get_piece_size()
-
         # ---- Loss ----
-        # blank_idx (= SP vocab size) is the blank label appended past the
+        # blank_idx (= tokenizer size) is the blank label appended past the
         # real symbol ids (0..blank_idx-1). torchaudio RNNTLoss defaults
         # blank=-1 which is wrong here — pass it explicitly.
         self.loss = torchaudio.transforms.RNNTLoss(
@@ -625,7 +649,9 @@ class LibriSpeechRNNTModule(LightningModule):
             sp_model_path=paths.get("sp_model_path", "spm_bpe_74.model"),
             global_stats_path=paths.get("global_stats_path", "global_stats.json"),
             # Encoder
-            num_symbols=model_cfg.get("num_symbols", 74),
+            num_symbols=model_cfg.get("num_symbols"),
+            tokenizer_type=config.get("tokenizer", {}).get("type", "sentencepiece"),
+            ipa_vocab_path=config.get("tokenizer", {}).get("vocab_path"),
             input_dim=model_cfg.get("input_dim", 80),
             encoding_dim=model_cfg.get("encoding_dim", 512),
             right_context_length=model_cfg.get("right_context_length", 4),
@@ -704,10 +730,7 @@ class LibriSpeechRNNTModule(LightningModule):
     # ------------------------------------------------------------------
     def _extract_labels(self, samples: List):
         targets = [
-            self.sp_model.encode(
-                sample[2].lower().replace(" ", "") if self.strip_spaces
-                else sample[2].lower()
-            )
+            encode_transcript(self.tokenizer, sample[2], self.strip_spaces)
             for sample in samples
         ]
         lengths = torch.tensor([len(elem) for elem in targets]).to(dtype=torch.int32)
@@ -715,7 +738,7 @@ class LibriSpeechRNNTModule(LightningModule):
             torch.nn.utils.rnn.pad_sequence(
                 [torch.tensor(elem) for elem in targets],
                 batch_first=True,
-                padding_value=1.0,
+                padding_value=self.padding_idx,
             )
             .to(dtype=torch.int32)
         )
@@ -891,6 +914,25 @@ class LibriSpeechRNNTModule(LightningModule):
     # ------------------------------------------------------------------
     # Hooks
     # ------------------------------------------------------------------
+    def on_save_checkpoint(self, checkpoint):
+        if self.tokenizer_type == "ipa":
+            checkpoint["ipa_tokenizer"] = {
+                "fingerprint": self.tokenizer.fingerprint,
+                "tokens": list(self.tokenizer.tokens),
+            }
+
+    def validate_tokenizer_checkpoint(self, checkpoint):
+        if self.tokenizer_type == "ipa":
+            metadata = checkpoint.get("ipa_tokenizer") or {}
+            if metadata.get("fingerprint") != self.tokenizer.fingerprint:
+                raise ValueError(
+                    "Checkpoint IPA vocabulary is missing or differs from the configured inventory. "
+                    "Word/SPM checkpoints cannot be resumed as IPA checkpoints."
+                )
+
+    def on_load_checkpoint(self, checkpoint):
+        self.validate_tokenizer_checkpoint(checkpoint)
+
     def configure_optimizers(self):
         return (
             [self.optimizer],

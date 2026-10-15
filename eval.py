@@ -21,7 +21,7 @@ import torchaudio
 import yaml
 
 from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
-from conformer_rnnt.metrics import format_wer_trace, word_error_counts
+from conformer_rnnt.metrics import format_wer_trace, phone_error_counts, word_error_counts
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -62,8 +62,10 @@ def run_eval(
     metric: str = "wer",
     trace_wer: bool = False,
 ) -> Dict[str, Any]:
-    if metric not in {"wer", "cer"}:
+    if metric not in {"wer", "cer", "per"}:
         raise ValueError(f"Unsupported evaluation metric: {metric}")
+    if (model.tokenizer_type == "ipa") != (metric == "per"):
+        raise ValueError("IPA evaluation requires PER; PER requires tokenizer.type: ipa")
     if metric == "wer" and model.strip_spaces:
         raise ValueError("WER requires a word-text config with data.strip_spaces: false")
     if trace_wer and metric != "wer":
@@ -76,6 +78,8 @@ def run_eval(
     total_cer = 0.0
     total_word_errors = 0
     total_reference_words = 0
+    total_phone_errors = 0
+    total_reference_phones = 0
     total_rtf = 0.0
     n = 0
     per_sample = []
@@ -84,7 +88,10 @@ def run_eval(
         for idx, (batch, transcripts) in enumerate(dataloader):
             if max_utts and n >= max_utts:
                 break
-            actual = transcripts[0].lower()
+            actual = (
+                " ".join(model.tokenizer.tokenize(transcripts[0]))
+                if metric == "per" else transcripts[0].lower()
+            )
             if metric == "cer" and model.strip_spaces:
                 actual = actual.replace(" ", "")
             if trace_wer:
@@ -148,6 +155,28 @@ def run_eval(
                         total_word_errors, total_reference_words, cumulative_rate,
                         100 * cumulative_rate,
                     )
+            elif metric == "per":
+                phone_errors, reference_phones = phone_error_counts(actual, predicted)
+                sample_rate = (
+                    phone_errors / reference_phones
+                    if reference_phones else (0.0 if phone_errors == 0 else float("inf"))
+                )
+                total_phone_errors += phone_errors
+                total_reference_phones += reference_phones
+                per_sample.append({
+                    "idx": idx,
+                    "PER": sample_rate,
+                    "phone_errors": phone_errors,
+                    "reference_phones": reference_phones,
+                    "RTF": rtf,
+                    "ref": actual,
+                    "hyp": predicted,
+                })
+                cumulative_rate = (
+                    total_phone_errors / total_reference_phones
+                    if total_reference_phones else (0.0 if total_phone_errors == 0 else float("inf"))
+                )
+                metric_name = "PER"
             else:
                 sample_cer = compute_cer(actual, predicted)
                 total_cer += sample_cer
@@ -186,6 +215,15 @@ def run_eval(
             total_word_errors,
             total_reference_words,
         )
+    elif metric == "per":
+        avg_rate = (
+            total_phone_errors / total_reference_phones
+            if total_reference_phones else (0.0 if total_phone_errors == 0 else float("inf"))
+        )
+        logging.info(
+            "PER: %.4f (%d phone errors / %d reference phones)",
+            avg_rate, total_phone_errors, total_reference_phones,
+        )
     else:
         avg_rate = total_cer / n if n > 0 else 0.0
         logging.info("CER: %.4f (mean per-utterance character error rate)", avg_rate)
@@ -195,11 +233,11 @@ def run_eval(
     # Save per-sample CSV
     import csv
     with open(per_sample_file, "w", newline="") as f:
-        fieldnames = (
-            ["idx", "WER", "word_errors", "reference_words", "RTF", "ref", "hyp"]
-            if metric == "wer"
-            else ["idx", "CER", "RTF", "ref", "hyp"]
-        )
+        fieldnames = {
+            "wer": ["idx", "WER", "word_errors", "reference_words", "RTF", "ref", "hyp"],
+            "per": ["idx", "PER", "phone_errors", "reference_phones", "RTF", "ref", "hyp"],
+            "cer": ["idx", "CER", "RTF", "ref", "hyp"],
+        }[metric]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(per_sample)
@@ -210,6 +248,11 @@ def run_eval(
         result.update({
             "word_errors": total_word_errors,
             "reference_words": total_reference_words,
+        })
+    elif metric == "per":
+        result.update({
+            "phone_errors": total_phone_errors,
+            "reference_phones": total_reference_phones,
         })
     return result
 
@@ -241,10 +284,10 @@ def main():
     parser.add_argument("--trace-wer", action="store_true", help="Print input metadata, word tokens, DP rows, and WER alignment for every sample.")
     parser.add_argument(
         "--metric",
-        choices=("auto", "wer", "cer"),
+        choices=("auto", "wer", "cer", "per"),
         default="auto",
         help=(
-            "auto selects WER when data.strip_spaces is false, otherwise CER; "
+            "auto selects PER for IPA, otherwise WER when data.strip_spaces is false or CER; "
             "WER lowercases and splits on whitespace, preserving punctuation."
         ),
     )
@@ -263,7 +306,7 @@ def main():
     model = LibriSpeechRNNTModule.from_config(config)
     metric = args.metric
     if metric == "auto":
-        metric = "cer" if model.strip_spaces else "wer"
+        metric = "per" if model.tokenizer_type == "ipa" else ("cer" if model.strip_spaces else "wer")
     logging.info("Evaluation metric: %s", metric.upper())
     logging.info(
         "Decoding: beam_width=%s (%s)",
@@ -285,8 +328,9 @@ def main():
     # Load checkpoint
     logging.info("Loading checkpoint: %s", ckpt_path)
     ckpt = torch.load(ckpt_path, map_location="cpu")
+    model.validate_tokenizer_checkpoint(ckpt)
     state_dict = ckpt.get("state_dict", ckpt)
-    model.load_state_dict(state_dict, strict=False)
+    model.load_state_dict(state_dict, strict=model.tokenizer_type == "ipa")
 
     # Eval
     device = torch.device("cpu" if args.cpu else config.get("trainer", {}).get("accelerator", "cuda"))

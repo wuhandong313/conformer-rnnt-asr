@@ -11,9 +11,8 @@ This module provides common components shared across the project:
 import json
 import math
 from collections import namedtuple
-from typing import List, Tuple
+from typing import Any, List, Tuple
 
-import sentencepiece as spm
 import torch
 import torchaudio
 from torchaudio.models import Hypothesis
@@ -76,24 +75,23 @@ def batch_by_token_count(
 
 
 def post_process_hypos(
-    hypos: List[Hypothesis], sp_model: spm.SentencePieceProcessor
-) -> List[Tuple[str, float, List[int], List[int]]]:
+    hypos: List[Hypothesis], sp_model: Any
+) -> List[Tuple[str, List[float], List[int]]]:
     """Post-process beam search hypotheses: remove special tokens, decode text.
 
     Args:
         hypos: List of Hypothesis objects from RNNT beam search.
-        sp_model: SentencePiece model for decoding.
+        sp_model: Fixed IPA tokenizer or legacy SentencePiece decoder.
 
     Returns:
         List of (decoded_text, score, token_ids) tuples.
     """
     tokens_idx = 0
     score_idx = 3
-    post_process_remove_list = [
-        sp_model.unk_id(),
-        sp_model.eos_id(),
-        sp_model.pad_id(),
-    ]
+    if hasattr(sp_model, "non_emitting_ids"):
+        post_process_remove_list = sp_model.non_emitting_ids
+    else:
+        post_process_remove_list = [sp_model.unk_id(), sp_model.eos_id(), sp_model.pad_id()]
     filtered_hypo_tokens = [
         [
             token_index
@@ -103,7 +101,10 @@ def post_process_hypos(
         for h in hypos
     ]
     hypos_str = [sp_model.decode(s) for s in filtered_hypo_tokens]
-    hypos_ids = [h[tokens_idx][1:] for h in hypos]
+    hypos_ids = (
+        filtered_hypo_tokens if hasattr(sp_model, "non_emitting_ids")
+        else [h[tokens_idx][1:] for h in hypos]
+    )
     hypos_score = [[math.exp(h[score_idx])] for h in hypos]
 
     nbest_batch = list(zip(hypos_str, hypos_score, hypos_ids))
@@ -151,7 +152,8 @@ class WarmupLR(torch.optim.lr_scheduler._LRScheduler):
 
     def __init__(self, optimizer, warmup_updates, last_epoch=-1, verbose=False):
         self.warmup_updates = warmup_updates
-        super().__init__(optimizer, last_epoch=last_epoch, verbose=verbose)
+        # Newer PyTorch removed the deprecated verbose keyword.
+        super().__init__(optimizer, last_epoch=last_epoch)
 
     def get_lr(self):
         return [

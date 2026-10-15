@@ -36,6 +36,20 @@ def compute_wer(reference: str, hypothesis: str) -> float:
     return errors / reference_words
 
 
+def phone_error_counts(reference: str, hypothesis: str) -> tuple[int, int]:
+    """Phone edit count and reference phone count, preserving multi-codepoint IPA."""
+    ref = reference.split()
+    hyp = hypothesis.split()
+    previous = list(range(len(hyp) + 1))
+    for i, phone in enumerate(ref, 1):
+        row = [i]
+        for j, predicted in enumerate(hyp, 1):
+            row.append(min(row[-1] + 1, previous[j] + 1,
+                           previous[j - 1] + (phone != predicted)))
+        previous = row
+    return previous[-1], len(ref)
+
+
 def format_wer_trace(reference: str, hypothesis: str) -> str:
     """Show tokenization, DP rows, and one minimum-cost word alignment."""
     ref_words = reference.lower().split()

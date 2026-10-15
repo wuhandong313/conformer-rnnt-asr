@@ -9,6 +9,18 @@ SPEC.loader.exec_module(METRICS)
 compute_wer = METRICS.compute_wer
 word_error_counts = METRICS.word_error_counts
 format_wer_trace = METRICS.format_wer_trace
+phone_error_counts = METRICS.phone_error_counts
+
+
+class PhoneErrorRateTests(unittest.TestCase):
+    def test_multicharacter_phones_count_as_one(self):
+        self.assertEqual(phone_error_counts("tʃ aɪ l d", "dʒ aʊ l"), (3, 4))
+        self.assertEqual(phone_error_counts("ə ɚ", "ʌ ɝ"), (2, 2))
+
+    def test_insertions_and_empty_references(self):
+        self.assertEqual(phone_error_counts("aɪ", "aɪ tʃ"), (1, 1))
+        self.assertEqual(phone_error_counts("", "tʃ aɪ"), (2, 0))
+        self.assertEqual(phone_error_counts("", ""), (0, 0))
 
 
 class WordErrorRateTests(unittest.TestCase):

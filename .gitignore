@@ -9,6 +9,7 @@ __pycache__/
 
 # Experiment outputs (large, regeneratable)
 exp/
+exp_*/
 output/
 lightning_logs/
 
@@ -40,6 +41,7 @@ build/
 # Conda / venv
 .conda/
 venv/
+.venv*/
 env/
 
 # Claude
