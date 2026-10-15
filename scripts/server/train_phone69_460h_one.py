@@ -20,6 +20,7 @@ from pytorch_lightning.callbacks import Callback, ModelCheckpoint
 
 import train as train_entry
 from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
+from conformer_rnnt.checkpoint_utils import select_phone69_resume_checkpoint
 
 
 def main(config_path):
@@ -40,12 +41,15 @@ def main(config_path):
     model = LibriSpeechRNNTModule.from_config(config)
     trainer = train_entry.build_trainer(config)
 
-    checkpoint_path = paths.get("from_checkpoint")
+    candidates = []
+    if paths.get('from_checkpoint'):
+        candidates.append(paths['from_checkpoint'])
     if os.environ.get("RESUME_LAST", "1") == "1":
-        candidates = glob.glob(os.path.join(checkpoint_dir, "last*.ckpt"))
-        if candidates:
-            checkpoint_path = max(candidates, key=os.path.getmtime)
-            print("Resuming from {}".format(checkpoint_path), flush=True)
+        candidates.extend(glob.glob(os.path.join(checkpoint_dir, "last*.ckpt")))
+    checkpoint_path, resume_info = select_phone69_resume_checkpoint(
+        candidates, config['data']['max_token_limit'])
+    if checkpoint_path:
+        print("Resuming from {}".format(checkpoint_path), flush=True)
     if checkpoint_path is None:
         print("Starting from scratch", flush=True)
 
@@ -62,6 +66,7 @@ def main(config_path):
         'tokenizer': config['tokenizer']['type'], 'resume_checkpoint': checkpoint_path,
         'internal_dim': config['model']['time_reduction_input_dim'] * config['model']['time_reduction_stride'],
         'num_heads': config['model']['num_heads'],
+        **resume_info,
     }
 
     def save_status(**updates):
@@ -82,8 +87,11 @@ def main(config_path):
     save_status()
     try:
         trainer.fit(model, ckpt_path=checkpoint_path)
+        if trainer.interrupted:
+            save_status(status='interrupted', global_step=trainer.global_step)
+            raise SystemExit(130)
     except BaseException as error:
-        save_status(status='failed', error=repr(error))
+        save_status(status='interrupted' if trainer.interrupted else 'failed', error=repr(error))
         raise
 
     validation_checkpoints = [

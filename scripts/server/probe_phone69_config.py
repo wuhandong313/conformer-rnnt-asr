@@ -100,6 +100,10 @@ def main():
     parser.add_argument('config')
     parser.add_argument('--out', required=True)
     parser.add_argument('--max-reserved-fraction', type=float, default=0.85)
+    parser.add_argument('--budget', type=int, help='Probe an override without editing the recipe')
+    parser.add_argument('--metadata-only', action='store_true')
+    parser.add_argument('--guard-ratio', type=float, help='Override only the RNNT frame estimate')
+    parser.add_argument('--keep-cache', action='store_true', help='Keep allocator cache between different batch shapes')
     args = parser.parse_args()
     os.chdir(REPO)
 
@@ -111,6 +115,10 @@ def main():
     torch.set_num_threads(8)
     cfg = yaml.safe_load(Path(args.config).read_text())
     cfg['data']['num_workers'] = 0
+    if args.budget is not None:
+        cfg['data']['max_token_limit'] = args.budget
+    if args.guard_ratio is not None:
+        cfg['data']['rnnt_frames_per_char'] = args.guard_ratio
     seed_everything(cfg['seed'], workers=True)
     torch.set_float32_matmul_precision(cfg['trainer']['matmul_precision'])
     if cfg['tokenizer']['type'] != 'phone69':
@@ -120,13 +128,26 @@ def main():
         'status': 'preparing', 'config': args.config,
         'config_sha256': hashlib.sha256(Path(args.config).read_bytes()).hexdigest(),
         'code_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
-        'pid': os.getpid(), 'budget': cfg['data']['max_token_limit'], 'results': [],
+        'pid': os.getpid(), 'budget': cfg['data']['max_token_limit'],
+        'rnnt_frames_per_char': cfg['data']['rnnt_frames_per_char'], 'results': [],
+        'keep_allocator_cache': args.keep_cache,
     }
     save_json(output, report)
     model = LibriSpeechRNNTModule.from_config(cfg)
     datasets = list(model.train_dataloader().dataset.datasets) + list(model.val_dataloader().dataset.datasets)
     samples = audio_sample_cache(datasets, REPO / 'output/phone69_460h/audio_samples_cache.json')
+    if args.metadata_only:
+        report.update(status='metadata_cached', cached_utterances=len(samples))
+        save_json(output, report)
+        print(json.dumps(report), flush=True)
+        return
     selected = select_batches(datasets, samples, model, cfg)
+    worst_joint = max(selected, key=lambda row: row['joint_elements'])
+    if worst_joint['joint_elements'] >= cfg['data']['rnnt_numel_limit']:
+        report.update(status='unsafe_joint', selected_batches=selected,
+                      error='Actual audio-duration joint upper bound exceeds RNNT element limit')
+        save_json(output, report)
+        raise SystemExit(2)
     report.update(status='running', selected_batches=selected,
                   batches_per_subset={ds.base_dataset._url: len(ds) for ds in datasets},
                   parameters=sum(p.numel() for p in model.parameters()))
@@ -140,7 +161,8 @@ def main():
         for record in selected:
             model.optimizer.zero_grad(set_to_none=True)
             gc.collect()
-            torch.cuda.empty_cache()
+            if not args.keep_cache:
+                torch.cuda.empty_cache()
             dataset = datasets[record['dataset_index']]
             batch = model._train_collate_fn(dataset[record['batch_index']])
             batch = type(batch)(*(value.cuda() for value in batch))
