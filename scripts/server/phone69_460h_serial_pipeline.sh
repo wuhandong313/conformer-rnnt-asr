@@ -43,22 +43,6 @@ wait_for_gpu() {
 
 log "serial pipeline start; order=${CONFIGS[*]}"
 
-# Probe every configuration before starting the first full experiment.
-# Probe optimizer steps use disposable models; formal training starts fresh.
-for config in "${CONFIGS[@]}"; do
-  exp_dir=$("$PYTHON" -c 'import sys,yaml; print(yaml.safe_load(open(sys.argv[1]))["paths"]["exp_dir"])' "$config")
-  mkdir -p "$exp_dir/logs"
-  if [[ -f "$exp_dir/PIPELINE_COMPLETE" ]]; then
-    continue
-  fi
-  wait_for_gpu
-  log "probing training memory for $config"
-  PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}" \
-    "$PYTHON" -u scripts/server/probe_phone69_config.py "$config" \
-    --out "$exp_dir/batch_probe.json" >> "$exp_dir/logs/batch_probe.log" 2>&1
-  log "memory probe passed for $config"
-done
-
 for config in "${CONFIGS[@]}"; do
   if [[ ! -f "$config" ]]; then
     log "ERROR config missing: $config"
@@ -73,7 +57,7 @@ for config in "${CONFIGS[@]}"; do
   fi
   cp -f "$config" "$exp_dir/config.yaml"
   sha256sum "$config" > "$exp_dir/config.sha256"
-  if [[ -f "$exp_dir/PIPELINE_COMPLETE" ]]; then
+  if [[ -f "$exp_dir/TRAINING_COMPLETE" ]]; then
     log "already complete; skipping $config"
     continue
   fi
@@ -105,20 +89,8 @@ for config in "${CONFIGS[@]}"; do
     exit "$train_rc"
   fi
 
-  best_checkpoint=$(cat "$exp_dir/best_checkpoint.txt")
-  if [[ ! -s "$best_checkpoint" ]]; then
-    log "ERROR best checkpoint missing for $config: $best_checkpoint"
-    exit 1
-  fi
-
-  log "evaluating test-clean PER for $config using $best_checkpoint"
-  "$PYTHON" -u eval.py "$config" --checkpoint "$best_checkpoint" --metric per \
-    --out "$exp_dir/eval_test_clean_per_sample.csv" \
-    >> "$exp_dir/logs/eval_test_clean.log" 2>&1
-  grep -E 'Evaluation complete|PER:|RTF:' "$exp_dir/logs/eval_test_clean.log" \
-    | tee -a "$MASTER_LOG"
-  touch "$exp_dir/PIPELINE_COMPLETE"
+  touch "$exp_dir/TRAINING_COMPLETE"
   log "completed $config"
 done
 
-log "all three experiments and clean test evaluations completed"
+log "all three training experiments completed"

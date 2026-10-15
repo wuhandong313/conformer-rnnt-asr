@@ -62,7 +62,7 @@ data:
     time_mask_prob: 0.2
   transcript_suffix: -ph
   strip_spaces: false
-  max_token_limit: 2000  # Phone tokens per batch; estimate pending a server GPU probe.
+  max_token_limit: 2000  # Initial phone-token cap; monitor actual training memory.
   rnnt_numel_limit: 1900000000
   rnnt_frames_per_char: 3.5
   num_workers: 20

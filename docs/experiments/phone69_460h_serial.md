@@ -1,7 +1,8 @@
 # Phone69 460h clean serial experiments
 
-Status: approved on 2026-10-15; server startup includes three GPU memory probes
-before the full serial training queue.
+Status: approved on 2026-10-15. Start the serial training queue directly;
+standalone GPU probes and post-training test-clean evaluation are disabled
+at the user's request. Training-time dev-clean validation remains enabled.
 
 All experiments use fixed phone69 labels, train-clean-100 + train-clean-360,
 dev-clean validation, test-clean evaluation, seed 42, 50 epochs, no early
@@ -37,13 +38,10 @@ FFN and RNN-T memory must be considered separately, so this ratio is not a
 prediction of total GPU memory. It excludes padding/context rounding and
 assumes similar batch composition. Clean-360 may have different worst cases.
 
-The initial limits are estimates. probe_phone69_config.py scans real audio
-headers using a shared local cache, selects batches with the largest attention,
-joint tensor, utterance count and duration across both training subsets and
-dev-clean, and runs disposable-model forward/backward/optimizer steps.
-Reports are saved as batch_probe.json in each experiment directory. OOM,
-non-finite values or peak reserved memory above 85% stop the queue before full
-training. The actual training runs use fresh models and the approved configs.
+The initial limits are estimates. Actual memory is observed in the running
+training process. probe_phone69_config.py is an optional diagnostic utility;
+it is not invoked by the training queue. It uses disposable models and cached
+real FLAC durations if a later memory investigation is needed.
 
 Feature rate is 100 frames/s (16 kHz audio, hop 160), or 25 frames/s after
 stride4. CosDiff compression follows the first 2 Conformer layers. Its
@@ -54,6 +52,7 @@ for stride4.
 
 scripts/server/phone69_460h_serial_pipeline.sh runs inside tmux, serializes the
 three experiments, records GPU usage every 60 seconds, resumes last full
-checkpoints, evaluates the best validation checkpoint on test-clean PER, and
-stops the queue on failure. run.json records each training process, config hash,
+checkpoints, saves the best validation checkpoint path, and stops the queue
+on failure. Each experiment receives a TRAINING_COMPLETE marker after all
+50 epochs. No eval.py command is run. run.json records each training process, config hash,
 epoch and global step. Logs append across restarts.
