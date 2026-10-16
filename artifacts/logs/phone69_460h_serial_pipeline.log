@@ -7,3 +7,6 @@
 [2026-10-15T23:26:07Z] completed configs/server_phone69_460h_stride4_none_s42_e50.yaml
 [2026-10-15T23:26:07Z] waiting for GPU before configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml
 [2026-10-15T23:26:07Z] training configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml in /test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50
+[2026-10-16T18:52:28Z] completed configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml
+[2026-10-16T18:52:28Z] waiting for GPU before configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml
+[2026-10-16T18:52:28Z] training configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml in /test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50
