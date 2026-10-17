@@ -1,0 +1,62 @@
+{
+  "valid": true,
+  "models": [
+    {
+      "scheme": "stride4_none",
+      "projection": 32,
+      "stride": 4,
+      "internal_dim": 128,
+      "output_dim": 256,
+      "num_heads": 8,
+      "ffn_dim": 512,
+      "compression_right_context": 4,
+      "total_parameters": 4207942,
+      "input_projection_parameters": 2560,
+      "block_parameters": 3846400,
+      "compression_parameters": 0
+    },
+    {
+      "scheme": "stride1_cosd_learned",
+      "projection": 128,
+      "stride": 1,
+      "internal_dim": 128,
+      "output_dim": 256,
+      "num_heads": 8,
+      "ffn_dim": 512,
+      "compression_right_context": 4,
+      "total_parameters": 4215947,
+      "input_projection_parameters": 10240,
+      "block_parameters": 3846400,
+      "compression_parameters": 325
+    },
+    {
+      "scheme": "stride2_cosd_learned",
+      "projection": 64,
+      "stride": 2,
+      "internal_dim": 128,
+      "output_dim": 256,
+      "num_heads": 8,
+      "ffn_dim": 512,
+      "compression_right_context": 2,
+      "total_parameters": 4210827,
+      "input_projection_parameters": 5120,
+      "block_parameters": 3846400,
+      "compression_parameters": 325,
+      "odd_even_forward_backward_passed": true
+    },
+    {
+      "scheme": "stride4_cosd_learned",
+      "projection": 32,
+      "stride": 4,
+      "internal_dim": 128,
+      "output_dim": 256,
+      "num_heads": 8,
+      "ffn_dim": 512,
+      "compression_right_context": 1,
+      "total_parameters": 4208267,
+      "input_projection_parameters": 2560,
+      "block_parameters": 3846400,
+      "compression_parameters": 325
+    }
+  ]
+}

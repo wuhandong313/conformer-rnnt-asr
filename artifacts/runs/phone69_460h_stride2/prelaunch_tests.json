@@ -1,0 +1,4 @@
+{
+  "valid": true,
+  "command": "python -m unittest discover -s tests -p test_encoder_compression_context.py"
+}
