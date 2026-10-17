@@ -1,0 +1,20 @@
+{
+  "server_utc": "2026-10-17T16:12:16.195086+00:00",
+  "status": "launched",
+  "fresh_start_all_four": true,
+  "source_commit": "389b1b17fd0214c1134eeb6f442bfc8ad178ce81",
+  "schemes": [
+    "stride4_none",
+    "stride1_cosd_learned",
+    "stride2_cosd_learned",
+    "stride4_cosd_learned"
+  ],
+  "budgets": [
+    23500,
+    6500,
+    16000,
+    32600
+  ],
+  "tmux": "phone69_460h_offline_native",
+  "free_disk_GiB": 86447.52734375
+}

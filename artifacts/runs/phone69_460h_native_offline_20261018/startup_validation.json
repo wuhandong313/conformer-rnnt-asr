@@ -1,0 +1,53 @@
+{
+  "valid": true,
+  "server_utc": "2026-10-17T16:15:39.380218+00:00",
+  "source_commit": "389b1b17fd0214c1134eeb6f442bfc8ad178ce81",
+  "active_experiment": "exp_phone69_460h_offline_native_stride4_none_s42_e50",
+  "epoch": 1,
+  "global_step": 300,
+  "initial_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=00-step=0-da731c5dd2ac.ckpt",
+  "initial_checkpoint_full": true,
+  "initial_checkpoint_metadata": {
+    "previous_max_token_limit": 23500,
+    "resume_global_step": 0,
+    "resume_completed_epochs": 0,
+    "resume_at_epoch_boundary": true
+  },
+  "all_configs": [
+    {
+      "scheme": "stride4_none",
+      "config": "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+      "budget": 23500,
+      "from_checkpoint": null
+    },
+    {
+      "scheme": "stride1_cosd_learned",
+      "config": "configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+      "budget": 6500,
+      "from_checkpoint": null
+    },
+    {
+      "scheme": "stride2_cosd_learned",
+      "config": "configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+      "budget": 16000,
+      "from_checkpoint": null
+    },
+    {
+      "scheme": "stride4_cosd_learned",
+      "config": "configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+      "budget": 32600,
+      "from_checkpoint": null
+    }
+  ],
+  "main_process": "/root/anaconda3/envs/whd/bin/python -u scripts/server/train_phone69_460h_one.py configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml ",
+  "gpu": "NVIDIA A100-SXM4-80GB, 77407 MiB, 81920 MiB, 39 %\n",
+  "latest_full_checkpoint": {
+    "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/last.ckpt",
+    "metadata": {
+      "previous_max_token_limit": 23500,
+      "resume_global_step": 200,
+      "resume_completed_epochs": 0,
+      "resume_at_epoch_boundary": false
+    }
+  }
+}

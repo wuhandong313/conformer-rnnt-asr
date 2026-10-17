@@ -1,0 +1,11 @@
+{
+  "automation_id": "phone69",
+  "name": "Phone69 460h 四组自然峰谷重训监控",
+  "interval_minutes": 30,
+  "status": "ACTIVE",
+  "run_phase": "offline_native_20261018",
+  "notification_policy": "Failures, safe repair completion, stalled progress, experiment completion, or queue completion only.",
+  "server_utc": "2026-10-17T16:15:39.380218+00:00",
+  "server_probe": "scripts/server/status_phone69_460h_offline_native.py",
+  "pipeline": "scripts/server/phone69_460h_offline_native_pipeline.sh"
+}
