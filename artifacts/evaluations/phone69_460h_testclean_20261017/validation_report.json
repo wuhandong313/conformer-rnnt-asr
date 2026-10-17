@@ -1,0 +1,59 @@
+{
+  "rtf_valid": false,
+  "rtf_note": "System wall-clock timing produced negative durations; use the independent monotonic remeasurement for RTF.",
+  "validated_at_server_utc": "2026-10-17T09:13:28.504959+00:00",
+  "code_commit": "b82674159240bfb6ee6731f24027c98923b13349",
+  "eval_py_sha256": "12ac5c8106be7c76388e6e21134a5eab39f6ea80f1a32105789d63ba0626a246",
+  "metrics_py_sha256": "911529445ec324a7422f2f7592cca4af1177f5c7e397319a4a58b7706f5b593b",
+  "checks": [
+    "2620 ordered unique samples per model",
+    "identical references across models",
+    "raw CSV fields preserved in S/D/I CSV",
+    "every edit sum equals independently recomputed phone distance",
+    "corpus PER, reference count, S/D/I totals and ratios match summary",
+    "mean utterance RTF matches raw samples",
+    "config hash matches training run",
+    "best checkpoint matches training run"
+  ],
+  "experiments": [
+    {
+      "experiment": "exp_phone69_460h_stride4_none_s42_e50",
+      "num_samples": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10429,
+      "S": 7210,
+      "D": 2473,
+      "I": 746,
+      "PER": 0.05517317998338826,
+      "mean_utterance_RTF": 0.12946413381592367,
+      "config_sha256": "49d108791996f272496dec750be1845c0e6b1f4b2e6a210ff9e08cec99006add",
+      "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/val-none-epoch=49-step=60426.ckpt"
+    },
+    {
+      "experiment": "exp_phone69_460h_stride1_cosd_learned_s42_e50",
+      "num_samples": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10880,
+      "S": 7593,
+      "D": 2024,
+      "I": 1263,
+      "PER": 0.057559133015558955,
+      "mean_utterance_RTF": 0.1444825731939888,
+      "config_sha256": "c05eac6f5ac23cda81b4089cf4cd27391ca977a7f44d9fa7f447d1573281c980",
+      "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50/checkpoints/val-none-epoch=41-step=50538.ckpt"
+    },
+    {
+      "experiment": "exp_phone69_460h_stride4_cosd_learned_s42_e50",
+      "num_samples": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 17074,
+      "S": 10116,
+      "D": 5920,
+      "I": 1038,
+      "PER": 0.09032763208710051,
+      "mean_utterance_RTF": 0.05936766722009775,
+      "config_sha256": "0cf686f8d6cd881868384510bb0f50542cad9257e982f421fa961a4831d49a68",
+      "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50/checkpoints/val-none-epoch=46-step=40084.ckpt"
+    }
+  ]
+}

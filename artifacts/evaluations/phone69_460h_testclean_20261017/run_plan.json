@@ -1,0 +1,24 @@
+{
+  "started_at_utc": "2026-10-17T07:00:06.983543+00:00",
+  "device": "A100 80 GiB",
+  "test_subset": "test-clean",
+  "metric": "per",
+  "beam_width": 20,
+  "experiments": [
+    {
+      "name": "exp_phone69_460h_stride4_none_s42_e50",
+      "config": "configs/server_phone69_460h_stride4_none_s42_e50.yaml",
+      "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/val-none-epoch=49-step=60426.ckpt"
+    },
+    {
+      "name": "exp_phone69_460h_stride1_cosd_learned_s42_e50",
+      "config": "configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml",
+      "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50/checkpoints/val-none-epoch=41-step=50538.ckpt"
+    },
+    {
+      "name": "exp_phone69_460h_stride4_cosd_learned_s42_e50",
+      "config": "configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml",
+      "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50/checkpoints/val-none-epoch=46-step=40084.ckpt"
+    }
+  ]
+}

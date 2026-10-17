@@ -1,0 +1,8 @@
+{
+  "output_dir": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic",
+  "session": "phone69_460h_rtf_monotonic_20261017",
+  "started_at_utc": "2026-10-17T09:13:29.219464+00:00",
+  "timer": "time.perf_counter",
+  "original_RTF_valid": false,
+  "core_configuration_changed": false
+}

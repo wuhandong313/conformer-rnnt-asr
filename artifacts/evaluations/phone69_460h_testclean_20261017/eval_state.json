@@ -1,0 +1,7 @@
+{
+  "status": "rtf_remeasurement_running",
+  "updated_at_utc": "2026-10-17T09:13:29.219464+00:00",
+  "original_PER_SDI_valid": true,
+  "original_RTF_valid": false,
+  "remeasurement_output": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic"
+}
