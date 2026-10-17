@@ -1,0 +1,88 @@
+{
+  "status": "failed",
+  "config": "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+  "config_sha256": "5c54492be14e229002d90e4e55ebbe5a685b3e72699f5a489445d18c835d069b",
+  "code_commit": "b9b2435ac6e3bb46fd92fe15152d204d92dc3160",
+  "pid": 7518,
+  "budget": 24500,
+  "rnnt_frames_per_char": 3.0,
+  "results": [
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 883,
+      "utterances": 574,
+      "max_feature_frames": 1531,
+      "max_target_phones": 44,
+      "attention_elements": 6735958880,
+      "joint_elements": 692502300,
+      "phones": 24479,
+      "peak_allocated_GiB": 70.75682497024536,
+      "peak_reserved_GiB": 73.603515625,
+      "seconds": 2.365663174074143,
+      "loss": 371719.71875,
+      "device_used_GiB": 74.1185302734375
+    }
+  ],
+  "keep_allocator_cache": true,
+  "selected_batches": [
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 883,
+      "utterances": 574,
+      "max_feature_frames": 1531,
+      "max_target_phones": 44,
+      "attention_elements": 6735958880,
+      "joint_elements": 692502300
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 3,
+      "utterances": 97,
+      "max_feature_frames": 2470,
+      "max_target_phones": 179,
+      "attention_elements": 2963730240,
+      "joint_elements": 755319600
+    },
+    {
+      "dataset_index": 1,
+      "subset": "train-clean-360",
+      "batch_index": 890,
+      "utterances": 1370,
+      "max_feature_frames": 636,
+      "max_target_phones": 23,
+      "attention_elements": 2770797600,
+      "joint_elements": 365954400
+    },
+    {
+      "dataset_index": 2,
+      "subset": "dev-clean",
+      "batch_index": 0,
+      "utterances": 23,
+      "max_feature_frames": 3265,
+      "max_target_phones": 368,
+      "attention_elements": 1228179760,
+      "joint_elements": 485371530
+    },
+    {
+      "dataset_index": 0,
+      "subset": "train-clean-100",
+      "batch_index": 242,
+      "utterances": 408,
+      "max_feature_frames": 1481,
+      "max_target_phones": 63,
+      "attention_elements": 4492602240,
+      "joint_elements": 678128640
+    }
+  ],
+  "batches_per_subset": {
+    "train-clean-100": 247,
+    "train-clean-360": 891,
+    "dev-clean": 12
+  },
+  "parameters": 4207942,
+  "gpu_total_GiB": 79.1510009765625,
+  "error": "RuntimeError('Probe exceeded reserved-memory safety margin')"
+}

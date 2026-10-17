@@ -18,7 +18,7 @@ import torch
 from torch import Tensor
 from torchaudio.models import Conformer
 
-from conformer_rnnt.compression import DynamicCompression
+from conformer_rnnt.compression import DynamicCompression, NaturalPeakCompression
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -33,12 +33,20 @@ class TimeReduction(torch.nn.Module):
         stride: Number of frames to merge into one output frame.
     """
 
-    def __init__(self, stride: int) -> None:
+    def __init__(self, stride: int, pad_to_stride: bool = False) -> None:
         super().__init__()
+        if stride < 1:
+            raise ValueError("Time reduction stride must be positive")
         self.stride = stride
+        self.pad_to_stride = pad_to_stride
 
     def forward(self, input: Tensor, lengths: Tensor) -> Tuple[Tensor, Tensor]:
         B, T, D = input.shape
+        if self.pad_to_stride:
+            pad = (-T) % self.stride
+            input = torch.nn.functional.pad(input, (0, 0, 0, pad))
+            lengths = (lengths + self.stride - 1).div(self.stride, rounding_mode="trunc")
+            return input.reshape(B, (T + pad) // self.stride, D * self.stride).contiguous(), lengths
         num_frames = T - (T % self.stride)
         input = input[:, :num_frames, :]
         lengths = lengths.div(self.stride, rounding_mode="trunc")
@@ -97,8 +105,17 @@ class ConformerEncoder(torch.nn.Module):
         compression_detector: Optional[dict] = None,
         compression_mixer: Optional[dict] = None,
         compression_keep_rate: Optional[float] = None,
+        sequence_mode: str = "legacy",
     ) -> None:
         super().__init__()
+        if sequence_mode not in {"legacy", "offline"}:
+            raise ValueError(f"Unknown sequence_mode: {sequence_mode}")
+        self.sequence_mode = sequence_mode
+        if sequence_mode == "offline" and (
+            right_context_length != 0 or compression_right_context_length is not None
+            or compression_keep_rate is not None
+        ):
+            raise ValueError("Offline mode has no context partition or compression rate")
         self.right_context_length = right_context_length
         self.time_reduction_stride = time_reduction_stride
 
@@ -112,7 +129,7 @@ class ConformerEncoder(torch.nn.Module):
 
         # Frontend
         self.input_linear = torch.nn.Linear(input_dim, time_reduction_input_dim, bias=False)
-        self.time_reduction = TimeReduction(time_reduction_stride)
+        self.time_reduction = TimeReduction(time_reduction_stride, pad_to_stride=sequence_mode == "offline")
 
         # Stage 1 — local patterns
         self.conformer1 = _make_conformer(
@@ -122,7 +139,13 @@ class ConformerEncoder(torch.nn.Module):
 
         # Inter-stage compression (new detector/mixer axes take precedence
         # over the legacy filter enum)
-        if compression_detector is not None or compression_mixer is not None:
+        if sequence_mode == "offline":
+            self.compression = NaturalPeakCompression(
+                detector=compression_detector, mixer=compression_mixer, feature_dim=dim,
+                window_size=hanning_window_size, weight_predictor_mode=weight_predictor_mode,
+                passthrough=compression_filter == "none" and compression_detector is None,
+            )
+        elif compression_detector is not None or compression_mixer is not None:
             det_cfg = compression_detector or {"type": "raw"}
             mix_cfg = compression_mixer or {"type": "hard"}
             self.compression = DynamicCompression(
@@ -164,6 +187,8 @@ class ConformerEncoder(torch.nn.Module):
         Returns:
             (encoded, out_lengths): ``(B, T//stride, output_dim)``, ``(B,)``.
         """
+        if self.sequence_mode == "offline":
+            return self._forward_offline(input, lengths)
         rc_frames = self.right_context_length // self.time_reduction_stride
 
         # Frontend
@@ -179,6 +204,16 @@ class ConformerEncoder(torch.nn.Module):
         # Stage 2 + output
         x, x_len = self.conformer2(x, x_len)
         return self.output_norm(self.output_linear(x)), x_len
+
+    def _forward_offline(self, input: Tensor, lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        """Encode only valid utterance frames; all of them are eligible for selection."""
+        valid = torch.arange(input.size(1), device=input.device)[None, :] < lengths[:, None]
+        input = input.masked_fill(~valid[:, :, None], 0.0)
+        x, lengths = self.time_reduction(self.input_linear(input), lengths)
+        x, lengths = self.conformer1(x, lengths)
+        x, lengths = self.compression(x, lengths)
+        x, lengths = self.conformer2(x, lengths)
+        return self.output_norm(self.output_linear(x)), lengths
 
     # ------------------------------------------------------------------
     @torch.jit.export

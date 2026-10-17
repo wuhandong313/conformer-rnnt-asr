@@ -1,5 +1,7 @@
 # Phone69 460h：stride2 + 动态压缩对照
 
+> 已于 2026-10-18 作废：本页记录的是带 keep_rate 配额和右上下文逻辑的旧 stride2 实验，已按用户要求停止并删除其 checkpoint。新四组自然峰谷非流式定义见 [计算逻辑报告](phone69_460h_native_offline_computation_20261018.md)。
+
 新增实验 `exp_phone69_460h_stride2_cosd_learned_s42_e50`，在现有 stride1/stride4 对照之间加入 2:1 帧拼接，再进行 CosDiff learned 动态压缩。
 
 ## 维度与参数审计

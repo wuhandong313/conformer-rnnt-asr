@@ -1,0 +1,250 @@
+{
+  "manifest": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_native_offline_20261018/old_checkpoint_inventory_20261017T154617Z.json",
+  "server_utc": "2026-10-17T15:46:31.752982+00:00",
+  "experiments": [
+    {
+      "experiment": "exp_phone69_460h_stride4_none_s42_e50",
+      "run": {
+        "status": "trained",
+        "config": "configs/server_phone69_460h_stride4_none_s42_e50.yaml",
+        "config_sha256": "49d108791996f272496dec750be1845c0e6b1f4b2e6a210ff9e08cec99006add",
+        "code_commit": "618421d627ca2d54a771c20fe4a927dd009d8dd1",
+        "pid": 67573,
+        "started_at": "2026-10-15T15:07:50.882381+00:00",
+        "epochs": 50,
+        "early_stopping": false,
+        "max_token_limit": 24500,
+        "train_subset": [
+          "train-clean-100",
+          "train-clean-360"
+        ],
+        "val_subset": "dev-clean",
+        "test_subset": "test-clean",
+        "tokenizer": "phone69",
+        "resume_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/epoch_boundary_before_batch_resize_20261015T143222Z.ckpt",
+        "internal_dim": 128,
+        "num_heads": 8,
+        "previous_max_token_limit": 8000,
+        "resume_global_step": 8216,
+        "resume_completed_epochs": 4,
+        "resume_at_epoch_boundary": true,
+        "updated_at": "2026-10-15T23:26:02.215333+00:00",
+        "epoch": 50,
+        "global_step": 60564,
+        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/val-none-epoch=49-step=60426.ckpt"
+      },
+      "checkpoints": [
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/before_batch_resize_20261015T143222Z.ckpt",
+          "bytes": 50945424,
+          "mtime": 1792074725.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/epoch_boundary_before_batch_resize_20261015T143222Z.ckpt",
+          "bytes": 50930320,
+          "mtime": 1792075125.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/last.ckpt",
+          "bytes": 50945424,
+          "mtime": 1792106687.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/train-none-epoch=38-step=47500.ckpt",
+          "bytes": 17005546,
+          "mtime": 1792099643.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/train-none-epoch=45-step=56000.ckpt",
+          "bytes": 17005546,
+          "mtime": 1792104271.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/val-none-epoch=49-step=60026.ckpt",
+          "bytes": 50945424,
+          "mtime": 1792106465.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/val-none-epoch=49-step=60426.ckpt",
+          "bytes": 50945424,
+          "mtime": 1792106686.0
+        }
+      ],
+      "training_complete": true
+    },
+    {
+      "experiment": "exp_phone69_460h_stride1_cosd_learned_s42_e50",
+      "run": {
+        "status": "trained",
+        "config": "configs/server_phone69_460h_stride1_cosd_learned_s42_e50.yaml",
+        "config_sha256": "c05eac6f5ac23cda81b4089cf4cd27391ca977a7f44d9fa7f447d1573281c980",
+        "code_commit": "36b1b39201126684009b182463565552861fbcaf",
+        "pid": 1678,
+        "started_at": "2026-10-15T23:26:06.167485+00:00",
+        "epochs": 50,
+        "early_stopping": false,
+        "max_token_limit": 16500,
+        "train_subset": [
+          "train-clean-100",
+          "train-clean-360"
+        ],
+        "val_subset": "dev-clean",
+        "test_subset": "test-clean",
+        "tokenizer": "phone69",
+        "resume_checkpoint": null,
+        "internal_dim": 128,
+        "num_heads": 8,
+        "updated_at": "2026-10-16T18:52:24.352015+00:00",
+        "epoch": 50,
+        "global_step": 60900,
+        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50/checkpoints/val-none-epoch=41-step=50538.ckpt"
+      },
+      "checkpoints": [
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50/checkpoints/last.ckpt",
+          "bytes": 51046720,
+          "mtime": 1792164869.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50/checkpoints/train-none-epoch=36-step=44000.ckpt",
+          "bytes": 17039330,
+          "mtime": 1792157416.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50/checkpoints/train-none-epoch=38-step=47500.ckpt",
+          "bytes": 17039330,
+          "mtime": 1792161410.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50/checkpoints/val-none-epoch=38-step=46484.ckpt",
+          "bytes": 51046720,
+          "mtime": 1792160252.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50/checkpoints/val-none-epoch=41-step=50538.ckpt",
+          "bytes": 51046720,
+          "mtime": 1792164867.0
+        }
+      ],
+      "training_complete": true
+    },
+    {
+      "experiment": "exp_phone69_460h_stride2_cosd_learned_s42_e50",
+      "run": {
+        "status": "training",
+        "config": "configs/server_phone69_460h_stride2_cosd_learned_s42_e50.yaml",
+        "config_sha256": "7c029ba10266e3cde1fc5e77303fdd1ba9e8abd6a41f54125b176ee21079bc11",
+        "code_commit": "66bf388442bc988b70f1ec7145a879ab15eb5201",
+        "pid": 3028,
+        "started_at": "2026-10-17T15:12:25.295760+00:00",
+        "epochs": 50,
+        "early_stopping": false,
+        "max_token_limit": 34000,
+        "train_subset": [
+          "train-clean-100",
+          "train-clean-360"
+        ],
+        "val_subset": "dev-clean",
+        "test_subset": "test-clean",
+        "tokenizer": "phone69",
+        "resume_checkpoint": null,
+        "internal_dim": 128,
+        "num_heads": 8,
+        "updated_at": "2026-10-17T15:45:45.932309+00:00",
+        "epoch": 3,
+        "global_step": 2400
+      },
+      "checkpoints": [
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride2_cosd_learned_s42_e50/checkpoints/last.ckpt",
+          "bytes": 50985280,
+          "mtime": 1792251920.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride2_cosd_learned_s42_e50/checkpoints/train-none-epoch=01-step=1500.ckpt",
+          "bytes": 17018850,
+          "mtime": 1792251215.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride2_cosd_learned_s42_e50/checkpoints/train-none-epoch=01-step=2000.ckpt",
+          "bytes": 17018850,
+          "mtime": 1792251621.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride2_cosd_learned_s42_e50/checkpoints/val-none-epoch=01-step=2083.ckpt",
+          "bytes": 50985280,
+          "mtime": 1792251688.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride2_cosd_learned_s42_e50/checkpoints/val-none-epoch=02-step=2366.ckpt",
+          "bytes": 50985280,
+          "mtime": 1792251918.0
+        }
+      ],
+      "training_complete": false
+    },
+    {
+      "experiment": "exp_phone69_460h_stride4_cosd_learned_s42_e50",
+      "run": {
+        "status": "trained",
+        "config": "configs/server_phone69_460h_stride4_cosd_learned_s42_e50.yaml",
+        "config_sha256": "0cf686f8d6cd881868384510bb0f50542cad9257e982f421fa961a4831d49a68",
+        "code_commit": "316ee4e514b232f4044bd197631102ae7ad927a2",
+        "pid": 110040,
+        "started_at": "2026-10-16T18:52:33.570570+00:00",
+        "epochs": 50,
+        "early_stopping": false,
+        "max_token_limit": 68000,
+        "train_subset": [
+          "train-clean-100",
+          "train-clean-360"
+        ],
+        "val_subset": "dev-clean",
+        "test_subset": "test-clean",
+        "tokenizer": "phone69",
+        "resume_checkpoint": null,
+        "internal_dim": 128,
+        "num_heads": 8,
+        "updated_at": "2026-10-17T04:28:04.996196+00:00",
+        "epoch": 50,
+        "global_step": 42700,
+        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50/checkpoints/val-none-epoch=46-step=40084.ckpt"
+      },
+      "checkpoints": [
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50/checkpoints/last.ckpt",
+          "bytes": 50954560,
+          "mtime": 1792211090.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50/checkpoints/train-none-epoch=22-step=19500.ckpt",
+          "bytes": 17008610,
+          "mtime": 1792192650.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50/checkpoints/train-none-epoch=38-step=33000.ckpt",
+          "bytes": 17008610,
+          "mtime": 1792203368.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50/checkpoints/val-none-epoch=46-step=40084.ckpt",
+          "bytes": 50954560,
+          "mtime": 1792209187.0
+        },
+        {
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50/checkpoints/val-none-epoch=49-step=42446.ckpt",
+          "bytes": 50954560,
+          "mtime": 1792211088.0
+        }
+      ],
+      "training_complete": true
+    }
+  ],
+  "total_files": 22,
+  "total_bytes": 849816368,
+  "stopped_roots": [
+    3028
+  ],
+  "remaining_processes": "",
+  "gpu": "NVIDIA A100-SXM4-80GB, 73491 MiB, 81920 MiB, 0 %\n"
+}

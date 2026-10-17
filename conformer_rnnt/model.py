@@ -110,6 +110,7 @@ def conformer_rnnt_model(
     compression_detector: Optional[dict] = None,
     compression_mixer: Optional[dict] = None,
     compression_keep_rate: Optional[float] = None,
+    sequence_mode: str = "legacy",
     # Predictor
     num_symbols: int,
     symbol_embedding_dim: int = 128,
@@ -145,6 +146,7 @@ def conformer_rnnt_model(
             compression_detector=compression_detector,
             compression_mixer=compression_mixer,
             compression_keep_rate=compression_keep_rate,
+            sequence_mode=sequence_mode,
         ),
         predictor=Predictor(
             num_symbols=num_symbols,
@@ -157,6 +159,21 @@ def conformer_rnnt_model(
             lstm_dropout=lstm_dropout,
         ),
         joiner=Joiner(input_dim=encoding_dim, output_dim=num_symbols, activation=joiner_activation),
+    )
+
+
+def sequence_options_from_config(model_config: Dict[str, Any]) -> Dict[str, Any]:
+    """Reject obsolete controls in explicit offline recipes instead of ignoring them."""
+    compression = model_config.get("compression", {})
+    mode = model_config.get("sequence_mode", "legacy")
+    if mode == "offline":
+        if ("right_context_length" in model_config or "right_context_length" in compression
+                or "keep_rate" in compression):
+            raise ValueError("Offline configuration must omit right_context_length and keep_rate")
+        return dict(sequence_mode=mode, right_context_length=0, compression_right_context_length=None)
+    return dict(
+        sequence_mode=mode, right_context_length=model_config.get("right_context_length", 4),
+        compression_right_context_length=compression.get("right_context_length"),
     )
 
 
@@ -186,10 +203,9 @@ def conformer_rnnt_model_from_config(config: Dict[str, Any]) -> ConformerRNNT:
         input_dim=m.get("input_dim", 80),
         encoding_dim=m.get("encoding_dim", 512),
         num_symbols=num_symbols + 1,  # +blank
-        right_context_length=m.get("right_context_length", 4),
+        **sequence_options_from_config(m),
         time_reduction_input_dim=m.get("time_reduction_input_dim", 128),
         time_reduction_stride=m.get("time_reduction_stride", 4),
-        compression_right_context_length=c.get("right_context_length"),
         num_heads=m.get("num_heads", 8),
         ffn_dim=m.get("ffn_dim", 1024),
         num_layers_block1=m.get("num_layers_block1", 2),

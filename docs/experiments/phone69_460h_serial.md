@@ -1,5 +1,7 @@
 # Phone69 460h clean serial experiments
 
+> 历史实验，已于 2026-10-18 被四组自然峰谷非流式重训取代；旧 checkpoint 已删除。请以 [新计算逻辑报告](../phone69_460h_native_offline_computation_20261018.md) 和 offline_native 配置为准。
+
 Approved on 2026-10-15. The queue runs training and training-time dev-clean
 validation only. No standalone test-clean evaluation is launched.
 

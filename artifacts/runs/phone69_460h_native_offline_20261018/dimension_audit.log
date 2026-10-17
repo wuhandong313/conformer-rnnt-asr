@@ -1,0 +1,82 @@
+[
+  {
+    "scheme": "stride4_none",
+    "config": "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+    "config_sha256": "5c54492be14e229002d90e4e55ebbe5a685b3e72699f5a489445d18c835d069b",
+    "projection": 32,
+    "stride": 4,
+    "internal_dim": 128,
+    "output_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "total_parameters": 4207942,
+    "block_parameters": 3846400,
+    "compression_parameters": 0,
+    "batch_budget": 24500,
+    "output_lengths": [
+      26,
+      21
+    ],
+    "finite_forward_backward": true
+  },
+  {
+    "scheme": "stride1_cosd_learned",
+    "config": "configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+    "config_sha256": "aaf451198b0a84f4baa18f6661e6adbb8ed79ae39ae2cbfdfc908b1070c96164",
+    "projection": 128,
+    "stride": 1,
+    "internal_dim": 128,
+    "output_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "total_parameters": 4215947,
+    "block_parameters": 3846400,
+    "compression_parameters": 325,
+    "batch_budget": 8500,
+    "output_lengths": [
+      42,
+      40
+    ],
+    "finite_forward_backward": true
+  },
+  {
+    "scheme": "stride2_cosd_learned",
+    "config": "configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+    "config_sha256": "bdab9d7f579738008e6982f183fec054526f182946cf355db39e465004048732",
+    "projection": 64,
+    "stride": 2,
+    "internal_dim": 128,
+    "output_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "total_parameters": 4210827,
+    "block_parameters": 3846400,
+    "compression_parameters": 325,
+    "batch_budget": 16000,
+    "output_lengths": [
+      22,
+      16
+    ],
+    "finite_forward_backward": true
+  },
+  {
+    "scheme": "stride4_cosd_learned",
+    "config": "configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+    "config_sha256": "e63b8e560151ab9dbbab28fcea94b7f650b75c86658329b16dfc4b048dcb3865",
+    "projection": 32,
+    "stride": 4,
+    "internal_dim": 128,
+    "output_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "total_parameters": 4208267,
+    "block_parameters": 3846400,
+    "compression_parameters": 325,
+    "batch_budget": 42000,
+    "output_lengths": [
+      13,
+      5
+    ],
+    "finite_forward_backward": true
+  }
+]

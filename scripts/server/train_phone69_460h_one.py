@@ -21,6 +21,7 @@ from pytorch_lightning.callbacks import Callback, ModelCheckpoint
 import train as train_entry
 from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
 from conformer_rnnt.checkpoint_utils import select_phone69_resume_checkpoint
+from scripts.server.phone69_epoch_checkpoint import Phone69EpochCheckpoint
 
 
 def main(config_path):
@@ -46,6 +47,8 @@ def main(config_path):
         candidates.append(paths['from_checkpoint'])
     if os.environ.get("RESUME_LAST", "1") == "1":
         candidates.extend(glob.glob(os.path.join(checkpoint_dir, "last*.ckpt")))
+        if config['model'].get('sequence_mode') == 'offline':
+            candidates.extend(glob.glob(os.path.join(checkpoint_dir, "epoch-boundary-*.ckpt")))
     checkpoint_path, resume_info = select_phone69_resume_checkpoint(
         candidates, config['data']['max_token_limit'])
     if checkpoint_path:
@@ -66,6 +69,11 @@ def main(config_path):
         'tokenizer': config['tokenizer']['type'], 'resume_checkpoint': checkpoint_path,
         'internal_dim': config['model']['time_reduction_input_dim'] * config['model']['time_reduction_stride'],
         'num_heads': config['model']['num_heads'],
+        'sequence_mode': config['model'].get('sequence_mode', 'legacy'),
+        'compression': config['model'].get('compression', {}),
+        'output_dim': config['model']['encoding_dim'],
+        'ffn_dim': config['model']['ffn_dim'],
+        'time_reduction_stride': config['model']['time_reduction_stride'],
         **resume_info,
     }
 
@@ -81,9 +89,18 @@ def main(config_path):
 
         def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
             if trainer.global_step % 100 == 0:
-                save_status(epoch=trainer.current_epoch + 1, global_step=trainer.global_step)
+                observed = getattr(pl_module.model.transcriber.compression, 'last_lengths', None)
+                save_status(epoch=trainer.current_epoch + 1, global_step=trainer.global_step,
+                            observed_compression_lengths=observed)
 
     trainer.callbacks.append(ProgressState())
+    if config['model'].get('sequence_mode') == 'offline':
+        trainer.callbacks.append(Phone69EpochCheckpoint(
+            checkpoint_dir, save_initial=checkpoint_path is None,
+            on_saved=lambda path, metadata: save_status(
+                epoch_boundary_checkpoint=path, epoch_boundary_metadata=metadata
+            ),
+        ))
     save_status()
     try:
         trainer.fit(model, ckpt_path=checkpoint_path)

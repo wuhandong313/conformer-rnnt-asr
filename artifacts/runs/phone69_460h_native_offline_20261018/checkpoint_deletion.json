@@ -1,0 +1,118 @@
+{
+  "server_utc": "2026-10-17T15:48:29.764529+00:00",
+  "manifest": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_native_offline_20261018/old_checkpoint_inventory_20261017T154617Z.json",
+  "deleted_files": 22,
+  "deleted_bytes": 849816368,
+  "removed": [
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/before_batch_resize_20261015T143222Z.ckpt",
+      "bytes": 50945424,
+      "mtime": 1792074725.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/epoch_boundary_before_batch_resize_20261015T143222Z.ckpt",
+      "bytes": 50930320,
+      "mtime": 1792075125.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/last.ckpt",
+      "bytes": 50945424,
+      "mtime": 1792106687.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/train-none-epoch=38-step=47500.ckpt",
+      "bytes": 17005546,
+      "mtime": 1792099643.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/train-none-epoch=45-step=56000.ckpt",
+      "bytes": 17005546,
+      "mtime": 1792104271.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/val-none-epoch=49-step=60026.ckpt",
+      "bytes": 50945424,
+      "mtime": 1792106465.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_none_s42_e50/checkpoints/val-none-epoch=49-step=60426.ckpt",
+      "bytes": 50945424,
+      "mtime": 1792106686.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50/checkpoints/last.ckpt",
+      "bytes": 51046720,
+      "mtime": 1792164869.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50/checkpoints/train-none-epoch=36-step=44000.ckpt",
+      "bytes": 17039330,
+      "mtime": 1792157416.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50/checkpoints/train-none-epoch=38-step=47500.ckpt",
+      "bytes": 17039330,
+      "mtime": 1792161410.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50/checkpoints/val-none-epoch=38-step=46484.ckpt",
+      "bytes": 51046720,
+      "mtime": 1792160252.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride1_cosd_learned_s42_e50/checkpoints/val-none-epoch=41-step=50538.ckpt",
+      "bytes": 51046720,
+      "mtime": 1792164867.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride2_cosd_learned_s42_e50/checkpoints/last.ckpt",
+      "bytes": 50985280,
+      "mtime": 1792251920.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride2_cosd_learned_s42_e50/checkpoints/train-none-epoch=01-step=1500.ckpt",
+      "bytes": 17018850,
+      "mtime": 1792251215.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride2_cosd_learned_s42_e50/checkpoints/train-none-epoch=01-step=2000.ckpt",
+      "bytes": 17018850,
+      "mtime": 1792251621.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride2_cosd_learned_s42_e50/checkpoints/val-none-epoch=01-step=2083.ckpt",
+      "bytes": 50985280,
+      "mtime": 1792251688.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride2_cosd_learned_s42_e50/checkpoints/val-none-epoch=02-step=2366.ckpt",
+      "bytes": 50985280,
+      "mtime": 1792251918.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50/checkpoints/last.ckpt",
+      "bytes": 50954560,
+      "mtime": 1792211090.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50/checkpoints/train-none-epoch=22-step=19500.ckpt",
+      "bytes": 17008610,
+      "mtime": 1792192650.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50/checkpoints/train-none-epoch=38-step=33000.ckpt",
+      "bytes": 17008610,
+      "mtime": 1792203368.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50/checkpoints/val-none-epoch=46-step=40084.ckpt",
+      "bytes": 50954560,
+      "mtime": 1792209187.0
+    },
+    {
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride4_cosd_learned_s42_e50/checkpoints/val-none-epoch=49-step=42446.ckpt",
+      "bytes": 50954560,
+      "mtime": 1792211088.0
+    }
+  ]
+}

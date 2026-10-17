@@ -1,0 +1,119 @@
+{
+  "valid": true,
+  "server_utc": "2026-10-17T16:07:02.069309+00:00",
+  "models": [
+    {
+      "scheme": "stride4_none",
+      "config": "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+      "config_sha256": "017cdecbc2e7f088d764bfcf31a2cd071a2b53ccef8b432e33c1b29361418ee2",
+      "projection": 32,
+      "stride": 4,
+      "internal_dim": 128,
+      "output_dim": 256,
+      "num_heads": 8,
+      "ffn_dim": 512,
+      "total_parameters": 4207942,
+      "block_parameters": 3846400,
+      "compression_parameters": 0,
+      "batch_budget": 23500,
+      "output_lengths": [
+        26,
+        21
+      ],
+      "finite_forward_backward": true,
+      "budget": 23500,
+      "probe": "artifacts/runs/phone69_460h_native_offline_20261018/probe_final_stride4_none_b23500_a1.json",
+      "peak_reserved_GiB": 70.171875,
+      "cases": 5
+    },
+    {
+      "scheme": "stride1_cosd_learned",
+      "config": "configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+      "config_sha256": "78769dcdcc50beae37942a7ba55c52332d12a4166262df14e967a9759078e27c",
+      "projection": 128,
+      "stride": 1,
+      "internal_dim": 128,
+      "output_dim": 256,
+      "num_heads": 8,
+      "ffn_dim": 512,
+      "total_parameters": 4215947,
+      "block_parameters": 3846400,
+      "compression_parameters": 325,
+      "batch_budget": 6500,
+      "output_lengths": [
+        42,
+        40
+      ],
+      "finite_forward_backward": true,
+      "budget": 6500,
+      "probe": "artifacts/runs/phone69_460h_native_offline_20261018/probe_final_stride1_cosd_learned_b6500_a3.json",
+      "peak_reserved_GiB": 67.306640625,
+      "cases": 5
+    },
+    {
+      "scheme": "stride2_cosd_learned",
+      "config": "configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+      "config_sha256": "bdab9d7f579738008e6982f183fec054526f182946cf355db39e465004048732",
+      "projection": 64,
+      "stride": 2,
+      "internal_dim": 128,
+      "output_dim": 256,
+      "num_heads": 8,
+      "ffn_dim": 512,
+      "total_parameters": 4210827,
+      "block_parameters": 3846400,
+      "compression_parameters": 325,
+      "batch_budget": 16000,
+      "output_lengths": [
+        22,
+        16
+      ],
+      "finite_forward_backward": true,
+      "budget": 16000,
+      "probe": "artifacts/runs/phone69_460h_native_offline_20261018/probe_final_stride2_cosd_learned_b16000_a1.json",
+      "peak_reserved_GiB": 68.724609375,
+      "cases": 5
+    },
+    {
+      "scheme": "stride4_cosd_learned",
+      "config": "configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+      "config_sha256": "f055211ffe35fea0eb6c23f95d61e320d7a1d25b1b2a6dd65e1b845b319fe60e",
+      "projection": 32,
+      "stride": 4,
+      "internal_dim": 128,
+      "output_dim": 256,
+      "num_heads": 8,
+      "ffn_dim": 512,
+      "total_parameters": 4208267,
+      "block_parameters": 3846400,
+      "compression_parameters": 325,
+      "batch_budget": 32600,
+      "output_lengths": [
+        13,
+        5
+      ],
+      "finite_forward_backward": true,
+      "budget": 32600,
+      "probe": "artifacts/runs/phone69_460h_native_offline_20261018/probe_final_stride4_cosd_learned_b32600_a4.json",
+      "peak_reserved_GiB": 65.8359375,
+      "cases": 6
+    }
+  ],
+  "source_sha256": {
+    "conformer_rnnt/__init__.py": "53467afcb57ca9fa24a0ac716cae00b38c0a18af4c5f356920922667be4b4ca0",
+    "conformer_rnnt/checkpoint_utils.py": "2fc3c8cdf3ffe6b72acb95e4d5bf0bac402d2b15614e2234e62964c716dae37e",
+    "conformer_rnnt/compression/__init__.py": "5f912b187342ecfa0de09028c21c7a103124c5ca1cd8e844fbebd89be15fd145",
+    "conformer_rnnt/compression/core.py": "4c8435d13986cbbb9c102a25861fd58d8823881840b77081ef99ba158a3f9a12",
+    "conformer_rnnt/compression/detectors.py": "fa33ddba727aa570f9918978b0400ccbc5001ffc18d2eff4059469d825dc86ae",
+    "conformer_rnnt/compression/mixers.py": "bcec02719b2fb0f6909b30609b14757756a24f41443b7bb109e00b257894f422",
+    "conformer_rnnt/compression/natural.py": "da9d17f4c6bb86f6741a85f925b35f2174baa9853639f1cfe5d1d49a4c492232",
+    "conformer_rnnt/encoder.py": "46384d3f0fdd51c6af74693b8b195a71221cb4bdf2d020cbdc8f4507034983c1",
+    "conformer_rnnt/joiner.py": "56a409bcc92c1ee3d21b2fbe2e9e62b9836268a871013940c568377414fc0889",
+    "conformer_rnnt/lightning_module.py": "22dd7fc2d1b78bada367b26992fd36fd4e7a354eba1ceeeb739b145c62a669f6",
+    "conformer_rnnt/metrics.py": "911529445ec324a7422f2f7592cca4af1177f5c7e397319a4a58b7706f5b593b",
+    "conformer_rnnt/model.py": "c36f2ac27cf8959469b49211c5c003430f7ed68a1bddd739bef72a93043a89f4",
+    "conformer_rnnt/predictor.py": "da238c0e54bd16a1f01f252ef935410877792a7dbf6ccc37c8613342393fdaf1"
+  },
+  "tests_log": "artifacts/runs/phone69_460h_native_offline_20261018/preflight_tests.log",
+  "total_tests": 51
+}

@@ -63,7 +63,7 @@ def audio_sample_cache(datasets, path):
 
 def select_batches(datasets, samples, model, cfg):
     m, d = cfg['model'], cfg['data']
-    stride, rc = m['time_reduction_stride'], m['right_context_length']
+    stride, rc = m['time_reduction_stride'], m.get('right_context_length', 0)
     comp = m['compression']
     dynamic = 'detector' in comp
     records = []
@@ -75,8 +75,14 @@ def select_batches(datasets, samples, model, cfg):
         for batch_index, batch in enumerate(dataset.batches):
             b = len(batch)
             raw_t = max(frames[i] for i in batch)
-            t1 = (raw_t + rc) // stride
-            t2 = max(1, round((t1 - rc // stride) * comp['keep_rate'])) + rc // stride if dynamic else t1
+            if m.get('sequence_mode') == 'offline':
+                t1 = (raw_t + stride - 1) // stride
+                # Natural peak counts vary. Bound joint/attention shapes by all
+                # valid frames, never by a presumed or imposed retention rate.
+                t2 = t1
+            else:
+                t1 = (raw_t + rc) // stride
+                t2 = max(1, round((t1 - rc // stride) * comp['keep_rate'])) + rc // stride if dynamic else t1
             u = max(phones[i] for i in batch)
             records.append({
                 'dataset_index': dataset_index, 'subset': base._url, 'batch_index': batch_index,
@@ -131,6 +137,10 @@ def main():
         'pid': os.getpid(), 'budget': cfg['data']['max_token_limit'],
         'rnnt_frames_per_char': cfg['data']['rnnt_frames_per_char'], 'results': [],
         'keep_allocator_cache': args.keep_cache,
+        'source_sha256': {
+            str(p.relative_to(REPO)): hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in sorted((REPO / 'conformer_rnnt').rglob('*.py'))
+        },
     }
     save_json(output, report)
     model = LibriSpeechRNNTModule.from_config(cfg)
@@ -164,7 +174,10 @@ def main():
             if not args.keep_cache:
                 torch.cuda.empty_cache()
             dataset = datasets[record['dataset_index']]
-            batch = model._train_collate_fn(dataset[record['batch_index']])
+            validation_features = record['subset'] in model.val_subsets
+            model.train(not validation_features)
+            collate = model._valid_collate_fn if validation_features else model._train_collate_fn
+            batch = collate(dataset[record['batch_index']])
             batch = type(batch)(*(value.cuda() for value in batch))
             torch.cuda.reset_peak_memory_stats()
             torch.cuda.synchronize()
@@ -179,9 +192,15 @@ def main():
             model.optimizer.step()
             torch.cuda.synchronize()
             result = dict(record, phones=int(batch.target_lengths.sum()),
+                          feature_mode='validation_with_backward_stress' if validation_features else 'training',
                           peak_allocated_GiB=torch.cuda.max_memory_allocated() / 1024**3,
                           peak_reserved_GiB=torch.cuda.max_memory_reserved() / 1024**3,
                           seconds=time.monotonic() - started, loss=float(loss.detach()))
+            result['device_used_GiB'] = (total_memory - torch.cuda.mem_get_info()[0]) / 1024**3
+            observed = getattr(model.model.transcriber.compression, 'last_lengths', None)
+            if observed:
+                result['observed_lengths'] = observed
+                result['observed_retention'] = sum(observed['output']) / sum(observed['input'])
             report['results'].append(result)
             print(json.dumps(result), flush=True)
             save_json(output, report)

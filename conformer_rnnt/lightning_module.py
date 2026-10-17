@@ -29,7 +29,7 @@ from common import (
     post_process_hypos,
     WarmupLR,
 )
-from conformer_rnnt.model import conformer_rnnt_model
+from conformer_rnnt.model import conformer_rnnt_model, sequence_options_from_config
 from ipa_tokenizer import DEFAULT_VOCAB, FixedIPATokenizer, encode_transcript
 from phone69_tokenizer import DEFAULT_PHONE69_VOCAB, FixedPhone69Tokenizer
 from ipa_labels import ExternalIPALabels
@@ -462,6 +462,7 @@ class LibriSpeechRNNTModule(LightningModule):
         compression_detector: Optional[dict] = None,
         compression_mixer: Optional[dict] = None,
         compression_keep_rate: Optional[float] = None,
+        sequence_mode: str = "legacy",
         # Model — predictor
         symbol_embedding_dim: int = 128,
         num_lstm_layers: int = 2,
@@ -579,6 +580,7 @@ class LibriSpeechRNNTModule(LightningModule):
             compression_detector=compression_detector,
             compression_mixer=compression_mixer,
             compression_keep_rate=compression_keep_rate,
+            sequence_mode=sequence_mode,
             symbol_embedding_dim=symbol_embedding_dim,
             num_lstm_layers=num_lstm_layers,
             lstm_hidden_dim=lstm_hidden_dim,
@@ -617,7 +619,19 @@ class LibriSpeechRNNTModule(LightningModule):
         self.warmup_lr_scheduler = WarmupLR(self.optimizer, warmup_steps)
 
         # ---- Data pipelines ----
-        right_pad = right_context_length  # pad amount in time dim
+        self.sequence_mode = sequence_mode
+        self.offline_native_definition = None
+        if sequence_mode == "offline":
+            self.offline_native_definition = {
+                "version": 1, "sequence_mode": sequence_mode, "tail_alignment": "zero_pad_ceil",
+                "stride": time_reduction_stride, "input_projection": time_reduction_input_dim,
+                "encoding_dim": encoding_dim, "num_heads": num_heads, "ffn_dim": ffn_dim,
+                "layers": [num_layers_block1, num_layers_block2],
+                "detector": compression_detector, "mixer": compression_mixer,
+                "filter": compression_filter, "window_size": hanning_window_size,
+                "weight_predictor_mode": weight_predictor_mode,
+            }
+        right_pad = right_context_length  # legacy only; offline pipeline omits this operation
         self.train_data_pipeline = torch.nn.Sequential(
             FunctionalModule(piecewise_linear_log),
             GlobalStatsNormalization(global_stats_path),
@@ -630,18 +644,18 @@ class LibriSpeechRNNTModule(LightningModule):
             torchaudio.transforms.TimeMasking(
                 spec_aug_time_mask_param, p=spec_aug_time_mask_prob
             ),
-            FunctionalModule(
+            *([FunctionalModule(
                 partial(torch.nn.functional.pad, pad=(0, right_pad))
-            ),
+            )] if sequence_mode != "offline" else []),
             FunctionalModule(partial(torch.transpose, dim0=1, dim1=2)),
         )
         self.valid_data_pipeline = torch.nn.Sequential(
             FunctionalModule(piecewise_linear_log),
             GlobalStatsNormalization(global_stats_path),
             FunctionalModule(partial(torch.transpose, dim0=1, dim1=2)),
-            FunctionalModule(
+            *([FunctionalModule(
                 partial(torch.nn.functional.pad, pad=(0, right_pad))
-            ),
+            )] if sequence_mode != "offline" else []),
             FunctionalModule(partial(torch.transpose, dim0=1, dim1=2)),
         )
 
@@ -708,10 +722,9 @@ class LibriSpeechRNNTModule(LightningModule):
             ipa_label_filename=data_cfg.get("ipa_label_filename", "ipa"),
             input_dim=model_cfg.get("input_dim", 80),
             encoding_dim=model_cfg.get("encoding_dim", 512),
-            right_context_length=model_cfg.get("right_context_length", 4),
+            **sequence_options_from_config(model_cfg),
             time_reduction_input_dim=model_cfg.get("time_reduction_input_dim", 128),
             time_reduction_stride=model_cfg.get("time_reduction_stride", 4),
-            compression_right_context_length=comp_cfg.get("right_context_length"),
             num_heads=model_cfg.get("num_heads", 8),
             ffn_dim=model_cfg.get("ffn_dim", 1024),
             num_layers_block1=model_cfg.get("num_layers_block1", 2),
@@ -823,6 +836,8 @@ class LibriSpeechRNNTModule(LightningModule):
             [elem.shape[0] for elem in mel_features], dtype=torch.int32
         )
         features = self.train_data_pipeline(features)
+        if self.sequence_mode == "offline":
+            features = self._mask_feature_padding(features, lengths)
         return features, lengths
 
     def _valid_extract_features(self, samples: List):
@@ -836,7 +851,14 @@ class LibriSpeechRNNTModule(LightningModule):
             [elem.shape[0] for elem in mel_features], dtype=torch.int32
         )
         features = self.valid_data_pipeline(features)
+        if self.sequence_mode == "offline":
+            features = self._mask_feature_padding(features, lengths)
         return features, lengths
+
+    @staticmethod
+    def _mask_feature_padding(features, lengths):
+        valid = torch.arange(features.size(1), device=features.device)[None, :] < lengths.to(features.device)[:, None]
+        return features.masked_fill(~valid[:, :, None], 0.0)
 
     # ------------------------------------------------------------------
     # Collate functions
@@ -980,6 +1002,8 @@ class LibriSpeechRNNTModule(LightningModule):
     # Hooks
     # ------------------------------------------------------------------
     def on_save_checkpoint(self, checkpoint):
+        if self.sequence_mode == "offline":
+            checkpoint["offline_native_definition"] = self.offline_native_definition
         if self.tokenizer_type == "phone69":
             checkpoint["phone69_tokenizer"] = {
                 "fingerprint": self.tokenizer.fingerprint,
@@ -1012,6 +1036,8 @@ class LibriSpeechRNNTModule(LightningModule):
 
     def on_load_checkpoint(self, checkpoint):
         self.validate_tokenizer_checkpoint(checkpoint)
+        if self.sequence_mode == "offline" and checkpoint.get("offline_native_definition") != self.offline_native_definition:
+            raise ValueError("Checkpoint does not match the offline natural-compression definition")
 
     def configure_optimizers(self):
         return (
