@@ -1,0 +1,26 @@
+{
+  "status": "started",
+  "server_utc": "2026-10-17T15:12:20.286900+00:00",
+  "source_commit": "66bf388442bc988b70f1ec7145a879ab15eb5201",
+  "session": "phone69_460h_stride2",
+  "config": "configs/server_phone69_460h_stride2_cosd_learned_s42_e50.yaml",
+  "config_sha256": "7c029ba10266e3cde1fc5e77303fdd1ba9e8abd6a41f54125b176ee21079bc11",
+  "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_stride2_cosd_learned_s42_e50",
+  "train_subset": [
+    "train-clean-100",
+    "train-clean-360"
+  ],
+  "epochs": 50,
+  "seed": 42,
+  "batch_budget": 34000,
+  "probe_peak_reserved_GiB": 71.1953125,
+  "projection": 64,
+  "stride": 2,
+  "internal_dim": 128,
+  "output_dim": 256,
+  "num_heads": 8,
+  "ffn_dim": 512,
+  "train_from_scratch": true,
+  "independent_test_evaluation": false,
+  "command": "env CUDA_VISIBLE_DEVICES=0 bash scripts/server/phone69_460h_stride2_pipeline.sh >> artifacts/runs/phone69_460h_stride2/pipeline_console.log 2>&1"
+}

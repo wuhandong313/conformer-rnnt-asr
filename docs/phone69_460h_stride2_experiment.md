@@ -29,6 +29,16 @@
 
 本轮执行训练及训练中的 dev-clean 验证。后续 test-clean 评测沿用固定 phone69、最佳 checkpoint、beam=20 和单调时钟 RTF 口径。
 
+预检结果（每个预算均检查六个真实批次，含前向、反向和优化器更新，探针使用独立临时模型）：
+
+| phone-token 预算 | reserved 峰值 GiB | 结果 |
+| ---: | ---: | --- |
+| 30,000 | 64.5703 | 通过 |
+| 33,000 | 68.5664 | 通过 |
+| **34,000** | **71.1953** | **最终采用，通过** |
+
+另外通过了 `test_encoder_compression_context.py` 的三个回归测试，完整输出保存在 `artifacts/runs/phone69_460h_stride2/prelaunch_tests.log`。
+
 ## 运行与检查
 
 服务器原仓库 `/test21/conformer-rnnt-asr`：

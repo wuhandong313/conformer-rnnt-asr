@@ -1,0 +1,24 @@
+{
+  "status": "training",
+  "config": "configs/server_phone69_460h_stride2_cosd_learned_s42_e50.yaml",
+  "config_sha256": "7c029ba10266e3cde1fc5e77303fdd1ba9e8abd6a41f54125b176ee21079bc11",
+  "code_commit": "66bf388442bc988b70f1ec7145a879ab15eb5201",
+  "pid": 3028,
+  "started_at": "2026-10-17T15:12:25.295760+00:00",
+  "epochs": 50,
+  "early_stopping": false,
+  "max_token_limit": 34000,
+  "train_subset": [
+    "train-clean-100",
+    "train-clean-360"
+  ],
+  "val_subset": "dev-clean",
+  "test_subset": "test-clean",
+  "tokenizer": "phone69",
+  "resume_checkpoint": null,
+  "internal_dim": 128,
+  "num_heads": 8,
+  "updated_at": "2026-10-17T15:14:15.179921+00:00",
+  "epoch": 1,
+  "global_step": 100
+}
