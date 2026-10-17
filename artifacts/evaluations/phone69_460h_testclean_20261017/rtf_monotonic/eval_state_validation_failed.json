@@ -1,0 +1,7 @@
+{
+  "status": "failed",
+  "updated_at_utc": "2026-10-17T11:06:42.353416+00:00",
+  "elapsed_monotonic_seconds": 7470.807998802979,
+  "reason": "validation.log: process exited 1",
+  "timer": "time.perf_counter"
+}

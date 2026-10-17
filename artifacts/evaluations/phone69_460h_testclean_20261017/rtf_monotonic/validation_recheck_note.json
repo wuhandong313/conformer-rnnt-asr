@@ -1,0 +1,9 @@
+{
+  "rechecked_at_server_utc": "2026-10-17T11:09:16.164514+00:00",
+  "reason": "Original validator required status complete while caller was still validating; result data were complete.",
+  "change": "Remove circular status prerequisite; retain all marker, row, edit-distance, config, RTF and aggregate checks.",
+  "old_validator_sha256": "d1271d134ea188477a23576d19c147b4b71765187d8addcbfcedf485bc739f75",
+  "recheck_validator_sha256": "71ed43c98d55dbb548641f69c1bd5a050c4a59d02c6a7c5b57f11293d5b3dae0",
+  "prediction_mismatches": 0,
+  "rtf_valid": true
+}

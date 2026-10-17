@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/validate_results.py", line 19, in <module>
+    assert json.loads((out / 'eval_state.json').read_text())['status'] == 'complete'
+AssertionError

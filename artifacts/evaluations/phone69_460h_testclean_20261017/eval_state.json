@@ -1,7 +1,8 @@
 {
-  "status": "rtf_remeasurement_running",
-  "updated_at_utc": "2026-10-17T09:13:29.219464+00:00",
-  "original_PER_SDI_valid": true,
+  "status": "complete",
+  "updated_at_utc": "2026-10-17T11:09:16.164514+00:00",
   "original_RTF_valid": false,
-  "remeasurement_output": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic"
+  "final_RTF_valid": true,
+  "summary": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/summary.json",
+  "validation": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/validation_report.json"
 }

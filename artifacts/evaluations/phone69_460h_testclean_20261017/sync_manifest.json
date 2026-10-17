@@ -1,0 +1,307 @@
+{
+  "generated_at_server_utc": "2026-10-17T11:10:06.216157+00:00",
+  "per_file_limit_bytes": 10485760,
+  "files": [
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/EVALUATION_COMPLETE_WITH_SDI",
+      "bytes": 59,
+      "sha256": "1727030b69999b4fb13ae7014c1e29f9dd250907e68cbb59adda8855f0f9535e"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/FINAL_RESULTS.md",
+      "bytes": 2214,
+      "sha256": "33d8f1395641de0904e464eb6e8eccbc4473a077a68ebb86b0f5c726f03e94a7"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/RAW_EVALUATIONS_COMPLETE",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/RTF_INVALID.md",
+      "bytes": 454,
+      "sha256": "73a5e6680825e2a649f518c2e3229171a8dec2b5e5f6b5830cf3e2c5d0447148"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/aggregate_phone_edits.py",
+      "bytes": 5208,
+      "sha256": "d9060dace860897c2782724cf885d2cadfc3ba48bef9b1c4156338e2453928ff"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/aggregation.log",
+      "bytes": 3945,
+      "sha256": "7dbd492d5d25364fea4c0f7ef8ef908fd255e8fabb804211c2ceadf6c99e97fb"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/eval_state.json",
+      "bytes": 402,
+      "sha256": "01b18c12ead001b622c993d4fcccffd5175c2a4490fc1a5114c455eff6d234ef"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/eval_state_before_rtf_remeasurement.json",
+      "bytes": 193,
+      "sha256": "f8b741be39bb0323832521e0bdf785391263033d082a6e40fbe03a8d9e5d2466"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/exp_phone69_460h_stride1_cosd_learned_s42_e50.log",
+      "bytes": 103227,
+      "sha256": "d093564e6c0cc298e3dddb292a6e827202118417bf221b1d64b0e69ae24a0e6e"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/exp_phone69_460h_stride1_cosd_learned_s42_e50_config.yaml",
+      "bytes": 2365,
+      "sha256": "c05eac6f5ac23cda81b4089cf4cd27391ca977a7f44d9fa7f447d1573281c980"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/exp_phone69_460h_stride1_cosd_learned_s42_e50_per_sample.csv",
+      "bytes": 1201143,
+      "sha256": "aa40620d2fa36321aacba62a7223b27a57cdbb765c7196ec6d85db4799fbd1c5"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/exp_phone69_460h_stride1_cosd_learned_s42_e50_per_sample_sdi.csv",
+      "bytes": 1216964,
+      "sha256": "79f6335f07e0f52e081e7fdf275f653317fceb36f89129c9edb1970faeb02cd5"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/exp_phone69_460h_stride4_cosd_learned_s42_e50.log",
+      "bytes": 103107,
+      "sha256": "93f287ea5a5bd08ea772e1cfcd1f2c478de785c1e815809bbca87bb069dd7e22"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/exp_phone69_460h_stride4_cosd_learned_s42_e50_config.yaml",
+      "bytes": 2254,
+      "sha256": "0cf686f8d6cd881868384510bb0f50542cad9257e982f421fa961a4831d49a68"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/exp_phone69_460h_stride4_cosd_learned_s42_e50_per_sample.csv",
+      "bytes": 1191847,
+      "sha256": "c6eb7f75e348d8102bfc057a79eb70e3b4247985cb29b903db197d1fa3e9fdcb"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/exp_phone69_460h_stride4_cosd_learned_s42_e50_per_sample_sdi.csv",
+      "bytes": 1207865,
+      "sha256": "a8b875389a545dfa22ea78510cbd44a2f02030da049e20e44d8eb087dde48fde"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/exp_phone69_460h_stride4_none_s42_e50.log",
+      "bytes": 103129,
+      "sha256": "c0854fa2c3e38dbf01aaea85af5cd5f236090b01e5a02b1099dffd310f082eed"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/exp_phone69_460h_stride4_none_s42_e50_config.yaml",
+      "bytes": 2242,
+      "sha256": "49d108791996f272496dec750be1845c0e6b1f4b2e6a210ff9e08cec99006add"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/exp_phone69_460h_stride4_none_s42_e50_per_sample.csv",
+      "bytes": 1198004,
+      "sha256": "1574ab00b42867d50d91f3558fab17c7015cc86298a1fdbc3b00be6b669c001d"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/exp_phone69_460h_stride4_none_s42_e50_per_sample_sdi.csv",
+      "bytes": 1213818,
+      "sha256": "1648fa8ec46b816fb90127a40f5a0d18938fe0cdb929f918e26fa5dc44ef99e7"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/finalize_eval.py",
+      "bytes": 1502,
+      "sha256": "bbb7a0f668a2f262949d1cb1f9eabf6325aba8cb6c804e25bff3540467a5828e"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/finalizer.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/original_counts_validation.log",
+      "bytes": 5366,
+      "sha256": "2e9241df075e238a4193d16f8f5757d3ef9dc3610fa40ba6f1193e42fbb6b6d2"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/EVALUATION_COMPLETE_WITH_SDI",
+      "bytes": 59,
+      "sha256": "1727030b69999b4fb13ae7014c1e29f9dd250907e68cbb59adda8855f0f9535e"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/RAW_EVALUATIONS_COMPLETE",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/aggregate_phone_edits.py",
+      "bytes": 5222,
+      "sha256": "f231825702d178ce9b2498bb1da6badbee7a93aec218465ffcc781d31e08205c"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/aggregation.log",
+      "bytes": 4042,
+      "sha256": "c1e3c694a1e1f834566e157236c5b893e9336667097dd17410959d75eef881c9"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/eval_monotonic.py",
+      "bytes": 14557,
+      "sha256": "28ab4b5cde3d9d978d3588dffc631e95ca6b351ad767d705fb507c2af80827f4"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/eval_state.json",
+      "bytes": 577,
+      "sha256": "900271f8b705d6df1b1b68553d5651afac8b4e79f1df9cf49f3f6697ad9d24e8"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/eval_state_validation_failed.json",
+      "bytes": 211,
+      "sha256": "60583dda850e24f5b95a792103b7b08d7344b8927a099243b31ab6ee99a549d0"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/exp_phone69_460h_stride1_cosd_learned_s42_e50.log",
+      "bytes": 103236,
+      "sha256": "0811c62a3fd584864563986f43967c16c5a04ab9e2fe4ea325ac57929fa7692c"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/exp_phone69_460h_stride1_cosd_learned_s42_e50_config.yaml",
+      "bytes": 2365,
+      "sha256": "c05eac6f5ac23cda81b4089cf4cd27391ca977a7f44d9fa7f447d1573281c980"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/exp_phone69_460h_stride1_cosd_learned_s42_e50_per_sample.csv",
+      "bytes": 1201092,
+      "sha256": "2f3faa1d3b1be797e80829ff0e945f74fd447ce16fac7175b31181b1e76e1be0"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/exp_phone69_460h_stride1_cosd_learned_s42_e50_per_sample_sdi.csv",
+      "bytes": 1216913,
+      "sha256": "7e3e9f03cdfb956d8ea418105be2714ad2833516f353025586762d29cdc3f07a"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/exp_phone69_460h_stride4_cosd_learned_s42_e50.log",
+      "bytes": 103119,
+      "sha256": "81e6ca19fd63fc3daab587a0e822eb7eacfc0bb6c50c748978f89f7cd968db04"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/exp_phone69_460h_stride4_cosd_learned_s42_e50_config.yaml",
+      "bytes": 2254,
+      "sha256": "0cf686f8d6cd881868384510bb0f50542cad9257e982f421fa961a4831d49a68"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/exp_phone69_460h_stride4_cosd_learned_s42_e50_per_sample.csv",
+      "bytes": 1192034,
+      "sha256": "7123b3c70b776748ab2307826072de6c4e08dcf2cd9374c0ba6c4dc59f366788"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/exp_phone69_460h_stride4_cosd_learned_s42_e50_per_sample_sdi.csv",
+      "bytes": 1208052,
+      "sha256": "9eb8c8d126dbf7e8cd91aa96a21a3d8e4d029ddfca1774c8c819f004059b1944"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/exp_phone69_460h_stride4_none_s42_e50.log",
+      "bytes": 103137,
+      "sha256": "ff809f61021e79fb4c559121bddb50555f3676f398ff5bf9e1cc013434b76c86"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/exp_phone69_460h_stride4_none_s42_e50_config.yaml",
+      "bytes": 2242,
+      "sha256": "49d108791996f272496dec750be1845c0e6b1f4b2e6a210ff9e08cec99006add"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/exp_phone69_460h_stride4_none_s42_e50_per_sample.csv",
+      "bytes": 1198054,
+      "sha256": "210b15d50589f971b6df2c225283acc9090a6bc9a886e0a1d92ec617aacca522"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/exp_phone69_460h_stride4_none_s42_e50_per_sample_sdi.csv",
+      "bytes": 1213868,
+      "sha256": "fa8d884bca41a7c55bbc57cbafa8b34883122303a2ddfd60fb0106273bfa9016"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/pipeline.log",
+      "bytes": 534,
+      "sha256": "19334332b77ebd8ac67cf37f49b45a8efe09b6ee9341265daf4c5414636c9182"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/prediction_comparison.json",
+      "bytes": 553,
+      "sha256": "f48c7d35b008bdcfb42c6125770c88db7280c6ea94685be03c1a16cef8a4b05d"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/run_monotonic_eval.py",
+      "bytes": 3059,
+      "sha256": "29ef7ea5910ef2b0a74db346d63e68f95fbc439f171ec9b504155047f9aeab50"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/run_plan.json",
+      "bytes": 1441,
+      "sha256": "aa0cb03178f8ec1b9da01d466465f5fcada580f9e125ddbe618acadf894d2b25"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/summary.json",
+      "bytes": 4563,
+      "sha256": "9a51cfa6117602b8d9c4c001fa22751e45323cea3394d0b437df0f4597647b97"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/validate_results.py",
+      "bytes": 5944,
+      "sha256": "d1271d134ea188477a23576d19c147b4b71765187d8addcbfcedf485bc739f75"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/validate_results_recheck.py",
+      "bytes": 5954,
+      "sha256": "71ed43c98d55dbb548641f69c1bd5a050c4a59d02c6a7c5b57f11293d5b3dae0"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/validation.log",
+      "bytes": 281,
+      "sha256": "bac76ed98df5803c6f47e48df78aaeac1e5fa1e52924e5ff70abbcb0716d9f16"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/validation_recheck.log",
+      "bytes": 5929,
+      "sha256": "4b45b1617d84b6c9b1b90623af40fb57856441ee9c2c9c68cbcd36ce84da640d"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/validation_recheck_note.json",
+      "bytes": 557,
+      "sha256": "777008d30b6d2deac5e27fbfbfa51262cdb6c364073bf40d399127c80a223a9d"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/validation_report.json",
+      "bytes": 2410,
+      "sha256": "8204ad4d619ae84760a147c8382c614e5e4af4ad0a53e25e428c6b7d0a7ba959"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_remeasurement_plan.json",
+      "bytes": 327,
+      "sha256": "22c0652a1374d44f425c6da2c8a0846ee21115285885c4ac744a7fd80db0b26d"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/rtf_validation_failure.json",
+      "bytes": 9707,
+      "sha256": "8808e337bb0b92d70d2d79c08b61621c58f4bc0b258f3a95a4d489eb6f5bc7d6"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/run_plan.json",
+      "bytes": 1049,
+      "sha256": "0f88c860dd757157bf65a90da0ab5ebea06e296e001b3d91005eef45a95d88ab"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/summary.json",
+      "bytes": 4480,
+      "sha256": "57373b732521820559066b8c7b39a5a060e7734cc83dd359e00a41527ceaa782"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/summary_validated_counts.json",
+      "bytes": 4598,
+      "sha256": "b7962b8befea53fbfa75eb430d622eba49994d9275b663bae76814261c63064f"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/validate_original_counts.py",
+      "bytes": 6042,
+      "sha256": "0a1ed157590739154b7a31636156cc28fee94f065f81d384aeef22855aac42cc"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_testclean_20261017/validation_report.json",
+      "bytes": 2498,
+      "sha256": "da0a66f2f69a4f5cf09817dcdbe1a8930002eeb0604c92a206f304cd71af4fd4"
+    }
+  ],
+  "large_files_left_on_server": []
+}

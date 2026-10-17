@@ -1,0 +1,9 @@
+{
+  "status": "complete",
+  "updated_at_utc": "2026-10-17T11:09:16.164514+00:00",
+  "elapsed_monotonic_seconds": 7470.807998802979,
+  "timer": "time.perf_counter",
+  "summary": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/summary.json",
+  "validation": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/validation_report.json",
+  "validation_recheck": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/validation_recheck_note.json"
+}

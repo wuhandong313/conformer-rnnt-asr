@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/run_monotonic_eval.py", line 54, in <module>
+    run([sys.executable, '-u', str(out / 'validate_results.py')], 'validation.log')
+  File "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/run_monotonic_eval.py", line 27, in run
+    raise RuntimeError(f'{log_name}: process exited {completed.returncode}')
+RuntimeError: validation.log: process exited 1

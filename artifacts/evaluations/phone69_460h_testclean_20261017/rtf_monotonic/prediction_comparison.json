@@ -1,0 +1,20 @@
+[
+  {
+    "experiment": "exp_phone69_460h_stride4_none_s42_e50",
+    "num_samples": 2620,
+    "prediction_mismatch_indices": [],
+    "mean_utterance_RTF": 0.13583754246617008
+  },
+  {
+    "experiment": "exp_phone69_460h_stride1_cosd_learned_s42_e50",
+    "num_samples": 2620,
+    "prediction_mismatch_indices": [],
+    "mean_utterance_RTF": 0.16150208888873566
+  },
+  {
+    "experiment": "exp_phone69_460h_stride4_cosd_learned_s42_e50",
+    "num_samples": 2620,
+    "prediction_mismatch_indices": [],
+    "mean_utterance_RTF": 0.06251489797715394
+  }
+]
