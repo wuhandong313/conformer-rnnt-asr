@@ -1,0 +1,11 @@
+{
+  "valid": true,
+  "num_bins": 10,
+  "samples_per_bin": 262,
+  "models": 3,
+  "matched_sample_references": 7860,
+  "source_rate_counts_durations_ppm_match": true,
+  "bin_membership_identical_to_emformer": true,
+  "global_metrics_match": true,
+  "all_rtf_finite_nonnegative": true
+}

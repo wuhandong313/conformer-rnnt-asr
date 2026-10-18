@@ -1,0 +1,53 @@
+{
+  "valid": true,
+  "same_emformer_decile_membership": true,
+  "checked_samples": 7860,
+  "rtf_definition": "arithmetic mean of monotonic per-utterance RTF",
+  "experiments": [
+    {
+      "experiment": "exp_phone69_460h_stride4_none_s42_e50",
+      "checked_samples": 2620,
+      "independent_alignment_valid": true,
+      "original_rows_preserved": true,
+      "best_checkpoint_matches_training": true,
+      "train_subset": [
+        "train-clean-100",
+        "train-clean-360"
+      ],
+      "training_epochs": 50,
+      "config_sha256": "49d108791996f272496dec750be1845c0e6b1f4b2e6a210ff9e08cec99006add",
+      "source_csv_sha256": "fa8d884bca41a7c55bbc57cbafa8b34883122303a2ddfd60fb0106273bfa9016"
+    },
+    {
+      "experiment": "exp_phone69_460h_stride1_cosd_learned_s42_e50",
+      "checked_samples": 2620,
+      "independent_alignment_valid": true,
+      "original_rows_preserved": true,
+      "best_checkpoint_matches_training": true,
+      "train_subset": [
+        "train-clean-100",
+        "train-clean-360"
+      ],
+      "training_epochs": 50,
+      "config_sha256": "c05eac6f5ac23cda81b4089cf4cd27391ca977a7f44d9fa7f447d1573281c980",
+      "source_csv_sha256": "7e3e9f03cdfb956d8ea418105be2714ad2833516f353025586762d29cdc3f07a"
+    },
+    {
+      "experiment": "exp_phone69_460h_stride4_cosd_learned_s42_e50",
+      "checked_samples": 2620,
+      "independent_alignment_valid": true,
+      "original_rows_preserved": true,
+      "best_checkpoint_matches_training": true,
+      "train_subset": [
+        "train-clean-100",
+        "train-clean-360"
+      ],
+      "training_epochs": 50,
+      "config_sha256": "0cf686f8d6cd881868384510bb0f50542cad9257e982f421fa961a4831d49a68",
+      "source_csv_sha256": "9eb8c8d126dbf7e8cd91aa96a21a3d8e4d029ddfca1774c8c819f004059b1944"
+    }
+  ],
+  "scope": "Historical three-model evaluations; current offline_native runs excluded",
+  "raw_statistics_modified": false,
+  "files_over_10_mib": []
+}
