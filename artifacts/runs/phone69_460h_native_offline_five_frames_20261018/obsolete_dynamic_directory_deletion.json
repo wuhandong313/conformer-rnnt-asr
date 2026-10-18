@@ -1,0 +1,114 @@
+{
+  "server_utc": "2026-10-18T04:46:39.344696+00:00",
+  "authorized_by_user": true,
+  "baseline_preserved": true,
+  "experiments": [
+    {
+      "scheme": "stride1_cosd_learned",
+      "directory": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50",
+      "deleted": true,
+      "files": [
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/checkpoints/epoch-boundary-epoch=00-step=0-94f7a7edacb9.ckpt",
+          "bytes": 17047992,
+          "checkpoint": true
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/checkpoints/epoch-boundary-epoch=01-step=2531-447a17638594.ckpt",
+          "bytes": 51073188,
+          "checkpoint": true
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/checkpoints/epoch-boundary-epoch=02-step=5062-1ba07ed493bf.ckpt",
+          "bytes": 51073188,
+          "checkpoint": true
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/checkpoints/epoch-boundary-epoch=03-step=7593-baefa837300d.ckpt",
+          "bytes": 51073188,
+          "checkpoint": true
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/checkpoints/epoch-boundary-epoch=04-step=10124-d2161ff78b43.ckpt",
+          "bytes": 51074546,
+          "checkpoint": true
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/checkpoints/epoch-boundary-epoch=05-step=12655-4cd6e33d42da.ckpt",
+          "bytes": 51074546,
+          "checkpoint": true
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/checkpoints/epoch-boundary-epoch=06-step=15186-fde9bfbbf574.ckpt",
+          "bytes": 51074546,
+          "checkpoint": true
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/checkpoints/last.ckpt",
+          "bytes": 51047040,
+          "checkpoint": true
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/checkpoints/train-none-epoch=01-step=3500.ckpt",
+          "bytes": 17039586,
+          "checkpoint": true
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/checkpoints/train-none-epoch=03-step=10000.ckpt",
+          "bytes": 17039586,
+          "checkpoint": true
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/checkpoints/val-none-epoch=06-step=16986.ckpt",
+          "bytes": 51047040,
+          "checkpoint": true
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/checkpoints/val-none-epoch=06-step=17186.ckpt",
+          "bytes": 51047040,
+          "checkpoint": true
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/lightning_logs/version_0/hparams.yaml",
+          "bytes": 1585,
+          "checkpoint": false
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/lightning_logs/version_0/metrics.csv",
+          "bytes": 124735,
+          "checkpoint": false
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/logs/gpu_usage.csv",
+          "bytes": 20857,
+          "checkpoint": false
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/logs/train.log",
+          "bytes": 3060132,
+          "checkpoint": false
+        },
+        {
+          "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/run.json",
+          "bytes": 2669,
+          "checkpoint": false
+        }
+      ],
+      "bytes": 513921464
+    },
+    {
+      "scheme": "stride2_cosd_learned",
+      "directory": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_cosd_learned_s42_e50",
+      "deleted": true,
+      "files": [],
+      "bytes": 0
+    },
+    {
+      "scheme": "stride4_cosd_learned",
+      "directory": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_cosd_learned_s42_e50",
+      "deleted": true,
+      "files": [],
+      "bytes": 0
+    }
+  ]
+}

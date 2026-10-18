@@ -48,6 +48,16 @@ def main():
             compression_parameters=sum(p.numel() for p in encoder.compression.parameters()),
             batch_budget=cfg["data"]["max_token_limit"],
         )
+        if not encoder.compression.passthrough:
+            mixer = encoder.compression.mixer
+            mode = cfg["model"]["compression"]["weight_predictor_mode"]
+            inputs = {"diff5": 4, "five_frames": 5 * 128, "single_frame": 128}[mode]
+            assert mixer.weight_predictor_mode == mode and mixer.window_size == 5
+            assert mixer.weight_predictor[0].in_features == inputs
+            expected = inputs * 32 + 32 + 32 * 5 + 5
+            assert record["compression_parameters"] == expected
+            record.update(weight_predictor_mode=mode, weight_predictor_input_dim=inputs,
+                          weight_predictor_output_dim=5)
         assert record["projection"] * record["stride"] == record["internal_dim"] == 128
         assert (record["output_dim"], record["ffn_dim"], record["num_heads"]) == (256, 512, 8)
         x = torch.randn(2, 101, 80)
@@ -61,7 +71,7 @@ def main():
         record.update(output_lengths=output_lengths.tolist(), finite_forward_backward=True)
         records.append(record)
     assert len({r["block_parameters"] for r in records}) == 1
-    assert {r["compression_parameters"] for r in records[1:]} == {325}
+    assert len({r["weight_predictor_mode"] for r in records[1:]}) == 1
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(dict(valid=True, models=records), indent=2) + "\n")
     print(json.dumps(records, indent=2))

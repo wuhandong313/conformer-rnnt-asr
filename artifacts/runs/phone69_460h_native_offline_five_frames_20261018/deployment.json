@@ -1,0 +1,8 @@
+{
+  "server_utc": "2026-10-18T04:46:39.530196+00:00",
+  "status": "preflight_started",
+  "tmux": "phone69_460h_five_frames_preflight",
+  "deletion_manifest": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_native_offline_five_frames_20261018/obsolete_dynamic_directory_deletion.json",
+  "deleted_bytes": 513921464,
+  "deployed_files": 14
+}

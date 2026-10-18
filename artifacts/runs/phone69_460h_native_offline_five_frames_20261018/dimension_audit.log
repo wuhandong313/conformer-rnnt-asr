@@ -1,0 +1,91 @@
+[
+  {
+    "scheme": "stride4_none",
+    "config": "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+    "config_sha256": "017cdecbc2e7f088d764bfcf31a2cd071a2b53ccef8b432e33c1b29361418ee2",
+    "projection": 32,
+    "stride": 4,
+    "internal_dim": 128,
+    "output_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "total_parameters": 4207942,
+    "block_parameters": 3846400,
+    "compression_parameters": 0,
+    "batch_budget": 23500,
+    "output_lengths": [
+      26,
+      21
+    ],
+    "finite_forward_backward": true
+  },
+  {
+    "scheme": "stride1_cosd_learned",
+    "config": "configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+    "config_sha256": "876c0fd72f69a6653954d9b6b4738a58aa0a2ebfbcf2f1dcf7550bb5528f0c5b",
+    "projection": 128,
+    "stride": 1,
+    "internal_dim": 128,
+    "output_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "total_parameters": 4236299,
+    "block_parameters": 3846400,
+    "compression_parameters": 20677,
+    "batch_budget": 6500,
+    "weight_predictor_mode": "five_frames",
+    "weight_predictor_input_dim": 640,
+    "weight_predictor_output_dim": 5,
+    "output_lengths": [
+      46,
+      35
+    ],
+    "finite_forward_backward": true
+  },
+  {
+    "scheme": "stride2_cosd_learned",
+    "config": "configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+    "config_sha256": "44b72b2a6f7a7d05635a76fb4c0cb859a37b7190e3fe2d91daf790d4da3bc819",
+    "projection": 64,
+    "stride": 2,
+    "internal_dim": 128,
+    "output_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "total_parameters": 4231179,
+    "block_parameters": 3846400,
+    "compression_parameters": 20677,
+    "batch_budget": 16000,
+    "weight_predictor_mode": "five_frames",
+    "weight_predictor_input_dim": 640,
+    "weight_predictor_output_dim": 5,
+    "output_lengths": [
+      22,
+      18
+    ],
+    "finite_forward_backward": true
+  },
+  {
+    "scheme": "stride4_cosd_learned",
+    "config": "configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+    "config_sha256": "9ddbd72852149149a7f256404bbed833098406a5adf4c06110566866bb6c7b78",
+    "projection": 32,
+    "stride": 4,
+    "internal_dim": 128,
+    "output_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "total_parameters": 4228619,
+    "block_parameters": 3846400,
+    "compression_parameters": 20677,
+    "batch_budget": 32600,
+    "weight_predictor_mode": "five_frames",
+    "weight_predictor_input_dim": 640,
+    "weight_predictor_output_dim": 5,
+    "output_lengths": [
+      12,
+      8
+    ],
+    "finite_forward_backward": true
+  }
+]

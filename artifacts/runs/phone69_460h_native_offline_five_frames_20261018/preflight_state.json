@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "pid": 84949,
+  "run_phase": "offline_native_five_frames_20261018",
+  "server_utc": "2026-10-18T04:49:46.449015+00:00",
+  "command": [
+    "scripts/server/validate_phone69_five_frames_launch.py"
+  ],
+  "log": "launch_gate_validation.log",
+  "accepted": [
+    {
+      "scheme": "stride1_cosd_learned",
+      "budget": 6500,
+      "probe": "artifacts/runs/phone69_460h_native_offline_five_frames_20261018/probe_stride1_cosd_learned_b6500.json",
+      "peak_reserved_GiB": 66.841796875,
+      "peak_allocated_GiB": 36.8617787361145,
+      "cases": 5
+    },
+    {
+      "scheme": "stride2_cosd_learned",
+      "budget": 16000,
+      "probe": "artifacts/runs/phone69_460h_native_offline_five_frames_20261018/probe_stride2_cosd_learned_b16000.json",
+      "peak_reserved_GiB": 67.666015625,
+      "peak_allocated_GiB": 45.42474842071533,
+      "cases": 5
+    },
+    {
+      "scheme": "stride4_cosd_learned",
+      "budget": 32600,
+      "probe": "artifacts/runs/phone69_460h_native_offline_five_frames_20261018/probe_stride4_cosd_learned_b32600.json",
+      "peak_reserved_GiB": 67.453125,
+      "peak_allocated_GiB": 47.84526014328003,
+      "cases": 6
+    }
+  ]
+}

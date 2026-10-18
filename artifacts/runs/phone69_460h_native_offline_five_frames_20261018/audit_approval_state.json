@@ -1,0 +1,118 @@
+{
+  "status": "partially_approved",
+  "report": "docs/phone69_460h_offline_native_runtime_audit_20261018.md",
+  "user_instruction": "不止检查这两种异常，还要检查其他异常和运算逻辑，我一一审批",
+  "training_action": "preserve_trained_baseline_restart_only_three_dynamic_runs_with_five_frames",
+  "no_training_code_or_config_changes_applied": false,
+  "items": [
+    {
+      "id": "A01",
+      "title": "Conformer padding propagation",
+      "evidence_category": "reproduced",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A02",
+      "title": "Boundary mixer masked-softmax numerical stability",
+      "evidence_category": "reproduced_counterexample",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A03",
+      "title": "Batch-shared augmentation and valid-length mask ratio",
+      "evidence_category": "reproduced_counterexample",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A04",
+      "title": "Peak/valley index mapping",
+      "evidence_category": "definition_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A05",
+      "title": "diff5 weight predictor signal",
+      "evidence_category": "definition_to_confirm",
+      "status": "approved",
+      "approved_change": {
+        "weight_predictor_mode": "five_frames",
+        "input": "selected encoder frame and two frames on each side concatenated (640 dimensions)",
+        "fresh_start_dynamic_runs": true,
+        "delete_obsolete_dynamic_experiment_directories": true,
+        "preserve_trained_baseline": true,
+        "other_audit_items": "remain pending"
+      },
+      "user_authorization": [
+        "现在三组都改成`five_frames`，停掉现在的当前试验，删掉废弃目录然后重开",
+        "已经训练好的基线保留别动"
+      ]
+    },
+    {
+      "id": "A06",
+      "title": "Short/constant sequence fallback",
+      "evidence_category": "definition_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A07",
+      "title": "Summed training loss versus displayed mean",
+      "evidence_category": "protocol_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A08",
+      "title": "Different update counts and warmup in epochs",
+      "evidence_category": "protocol_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A09",
+      "title": "Checkpoint selected by dev RNNT loss rather than PER",
+      "evidence_category": "protocol_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A10",
+      "title": "Validation at integer step intervals without mandatory final tail validation",
+      "evidence_category": "protocol_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A11",
+      "title": "Top-2 pruning and stale last checkpoint",
+      "evidence_category": "storage_protocol_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A12",
+      "title": "External normalization statistics provenance",
+      "evidence_category": "evidence_gap",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A13",
+      "title": "No explicit positional encoding in shared Conformer",
+      "evidence_category": "architecture_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A14",
+      "title": "Normalized cell state in shared custom LSTM",
+      "evidence_category": "architecture_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    }
+  ]
+}

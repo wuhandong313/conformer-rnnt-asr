@@ -1,9 +1,9 @@
 {
-  "status": "awaiting_individual_user_approval",
+  "status": "partially_approved",
   "report": "docs/phone69_460h_offline_native_runtime_audit_20261018.md",
   "user_instruction": "不止检查这两种异常，还要检查其他异常和运算逻辑，我一一审批",
-  "training_action": "continue_existing_training_and_read_only_monitoring",
-  "no_training_code_or_config_changes_applied": true,
+  "training_action": "preserve_trained_baseline_restart_only_three_dynamic_runs_with_five_frames",
+  "no_training_code_or_config_changes_applied": false,
   "items": [
     {
       "id": "A01",
@@ -37,8 +37,19 @@
       "id": "A05",
       "title": "diff5 weight predictor signal",
       "evidence_category": "definition_to_confirm",
-      "status": "pending",
-      "approved_change": null
+      "status": "approved",
+      "approved_change": {
+        "weight_predictor_mode": "five_frames",
+        "input": "selected encoder frame and two frames on each side concatenated (640 dimensions)",
+        "fresh_start_dynamic_runs": true,
+        "delete_obsolete_dynamic_experiment_directories": true,
+        "preserve_trained_baseline": true,
+        "other_audit_items": "remain pending"
+      },
+      "user_authorization": [
+        "现在三组都改成`five_frames`，停掉现在的当前试验，删掉废弃目录然后重开",
+        "已经训练好的基线保留别动"
+      ]
     },
     {
       "id": "A06",

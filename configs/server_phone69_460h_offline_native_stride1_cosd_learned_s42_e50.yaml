@@ -2,7 +2,7 @@
 paths:
   dataset_path: /test21/librispeech
   global_stats_path: /test21/librispeech/global_stats.json
-  exp_dir: /test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50
+  exp_dir: /test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50
   from_checkpoint: null
 tokenizer:
   type: phone69
@@ -25,7 +25,7 @@ model:
       type: cosine_diff
     mixer:
       type: learned
-    weight_predictor_mode: diff5
+    weight_predictor_mode: five_frames
   predictor:
     symbol_embedding_dim: 128
     num_lstm_layers: 2

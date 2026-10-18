@@ -1,0 +1,30 @@
+{
+  "valid": true,
+  "changed_fields": [
+    "paths.exp_dir",
+    "model.compression.weight_predictor_mode"
+  ],
+  "models": [
+    {
+      "scheme": "stride1_cosd_learned",
+      "role": "dynamic_retrain",
+      "config": "configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+      "experiment": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50",
+      "budget": 6500
+    },
+    {
+      "scheme": "stride2_cosd_learned",
+      "role": "dynamic_retrain",
+      "config": "configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+      "experiment": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50",
+      "budget": 16000
+    },
+    {
+      "scheme": "stride4_cosd_learned",
+      "role": "dynamic_retrain",
+      "config": "configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+      "experiment": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50",
+      "budget": 32600
+    }
+  ]
+}
