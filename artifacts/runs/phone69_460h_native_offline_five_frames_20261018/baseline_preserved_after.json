@@ -1,0 +1,9 @@
+{
+  "valid": true,
+  "server_utc": "2026-10-18T04:54:35.504141+00:00",
+  "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50",
+  "files_verified": 63,
+  "bytes_verified": 2762421657,
+  "all_sha256_size_mtime_unchanged": true,
+  "config_unchanged": true
+}
