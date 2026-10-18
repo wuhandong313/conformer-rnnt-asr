@@ -1,0 +1,107 @@
+{
+  "status": "awaiting_individual_user_approval",
+  "report": "docs/phone69_460h_offline_native_runtime_audit_20261018.md",
+  "user_instruction": "不止检查这两种异常，还要检查其他异常和运算逻辑，我一一审批",
+  "training_action": "continue_existing_training_and_read_only_monitoring",
+  "no_training_code_or_config_changes_applied": true,
+  "items": [
+    {
+      "id": "A01",
+      "title": "Conformer padding propagation",
+      "evidence_category": "reproduced",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A02",
+      "title": "Boundary mixer masked-softmax numerical stability",
+      "evidence_category": "reproduced_counterexample",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A03",
+      "title": "Batch-shared augmentation and valid-length mask ratio",
+      "evidence_category": "reproduced_counterexample",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A04",
+      "title": "Peak/valley index mapping",
+      "evidence_category": "definition_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A05",
+      "title": "diff5 weight predictor signal",
+      "evidence_category": "definition_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A06",
+      "title": "Short/constant sequence fallback",
+      "evidence_category": "definition_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A07",
+      "title": "Summed training loss versus displayed mean",
+      "evidence_category": "protocol_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A08",
+      "title": "Different update counts and warmup in epochs",
+      "evidence_category": "protocol_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A09",
+      "title": "Checkpoint selected by dev RNNT loss rather than PER",
+      "evidence_category": "protocol_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A10",
+      "title": "Validation at integer step intervals without mandatory final tail validation",
+      "evidence_category": "protocol_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A11",
+      "title": "Top-2 pruning and stale last checkpoint",
+      "evidence_category": "storage_protocol_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A12",
+      "title": "External normalization statistics provenance",
+      "evidence_category": "evidence_gap",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A13",
+      "title": "No explicit positional encoding in shared Conformer",
+      "evidence_category": "architecture_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    },
+    {
+      "id": "A14",
+      "title": "Normalized cell state in shared custom LSTM",
+      "evidence_category": "architecture_to_confirm",
+      "status": "pending",
+      "approved_change": null
+    }
+  ]
+}

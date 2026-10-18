@@ -1,0 +1,35 @@
+{
+  "server_utc": "2026-10-18T02:07:56.796770+00:00",
+  "global_stats": {
+    "path": "/test21/librispeech/global_stats.json",
+    "sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457",
+    "keys": [
+      "mean",
+      "invstddev"
+    ],
+    "mean_length": 80,
+    "invstddev_length": 80
+  },
+  "checkpoint_callback_on_validation_end": "    @override\n    def on_validation_end(self, trainer: \"pl.Trainer\", pl_module: \"pl.LightningModule\") -> None:\n        \"\"\"Save a checkpoint at the end of the validation stage.\"\"\"\n        if not self._should_skip_saving_checkpoint(trainer) and not self._should_save_on_train_epoch_end(trainer):\n            monitor_candidates = self._monitor_candidates(trainer)\n            # If a step/time-triggered save was deferred due to a missing monitored metric,\n            # perform the save now that validation metrics are available.\n            if self._defer_save_until_validation:\n                self._save_topk_checkpoint(trainer, monitor_candidates)\n                self._save_last_checkpoint(trainer, monitor_candidates)\n                self._defer_save_until_validation = False\n                return\n\n            if self._every_n_epochs >= 1 and (trainer.current_epoch + 1) % self._every_n_epochs == 0:\n                self._save_topk_checkpoint(trainer, monitor_candidates)\n            # Only save last checkpoint if a checkpoint was actually saved in this step or if save_last=\"link\"\n            if self._last_global_step_saved == trainer.global_step or (\n                self.save_last == \"link\" and self._last_checkpoint_saved\n            ):\n                self._save_last_checkpoint(trainer, monitor_candidates)\n",
+  "checkpoint_callback_save_last": "    def _save_last_checkpoint(self, trainer: \"pl.Trainer\", monitor_candidates: dict[str, Tensor]) -> None:\n        if not self.save_last:\n            return\n\n        filepath = self.format_checkpoint_name(monitor_candidates, self.CHECKPOINT_NAME_LAST)\n\n        if self._enable_version_counter:\n            version_cnt = self.STARTING_VERSION\n            while self.file_exists(filepath, trainer) and filepath != self.last_model_path:\n                filepath = self.format_checkpoint_name(monitor_candidates, self.CHECKPOINT_NAME_LAST, ver=version_cnt)\n                version_cnt += 1\n\n        # set the last model path before saving because it will be part of the state.\n        previous, self.last_model_path = self.last_model_path, filepath\n        if self.save_last == \"link\" and self._last_checkpoint_saved and self.save_top_k != 0:\n            self._link_checkpoint(trainer, self._last_checkpoint_saved, filepath)\n        else:\n            self._save_checkpoint(trainer, filepath)\n        if previous and self._should_remove_checkpoint(trainer, previous, filepath):\n            self._remove_checkpoint(trainer, previous)\n",
+  "validation_messages_tail": [
+    "Validation DataLoader 0:  23%|██▎       | 3/13 [00:01<00:03,  2.59it/s]\u001b[A",
+    "Validation DataLoader 0:  31%|███       | 4/13 [00:01<00:04,  2.01it/s]\u001b[A",
+    "Validation DataLoader 0:  38%|███▊      | 5/13 [00:02<00:03,  2.18it/s]\u001b[A",
+    "Validation DataLoader 0:  46%|████▌     | 6/13 [00:02<00:03,  2.26it/s]\u001b[A",
+    "Validation DataLoader 0:  54%|█████▍    | 7/13 [00:02<00:02,  2.44it/s]\u001b[A",
+    "Validation DataLoader 0:  62%|██████▏   | 8/13 [00:04<00:02,  1.92it/s]\u001b[A",
+    "Validation DataLoader 0:  69%|██████▉   | 9/13 [00:05<00:02,  1.60it/s]\u001b[A",
+    "Validation DataLoader 0:  77%|███████▋  | 10/13 [00:05<00:01,  1.70it/s]\u001b[A",
+    "Validation DataLoader 0:  85%|████████▍ | 11/13 [00:06<00:01,  1.77it/s]\u001b[A",
+    "Validation DataLoader 0:  92%|█████████▏| 12/13 [00:09<00:00,  1.29it/s]\u001b[A",
+    "Validation DataLoader 0: 100%|██████████| 13/13 [00:09<00:00,  1.38it/s]\u001b[A",
+    "Epoch 49:  88%|████████▊ | 1000/1138 [09:24<01:17,  1.77it/s, v_num=0]Epoch 49, global step 56762: 'Losses/val_loss' was not in top 2"
+  ],
+  "process": "   PID   PPID STAT COMMAND\n 61457  10107 Sl+  /root/anaconda3/envs/whd/bin/python -u scripts/server/train_phone69_460h_one.py configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml\n",
+  "stats_vs_tracked_asset": {
+    "server_stats_canonical_sha256": "97837ec2328a5ffc379c3f4d7b6038a637c6cd6519f7eb1d536f1f646c4f5725",
+    "tracked_asset_canonical_sha256": "eeab6bcfaf0b46f90a722cde3a5cc1dd3576eddd517bca75e14eb71cecd20b24",
+    "same_values": false
+  }
+}

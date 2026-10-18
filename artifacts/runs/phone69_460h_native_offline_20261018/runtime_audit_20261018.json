@@ -1,0 +1,664 @@
+{
+  "valid": true,
+  "server_utc": "2026-10-18T02:06:09.719247+00:00",
+  "git_commit": "ade7e14d94227968e9c8a752cb52fcb5376013a6",
+  "torch_version": "2.6.0+cu124",
+  "torchaudio_version": "2.6.0+cu124",
+  "cuda_used": false,
+  "prelaunch_source_and_report_hashes_match": true,
+  "library_conformer_forward": "    def forward(self, input: torch.Tensor, lengths: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:\n        r\"\"\"\n        Args:\n            input (torch.Tensor): with shape `(B, T, input_dim)`.\n            lengths (torch.Tensor): with shape `(B,)` and i-th element representing\n                number of valid frames for i-th batch element in ``input``.\n\n        Returns:\n            (torch.Tensor, torch.Tensor)\n                torch.Tensor\n                    output frames, with shape `(B, T, input_dim)`\n                torch.Tensor\n                    output lengths, with shape `(B,)` and i-th element representing\n                    number of valid frames for i-th batch element in output frames.\n        \"\"\"\n        encoder_padding_mask = _lengths_to_padding_mask(lengths)\n\n        x = input.transpose(0, 1)\n        for layer in self.conformer_layers:\n            x = layer(x, encoder_padding_mask)\n        return x.transpose(0, 1), lengths\n",
+  "library_layer_forward": "    def forward(self, input: torch.Tensor, key_padding_mask: Optional[torch.Tensor]) -> torch.Tensor:\n        r\"\"\"\n        Args:\n            input (torch.Tensor): input, with shape `(T, B, D)`.\n            key_padding_mask (torch.Tensor or None): key padding mask to use in self attention layer.\n\n        Returns:\n            torch.Tensor: output, with shape `(T, B, D)`.\n        \"\"\"\n        residual = input\n        x = self.ffn1(input)\n        x = x * 0.5 + residual\n\n        if self.convolution_first:\n            x = self._apply_convolution(x)\n\n        residual = x\n        x = self.self_attn_layer_norm(x)\n        x, _ = self.self_attn(\n            query=x,\n            key=x,\n            value=x,\n            key_padding_mask=key_padding_mask,\n            need_weights=False,\n        )\n        x = self.self_attn_dropout(x)\n        x = x + residual\n\n        if not self.convolution_first:\n            x = self._apply_convolution(x)\n\n        residual = x\n        x = self.ffn2(x)\n        x = x * 0.5 + residual\n\n        x = self.final_layer_norm(x)\n        return x\n",
+  "library_convolution_init": "    def __init__(\n        self,\n        input_dim: int,\n        num_channels: int,\n        depthwise_kernel_size: int,\n        dropout: float = 0.0,\n        bias: bool = False,\n        use_group_norm: bool = False,\n    ) -> None:\n        super().__init__()\n        if (depthwise_kernel_size - 1) % 2 != 0:\n            raise ValueError(\"depthwise_kernel_size must be odd to achieve 'SAME' padding.\")\n        self.layer_norm = torch.nn.LayerNorm(input_dim)\n        self.sequential = torch.nn.Sequential(\n            torch.nn.Conv1d(\n                input_dim,\n                2 * num_channels,\n                1,\n                stride=1,\n                padding=0,\n                bias=bias,\n            ),\n            torch.nn.GLU(dim=1),\n            torch.nn.Conv1d(\n                num_channels,\n                num_channels,\n                depthwise_kernel_size,\n                stride=1,\n                padding=(depthwise_kernel_size - 1) // 2,\n                groups=num_channels,\n                bias=bias,\n            ),\n            torch.nn.GroupNorm(num_groups=1, num_channels=num_channels)\n            if use_group_norm\n            else torch.nn.BatchNorm1d(num_channels),\n            torch.nn.SiLU(),\n            torch.nn.Conv1d(\n                num_channels,\n                input_dim,\n                kernel_size=1,\n                stride=1,\n                padding=0,\n                bias=bias,\n            ),\n            torch.nn.Dropout(dropout),\n        )\n",
+  "models": [
+    {
+      "scheme": "stride4_none",
+      "config": "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+      "config_sha256": "017cdecbc2e7f088d764bfcf31a2cd071a2b53ccef8b432e33c1b29361418ee2",
+      "no_retired_config_keys": true,
+      "effective_sequence_options": {
+        "sequence_mode": "offline",
+        "right_context_length": 0,
+        "compression_right_context_length": null
+      },
+      "native_definition": {
+        "version": 1,
+        "sequence_mode": "offline",
+        "tail_alignment": "zero_pad_ceil",
+        "stride": 4,
+        "input_projection": 32,
+        "encoding_dim": 256,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "layers": [
+          2,
+          8
+        ],
+        "detector": null,
+        "mixer": null,
+        "filter": "none",
+        "window_size": 5,
+        "weight_predictor_mode": "diff5"
+      },
+      "compression_class": "NaturalPeakCompression",
+      "detector_class": null,
+      "mixer_class": null,
+      "passthrough": true,
+      "no_legacy_compression_instances": true,
+      "total_parameters": 4207942,
+      "block_parameters": 3846400,
+      "compression_parameters": 0,
+      "mel_kwargs": {
+        "sample_rate": 16000,
+        "n_fft": 400,
+        "n_mels": 80,
+        "hop_length": 160
+      },
+      "feature_lengths": [
+        101,
+        81
+      ],
+      "reduced_lengths": [
+        26,
+        21
+      ],
+      "compressed_lengths": [
+        26,
+        21
+      ],
+      "detector_calls": [],
+      "first_attention_call": {
+        "attn_mask": false,
+        "is_causal": false,
+        "key_padding_mask": true
+      },
+      "padding_value_invariance": true,
+      "synthetic_cpu_loss": 211.42637634277344,
+      "finite_backward": true,
+      "run": {
+        "status": "trained",
+        "config": "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+        "config_sha256": "017cdecbc2e7f088d764bfcf31a2cd071a2b53ccef8b432e33c1b29361418ee2",
+        "code_commit": "389b1b17fd0214c1134eeb6f442bfc8ad178ce81",
+        "pid": 10114,
+        "started_at": "2026-10-17T16:12:20.795373+00:00",
+        "epochs": 50,
+        "early_stopping": false,
+        "max_token_limit": 23500,
+        "train_subset": [
+          "train-clean-100",
+          "train-clean-360"
+        ],
+        "val_subset": "dev-clean",
+        "test_subset": "test-clean",
+        "tokenizer": "phone69",
+        "resume_checkpoint": null,
+        "internal_dim": 128,
+        "num_heads": 8,
+        "sequence_mode": "offline",
+        "compression": {
+          "filter": "none"
+        },
+        "output_dim": 256,
+        "ffn_dim": 512,
+        "time_reduction_stride": 4,
+        "updated_at": "2026-10-18T00:58:51.743242+00:00",
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=50-step=56900-c0dcc6788e76.ckpt",
+        "epoch_boundary_metadata": {
+          "previous_max_token_limit": 23500,
+          "resume_global_step": 56900,
+          "resume_completed_epochs": 50,
+          "resume_at_epoch_boundary": true
+        },
+        "epoch": 50,
+        "global_step": 56900,
+        "observed_compression_lengths": null,
+        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/val-none-epoch=41-step=46858.ckpt"
+      },
+      "dataset_guard_log_lines": [
+        "[CustomDataset:train-clean-100] RNNT numel guard (V=70, limit=1.9e+09): batches 151 -> 246, worst batch est. 1.9e+09 elements",
+        "[CustomDataset:train-clean-360] RNNT numel guard (V=70, limit=1.9e+09): batches 545 -> 892, worst batch est. 1.9e+09 elements",
+        "[CustomDataset:dev-clean] RNNT numel guard (V=70, limit=1.9e+09): batches 9 -> 13, worst batch est. 1.9e+09 elements"
+      ]
+    },
+    {
+      "scheme": "stride1_cosd_learned",
+      "config": "configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+      "config_sha256": "78769dcdcc50beae37942a7ba55c52332d12a4166262df14e967a9759078e27c",
+      "no_retired_config_keys": true,
+      "effective_sequence_options": {
+        "sequence_mode": "offline",
+        "right_context_length": 0,
+        "compression_right_context_length": null
+      },
+      "native_definition": {
+        "version": 1,
+        "sequence_mode": "offline",
+        "tail_alignment": "zero_pad_ceil",
+        "stride": 1,
+        "input_projection": 128,
+        "encoding_dim": 256,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "layers": [
+          2,
+          8
+        ],
+        "detector": {
+          "type": "cosine_diff"
+        },
+        "mixer": {
+          "type": "learned"
+        },
+        "filter": "hanning",
+        "window_size": 5,
+        "weight_predictor_mode": "diff5"
+      },
+      "compression_class": "NaturalPeakCompression",
+      "detector_class": "CosineDiffPeaksDetector",
+      "mixer_class": "LearnedWeightMixer",
+      "passthrough": false,
+      "no_legacy_compression_instances": true,
+      "total_parameters": 4215947,
+      "block_parameters": 3846400,
+      "compression_parameters": 325,
+      "mel_kwargs": {
+        "sample_rate": 16000,
+        "n_fft": 400,
+        "n_mels": 80,
+        "hop_length": 160
+      },
+      "feature_lengths": [
+        101,
+        81
+      ],
+      "reduced_lengths": [
+        101,
+        81
+      ],
+      "compressed_lengths": [
+        43,
+        38
+      ],
+      "detector_calls": [
+        {
+          "valid_frames": 101,
+          "detector_frames": 101,
+          "candidates": [
+            2,
+            4,
+            7,
+            9,
+            12,
+            14,
+            16,
+            19,
+            20,
+            23,
+            25,
+            28,
+            30,
+            31,
+            33,
+            35,
+            37,
+            38,
+            40,
+            43,
+            44,
+            46,
+            49,
+            52,
+            53,
+            56,
+            57,
+            60,
+            63,
+            66,
+            68,
+            69,
+            73,
+            75,
+            76,
+            79,
+            80,
+            83,
+            84,
+            88,
+            91,
+            93,
+            98
+          ]
+        },
+        {
+          "valid_frames": 81,
+          "detector_frames": 81,
+          "candidates": [
+            2,
+            4,
+            6,
+            7,
+            10,
+            12,
+            14,
+            17,
+            18,
+            21,
+            24,
+            26,
+            27,
+            29,
+            30,
+            33,
+            37,
+            39,
+            41,
+            42,
+            44,
+            45,
+            47,
+            49,
+            50,
+            53,
+            55,
+            57,
+            58,
+            60,
+            64,
+            67,
+            68,
+            71,
+            72,
+            75,
+            76,
+            78
+          ]
+        }
+      ],
+      "first_attention_call": {
+        "attn_mask": false,
+        "is_causal": false,
+        "key_padding_mask": true
+      },
+      "padding_value_invariance": true,
+      "synthetic_cpu_loss": 321.1083984375,
+      "finite_backward": true,
+      "run": {
+        "status": "training",
+        "config": "configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+        "config_sha256": "78769dcdcc50beae37942a7ba55c52332d12a4166262df14e967a9759078e27c",
+        "code_commit": "2f9fb7a70619fc40c811a436211729c46b418214",
+        "pid": 61457,
+        "started_at": "2026-10-18T00:59:00.452649+00:00",
+        "epochs": 50,
+        "early_stopping": false,
+        "max_token_limit": 6500,
+        "train_subset": [
+          "train-clean-100",
+          "train-clean-360"
+        ],
+        "val_subset": "dev-clean",
+        "test_subset": "test-clean",
+        "tokenizer": "phone69",
+        "resume_checkpoint": null,
+        "internal_dim": 128,
+        "num_heads": 8,
+        "sequence_mode": "offline",
+        "compression": {
+          "detector": {
+            "type": "cosine_diff"
+          },
+          "mixer": {
+            "type": "learned"
+          },
+          "weight_predictor_mode": "diff5"
+        },
+        "output_dim": 256,
+        "ffn_dim": 512,
+        "time_reduction_stride": 1,
+        "updated_at": "2026-10-18T02:05:22.089916+00:00",
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50/checkpoints/epoch-boundary-epoch=02-step=5062-1ba07ed493bf.ckpt",
+        "epoch_boundary_metadata": {
+          "previous_max_token_limit": 6500,
+          "resume_global_step": 5062,
+          "resume_completed_epochs": 2,
+          "resume_at_epoch_boundary": true
+        },
+        "epoch": 3,
+        "global_step": 5200,
+        "observed_compression_lengths": {
+          "input": [
+            1477,
+            1149,
+            1155,
+            1150,
+            1580,
+            1508,
+            1501,
+            1305,
+            1373,
+            1363,
+            1348,
+            1393,
+            1360,
+            1351,
+            1497,
+            1335,
+            1403,
+            1590,
+            1301,
+            1367,
+            1344,
+            1264,
+            1351,
+            1446,
+            1457,
+            1310,
+            1541,
+            1291,
+            1419,
+            1461,
+            1546,
+            1414,
+            1413,
+            1161,
+            1407,
+            1446,
+            1495,
+            1555,
+            1588,
+            1295,
+            1298,
+            1552,
+            1303,
+            1198,
+            1072,
+            1262,
+            1164,
+            1271,
+            1430,
+            1535
+          ],
+          "output": [
+            639,
+            497,
+            496,
+            484,
+            686,
+            663,
+            636,
+            562,
+            592,
+            600,
+            581,
+            594,
+            582,
+            581,
+            652,
+            570,
+            601,
+            677,
+            582,
+            599,
+            581,
+            554,
+            589,
+            634,
+            634,
+            578,
+            670,
+            544,
+            602,
+            631,
+            666,
+            595,
+            620,
+            498,
+            619,
+            641,
+            652,
+            680,
+            683,
+            555,
+            567,
+            672,
+            566,
+            524,
+            479,
+            529,
+            495,
+            548,
+            615,
+            663
+          ]
+        }
+      },
+      "dataset_guard_log_lines": [
+        "[CustomDataset:train-clean-100] RNNT numel guard (V=70, limit=1.9e+09): batches 547 -> 547, worst batch est. 1.49e+09 elements",
+        "[CustomDataset:train-clean-360] RNNT numel guard (V=70, limit=1.9e+09): batches 1983 -> 1984, worst batch est. 1.81e+09 elements",
+        "[CustomDataset:dev-clean] RNNT numel guard (V=70, limit=1.9e+09): batches 30 -> 31, worst batch est. 1.89e+09 elements"
+      ]
+    },
+    {
+      "scheme": "stride2_cosd_learned",
+      "config": "configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+      "config_sha256": "bdab9d7f579738008e6982f183fec054526f182946cf355db39e465004048732",
+      "no_retired_config_keys": true,
+      "effective_sequence_options": {
+        "sequence_mode": "offline",
+        "right_context_length": 0,
+        "compression_right_context_length": null
+      },
+      "native_definition": {
+        "version": 1,
+        "sequence_mode": "offline",
+        "tail_alignment": "zero_pad_ceil",
+        "stride": 2,
+        "input_projection": 64,
+        "encoding_dim": 256,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "layers": [
+          2,
+          8
+        ],
+        "detector": {
+          "type": "cosine_diff"
+        },
+        "mixer": {
+          "type": "learned"
+        },
+        "filter": "hanning",
+        "window_size": 5,
+        "weight_predictor_mode": "diff5"
+      },
+      "compression_class": "NaturalPeakCompression",
+      "detector_class": "CosineDiffPeaksDetector",
+      "mixer_class": "LearnedWeightMixer",
+      "passthrough": false,
+      "no_legacy_compression_instances": true,
+      "total_parameters": 4210827,
+      "block_parameters": 3846400,
+      "compression_parameters": 325,
+      "mel_kwargs": {
+        "sample_rate": 16000,
+        "n_fft": 400,
+        "n_mels": 80,
+        "hop_length": 160
+      },
+      "feature_lengths": [
+        101,
+        81
+      ],
+      "reduced_lengths": [
+        51,
+        41
+      ],
+      "compressed_lengths": [
+        19,
+        16
+      ],
+      "detector_calls": [
+        {
+          "valid_frames": 51,
+          "detector_frames": 51,
+          "candidates": [
+            4,
+            6,
+            8,
+            9,
+            12,
+            14,
+            16,
+            19,
+            21,
+            23,
+            27,
+            29,
+            31,
+            34,
+            37,
+            38,
+            42,
+            46,
+            47
+          ]
+        },
+        {
+          "valid_frames": 41,
+          "detector_frames": 41,
+          "candidates": [
+            1,
+            3,
+            6,
+            7,
+            10,
+            12,
+            14,
+            17,
+            21,
+            22,
+            26,
+            29,
+            31,
+            34,
+            36,
+            38
+          ]
+        }
+      ],
+      "first_attention_call": {
+        "attn_mask": false,
+        "is_causal": false,
+        "key_padding_mask": true
+      },
+      "padding_value_invariance": true,
+      "synthetic_cpu_loss": 155.70852661132812,
+      "finite_backward": true,
+      "run": null,
+      "dataset_guard_log_lines": []
+    },
+    {
+      "scheme": "stride4_cosd_learned",
+      "config": "configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+      "config_sha256": "f055211ffe35fea0eb6c23f95d61e320d7a1d25b1b2a6dd65e1b845b319fe60e",
+      "no_retired_config_keys": true,
+      "effective_sequence_options": {
+        "sequence_mode": "offline",
+        "right_context_length": 0,
+        "compression_right_context_length": null
+      },
+      "native_definition": {
+        "version": 1,
+        "sequence_mode": "offline",
+        "tail_alignment": "zero_pad_ceil",
+        "stride": 4,
+        "input_projection": 32,
+        "encoding_dim": 256,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "layers": [
+          2,
+          8
+        ],
+        "detector": {
+          "type": "cosine_diff"
+        },
+        "mixer": {
+          "type": "learned"
+        },
+        "filter": "hanning",
+        "window_size": 5,
+        "weight_predictor_mode": "diff5"
+      },
+      "compression_class": "NaturalPeakCompression",
+      "detector_class": "CosineDiffPeaksDetector",
+      "mixer_class": "LearnedWeightMixer",
+      "passthrough": false,
+      "no_legacy_compression_instances": true,
+      "total_parameters": 4208267,
+      "block_parameters": 3846400,
+      "compression_parameters": 325,
+      "mel_kwargs": {
+        "sample_rate": 16000,
+        "n_fft": 400,
+        "n_mels": 80,
+        "hop_length": 160
+      },
+      "feature_lengths": [
+        101,
+        81
+      ],
+      "reduced_lengths": [
+        26,
+        21
+      ],
+      "compressed_lengths": [
+        10,
+        9
+      ],
+      "detector_calls": [
+        {
+          "valid_frames": 26,
+          "detector_frames": 26,
+          "candidates": [
+            1,
+            4,
+            6,
+            9,
+            12,
+            14,
+            16,
+            18,
+            20,
+            22
+          ]
+        },
+        {
+          "valid_frames": 21,
+          "detector_frames": 21,
+          "candidates": [
+            1,
+            3,
+            7,
+            8,
+            12,
+            14,
+            15,
+            17,
+            18
+          ]
+        }
+      ],
+      "first_attention_call": {
+        "attn_mask": false,
+        "is_causal": false,
+        "key_padding_mask": true
+      },
+      "padding_value_invariance": true,
+      "synthetic_cpu_loss": 100.30362701416016,
+      "finite_backward": true,
+      "run": null,
+      "dataset_guard_log_lines": []
+    }
+  ]
+}

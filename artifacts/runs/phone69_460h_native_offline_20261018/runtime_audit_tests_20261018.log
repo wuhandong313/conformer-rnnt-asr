@@ -1,0 +1,87 @@
+[CustomDataset:train-clean-100] RNNT numel guard (V=39, limit=1.9e+09): batches 2 -> 2, worst batch est. 7.72e+03 elements
+[CustomDataset:train-clean-100] RNNT numel guard (V=70, limit=1.9e+09): batches 2 -> 2, worst batch est. 1.76e+04 elements
+
+Training: |          | 0/? [00:00<?, ?it/s]
+Training: |          | 0/? [00:00<?, ?it/s]
+Epoch 0:   0%|          | 0/4 [00:00<?, ?it/s]
+Epoch 0:  25%|██▌       | 1/4 [00:00<00:00, 85.09it/s]
+Epoch 0:  25%|██▌       | 1/4 [00:00<00:00, 82.93it/s, v_num=0]
+Epoch 0:  50%|█████     | 2/4 [00:00<00:00, 138.20it/s, v_num=0]
+Epoch 0:  50%|█████     | 2/4 [00:00<00:00, 136.26it/s, v_num=0]
+
+Validation: |          | 0/? [00:00<?, ?it/s][A
+
+Validation: |          | 0/? [00:00<?, ?it/s][A
+
+Validation DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Validation DataLoader 0: 100%|██████████| 1/1 [00:00<00:00, 694.19it/s][A
+
+                                                                       [A
+Epoch 0:  50%|█████     | 2/4 [00:00<00:00, 107.47it/s, v_num=0]
+Epoch 0:  75%|███████▌  | 3/4 [00:00<00:00, 110.27it/s, v_num=0]
+Epoch 0:  75%|███████▌  | 3/4 [00:00<00:00, 109.36it/s, v_num=0]
+Epoch 0: 100%|██████████| 4/4 [00:00<00:00, 135.01it/s, v_num=0]
+Epoch 0: 100%|██████████| 4/4 [00:00<00:00, 134.13it/s, v_num=0]
+
+Validation: |          | 0/? [00:00<?, ?it/s][A
+
+Validation: |          | 0/? [00:00<?, ?it/s][A
+
+Validation DataLoader 0:   0%|          | 0/1 [00:00<?, ?it/s][A
+
+Validation DataLoader 0: 100%|██████████| 1/1 [00:00<00:00, 1018.28it/s][A
+
+                                                                        [A
+Epoch 0: 100%|██████████| 4/4 [00:00<00:00, 121.23it/s, v_num=0]
+Epoch 0: 100%|██████████| 4/4 [00:00<00:00, 102.15it/s, v_num=0]
+Epoch 0: 100%|██████████| 4/4 [00:00<00:00, 100.97it/s, v_num=0]
+
+.....................................GPU available: False, used: False
+TPU available: False, using: 0 TPU cores
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:434: The 'train_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=111` in the `DataLoader` to improve performance.
+`Trainer.fit` stopped: `max_epochs=1` reached.
+GPU available: False, used: False
+TPU available: False, using: 0 TPU cores
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+Restoring states from the checkpoint path at /tmp/tmpxyoy35cg/epoch-boundary-epoch=01-step=4-f0844ef874b6.ckpt
+Restored all states from the checkpoint at /tmp/tmpxyoy35cg/epoch-boundary-epoch=01-step=4-f0844ef874b6.ckpt
+`Trainer.fit` stopped: `max_epochs=2` reached.
+.............GPU available: False, used: False
+TPU available: False, using: 0 TPU cores
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+`Trainer.fit` stopped: `max_epochs=1` reached.
+`weights_only` was not set, defaulting to `False`.
+GPU available: False, used: False
+TPU available: False, using: 0 TPU cores
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+Restoring states from the checkpoint path at /tmp/tmp466nqme1/boundary.ckpt
+Restored all states from the checkpoint at /tmp/tmp466nqme1/boundary.ckpt
+`Trainer.fit` stopped: `max_epochs=2` reached.
+.GPU available: False, used: False
+TPU available: False, using: 0 TPU cores
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/logger_connector/logger_connector.py:76: Starting from v1.9.0, `tensorboardX` has been removed as a dependency of the `pytorch_lightning` package, due to potential conflicts with other packages in the ML ecosystem. For this reason, `logger=True` will use `CSVLogger` as the default logger, unless the `tensorboard` or `tensorboardX` packages are found. Please `pip install lightning[extra]` or one of them to enable TensorBoard support by default
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+
+  | Name         | Type | Params | Mode | FLOPs
+-----------------------------------------------------
+  | other params | n/a  | 1      | n/a  | n/a  
+-----------------------------------------------------
+1         Trainable params
+0         Non-trainable params
+1         Total params
+0.000     Total estimated model params size (MB)
+0         Modules in train mode
+0         Modules in eval mode
+0         Total Flops
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/pytorch_lightning/loops/fit_loop.py:321: The number of training batches (4) is smaller than the logging interval Trainer(log_every_n_steps=10). Set a lower value for log_every_n_steps if you want to see logs for the training epoch.
+/root/anaconda3/envs/whd/lib/python3.10/site-packages/pytorch_lightning/trainer/connectors/data_connector.py:434: The 'val_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=111` in the `DataLoader` to improve performance.
+Epoch 0, global step 2: 'Losses/val_loss' reached 8.00000 (best 8.00000), saving model to '/tmp/tmphsf8h5g5/checkpoints/val-none-epoch=00-step=2.ckpt' as top 2
+Epoch 0, global step 4: 'Losses/val_loss' reached 6.00000 (best 6.00000), saving model to '/tmp/tmphsf8h5g5/checkpoints/val-none-epoch=00-step=4.ckpt' as top 2
+`Trainer.fit` stopped: `max_epochs=1` reached.
+.
+----------------------------------------------------------------------
+Ran 52 tests in 0.623s
+
+OK
