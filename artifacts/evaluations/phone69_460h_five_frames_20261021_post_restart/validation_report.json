@@ -1,0 +1,18 @@
+{
+  "valid": true,
+  "sample_count_per_model": 2620,
+  "reference_phones_per_model": 189023,
+  "same_reference_order": true,
+  "all_per_and_rtf_finite_nonnegative": true,
+  "baseline_fingerprint_check": {
+    "files": 63,
+    "bytes": 2762421657,
+    "unchanged": true
+  },
+  "models": [
+    "stride4_none",
+    "stride1_cosd_learned",
+    "stride2_cosd_learned",
+    "stride4_cosd_learned"
+  ]
+}
