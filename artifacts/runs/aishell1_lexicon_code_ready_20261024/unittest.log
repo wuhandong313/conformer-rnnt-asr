@@ -16,8 +16,8 @@ GPU available: False, used: False
 TPU available: False, using: 0 TPU cores
 💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
 `Trainer(val_check_interval=1)` was configured so validation will run after every batch.
-Restoring states from the checkpoint path at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmp0kwh2bu7/checkpoints/epoch-boundary-epoch=00-step=1-824d4774fdc4.ckpt
-Restored all states from the checkpoint at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmp0kwh2bu7/checkpoints/epoch-boundary-epoch=00-step=1-824d4774fdc4.ckpt
+Restoring states from the checkpoint path at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmpecdet0vd/checkpoints/epoch-boundary-epoch=00-step=1-b2f020af1b5d.ckpt
+Restored all states from the checkpoint at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmpecdet0vd/checkpoints/epoch-boundary-epoch=00-step=1-b2f020af1b5d.ckpt
 `Trainer.fit` stopped: `max_epochs=2` reached.
 .GPU available: False, used: False
 TPU available: False, using: 0 TPU cores
@@ -27,7 +27,7 @@ GPU available: False, used: False
 TPU available: False, using: 0 TPU cores
 💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
 `Trainer(limit_train_batches=1)` was configured so 1 batch per epoch will be used.
-Restoring states from the checkpoint path at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmpc9ew1wbk/preflight/initial-preflight.ckpt
+Restoring states from the checkpoint path at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmphv89zixa/preflight/initial-preflight.ckpt
 ........................................GPU available: False, used: False
 TPU available: False, using: 0 TPU cores
 💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
@@ -35,8 +35,8 @@ TPU available: False, using: 0 TPU cores
 GPU available: False, used: False
 TPU available: False, using: 0 TPU cores
 💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
-Restoring states from the checkpoint path at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmployz_lv5/epoch-boundary-epoch=01-step=4-77efed5972da.ckpt
-Restored all states from the checkpoint at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmployz_lv5/epoch-boundary-epoch=01-step=4-77efed5972da.ckpt
+Restoring states from the checkpoint path at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmpoe_gy0jo/epoch-boundary-epoch=01-step=4-59420c356756.ckpt
+Restored all states from the checkpoint at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmpoe_gy0jo/epoch-boundary-epoch=01-step=4-59420c356756.ckpt
 `Trainer.fit` stopped: `max_epochs=2` reached.
 .............GPU available: False, used: False
 TPU available: False, using: 0 TPU cores
@@ -46,8 +46,8 @@ TPU available: False, using: 0 TPU cores
 GPU available: False, used: False
 TPU available: False, using: 0 TPU cores
 💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
-Restoring states from the checkpoint path at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmpmg7ye84y/boundary.ckpt
-Restored all states from the checkpoint at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmpmg7ye84y/boundary.ckpt
+Restoring states from the checkpoint path at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmpo0ovui69/boundary.ckpt
+Restored all states from the checkpoint at /var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmpo0ovui69/boundary.ckpt
 `Trainer.fit` stopped: `max_epochs=2` reached.
 .GPU available: False, used: False
 TPU available: False, using: 0 TPU cores
@@ -68,12 +68,12 @@ Modules in train mode: 0
 Modules in eval mode: 0
 Total FLOPs: 0
 /private/tmp/aishell1-lexicon-runtime/lib/python3.12/site-packages/pytorch_lightning/loops/fit_loop.py:321: The number of training batches (4) is smaller than the logging interval Trainer(log_every_n_steps=10). Set a lower value for log_every_n_steps if you want to see logs for the training epoch.
-Epoch 0, global step 2: 'Losses/val_loss' reached 8.00000 (best 8.00000), saving model to '/private/var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmpd5fwf2lb/checkpoints/val-none-epoch=00-step=2.ckpt' as top 2
-Epoch 0, global step 4: 'Losses/val_loss' reached 6.00000 (best 6.00000), saving model to '/private/var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmpd5fwf2lb/checkpoints/val-none-epoch=00-step=4.ckpt' as top 2
+Epoch 0, global step 2: 'Losses/val_loss' reached 8.00000 (best 8.00000), saving model to '/private/var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmp9w3aq9qs/checkpoints/val-none-epoch=00-step=2.ckpt' as top 2
+Epoch 0, global step 4: 'Losses/val_loss' reached 6.00000 (best 6.00000), saving model to '/private/var/folders/dk/vpy9m4ls5hb494_nyyvlx36m0000gn/T/tmp9w3aq9qs/checkpoints/val-none-epoch=00-step=4.ckpt' as top 2
 `Trainer.fit` stopped: `max_epochs=1` reached.
-Epoch 0/0  ━━━━━━━━━━━━━━━━━━━━━━━ 4/4 0:00:00 • 0:00:00 506.23it/s v_num: 0.000
+Epoch 0/0  ━━━━━━━━━━━━━━━━━━━━━━━ 4/4 0:00:00 • 0:00:00 723.08it/s v_num: 0.000
 .
 ----------------------------------------------------------------------
-Ran 81 tests in 2.482s
+Ran 81 tests in 2.491s
 
 OK

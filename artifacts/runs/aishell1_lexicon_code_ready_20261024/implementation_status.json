@@ -7,8 +7,8 @@
   "code_tests": {
     "passed": 81,
     "failed": 0,
-    "log_sha256": "9a53a3d0bb80ce1713eaf6a8d1fba2cd749675dbd00bd849413bc81c3729638e",
-    "log_format": "Trailing spaces removed; full raw output retained locally in ignored output/aishell1_lexicon/unittest_raw.log"
+    "log_sha256": "e87f0d508aa1e55061d21ea4ec5ae8e04500f06f1ad9d71eb5ca9e7b0ede8181",
+    "log_format": "Trailing spaces removed; raw output retained in ignored output/aishell1_lexicon/unittest_final_raw.log"
   },
   "syntax_compile": "passed",
   "cli_inspection": "passed_and_blocks_training_without_frozen_local_data",
@@ -39,7 +39,7 @@
     "conformer_rnnt/aishell/preparation.py": "ec44d798c621619b2b883170c6ac6092bf723d9f434e517bd1e2feb4b7031ee0",
     "conformer_rnnt/aishell/protocol.py": "fe8c0ae3acd8e013efccce36d89e8f04afa6728aee5e576f677d1a5a0a0ce19d",
     "conformer_rnnt/aishell/resources.py": "bd565ef8f9a5a7a3c76b6f8be20b64006f4467eb1c8bb7212a2936222523e8d8",
-    "conformer_rnnt/aishell/runtime.py": "4f675eaff72eb1a104931832c5da19f5ab2ba4aa44ef4f7f5beed46deee11539",
+    "conformer_rnnt/aishell/runtime.py": "b75de7d54872a9ce422785cb3c4d556e78a3a351def6fdcb7bbac341dec0c239",
     "conformer_rnnt/checkpoint_utils.py": "2fc3c8cdf3ffe6b72acb95e4d5bf0bac402d2b15614e2234e62964c716dae37e",
     "conformer_rnnt/compression/__init__.py": "5f912b187342ecfa0de09028c21c7a103124c5ca1cd8e844fbebd89be15fd145",
     "conformer_rnnt/compression/core.py": "4c8435d13986cbbb9c102a25861fd58d8823881840b77081ef99ba158a3f9a12",
@@ -68,7 +68,7 @@
     "tests/test_aishell_lexicon.py": "55155b17ddcbd732fb0e00e340bea2afc0d34f29b60eaa3b1a93278ece5ca9a2",
     "tests/test_aishell_manifest.py": "6168b9f56b9f85d695b1fd891f9ba6907e6fc907ef74a77845f277405c1a77b2",
     "tests/test_aishell_preparation.py": "b11ee208dab2b66a99c7ed6611dda8e14d93a03ea866e540987623a3ba34b2f2",
-    "tests/test_aishell_runtime.py": "f685403f40061979e46d46571f0b7030a9d24679cc4a9d3cb4d97de1b09abb57",
+    "tests/test_aishell_runtime.py": "d8ab1b31dd4e14c90f85a65d2cc07b14358c51e5ee92cf588d31ba69cdca1733",
     "tests/test_encoder_compression_context.py": "e8e59354dcf4019cb5353c9c0071c244fc72dd0bb6dfc31e96ad531385727279",
     "tests/test_ipa_features.py": "abccdbd689025033ad85a80121a5371811625b9c0905066a1abb0885929b8c9b",
     "tests/test_ipa_integration.py": "894d8da77545d868ce192b8a9ef3473360d30115cc1db1aa3e5e2a39421e717b",
@@ -83,5 +83,6 @@
     "tests/test_phone69_tokenizer.py": "aa44a67ab5eb8aad25b426dbbd8119a9739a20a0995abdf3b6c48e8ec8a87cf1",
     "tests/test_validation_checkpoint.py": "cd1db89aecceb2d519f9906a5b3262072453edce41c24151bf5f4a9bf1add6df",
     "train.py": "2bcb2f93f1e03ed23461d53dd28732a4a20534dd0c4d9019299e88fa5bd36c97"
-  }
+  },
+  "cpu_checkpoint_gpu_isolation_test": "passed: CPU saves do not initialize CUDA even when a GPU exists"
 }

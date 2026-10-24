@@ -140,6 +140,13 @@ class AISHELLRuntimeTests(unittest.TestCase):
         self.assertEqual(int(next(iter(second.optimizers[0].state.values()))["step"]), 2)
 
     def test_initial_roundtrip_has_zero_updates_and_full_states(self):
+        from types import SimpleNamespace
+        # A CPU fixture must not initialize any GPU even on an occupied CUDA server.
+        saved = {}
+        with patch("torch.cuda.is_available", return_value=True), patch("torch.cuda.get_rng_state", side_effect=AssertionError("CPU check touched GPU")):
+            ImmutableCheckpoints(self.root / "unused").on_save_checkpoint(
+                None, SimpleNamespace(device=torch.device("cpu")), saved)
+        self.assertIsNone(saved["aishell_rng_state"]["torch_cuda"])
         directory = self.root / "preflight"
         directory.mkdir()
         records = checkpoint_roundtrip(self.config, directory, accelerator="cpu")

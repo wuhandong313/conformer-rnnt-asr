@@ -66,7 +66,8 @@ class ImmutableCheckpoints(Callback):
         # Plain lists avoid NumPy-specific pickle globals in modern Torch loaders.
         numpy_serialized = [numpy_state[0], numpy_state[1].tolist(), *numpy_state[2:]]
         checkpoint["aishell_rng_state"] = {"python": random.getstate(), "numpy": numpy_serialized,
-            "torch_cpu": torch.random.get_rng_state(), "torch_cuda": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else []}
+            "torch_cpu": torch.random.get_rng_state(),
+            "torch_cuda": torch.cuda.get_rng_state(pl_module.device) if pl_module.device.type == "cuda" else None}
 
     def on_load_checkpoint(self, trainer, pl_module, checkpoint):
         self.pending_rng = checkpoint.get("aishell_rng_state")
@@ -115,8 +116,8 @@ class ImmutableCheckpoints(Callback):
             numpy_state = self.pending_rng["numpy"]
             np.random.set_state((numpy_state[0], np.asarray(numpy_state[1], dtype=np.uint32), *numpy_state[2:]))
             torch.random.set_rng_state(self.pending_rng["torch_cpu"])
-            if self.pending_rng["torch_cuda"]:
-                torch.cuda.set_rng_state_all(self.pending_rng["torch_cuda"])
+            if self.pending_rng["torch_cuda"] is not None and pl_module.device.type == "cuda":
+                torch.cuda.set_rng_state(self.pending_rng["torch_cuda"], pl_module.device)
             self.pending_rng = None
         if self.save_initial:
             self._save(trainer, pl_module, "initial")
