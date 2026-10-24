@@ -1,0 +1,91 @@
+# Chinese branch only. Requires an audited frozen bundle and explicit training authorization.
+paths:
+  dataset_path: /test21/aishell1/data_aishell
+  manifest_root: /test21/aishell1/derived/lexicon_v1/frozen
+  global_stats_path: /test21/aishell1/derived/lexicon_v1/frozen/statistics.json
+  batch_plan_path: artifacts/runs/aishell1_lexicon_20261024/common_batch_plan.json
+  exp_dir: exp_aishell1_lexicon_stride4_none_s42_e50
+  from_checkpoint: null
+tokenizer:
+  type: aishell_lexicon
+  vocab_path: configs/aishell_lexicon_vocab.json
+model:
+  sequence_mode: offline
+  input_dim: 80
+  encoding_dim: 256
+  num_symbols: 217
+  time_reduction_input_dim: 32
+  time_reduction_stride: 4
+  num_heads: 8
+  ffn_dim: 512
+  num_layers_block1: 2
+  num_layers_block2: 8
+  depthwise_conv_kernel_size: 31
+  dropout: 0.1
+  compression:
+    filter: none
+  predictor:
+    symbol_embedding_dim: 128
+    num_lstm_layers: 2
+    lstm_hidden_dim: 128
+    lstm_layer_norm: true
+    lstm_layer_norm_epsilon: 0.001
+    lstm_dropout: 0.3
+  joiner:
+    activation: relu
+training:
+  learning_rate: 0.0005
+  adam_betas:
+  - 0.9
+  - 0.999
+  adam_eps: 1.0e-08
+  warmup_steps: 10000
+  rnnt_loss_reduction: sum
+  rnnt_loss_clamp: 1.0
+  rnnt_loss_chunk: batch
+  gradient_clip_val: 10.0
+  epochs: 50
+data:
+  sample_rate: 16000
+  n_fft: 400
+  n_mels: 80
+  hop_length: 160
+  spec_augment:
+    freq_mask_param: 27
+    time_mask_param: 100
+    time_mask_prob: 0.2
+  strip_spaces: false
+  max_token_limit: 6000
+  rnnt_numel_limit: 1900000000
+  num_workers: 20
+  prefetch_factor: 2
+  train_subset: train
+  val_subset: dev
+  test_subset: test
+  dataset_type: manifest
+trainer:
+  accelerator: cuda
+  strategy: auto
+  devices: 1
+  num_nodes: 1
+  log_every_n_steps: 10
+  val_check_interval: 200
+  num_sanity_val_steps: 0
+  fast_dev_run: false
+  matmul_precision: high
+  accumulate_grad_batches: 1
+  checkpoint:
+    immutable: true
+    save_weights_only: false
+    train_checkpoint_interval: 500
+    save_epoch_boundaries: true
+    save_initial: true
+  precision: 32-true
+decoding:
+  beam_width: 20
+debug: false
+seed: 42
+execution:
+  allow_dataset_download: false
+  allow_training: false
+  reason: User requested code preparation only; no corpus download or formal training.

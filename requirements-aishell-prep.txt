@@ -1,0 +1,6 @@
+# Install only in a separate preprocessing environment when local data is ready.
+# g2pM 0.1.2.5 sdist SHA256:
+# bd1ccdb1cd512dfe6ece51578d4210c154e59d02a5f99fb215ab6c04ff387483
+# The adapter records installed package/model file hashes and the NumPy version.
+g2pM==0.1.2.5
+numpy==1.26.4

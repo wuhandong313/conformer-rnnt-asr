@@ -62,9 +62,11 @@ def run_eval(
     metric: str = "wer",
     trace_wer: bool = False,
 ) -> Dict[str, Any]:
+    if model.tokenizer_type == "aishell_lexicon":
+        raise ValueError("Use scripts/evaluation/eval_aishell1.py; Chinese evaluation does not report RTF")
     if metric not in {"wer", "cer", "per"}:
         raise ValueError(f"Unsupported evaluation metric: {metric}")
-    if (model.tokenizer_type in {"ipa", "phone69"}) != (metric == "per"):
+    if (model.tokenizer_type in {"ipa", "phone69", "aishell_lexicon"}) != (metric == "per"):
         raise ValueError("Fixed phone evaluation requires PER; PER requires tokenizer.type: ipa or phone69")
     if metric == "wer" and model.strip_spaces:
         raise ValueError("WER requires a word-text config with data.strip_spaces: false")
@@ -296,6 +298,8 @@ def main():
 
     # Config
     config = load_config(args.config)
+    if config.get("tokenizer", {}).get("type") == "aishell_lexicon":
+        raise SystemExit("Use scripts/evaluation/eval_aishell1.py for frozen Chinese PER/S/D/I, tones and deciles without RTF")
 
     # Logging
     debug = config.get("debug", False)
@@ -307,7 +311,7 @@ def main():
     model = LibriSpeechRNNTModule.from_config(config)
     metric = args.metric
     if metric == "auto":
-        metric = "per" if model.tokenizer_type in {"ipa", "phone69"} else ("cer" if model.strip_spaces else "wer")
+        metric = "per" if model.tokenizer_type in {"ipa", "phone69", "aishell_lexicon"} else ("cer" if model.strip_spaces else "wer")
     logging.info("Evaluation metric: %s", metric.upper())
     logging.info(
         "Decoding: beam_width=%s (%s)",
@@ -331,7 +335,7 @@ def main():
     ckpt = torch.load(ckpt_path, map_location="cpu")
     model.validate_tokenizer_checkpoint(ckpt)
     state_dict = ckpt.get("state_dict", ckpt)
-    model.load_state_dict(state_dict, strict=model.tokenizer_type in {"ipa", "phone69"})
+    model.load_state_dict(state_dict, strict=model.tokenizer_type in {"ipa", "phone69", "aishell_lexicon"})
 
     # Eval
     device = torch.device("cpu" if args.cpu else config.get("trainer", {}).get("accelerator", "cuda"))

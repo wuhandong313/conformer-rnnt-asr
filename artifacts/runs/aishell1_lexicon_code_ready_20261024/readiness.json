@@ -1,0 +1,23 @@
+{
+  "status": "blocked_missing_local_data_or_frozen_artifacts",
+  "dataset_download_allowed": false,
+  "training_allowed": false,
+  "missing": [
+    {
+      "key": "dataset_path",
+      "path": "/test21/aishell1/data_aishell"
+    },
+    {
+      "key": "manifest_root",
+      "path": "/test21/aishell1/derived/lexicon_v1/frozen"
+    },
+    {
+      "key": "batch_plan_path",
+      "path": "artifacts/runs/aishell1_lexicon_20261024/common_batch_plan.json"
+    },
+    {
+      "key": "global_stats_path",
+      "path": "/test21/aishell1/derived/lexicon_v1/frozen/statistics.json"
+    }
+  ]
+}

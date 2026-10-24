@@ -128,6 +128,8 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
 def main(config_path: str) -> None:
     # 1. Load config
     config = load_config(config_path)
+    if config.get("tokenizer", {}).get("type") == "aishell_lexicon":
+        raise SystemExit("AISHELL formal training requires scripts/server/train_aishell1_one.py --execute --gate; generic entry cannot bypass preflight")
 
     # 2. Logging
     debug = config.get("debug", False)

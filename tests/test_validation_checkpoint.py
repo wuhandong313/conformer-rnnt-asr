@@ -35,7 +35,7 @@ class ValidationCheckpointTests(unittest.TestCase):
                 return torch.optim.SGD(self.parameters(), lr=0.01)
 
         # This local-filesystem check does not need optional cloud storage SDKs.
-        with tempfile.TemporaryDirectory() as directory, patch.dict("sys.modules", {"s3fs": None}):
+        with tempfile.TemporaryDirectory() as directory, patch("lightning_fabric.utilities.cloud_io._is_object_storage", return_value=False):
             cfg = {
                 "paths": {"exp_dir": directory}, "training": {"epochs": 1},
                 "model": {"compression": {"filter": "none"}},
@@ -76,7 +76,7 @@ class ValidationCheckpointTests(unittest.TestCase):
                 return {"optimizer": optimizer,
                         "lr_scheduler": {"scheduler": scheduler, "interval": "step"}}
 
-        with tempfile.TemporaryDirectory() as directory, patch.dict("sys.modules", {"s3fs": None}):
+        with tempfile.TemporaryDirectory() as directory, patch("lightning_fabric.utilities.cloud_io._is_object_storage", return_value=False):
             options = dict(accelerator="cpu", devices=1, logger=False,
                            enable_checkpointing=False, enable_progress_bar=False,
                            enable_model_summary=False)

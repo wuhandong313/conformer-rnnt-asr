@@ -187,6 +187,11 @@ def conformer_rnnt_model_from_config(config: Dict[str, Any]) -> ConformerRNNT:
     p = m.get("predictor", {})
     j = m.get("joiner", {})
     num_symbols = m.get("num_symbols")
+    if config.get("tokenizer", {}).get("type") == "aishell_lexicon":
+        from aishell_lexicon_tokenizer import AISHELLLexiconTokenizer, DEFAULT_AISHELL_VOCAB
+        expected = AISHELLLexiconTokenizer(config["tokenizer"].get("vocab_path") or DEFAULT_AISHELL_VOCAB).get_piece_size()
+        if num_symbols is not None and num_symbols != expected:
+            raise ValueError("model.num_symbols must match the frozen AISHELL dictionary inventory")
     if num_symbols is None:
         tokenizer = config.get("tokenizer", {})
         tokenizer_type = tokenizer.get("type", "phone69")
@@ -196,6 +201,9 @@ def conformer_rnnt_model_from_config(config: Dict[str, Any]) -> ConformerRNNT:
         elif tokenizer_type == "ipa":
             from ipa_tokenizer import DEFAULT_VOCAB, FixedIPATokenizer
             num_symbols = FixedIPATokenizer(tokenizer.get("vocab_path") or DEFAULT_VOCAB).get_piece_size()
+        elif tokenizer_type == "aishell_lexicon":
+            from aishell_lexicon_tokenizer import AISHELLLexiconTokenizer, DEFAULT_AISHELL_VOCAB
+            num_symbols = AISHELLLexiconTokenizer(tokenizer.get("vocab_path") or DEFAULT_AISHELL_VOCAB).get_piece_size()
         else:
             raise ValueError("Word-BPE model factory requires model.num_symbols")
 

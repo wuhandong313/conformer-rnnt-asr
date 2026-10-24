@@ -34,6 +34,7 @@ from ipa_tokenizer import DEFAULT_VOCAB, FixedIPATokenizer, encode_transcript
 from phone69_tokenizer import DEFAULT_PHONE69_VOCAB, FixedPhone69Tokenizer
 from ipa_labels import ExternalIPALabels
 from ipa_features import DEFAULT_FEATURES, IPAFeatureTable
+from aishell_lexicon_tokenizer import AISHELLLexiconTokenizer, DEFAULT_AISHELL_VOCAB
 
 
 # ---------------------------------------------------------------------------
@@ -438,6 +439,7 @@ class LibriSpeechRNNTModule(LightningModule):
         tokenizer_type: str = "phone69",
         ipa_vocab_path: Optional[str] = None,
         phone69_vocab_path: Optional[str] = None,
+        aishell_vocab_path: Optional[str] = None,
         ipa_features_path: Optional[str] = None,
         ipa_labels_path: Optional[str] = None,
         ipa_label_filename: str = "ipa",
@@ -503,6 +505,10 @@ class LibriSpeechRNNTModule(LightningModule):
         max_token_limit: int = 1000,
         num_workers: int = 32,
         prefetch_factor: int = 2,
+        dataset_type: str = "librispeech",
+        manifest_root: Optional[str] = None,
+        batch_plan_path: Optional[str] = None,
+        augmentation_seed: int = 42,
         train_subset: Union[str, List[str]] = "train-clean-100",
         val_subset: Union[str, List[str]] = "dev-clean",
         test_subset: Union[str, List[str]] = "test-clean",
@@ -524,7 +530,7 @@ class LibriSpeechRNNTModule(LightningModule):
 
         # Fixed phone inventories do not import or load SentencePiece.
         self.tokenizer_type = tokenizer_type
-        self.is_phone_tokenizer = tokenizer_type in {"ipa", "phone69"}
+        self.is_phone_tokenizer = tokenizer_type in {"ipa", "phone69", "aishell_lexicon"}
         if self.is_phone_tokenizer and strip_spaces:
             raise ValueError(f"{tokenizer_type} requires data.strip_spaces: false to preserve phone boundaries")
         if tokenizer_type == "phone69":
@@ -539,6 +545,10 @@ class LibriSpeechRNNTModule(LightningModule):
                 torch.tensor([*self.ipa_features.vectors, (0,) * 24], dtype=torch.float32),
                 persistent=False,
             )
+        elif tokenizer_type == "aishell_lexicon":
+            if ipa_labels_path is not None or dataset_type != "manifest":
+                raise ValueError("aishell_lexicon requires the frozen manifest data protocol")
+            self.tokenizer = AISHELLLexiconTokenizer(aishell_vocab_path or DEFAULT_AISHELL_VOCAB)
         elif tokenizer_type == "sentencepiece":
             if ipa_labels_path is not None:
                 raise ValueError("External Epitran labels require tokenizer.type: ipa")
@@ -558,6 +568,36 @@ class LibriSpeechRNNTModule(LightningModule):
             )
         num_symbols = self.blank_idx
         self.padding_idx = self.blank_idx if self.is_phone_tokenizer else 1
+        self.dataset_type = dataset_type
+        self.manifest_root, self.batch_plan_path = manifest_root, batch_plan_path
+        self.augmentation_base_seed = augmentation_seed
+        self._manifest_samplers = {}
+        if dataset_type not in {"librispeech", "manifest"}:
+            raise ValueError("Unknown data.dataset_type")
+        self.manifest_protocol = None
+        if dataset_type == "manifest":
+            import json
+            from conformer_rnnt.aishell.protocol import FRONTEND, file_sha, fingerprint, validate_bundle
+            if tokenizer_type != "aishell_lexicon" or sequence_mode != "offline" or not manifest_root or not batch_plan_path:
+                raise ValueError("Manifest training requires offline AISHELL, a frozen bundle and a common batch plan")
+            if (sample_rate, n_fft, hop_length, n_mels, input_dim) != (16000, 400, 160, 80, 80):
+                raise ValueError("Manifest frontend must match the frozen 16kHz/400/160/80 definition")
+            if (train_subset, val_subset, test_subset) != ("train", "dev", "test"):
+                raise ValueError("AISHELL uses the fixed official train/dev/test split names")
+            self.manifest_freeze = validate_bundle(manifest_root)
+            self.manifest_batch_plan = json.loads(Path(batch_plan_path).read_text())
+            plan = self.manifest_batch_plan
+            if (plan.get("fingerprint") != fingerprint({k: v for k, v in plan.items() if k != "fingerprint"})
+                    or plan["bundle_fingerprint"] != self.manifest_freeze["fingerprint"]
+                    or plan["token_budget"] != max_token_limit or plan["seed"] != augmentation_seed
+                    or plan["vocab_including_blank"] != 218 or plan["numel_limit"] != rnnt_numel_limit
+                    or file_sha(global_stats_path) != self.manifest_freeze["files"]["statistics.json"]
+                    or self.manifest_freeze["tokenizer_fingerprint"] != self.tokenizer.fingerprint):
+                raise ValueError("Manifest, shared batch, tokenizer or normalization definition differs")
+            self.manifest_protocol = {"tokenizer": self.tokenizer.fingerprint,
+                                      "bundle": self.manifest_freeze["fingerprint"],
+                                      "batch_plan": plan["fingerprint"], "statistics": file_sha(global_stats_path),
+                                      "frontend": FRONTEND}
 
         # ---- Build model ----
         self.model = conformer_rnnt_model(
@@ -717,6 +757,7 @@ class LibriSpeechRNNTModule(LightningModule):
             ),
             ipa_vocab_path=config.get("tokenizer", {}).get("vocab_path"),
             phone69_vocab_path=config.get("tokenizer", {}).get("vocab_path"),
+            aishell_vocab_path=config.get("tokenizer", {}).get("vocab_path"),
             ipa_features_path=config.get("tokenizer", {}).get("features_path"),
             ipa_labels_path=paths.get("ipa_labels_path"),
             ipa_label_filename=data_cfg.get("ipa_label_filename", "ipa"),
@@ -772,6 +813,10 @@ class LibriSpeechRNNTModule(LightningModule):
             max_token_limit=data_cfg.get("max_token_limit", 1000),
             num_workers=data_cfg.get("num_workers", 32),
             prefetch_factor=data_cfg.get("prefetch_factor", 2),
+            dataset_type=data_cfg.get("dataset_type", "librispeech"),
+            manifest_root=paths.get("manifest_root"),
+            batch_plan_path=paths.get("batch_plan_path"),
+            augmentation_seed=config.get("seed", 42),
             train_subset=data_cfg.get("train_subset", "train-clean-100"),
             val_subset=data_cfg.get("val_subset", "dev-clean"),
             test_subset=data_cfg.get("test_subset", "test-clean"),
@@ -790,7 +835,13 @@ class LibriSpeechRNNTModule(LightningModule):
     # ------------------------------------------------------------------
     def _get_mel_transform(self):
         if self._mel_transform is None:
-            self._mel_transform = torchaudio.transforms.MelSpectrogram(**self._mel_kwargs)
+            transform = torchaudio.transforms.MelSpectrogram(**self._mel_kwargs)
+            if self.dataset_type == "manifest":
+                # A CPU data-worker cache is not a trainable model submodule.
+                # Registering it makes worker=0 checkpoints fail strict restore.
+                object.__setattr__(self, "_mel_transform", transform)
+            else:
+                self._mel_transform = transform
         return self._mel_transform
 
     # ------------------------------------------------------------------
@@ -864,7 +915,17 @@ class LibriSpeechRNNTModule(LightningModule):
     # Collate functions
     # ------------------------------------------------------------------
     def _train_collate_fn(self, samples: List):
-        features, feature_lengths = self._train_extract_features(samples)
+        if self.dataset_type == "manifest":
+            from conformer_rnnt.aishell.manifest import augmentation_seed
+            context = samples[0][6]
+            if any(sample[6] != context for sample in samples):
+                raise ValueError("Augmentation requires a single shared batch/epoch context")
+            # Seed only the CPU generator: model/CUDA dropout RNG is untouched.
+            with torch.random.fork_rng(devices=[]):
+                torch.random.default_generator.manual_seed(augmentation_seed(self.augmentation_base_seed, context))
+                features, feature_lengths = self._train_extract_features(samples)
+        else:
+            features, feature_lengths = self._train_extract_features(samples)
         targets, target_lengths = self._extract_labels(samples)
         return Batch(features, feature_lengths, targets, target_lengths)
 
@@ -1015,8 +1076,13 @@ class LibriSpeechRNNTModule(LightningModule):
                 "tokens": list(self.tokenizer.tokens),
                 "features_fingerprint": self.ipa_features.fingerprint,
             }
+        if self.tokenizer_type == "aishell_lexicon":
+            checkpoint["aishell_lexicon_protocol"] = self.manifest_protocol
 
     def validate_tokenizer_checkpoint(self, checkpoint):
+        if self.tokenizer_type == "aishell_lexicon":
+            if checkpoint.get("aishell_lexicon_protocol") != self.manifest_protocol:
+                raise ValueError("AISHELL checkpoint tokenizer/labels/batches/statistics fingerprint differs")
         if self.tokenizer_type == "phone69":
             metadata = checkpoint.get("phone69_tokenizer") or {}
             if metadata.get("fingerprint") != self.tokenizer.fingerprint:
@@ -1070,7 +1136,29 @@ class LibriSpeechRNNTModule(LightningModule):
     # ------------------------------------------------------------------
     # DataLoaders
     # ------------------------------------------------------------------
+    def _manifest_loader(self, split, *, training):
+        from conformer_rnnt.aishell.manifest import ManifestDataset, ManifestBatches, EpochBatchSampler
+        base = ManifestDataset(self.librispeech_path, self.manifest_root, split, self.tokenizer,
+                               freeze=self.manifest_freeze)
+        dataset = ManifestBatches(base, self.manifest_batch_plan)
+        sampler = EpochBatchSampler(len(dataset), seed=self.augmentation_base_seed, shuffle=training,
+                                    epoch_getter=lambda: self.current_epoch)
+        self._manifest_samplers[split] = sampler
+        return torch.utils.data.DataLoader(
+            dataset, batch_size=None, sampler=sampler,
+            collate_fn=self._train_collate_fn if training else self._valid_collate_fn,
+            num_workers=self.num_workers, pin_memory=True,
+            prefetch_factor=self.prefetch_factor if self.num_workers else None,
+            persistent_workers=False,
+        )
+
+    def on_train_epoch_start(self):
+        for sampler in self._manifest_samplers.values():
+            sampler.set_epoch(self.current_epoch)
+
     def train_dataloader(self):
+        if self.dataset_type == "manifest":
+            return self._manifest_loader("train", training=True)
         # One CustomDataset per subset (batches never mix subsets), then concat
         dataset = torch.utils.data.ConcatDataset(
             [
@@ -1105,6 +1193,8 @@ class LibriSpeechRNNTModule(LightningModule):
         )
 
     def val_dataloader(self):
+        if self.dataset_type == "manifest":
+            return self._manifest_loader("dev", training=False)
         dataset = torch.utils.data.ConcatDataset(
             [
                 CustomDataset(
@@ -1137,6 +1227,12 @@ class LibriSpeechRNNTModule(LightningModule):
         )
 
     def test_dataloader(self):
+        if self.dataset_type == "manifest":
+            from conformer_rnnt.aishell.manifest import ManifestDataset
+            dataset = ManifestDataset(self.librispeech_path, self.manifest_root, "test", self.tokenizer,
+                                      freeze=self.manifest_freeze)
+            return torch.utils.data.DataLoader(dataset, batch_size=1, collate_fn=self._test_collate_fn,
+                                              num_workers=self.num_workers)
         dataset = torch.utils.data.ConcatDataset(
             [
                 LIBRISPEECH(
