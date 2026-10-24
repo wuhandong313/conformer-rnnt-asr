@@ -176,7 +176,7 @@ def compute_statistics(data_root, train_manifest):
     import torch
     import torchaudio
     from common import piecewise_linear_log
-    from .manifest import pcm_audio
+    from .manifest import row_audio
 
     mel = torchaudio.transforms.MelSpectrogram(
         sample_rate=16000, n_fft=400, win_length=400, hop_length=160, n_mels=80,
@@ -186,7 +186,7 @@ def compute_statistics(data_root, train_manifest):
         for row in read_jsonl(train_manifest):
             if row["split"] != "train":
                 raise ValueError("Only official training frames may enter statistics")
-            audio, digest = pcm_audio(relative_file(data_root, row["audio_path"]))
+            audio, digest = row_audio(data_root, row)
             if digest != row["audio_pcm_sha256"] or audio.shape[1] != row["num_samples"]:
                 raise ValueError("Audio changed since audit")
             frames = piecewise_linear_log(mel(audio.squeeze(0)).T).double()

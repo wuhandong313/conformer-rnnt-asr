@@ -35,6 +35,7 @@ from phone69_tokenizer import DEFAULT_PHONE69_VOCAB, FixedPhone69Tokenizer
 from ipa_labels import ExternalIPALabels
 from ipa_features import DEFAULT_FEATURES, IPAFeatureTable
 from aishell_lexicon_tokenizer import AISHELLLexiconTokenizer, DEFAULT_AISHELL_VOCAB
+from mandarin_syllable_tokenizer import MandarinSyllableTokenizer
 
 
 # ---------------------------------------------------------------------------
@@ -530,7 +531,7 @@ class LibriSpeechRNNTModule(LightningModule):
 
         # Fixed phone inventories do not import or load SentencePiece.
         self.tokenizer_type = tokenizer_type
-        self.is_phone_tokenizer = tokenizer_type in {"ipa", "phone69", "aishell_lexicon"}
+        self.is_phone_tokenizer = tokenizer_type in {"ipa", "phone69", "aishell_lexicon", "mandarin_syllable"}
         if self.is_phone_tokenizer and strip_spaces:
             raise ValueError(f"{tokenizer_type} requires data.strip_spaces: false to preserve phone boundaries")
         if tokenizer_type == "phone69":
@@ -549,6 +550,10 @@ class LibriSpeechRNNTModule(LightningModule):
             if ipa_labels_path is not None or dataset_type != "manifest":
                 raise ValueError("aishell_lexicon requires the frozen manifest data protocol")
             self.tokenizer = AISHELLLexiconTokenizer(aishell_vocab_path or DEFAULT_AISHELL_VOCAB)
+        elif tokenizer_type == "mandarin_syllable":
+            if ipa_labels_path is not None or dataset_type != "manifest" or not aishell_vocab_path:
+                raise ValueError("Syllable training requires its shared frozen manifest and vocabulary")
+            self.tokenizer = MandarinSyllableTokenizer(aishell_vocab_path)
         elif tokenizer_type == "sentencepiece":
             if ipa_labels_path is not None:
                 raise ValueError("External Epitran labels require tokenizer.type: ipa")
@@ -578,19 +583,21 @@ class LibriSpeechRNNTModule(LightningModule):
         if dataset_type == "manifest":
             import json
             from conformer_rnnt.aishell.protocol import FRONTEND, file_sha, fingerprint, validate_bundle
-            if tokenizer_type != "aishell_lexicon" or sequence_mode != "offline" or not manifest_root or not batch_plan_path:
+            if tokenizer_type not in {"aishell_lexicon", "mandarin_syllable"} or sequence_mode != "offline" or not manifest_root or not batch_plan_path:
                 raise ValueError("Manifest training requires offline AISHELL, a frozen bundle and a common batch plan")
             if (sample_rate, n_fft, hop_length, n_mels, input_dim) != (16000, 400, 160, 80, 80):
                 raise ValueError("Manifest frontend must match the frozen 16kHz/400/160/80 definition")
             if (train_subset, val_subset, test_subset) != ("train", "dev", "test"):
                 raise ValueError("AISHELL uses the fixed official train/dev/test split names")
             self.manifest_freeze = validate_bundle(manifest_root)
+            if ((tokenizer_type == "mandarin_syllable") != (self.manifest_freeze.get("target_type") == "tone_marked_syllables")):
+                raise ValueError("Syllable and legacy phone bundles cannot be interchanged")
             self.manifest_batch_plan = json.loads(Path(batch_plan_path).read_text())
             plan = self.manifest_batch_plan
             if (plan.get("fingerprint") != fingerprint({k: v for k, v in plan.items() if k != "fingerprint"})
                     or plan["bundle_fingerprint"] != self.manifest_freeze["fingerprint"]
                     or plan["token_budget"] != max_token_limit or plan["seed"] != augmentation_seed
-                    or plan["vocab_including_blank"] != 218 or plan["numel_limit"] != rnnt_numel_limit
+                    or plan["vocab_including_blank"] != self.blank_idx + 1 or plan["numel_limit"] != rnnt_numel_limit
                     or file_sha(global_stats_path) != self.manifest_freeze["files"]["statistics.json"]
                     or self.manifest_freeze["tokenizer_fingerprint"] != self.tokenizer.fingerprint):
                 raise ValueError("Manifest, shared batch, tokenizer or normalization definition differs")
@@ -1078,8 +1085,13 @@ class LibriSpeechRNNTModule(LightningModule):
             }
         if self.tokenizer_type == "aishell_lexicon":
             checkpoint["aishell_lexicon_protocol"] = self.manifest_protocol
+        if self.tokenizer_type == "mandarin_syllable":
+            checkpoint["mandarin_syllable_protocol"] = self.manifest_protocol
 
     def validate_tokenizer_checkpoint(self, checkpoint):
+        if self.tokenizer_type == "mandarin_syllable":
+            if checkpoint.get("mandarin_syllable_protocol") != self.manifest_protocol:
+                raise ValueError("Syllable checkpoint vocabulary/data/batch/statistics fingerprint differs")
         if self.tokenizer_type == "aishell_lexicon":
             if checkpoint.get("aishell_lexicon_protocol") != self.manifest_protocol:
                 raise ValueError("AISHELL checkpoint tokenizer/labels/batches/statistics fingerprint differs")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Frozen AISHELL test PER, S/D/I, tones, shared deciles and observed lengths; no RTF."""
+"""Frozen Mandarin syllable/legacy-phone edits, corpus results, tones and deciles; no RTF."""
 import argparse
 import csv
 from datetime import datetime, timezone
@@ -17,13 +17,18 @@ def evaluate(config_path, checkpoint_path, out, *, cpu=False, smoke=0):
     import torch
     import yaml
     from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
-    from conformer_rnnt.aishell.evaluation import decile_assignment, sample_metrics, validate_predictions
+    from conformer_rnnt.aishell.manifest import target_units
     from conformer_rnnt.aishell.protocol import file_sha, write_json
     from conformer_rnnt.aishell.runtime import checkpoint_metadata, validate_gate
 
     config = yaml.safe_load(Path(config_path).read_text())
-    if config["tokenizer"]["type"] != "aishell_lexicon" or config["decoding"] != {"beam_width": 20}:
-        raise ValueError("AISHELL evaluation requires frozen original symbols and beam20")
+    syllable_mode = config["tokenizer"]["type"] == "mandarin_syllable"
+    if syllable_mode:
+        from conformer_rnnt.mandarin.evaluation import decile_assignment, sample_metrics, validate_predictions
+    else:
+        from conformer_rnnt.aishell.evaluation import decile_assignment, sample_metrics, validate_predictions
+    if config["tokenizer"]["type"] not in {"aishell_lexicon", "mandarin_syllable"} or config["decoding"] != {"beam_width": 20}:
+        raise ValueError("Mandarin evaluation requires frozen original syllables/legacy phones and beam20")
     exp = Path(config["paths"]["exp_dir"]).resolve()
     if not smoke:
         run = json.loads((exp / "run.json").read_text())
@@ -50,7 +55,8 @@ def evaluate(config_path, checkpoint_path, out, *, cpu=False, smoke=0):
             "checkpoint": str(Path(checkpoint_path).resolve()), "checkpoint_sha256": file_sha(checkpoint_path),
             "checkpoint_metadata": metadata, "data_protocol": module.manifest_protocol,
             "model_definition": module.offline_native_definition, "beam_width": 20,
-            "speech_rate": "reference_dictionary_symbols / real_audio_seconds",
+            "target_type": "tone_marked_syllables" if syllable_mode else "dictionary_phones",
+            "speech_rate": "reference_syllables / original_audio_seconds" if syllable_mode else "reference_dictionary_symbols / real_audio_seconds",
             "tone_denominator": "toned pairs matching in minimum-edit toneless alignment",
             "rtf_reported": False, "expected_samples": len(rows), "sample_limit": smoke or None}
     write_json(out / "run_plan.json", plan)
@@ -73,24 +79,27 @@ def evaluate(config_path, checkpoint_path, out, *, cpu=False, smoke=0):
                 if len(observed) != 1 or batch.feature_lengths.tolist() != [row["num_frames"]]:
                     raise ValueError("Decoder did not expose exactly one measured compression path")
                 record = {"utterance_id": row["utterance_id"], "text": row["text"],
-                          "ref": " ".join(row["phones"]), "hyp": prediction,
-                          "duration_seconds": row["num_samples"] / 16000,
-                          "reference_symbols_per_second": len(row["phones"]) * 16000 / row["num_samples"],
+                          "ref": " ".join(target_units(row)), "hyp": prediction,
+                          "duration_seconds": row.get("duration_seconds", row["num_samples"] / 16000),
+                          "reference_symbols_per_second": len(target_units(row)) / row.get("duration_seconds", row["num_samples"] / 16000),
                           "decile": deciles[row["utterance_id"]], "mel_frames": row["num_frames"],
                           "pre_compression_frames": observed[0][0][0], "post_compression_frames": observed[0][1][0],
-                          **sample_metrics(row["phones"], prediction.split())}
+                          **sample_metrics(target_units(row), prediction.split())}
+                if syllable_mode:
+                    record["corpus"] = row["corpus"]
                 records.append(record)
                 stream.write(json.dumps(record, ensure_ascii=False, allow_nan=False) + "\n")
                 stream.flush()
                 write_json(out / "eval_state.json", {"status": "running", "samples": len(records),
                     "utterance_id": row["utterance_id"], "server_utc": datetime.now(timezone.utc).isoformat()}, replace=True)
                 if index % 10 == 0:
-                    print(f"sample={index + 1}/{len(rows)} id={row['utterance_id']} errors={record['phone_errors']}", flush=True)
+                    print(f"sample={index + 1}/{len(rows)} id={row['utterance_id']} errors={record.get('syllable_errors', record.get('phone_errors'))}", flush=True)
         # Full evaluation uses the complete frozen order; smoke cannot emit a completion marker.
         summary = validate_predictions(rows[:len(records)] if smoke else rows, records, decile_rows=rows)
         summary.update(data_protocol=module.manifest_protocol, beam_width=20, rtf_reported=False,
                        status="smoke_only" if smoke else "complete")
-        with (out / "per_sample_sdi.csv").open("x", newline="", encoding="utf-8") as stream:
+        csv_name = "per_sample_syllable_sdi.csv" if syllable_mode else "per_sample_sdi.csv"
+        with (out / csv_name).open("x", newline="", encoding="utf-8") as stream:
             writer = csv.DictWriter(stream, fieldnames=list(records[0]))
             writer.writeheader(); writer.writerows(records)
         write_json(out / "summary.json", summary)
@@ -113,7 +122,6 @@ def evaluate(config_path, checkpoint_path, out, *, cpu=False, smoke=0):
 
 
 def compare(paths, out):
-    from conformer_rnnt.aishell.evaluation import validate_predictions
     from conformer_rnnt.aishell.protocol import file_sha, read_jsonl, validate_bundle, write_json
 
     summaries, reference = [], None
@@ -121,6 +129,10 @@ def compare(paths, out):
         if not (path / "EVALUATION_COMPLETE").exists():
             raise ValueError("Both full test evaluations must be complete")
         plan = json.loads((path / "run_plan.json").read_text())
+        if plan.get("target_type") == "tone_marked_syllables":
+            from conformer_rnnt.mandarin.evaluation import validate_predictions
+        else:
+            from conformer_rnnt.aishell.evaluation import validate_predictions
         config = __import__("yaml").safe_load(Path(plan["config"]).read_text())
         freeze = validate_bundle(config["paths"]["manifest_root"])
         if (freeze["fingerprint"] != plan["data_protocol"]["bundle"]
@@ -129,7 +141,7 @@ def compare(paths, out):
         rows = list(read_jsonl(Path(config["paths"]["manifest_root"]) / "test.jsonl"))
         records = list(read_jsonl(path / "per_sample.jsonl"))
         summary = validate_predictions(rows, records)
-        shared = {"protocol": plan["data_protocol"], "beam": plan["beam_width"],
+        shared = {"protocol": plan["data_protocol"], "beam": plan["beam_width"], "target_type": plan.get("target_type"),
                   "references": [(r["utterance_id"], r["ref"], r["decile"]) for r in records]}
         if reference is not None and shared != reference:
             raise ValueError("The pair differs in labels, normalization, common batches or test deciles")

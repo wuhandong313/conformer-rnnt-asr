@@ -20,7 +20,7 @@ from scripts.server.probe_aishell1 import checkpoint_roundtrip
 from test_aishell_manifest import tiny_bundle
 
 REPO = Path(__file__).resolve().parents[1]
-CONFIGS = [REPO / f"configs/server_aishell1_lexicon_{s}_s42_e50.yaml"
+CONFIGS = [REPO / f"configs/作废_aishell1_lexicon_20261024/server_aishell1_lexicon_{s}_s42_e50.yaml"
            for s in ("stride4_none", "stride1_cosd_learned")]
 
 

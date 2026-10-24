@@ -68,6 +68,7 @@ def checkpoint_roundtrip(config, directory, accelerator="cuda"):
 
 
 def pressure_cases(module):
+    from conformer_rnnt.aishell.manifest import target_units
     selected = []
     for split, loader in (("train", module.train_dataloader()), ("dev", module.val_dataloader())):
         batches = loader.dataset
@@ -77,8 +78,8 @@ def pressure_cases(module):
         for i, ids in enumerate(batches.batches):
             batch = [by_id[uid] for uid in ids]
             t = max(r["num_frames"] for r in batch)
-            u = max(len(r["phones"]) for r in batch)
-            scored.append((i, {"longest_T": t, "longest_U": u, "joint": len(batch) * t * (u + 1) * 218,
+            u = max(len(target_units(r)) for r in batch)
+            scored.append((i, {"longest_T": t, "longest_U": u, "joint": len(batch) * t * (u + 1) * (module.blank_idx + 1),
                                "attention": len(batch) * t * t, "batch_size": len(batch)}))
         names = ("longest_T", "longest_U", "joint", "attention", "batch_size") if split == "train" else ("joint",)
         seen = set()

@@ -37,7 +37,8 @@ def main():
 
     gate, record = validate_gate(args.gate, args.config, REPO)
     exp = Path(config["paths"]["exp_dir"]).resolve()
-    if exp.parent != REPO or not exp.name.startswith("exp_aishell1_lexicon_"):
+    from conformer_rnnt.aishell.launch import profile
+    if exp.parent != REPO or not exp.name.startswith("exp_" + profile(config) + "_"):
         raise ValueError("Experiment must stay in the independent Chinese checkout")
     if ((exp / "TRAINING_COMPLETE").exists()
             or (exp.exists() and any(p.name != "logs" for p in exp.iterdir()) and not args.resume)):

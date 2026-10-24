@@ -128,8 +128,9 @@ def build_trainer(config: Dict[str, Any]) -> Trainer:
 def main(config_path: str) -> None:
     # 1. Load config
     config = load_config(config_path)
-    if config.get("tokenizer", {}).get("type") == "aishell_lexicon":
-        raise SystemExit("AISHELL formal training requires scripts/server/train_aishell1_one.py --execute --gate; generic entry cannot bypass preflight")
+    if config.get("tokenizer", {}).get("type") in {"aishell_lexicon", "mandarin_syllable"}:
+        runner = "train_mandarin_syllables.py" if config["tokenizer"]["type"] == "mandarin_syllable" else "train_aishell1_one.py"
+        raise SystemExit(f"Chinese formal training requires scripts/server/{runner} --execute --gate; generic entry cannot bypass preflight")
 
     # 2. Logging
     debug = config.get("debug", False)

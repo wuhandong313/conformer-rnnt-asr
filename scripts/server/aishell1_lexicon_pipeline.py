@@ -15,7 +15,7 @@ import uuid
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
-DEFAULT_CONFIGS = [REPO / f"configs/server_aishell1_lexicon_{s}_s42_e50.yaml"
+DEFAULT_CONFIGS = [REPO / f"configs/server_mandarin_syllable_mix_{s}_s42_e50.yaml"
                    for s in ("stride4_none", "stride1_cosd_learned")]
 
 
@@ -61,7 +61,7 @@ def estimate_storage(batch_count, snapshot_bytes):
 
 def preflight(paths, audit, *, wait=False):
     import yaml
-    from conformer_rnnt.aishell.launch import BUDGETS, SCHEMES, read_configs, source_fingerprints
+    from conformer_rnnt.aishell.launch import BUDGETS, SCHEMES, profile, read_configs, source_fingerprints
     from conformer_rnnt.aishell.manifest import create_batch_plan
     from conformer_rnnt.aishell.protocol import file_sha, validate_bundle, write_json
     from conformer_rnnt.aishell.resources import gpu_lease
@@ -72,12 +72,12 @@ def preflight(paths, audit, *, wait=False):
         raise FileNotFoundError("Local audio missing. There is no download mode")
     audit = Path(audit).resolve()
     audit.mkdir(parents=True, exist_ok=False)
-    gate = {"phase": "aishell1_lexicon_20261024", "valid": False, "server_utc": utc(),
+    gate = {"phase": profile(originals[0]) + "_20261024", "valid": False, "server_utc": utc(),
             "source_sha256": source_fingerprints(REPO), "bundle_fingerprint": freeze["fingerprint"],
             "original_configs": {str(Path(p).resolve()): file_sha(p) for p in paths}, "attempts": []}
     write_json(audit / "prelaunch_validation.json", gate)
     env = os.environ.copy()
-    env.update(OMP_NUM_THREADS="2", OPENBLAS_NUM_THREADS="2")
+    env.update(OMP_NUM_THREADS="2", OPENBLAS_NUM_THREADS="2", CUDA_VISIBLE_DEVICES="")
     with (audit / "regression_tests.log").open("x") as stream:
         result = subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", "tests"],
                                 cwd=REPO, stdout=stream, stderr=subprocess.STDOUT, env=env)
@@ -100,11 +100,15 @@ def preflight(paths, audit, *, wait=False):
                 config = json.loads(json.dumps(original))
                 config["data"]["max_token_limit"] = budget
                 config["paths"]["batch_plan_path"] = str(plan_path)
+                if config["tokenizer"]["type"] == "mandarin_syllable":
+                    from mandarin_syllable_tokenizer import MandarinSyllableTokenizer
+                    config["model"]["num_symbols"] = MandarinSyllableTokenizer(config["tokenizer"]["vocab_path"]).get_piece_size()
                 config_path = attempt / (scheme + ".yaml")
                 config_path.write_text(yaml.safe_dump(config, sort_keys=False))
                 resolved.append(config_path)
                 report_path = attempt / (scheme + "_preflight.json")
-                code = logged([sys.executable, "-u", REPO / "scripts/server/probe_aishell1.py", config_path,
+                probe = "probe_mandarin_syllables.py" if config["tokenizer"]["type"] == "mandarin_syllable" else "probe_aishell1.py"
+                code = logged([sys.executable, "-u", REPO / "scripts/server" / probe, config_path,
                                "--out", report_path, "--lease-fd", lease], attempt / (scheme + ".log"), lease=lease)
                 report = json.loads(report_path.read_text())
                 record = {**report, "config": str(config_path), "report": str(report_path), "report_sha256": file_sha(report_path)}
@@ -162,7 +166,8 @@ def execute(gate_path, *, wait=False, resume=False):
             validate_gate(gate_path, path, REPO)
             exp = REPO / config["paths"]["exp_dir"]
             if not (exp / "TRAINING_COMPLETE").exists():
-                command = [sys.executable, "-u", REPO / "scripts/server/train_aishell1_one.py", path,
+                runner = "train_mandarin_syllables.py" if config["tokenizer"]["type"] == "mandarin_syllable" else "train_aishell1_one.py"
+                command = [sys.executable, "-u", REPO / "scripts/server" / runner, path,
                            "--gate", gate_path, "--execute", "--lease-fd", lease]
                 if resume and (exp / "run.json").exists():
                     prior = json.loads((exp / "run.json").read_text())
@@ -183,7 +188,8 @@ def execute(gate_path, *, wait=False, resume=False):
             if not (destination / "EVALUATION_COMPLETE").exists():
                 state.update(status="evaluating", experiment=str(exp), server_utc=utc())
                 write_json(state_path, state, replace=True)
-                code = logged([sys.executable, "-u", REPO / "scripts/evaluation/eval_aishell1.py", path,
+                evaluator = "eval_mandarin_syllables.py" if config["tokenizer"]["type"] == "mandarin_syllable" else "eval_aishell1.py"
+                code = logged([sys.executable, "-u", REPO / "scripts/evaluation" / evaluator, path,
                                "--checkpoint", run["best_checkpoint"], "--out", destination],
                               audit / f"eval_{exp.name}_{uuid.uuid4().hex[:12]}.log", lease=lease)
                 if code:

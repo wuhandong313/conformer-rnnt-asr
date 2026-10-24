@@ -20,7 +20,7 @@ def main():
     from conformer_rnnt.model import conformer_rnnt_model_from_config
     from conformer_rnnt.aishell.launch import read_configs, readiness, SCHEMES
     from conformer_rnnt.aishell.protocol import write_json
-    configs = read_configs([REPO / f"configs/server_aishell1_lexicon_{s}_s42_e50.yaml" for s in SCHEMES])
+    configs = read_configs([REPO / f"configs/作废_aishell1_lexicon_20261024/server_aishell1_lexicon_{s}_s42_e50.yaml" for s in SCHEMES])
     torch.manual_seed(42)
     features = torch.randn(2, 101, 80)
     lengths = torch.tensor([101, 87], dtype=torch.int32)

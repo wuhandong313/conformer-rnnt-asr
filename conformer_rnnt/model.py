@@ -187,6 +187,12 @@ def conformer_rnnt_model_from_config(config: Dict[str, Any]) -> ConformerRNNT:
     p = m.get("predictor", {})
     j = m.get("joiner", {})
     num_symbols = m.get("num_symbols")
+    if config.get("tokenizer", {}).get("type") == "mandarin_syllable":
+        from mandarin_syllable_tokenizer import MandarinSyllableTokenizer
+        expected = MandarinSyllableTokenizer(config["tokenizer"]["vocab_path"]).get_piece_size()
+        if num_symbols is not None and num_symbols != expected:
+            raise ValueError("model.num_symbols must match the frozen syllable inventory")
+        num_symbols = expected
     if config.get("tokenizer", {}).get("type") == "aishell_lexicon":
         from aishell_lexicon_tokenizer import AISHELLLexiconTokenizer, DEFAULT_AISHELL_VOCAB
         expected = AISHELLLexiconTokenizer(config["tokenizer"].get("vocab_path") or DEFAULT_AISHELL_VOCAB).get_piece_size()

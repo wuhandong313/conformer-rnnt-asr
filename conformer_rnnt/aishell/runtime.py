@@ -23,10 +23,14 @@ def finite_tensors(tensors):
 
 def validate_gate(gate_path, config_path, repo):
     gate = json.loads(Path(gate_path).read_text())
-    if gate.get("valid") is not True or gate.get("phase") != "aishell1_lexicon_20261024":
+    if gate.get("valid") is not True or gate.get("phase") not in {"aishell1_lexicon_20261024", "mandarin_syllable_mix_20261024"}:
         raise ValueError("A passed Chinese preflight gate is required")
     if gate["source_sha256"] != source_fingerprints(repo):
         raise ValueError("Source changed since preflight")
+    import yaml
+    from .launch import profile
+    if gate["phase"] != profile(yaml.safe_load(Path(config_path).read_text())) + "_20261024":
+        raise ValueError("Launch gate belongs to another target protocol")
     record = next((r for r in gate["models"] if Path(r["config"]).resolve() == Path(config_path).resolve()), None)
     if record is None or record["config_sha256"] != file_sha(config_path) or record["status"] != "passed":
         raise ValueError("Configuration does not match a passed real-batch preflight")

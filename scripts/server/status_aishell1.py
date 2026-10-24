@@ -26,7 +26,7 @@ def snapshot(audit):
     gate, queue = read(audit / "prelaunch_validation.json"), read(audit / "queue_state.json")
     configs = gate.get("configs", []) if gate else []
     if not configs:
-        configs = sorted((REPO / "configs").glob("server_aishell1_lexicon_*_s42_e50.yaml"))
+        configs = sorted((REPO / "configs").glob("server_mandarin_syllable_mix_*_s42_e50.yaml"))
     models = []
     for path in configs:
         config = yaml.safe_load(Path(path).read_text())
@@ -44,7 +44,7 @@ def snapshot(audit):
             try:
                 os.kill(pid, 0)
                 command = subprocess.check_output(["ps", "-p", str(pid), "-o", "args="], text=True)
-                alive = "train_aishell1_one.py" in command and str(path) in command
+                alive = any(name in command for name in ("train_aishell1_one.py", "train_mandarin_syllables.py")) and str(path) in command
             except (ProcessLookupError, PermissionError):
                 pass
             except subprocess.CalledProcessError:
@@ -62,7 +62,7 @@ def snapshot(audit):
                                              "--format=csv,noheader"], text=True).strip()
     except (OSError, subprocess.CalledProcessError):
         gpu, processes = "unavailable", "unavailable"
-    return {"server_utc": now.isoformat(), "phase": "aishell1_lexicon_20261024", "queue": queue,
+    return {"server_utc": now.isoformat(), "phase": (gate or {}).get("phase", "mandarin_syllable_mix_20261024"), "queue": queue,
             "models": models, "gpu_memory_and_compute": gpu, "gpu_processes": processes,
             "training_started": any(m["run"] for m in models), "automatic_restart": False,
             "notice": "A stale triad is a signal to inspect real processes/GPU, never authorization to restart"}
@@ -70,7 +70,7 @@ def snapshot(audit):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--audit-dir", default="artifacts/runs/aishell1_lexicon_20261024")
+    parser.add_argument("--audit-dir", default="artifacts/runs/mandarin_syllable_mix_20261024")
     args = parser.parse_args()
     os.chdir(REPO)
     print(json.dumps(snapshot(args.audit_dir), ensure_ascii=False, indent=2))

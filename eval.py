@@ -62,8 +62,9 @@ def run_eval(
     metric: str = "wer",
     trace_wer: bool = False,
 ) -> Dict[str, Any]:
-    if model.tokenizer_type == "aishell_lexicon":
-        raise ValueError("Use scripts/evaluation/eval_aishell1.py; Chinese evaluation does not report RTF")
+    if model.tokenizer_type in {"aishell_lexicon", "mandarin_syllable"}:
+        evaluator = "eval_mandarin_syllables.py" if model.tokenizer_type == "mandarin_syllable" else "eval_aishell1.py"
+        raise ValueError(f"Use scripts/evaluation/{evaluator}; Chinese evaluation does not report RTF")
     if metric not in {"wer", "cer", "per"}:
         raise ValueError(f"Unsupported evaluation metric: {metric}")
     if (model.tokenizer_type in {"ipa", "phone69", "aishell_lexicon"}) != (metric == "per"):
@@ -298,8 +299,9 @@ def main():
 
     # Config
     config = load_config(args.config)
-    if config.get("tokenizer", {}).get("type") == "aishell_lexicon":
-        raise SystemExit("Use scripts/evaluation/eval_aishell1.py for frozen Chinese PER/S/D/I, tones and deciles without RTF")
+    if config.get("tokenizer", {}).get("type") in {"aishell_lexicon", "mandarin_syllable"}:
+        evaluator = "eval_mandarin_syllables.py" if config["tokenizer"]["type"] == "mandarin_syllable" else "eval_aishell1.py"
+        raise SystemExit(f"Use scripts/evaluation/{evaluator} for frozen Chinese symbol errors, S/D/I, tones and deciles without RTF")
 
     # Logging
     debug = config.get("debug", False)

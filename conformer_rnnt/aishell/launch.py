@@ -12,6 +12,10 @@ BUDGETS = (6000, 4500, 3000, 2000, 1000)
 SCHEMES = ("stride4_none", "stride1_cosd_learned")
 
 
+def profile(config):
+    return "mandarin_syllable_mix" if config["tokenizer"]["type"] == "mandarin_syllable" else "aishell1_lexicon"
+
+
 def read_configs(paths):
     configs = [yaml.safe_load(Path(p).read_text(encoding="utf-8")) for p in paths]
     validate_pair(configs)
@@ -30,12 +34,20 @@ def validate_pair(configs):
                 or type(config["execution"]["allow_training"]) is not bool or config["debug"] is not False):
             raise ValueError("Unknown or unapproved recipe controls are not silently accepted")
         m, t, d = config["model"], config["training"], config["data"]
+        syllables = config["tokenizer"]["type"] == "mandarin_syllable"
+        symbols = 217
+        if syllables:
+            symbols = m["num_symbols"]
+            if symbols is not None:
+                from mandarin_syllable_tokenizer import MandarinSyllableTokenizer
+                if symbols != MandarinSyllableTokenizer(config["tokenizer"]["vocab_path"]).get_piece_size():
+                    raise ValueError("Resolved symbol count differs from the frozen syllable inventory")
         stride = 4 if scheme == "stride4_none" else 1
         expected_compression = ({"filter": "none"} if stride == 4 else
                                 {"filter": "none", "detector": {"type": "cosine_diff", "preprocess": "none"},
                                  "mixer": {"type": "learned"}, "hanning_window_size": 5,
                                  "weight_predictor_mode": "five_frames"})
-        expected = {"sequence_mode": "offline", "input_dim": 80, "encoding_dim": 256, "num_symbols": 217,
+        expected = {"sequence_mode": "offline", "input_dim": 80, "encoding_dim": 256, "num_symbols": symbols,
                     "time_reduction_stride": stride, "time_reduction_input_dim": 128 // stride,
                     "num_heads": 8, "ffn_dim": 512, "num_layers_block1": 2, "num_layers_block2": 8,
                     "depthwise_conv_kernel_size": 31, "dropout": 0.1,
@@ -65,14 +77,14 @@ def validate_pair(configs):
             return {k for k, v in value.items()} | set().union(*(keys(v) for v in value.values() if isinstance(v, dict)))
         if {"keep_rate", "right_context_length", "left_context_length", "stages", "articulatory"} & keys(m):
             raise ValueError("Obsolete context/rate or extra model controls are forbidden")
-        if (config["tokenizer"]["type"] != "aishell_lexicon" or d["dataset_type"] != "manifest"
+        if (config["tokenizer"]["type"] not in {"aishell_lexicon", "mandarin_syllable"} or d["dataset_type"] != "manifest"
                 or d["strip_spaces"] is not False or config["seed"] != 42
                 or t["epochs"] != 50 or t["learning_rate"] != 0.0005 or t["warmup_steps"] != 10000
                 or t.get("early_stopping") or t["rnnt_loss_reduction"] != "sum"
                 or config["decoding"]["beam_width"] != 20
                 or config["paths"].get("from_checkpoint") is not None
                 or config["execution"].get("allow_dataset_download") is not False
-                or Path(config["paths"]["exp_dir"]).name != f"exp_aishell1_lexicon_{scheme}_s42_e50"):
+                or Path(config["paths"]["exp_dir"]).name != f"exp_{profile(config)}_{scheme}_s42_e50"):
             raise ValueError("Pair violates the approved data/target/training protocol")
         reduced = json.loads(json.dumps(config))
         for key in ("time_reduction_stride", "time_reduction_input_dim", "compression"):
@@ -89,6 +101,8 @@ def source_fingerprints(repo):
     paths += list((repo / "scripts/server").glob("*aishell1*.py"))
     paths += list((repo / "scripts/evaluation").glob("*aishell1*.py"))
     paths += list((repo / "scripts/data").glob("*aishell1*.py"))
+    for directory in ("scripts/server", "scripts/data", "scripts/evaluation"):
+        paths += list((repo / directory).glob("*mandarin*.py"))
     paths += list(repo.glob("*.py"))
     paths += list((repo / "tests").glob("test_*.py"))
     paths += [repo / p for p in ("requirements-aishell-prep.txt", "configs/aishell_lexicon_vocab.json")]
@@ -99,8 +113,10 @@ def readiness(configs):
     validate_pair(configs)
     result = {"status": "code_ready_data_not_checked", "dataset_download_allowed": False,
               "training_allowed": all(c["execution"].get("allow_training") is True for c in configs), "missing": []}
-    for key in ("dataset_path", "manifest_root", "batch_plan_path", "global_stats_path"):
-        path = Path(configs[0]["paths"][key])
+    checks = {key: configs[0]["paths"][key] for key in ("dataset_path", "manifest_root", "batch_plan_path", "global_stats_path")}
+    checks["vocabulary"] = configs[0]["tokenizer"]["vocab_path"]
+    for key, value in checks.items():
+        path = Path(value)
         if not path.exists():
             result["missing"].append({"key": key, "path": str(path)})
     if result["missing"]:

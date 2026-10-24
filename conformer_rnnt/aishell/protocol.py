@@ -76,6 +76,9 @@ def validate_bundle(root, *, expected_counts=None):
     """Verify every payload, official split counts and a successful label audit."""
     root = Path(root)
     freeze = json.loads((root / "freeze.json").read_text(encoding="utf-8"))
+    if freeze.get("dataset") == "aishell3_thchs30_syllables":
+        from conformer_rnnt.mandarin.preparation import validate_syllable_bundle
+        return validate_syllable_bundle(root, freeze, expected_counts=expected_counts)
     payload = {k: v for k, v in freeze.items() if k != "fingerprint"}
     if freeze.get("fingerprint") != fingerprint(payload):
         raise ValueError("Frozen bundle metadata fingerprint differs")

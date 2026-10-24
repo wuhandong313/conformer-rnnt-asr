@@ -1,3 +1,5 @@
+> 作废的历史方案：当前已改为 AISHELL-3 + THCHS-30 原始带调音节；本文不再是运行说明。
+
 # AISHELL-1 原始词典符号：实现与运行说明
 
 本分支基于 `bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2`，名称为 `codex/aishell1-lexicon`。本地独立目录为 `/Users/wuhandong/Desktop/python/conformer-rnnt-asr/aishell1-lexicon`，服务器独立目录约定为 `/test21/conformer-rnnt-asr-aishell1`。原英文 `main` 的修改和实验不进入本分支。

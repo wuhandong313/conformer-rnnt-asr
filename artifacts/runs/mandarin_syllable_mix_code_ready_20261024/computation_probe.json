@@ -1,0 +1,101 @@
+{
+  "utc": "2026-10-24T11:11:45.961304+00:00",
+  "scope": "synthetic_code_checks_only",
+  "target_type": "tone_marked_syllables",
+  "corpora": [
+    "aishell3",
+    "thchs30"
+  ],
+  "real_vocabulary_size": null,
+  "real_vocabulary_status": "pending_local_data_and_frozen_inventory",
+  "dataset_downloaded": false,
+  "real_data_audit_run": false,
+  "a100_preflight_run": false,
+  "formal_training_started": false,
+  "launch_gate_valid": false,
+  "models": [
+    {
+      "scheme": "stride4_none",
+      "synthetic_parameters": 4182147,
+      "real_parameter_formula": {
+        "constant": 4180992,
+        "per_output_class": 385,
+        "output_classes": "K+1"
+      },
+      "compression_parameters": 0,
+      "synthetic_logits": [
+        2,
+        26,
+        3,
+        3
+      ],
+      "observed_lengths_on_random_features": [
+        {
+          "input": [
+            26,
+            22
+          ],
+          "output": [
+            26,
+            22
+          ]
+        }
+      ]
+    },
+    {
+      "scheme": "stride1_cosd_learned",
+      "synthetic_parameters": 4210504,
+      "real_parameter_formula": {
+        "constant": 4209349,
+        "per_output_class": 385,
+        "output_classes": "K+1"
+      },
+      "compression_parameters": 20677,
+      "synthetic_logits": [
+        2,
+        45,
+        3,
+        3
+      ],
+      "observed_lengths_on_random_features": [
+        {
+          "input": [
+            101,
+            87
+          ],
+          "output": [
+            45,
+            39
+          ]
+        }
+      ]
+    }
+  ],
+  "readiness": {
+    "status": "blocked_missing_local_data_or_frozen_artifacts",
+    "dataset_download_allowed": false,
+    "training_allowed": false,
+    "missing": [
+      {
+        "key": "dataset_path",
+        "path": "/test21"
+      },
+      {
+        "key": "manifest_root",
+        "path": "/test21/chinese_syllables/derived/mix_v1/frozen"
+      },
+      {
+        "key": "batch_plan_path",
+        "path": "artifacts/runs/mandarin_syllable_mix_20261024/common_batch_plan.json"
+      },
+      {
+        "key": "global_stats_path",
+        "path": "/test21/chinese_syllables/derived/mix_v1/frozen/statistics.json"
+      },
+      {
+        "key": "vocabulary",
+        "path": "/test21/chinese_syllables/derived/mix_v1/frozen/syllable_vocab.json"
+      }
+    ]
+  }
+}
