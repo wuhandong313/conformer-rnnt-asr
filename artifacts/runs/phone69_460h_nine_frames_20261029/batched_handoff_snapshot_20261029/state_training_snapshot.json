@@ -1,0 +1,11 @@
+{
+  "status": "training",
+  "server_utc": "2026-10-29T08:21:26.101579+00:00",
+  "pid": 35007,
+  "backend": "batched",
+  "training_pid": 35568,
+  "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/checkpoints/epoch-boundary-epoch=10-step=25310-7567f38e1a71.ckpt",
+  "epoch": 10,
+  "step": 25310,
+  "preflight_exit": 0
+}

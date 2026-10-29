@@ -1,0 +1,53 @@
+{
+  "server_utc": "2026-10-29T08:27:02.501390+00:00",
+  "files": {
+    "batched_runtime.yaml": {
+      "sha256": "00d7bbc4c19a4a98ecd7f9215486ee040388397f828fa16af52c80220d1f58c7",
+      "bytes": 2233
+    },
+    "memory_preflight.json": {
+      "sha256": "136c943eed22d09b57ad899ed72a50c7f1116088da1885d65ae779fc79edf24a",
+      "bytes": 29844
+    },
+    "memory_preflight.log": {
+      "sha256": "344f1aa0bbd11b7ba8845ca51e8632a99504a223028fd054262769736357b991",
+      "bytes": 11679
+    },
+    "run_before_handoff.json": {
+      "sha256": "7de8c2af565641d887013a3a2811b45366dbdb0f8aca350c7f172e19b49e02e0",
+      "bytes": 3116
+    },
+    "queue_before_handoff.json": {
+      "sha256": "6f309511ae28041f3858825ed2e9398f257b24b3d0782f73d025bfe4e4276bfe",
+      "bytes": 257
+    },
+    "speed_monotonic.json": {
+      "sha256": "d23a23a5701c148293fac8a5c7759140460e8754a00dd20d454d16ccd06b60f3",
+      "bytes": 605
+    },
+    "speed_monitor.py": {
+      "sha256": "abaca6fba52cad0b0f7a501ef1ae9aa2a3544447b0ae7e61c7c13a201e5b7a3a",
+      "bytes": 1641
+    },
+    "speed_monitor.log": {
+      "sha256": "fc9cf077ddc9ee2147f32ff06565c3b6169dd4bb679f538893f8f1e9eb886bbf",
+      "bytes": 551
+    },
+    "state_training_snapshot.json": {
+      "sha256": "ac05ec9b6ffd55912fd24cea49cb1cc8e1bc3780152389fd63195a4bada4e855",
+      "bytes": 383
+    },
+    "run_training_snapshot.json": {
+      "sha256": "7e39444eaee3246009b894e0c3c926b89b23392b25c0ceb453cdfbd188423d3b",
+      "bytes": 2514
+    },
+    "queue_training_snapshot.json": {
+      "sha256": "bc84b44415301b76de064f609e414e72bc5cff342e779d67cfb0565600e50b7d",
+      "bytes": 503
+    },
+    "launcher_training_snapshot.log": {
+      "sha256": "eedb53049cccbb21263f9a1c2443dad731c02357bf705ede36fc8b3fc4e499eb",
+      "bytes": 1484
+    }
+  }
+}

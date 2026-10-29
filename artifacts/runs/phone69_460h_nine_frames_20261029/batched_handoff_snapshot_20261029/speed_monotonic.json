@@ -1,0 +1,20 @@
+{
+  "status": "complete",
+  "backend": "batched",
+  "pid": 35568,
+  "start": {
+    "global_step": 25500,
+    "monotonic_seconds": 5049862.275733342,
+    "observed_utc": "2026-10-29T08:23:57.746042+00:00"
+  },
+  "end": {
+    "global_step": 25700,
+    "monotonic_seconds": 5049995.808265107,
+    "observed_utc": "2026-10-29T08:25:58.932858+00:00"
+  },
+  "elapsed_seconds": 133.53253176435828,
+  "steps_per_second": 1.4977623606578157,
+  "interval_seconds": 0.25,
+  "validation": "one scheduled validation expected between steps 25500 and 25700",
+  "excludes": "startup, preflight, and checkpoint loading"
+}
