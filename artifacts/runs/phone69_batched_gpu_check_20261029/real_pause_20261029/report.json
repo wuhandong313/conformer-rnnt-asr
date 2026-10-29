@@ -1,0 +1,47 @@
+{
+  "samples_per_case": 4,
+  "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/checkpoints/epoch-boundary-epoch=09-step=22779-264c57534210.ckpt",
+  "model_eval_first_two_layers": true,
+  "compression_forward_backward": true,
+  "peak_allocated_mib": 48.03759765625,
+  "cases": [
+    {
+      "subset": "train-clean-360",
+      "batch_index": 1955,
+      "shape": [
+        4,
+        481,
+        128
+      ],
+      "comparison": {
+        "indices_match": true,
+        "output_max_abs_diff": 9.5367431640625e-07,
+        "input_grad_max_abs_diff": 2.1827872842550278e-11
+      },
+      "median_ms": {
+        "reference": 9.160495363175869,
+        "batched": 3.86944692581892
+      },
+      "speedup": 2.3673913969597
+    },
+    {
+      "subset": "train-clean-360",
+      "batch_index": 1982,
+      "shape": [
+        4,
+        287,
+        128
+      ],
+      "comparison": {
+        "indices_match": true,
+        "output_max_abs_diff": 7.152557373046875e-07,
+        "input_grad_max_abs_diff": 3.637978807091713e-11
+      },
+      "median_ms": {
+        "reference": 16.709329560399055,
+        "batched": 6.9834645837545395
+      },
+      "speedup": 2.392699119469948
+    }
+  ]
+}
