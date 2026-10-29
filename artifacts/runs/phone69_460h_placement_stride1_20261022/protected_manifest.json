@@ -1,0 +1,1308 @@
+{
+  "experiments": {
+    "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50": [
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/TRAINING_COMPLETE",
+        "bytes": 0,
+        "mtime_ns": 1792397598059270880,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/best_checkpoint.txt",
+        "bytes": 146,
+        "mtime_ns": 1792397594952008002,
+        "sha256": "0f1aacb276e9070acf241a9cc9397a44889f486a15e44780e99194a9c1cd7872"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=00-step=0-41ecce59cca5.ckpt",
+        "bytes": 17129400,
+        "mtime_ns": 1792299277943703085
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=01-step=2531-608511c893cb.ckpt",
+        "bytes": 51317540,
+        "mtime_ns": 1792301232051543988
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=02-step=5062-199724df3da6.ckpt",
+        "bytes": 51317540,
+        "mtime_ns": 1792303164096233422
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=03-step=7593-b53f87868aed.ckpt",
+        "bytes": 51317540,
+        "mtime_ns": 1792305083006094555
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=04-step=10124-cd59e8772358.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792306991431811209
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=05-step=12655-d60b6a40ef87.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792308922860355001
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=06-step=15186-ca1a6e0f563c.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792310867920286015
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=07-step=17717-975c9b9c9cda.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792312806472096596
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=08-step=20248-48c130b03e32.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792314731110626737
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=09-step=22779-e97e49786a35.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792316643157563352
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=10-step=25310-424bd5a49021.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792318556340821996
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=11-step=27841-6c859f0adfd1.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792320469558904135
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=12-step=30372-2899f79e371d.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792322375497417492
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=13-step=32903-4b29ecea661d.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792324266982808916
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=14-step=35434-1218842cb238.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792326161925857370
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=15-step=37965-8b7080deb4b2.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792328057963267463
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=16-step=40496-56113b563eab.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792329953147668991
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=17-step=43027-aae69670298b.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792331850761485196
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=18-step=45558-bd3ee0707095.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792333745349999736
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=19-step=48089-80eedb9d4f3c.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792335636494711984
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=20-step=50620-7f6a41edd603.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792337536190217697
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=21-step=53151-ee4213887596.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792339451415538226
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=22-step=55682-69c5430a9644.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792341347282550089
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=23-step=58213-1f270aa6b896.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792343244995632486
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=24-step=60744-79b93e82e8c1.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792345142510098323
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=25-step=63275-8d0dbae78851.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792347048198153524
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=26-step=65806-e0370ac819e3.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792348950661969773
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=27-step=68337-ee6cbdb5f270.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792350850518677437
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=28-step=70868-66ad099c25d3.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792352738633894153
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=29-step=73399-27b0a80ee072.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792354600813447393
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=30-step=75930-db3c0d32d8ea.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792356496156704670
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=31-step=78461-3311393a8dc7.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792358393013663316
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=32-step=80992-a7f7974d41b7.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792360294095710510
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=33-step=83523-85fa4f7d02bb.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792362196670075678
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=34-step=86054-d2cbc2556dce.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792364092376783845
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=35-step=88585-039153f571b2.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792365992637068020
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=36-step=91116-3eb4d81c2a6d.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792367899910617151
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=37-step=93647-69333e7d8c47.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792369803688283811
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=38-step=96178-02eb20415bd0.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792371712298034213
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=39-step=98709-afaabf1994e4.ckpt",
+        "bytes": 51318898,
+        "mtime_ns": 1792373614894994258
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=40-step=101240-8d5c4262bebb.ckpt",
+        "bytes": 51320256,
+        "mtime_ns": 1792375511865859387
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=41-step=103771-9ec9f8c8bcef.ckpt",
+        "bytes": 51320256,
+        "mtime_ns": 1792377419383815033
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=42-step=106302-6fcfdfa5c591.ckpt",
+        "bytes": 51320256,
+        "mtime_ns": 1792379320430483608
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=43-step=108833-0d5aa7637451.ckpt",
+        "bytes": 51320256,
+        "mtime_ns": 1792381227459096785
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=44-step=111364-49c71e9f99d9.ckpt",
+        "bytes": 51320256,
+        "mtime_ns": 1792383146898556806
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=45-step=113895-dd8ecac51da3.ckpt",
+        "bytes": 51320256,
+        "mtime_ns": 1792385050046242772
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=46-step=116426-ca94c4f29a15.ckpt",
+        "bytes": 51320256,
+        "mtime_ns": 1792386959533587543
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=47-step=118957-52cf449abe3c.ckpt",
+        "bytes": 51320256,
+        "mtime_ns": 1792389342301444038
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=48-step=121488-ef2773efaad2.ckpt",
+        "bytes": 51320256,
+        "mtime_ns": 1792393583975878899
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=49-step=124019-42c609f8b6ac.ckpt",
+        "bytes": 51320256,
+        "mtime_ns": 1792395641640642296
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=50-step=126550-0f0ade74c8c5.ckpt",
+        "bytes": 51320256,
+        "mtime_ns": 1792397591366411302
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/last.ckpt",
+        "bytes": 51291392,
+        "mtime_ns": 1792380980000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/train-none-epoch=30-step=77500.ckpt",
+        "bytes": 17120994,
+        "mtime_ns": 1792357672000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/train-none-epoch=33-step=85500.ckpt",
+        "bytes": 17121058,
+        "mtime_ns": 1792363676000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=27-step=69137.ckpt",
+        "bytes": 51291392,
+        "mtime_ns": 1792351454000000000,
+        "sha256": "c314db27cc84ebc90c128ad84751d7f4c7b6620ffbc6687c9b579a76d5e91317"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=42-step=108502.ckpt",
+        "bytes": 51291392,
+        "mtime_ns": 1792380979000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/lightning_logs/version_0/hparams.yaml",
+        "bytes": 1591,
+        "mtime_ns": 1792299278606390146,
+        "sha256": "42119f661c47945f22448fbb30e718c018905ec765e422cda63a80a8a16f5a9b"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/lightning_logs/version_0/metrics.csv",
+        "bytes": 951870,
+        "mtime_ns": 1792397592025399966,
+        "sha256": "f768a6e572f4c2e946b69e581e1cf0291ffe7dd3edb79eb1870a60693d4f5b3b"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/logs/gpu_usage.csv",
+        "bytes": 152462,
+        "mtime_ns": 1792397554217590352,
+        "sha256": "8ff88c285d8ebac1767711e6380fb2a457f650256d1eed3b919d294525d2430d"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/logs/train.log",
+        "bytes": 22462288,
+        "mtime_ns": 1792397596688085946
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/run.json",
+        "bytes": 2540,
+        "mtime_ns": 1792397594970113424,
+        "sha256": "dca8e186dc26a4f7fba4360f888455e2b2f9a85757ff497661b9da45e9580569"
+      }
+    ],
+    "exp_phone69_460h_offline_native_stride4_none_s42_e50": [
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/TRAINING_COMPLETE",
+        "bytes": 0,
+        "mtime_ns": 1792285130701606910,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/best_checkpoint.txt",
+        "bytes": 126,
+        "mtime_ns": 1792285126841225031,
+        "sha256": "14d7e04d90f1aba338a245151955ee964abefa52bafd2c62641cadb444f953d1"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=00-step=0-da731c5dd2ac.ckpt",
+        "bytes": 17014036,
+        "mtime_ns": 1792253539666867090
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=01-step=1138-22ac6cd1dfaa.ckpt",
+        "bytes": 50971604,
+        "mtime_ns": 1792254196246239738
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=02-step=2276-8cd663a65f78.ckpt",
+        "bytes": 50971604,
+        "mtime_ns": 1792254836089513160
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=03-step=3414-7eb7d58ce7f8.ckpt",
+        "bytes": 50971604,
+        "mtime_ns": 1792255477128555727
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=04-step=4552-8f61d62630ae.ckpt",
+        "bytes": 50971604,
+        "mtime_ns": 1792256123430425812
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=05-step=5690-f0b7534fb5c0.ckpt",
+        "bytes": 50971604,
+        "mtime_ns": 1792256765494372787
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=06-step=6828-b0b818486db8.ckpt",
+        "bytes": 50971604,
+        "mtime_ns": 1792257402571150105
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=07-step=7966-a0ef4180e747.ckpt",
+        "bytes": 50971604,
+        "mtime_ns": 1792258055159544960
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=08-step=9104-aa7b62ac594e.ckpt",
+        "bytes": 50971604,
+        "mtime_ns": 1792258699530352289
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=09-step=10242-c07bb2c3ba6a.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792259343284210553
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=10-step=11380-cba5a715fd4f.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792259985150731705
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=11-step=12518-6d64d8846567.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792260630616900777
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=12-step=13656-47ef82522d65.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792261254432773645
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=13-step=14794-a6c7e61e5618.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792261887765433301
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=14-step=15932-9ae961765811.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792262525346358183
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=15-step=17070-8ac8837b7d35.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792263158246042931
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=16-step=18208-a2768b42e4a7.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792263793431149211
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=17-step=19346-0919554c5008.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792264420261827618
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=18-step=20484-2aae6d93e86e.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792265047692993521
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=19-step=21622-ac86950f8f7b.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792265667843630083
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=20-step=22760-b9e442085f89.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792266281336258046
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=21-step=23898-d2a81d7f8bdf.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792266893435603444
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=22-step=25036-e0a63ded995d.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792267529525584820
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=23-step=26174-e13f910b1e9d.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792268152424872206
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=24-step=27312-c2ad98d0d91d.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792268779620120980
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=25-step=28450-4d7548009bf8.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792269410531381140
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=26-step=29588-8dde59895f51.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792270045680952728
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=27-step=30726-c7e11ec92c2b.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792270678465687421
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=28-step=31864-ff56f2f56583.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792271312725537671
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=29-step=33002-3232aed65235.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792271934677652722
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=30-step=34140-4e502093e216.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792272558960700058
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=31-step=35278-2dc537438a95.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792273184836045765
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=32-step=36416-dec910abb078.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792273798098894232
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=33-step=37554-9571a3414ba3.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792274427024200440
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=34-step=38692-a2f1dca80fcd.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792275036571151745
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=35-step=39830-4c343c0ad262.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792275653442387536
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=36-step=40968-e6c09ad88796.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792276291864570027
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=37-step=42106-eb44dd50fcc8.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792276921636364967
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=38-step=43244-70d42ff1188a.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792277559303005467
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=39-step=44382-806790e75f46.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792278188126120389
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=40-step=45520-a9ae8065a5dc.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792278809641301955
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=41-step=46658-4bb8d65d744d.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792279435081244601
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=42-step=47796-d162073e0149.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792280072821042907
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=43-step=48934-d29b13c1069e.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792280705465026833
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=44-step=50072-557ed157ca65.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792281336179489416
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=45-step=51210-349e2c201cf9.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792281956982524600
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=46-step=52348-4596f2e4e4e4.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792282586825256098
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=47-step=53486-9357fe376964.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792283212555356774
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=48-step=54624-0960393d0464.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792283854269285606
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=49-step=55762-aaa9a6618fb6.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792284488487020445
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=50-step=56900-c0dcc6788e76.ckpt",
+        "bytes": 50972946,
+        "mtime_ns": 1792285123151840258
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/last.ckpt",
+        "bytes": 50945744,
+        "mtime_ns": 1792282509000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/train-none-epoch=34-step=39500.ckpt",
+        "bytes": 17005802,
+        "mtime_ns": 1792275482000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/train-none-epoch=46-step=53000.ckpt",
+        "bytes": 17005802,
+        "mtime_ns": 1792282946000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/val-none-epoch=41-step=46858.ckpt",
+        "bytes": 50945744,
+        "mtime_ns": 1792279563000000000,
+        "sha256": "856b24c15f7450c4334810728f3681596ee43653ac855e73efddd51cbd47fd3b"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/val-none-epoch=45-step=52210.ckpt",
+        "bytes": 50945744,
+        "mtime_ns": 1792282507000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/lightning_logs/version_0/hparams.yaml",
+        "bytes": 1556,
+        "mtime_ns": 1792253539993755223,
+        "sha256": "64b29a9a2f708be6776e0d924b0355608d44fb7ff296d78b4afd3476b6f7972c"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/lightning_logs/version_0/metrics.csv",
+        "bytes": 276245,
+        "mtime_ns": 1792285124143483892,
+        "sha256": "9ce9106062f09581d7e781f18b67e938437651c49ab2836cc95fc90729462679"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/logs/gpu_usage.csv",
+        "bytes": 48973,
+        "mtime_ns": 1792285078449746872,
+        "sha256": "3cb228443639dba64c34cc1320c6b28ae1e88a41be9fb396864f0ce266a5eb1b"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/logs/train.log",
+        "bytes": 9593914,
+        "mtime_ns": 1792285128515555047
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_none_s42_e50/run.json",
+        "bytes": 1407,
+        "mtime_ns": 1792285126857715546,
+        "sha256": "4e1dd05d3a30960430abbbaca67c3d1a4ed1e36ab43a5f27c5f3aaba9a12d2bf"
+      }
+    ],
+    "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50": [
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/TRAINING_COMPLETE",
+        "bytes": 0,
+        "mtime_ns": 1792447254726042510,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/best_checkpoint.txt",
+        "bytes": 146,
+        "mtime_ns": 1792447250433059694,
+        "sha256": "0bdc9cb036acc102f38ef497801418788eb558ef3bf2fd9ef2ce3b67709e3d45"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=00-step=0-c88d0e651ed3.ckpt",
+        "bytes": 17108920,
+        "mtime_ns": 1792397603719081635
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=01-step=1197-fbb460b4a031.ckpt",
+        "bytes": 51256036,
+        "mtime_ns": 1792398612292451011
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=02-step=2394-2b458577867c.ckpt",
+        "bytes": 51256100,
+        "mtime_ns": 1792399592013249441
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=03-step=3591-5fee7044155c.ckpt",
+        "bytes": 51256100,
+        "mtime_ns": 1792400630282965504
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=04-step=4788-fa3cd9d7731e.ckpt",
+        "bytes": 51256100,
+        "mtime_ns": 1792401672064994595
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=05-step=5985-208c5e7b700b.ckpt",
+        "bytes": 51256100,
+        "mtime_ns": 1792402702586522716
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=06-step=7182-c33a15e68e53.ckpt",
+        "bytes": 51256100,
+        "mtime_ns": 1792403703664418168
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=07-step=8379-032947756531.ckpt",
+        "bytes": 51256100,
+        "mtime_ns": 1792404730115491590
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=08-step=9576-718f0439c91e.ckpt",
+        "bytes": 51256100,
+        "mtime_ns": 1792405749563190986
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=09-step=10773-c5108c252847.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792406785877739184
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=10-step=11970-fc2910ea25c3.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792407801704437728
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=11-step=13167-dac1dc34f251.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792408826991281147
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=12-step=14364-b5c1bc487aa5.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792409839037144022
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=13-step=15561-7fd828bc64ef.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792410849500814659
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=14-step=16758-f5601c70d5cc.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792411849747992932
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=15-step=17955-ed973012b8b7.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792412842693138115
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=16-step=19152-224a24dee463.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792413812543376418
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=17-step=20349-1456ff2433dc.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792414774485109828
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=18-step=21546-d2ae185197c8.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792415765496316608
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=19-step=22743-3c153f8ea8ea.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792416754896347880
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=20-step=23940-27fb72b3b832.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792417758218273984
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=21-step=25137-8ee1d3898bb6.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792418764334443212
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=22-step=26334-a347743d2e9b.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792419758549362532
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=23-step=27531-554f044935aa.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792420756050093234
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=24-step=28728-cf698b4577d9.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792421744213136236
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=25-step=29925-f0d775f3ac72.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792422733732720054
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=26-step=31122-039827c5c478.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792423717783755463
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=27-step=32319-ea444a885622.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792424709784399060
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=28-step=33516-c20ac9715cad.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792425710680165656
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=29-step=34713-3331aa2a89d9.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792426693135562374
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=30-step=35910-cf2b44f399cd.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792427696968623541
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=31-step=37107-223ac9f4155a.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792428703215693156
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=32-step=38304-1412c2c49d93.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792429702881552963
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=33-step=39501-81af6edae3fc.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792430683295922629
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=34-step=40698-fd4648cc36af.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792431681787781971
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=35-step=41895-004ad6758aa2.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792432674949764681
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=36-step=43092-bdd3a92aa211.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792433666944545927
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=37-step=44289-0bad6144d2bb.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792434649895561278
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=38-step=45486-f357e4ca02df.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792435645392863632
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=39-step=46683-8062edba0a57.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792436644041073054
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=40-step=47880-7f9929b927fa.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792437636830400774
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=41-step=49077-efc35e82d785.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792438592096160360
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=42-step=50274-a25f240cc0e0.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792439556684222892
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=43-step=51471-00e1ecbb6d2b.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792440535109731260
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=44-step=52668-2fdee9de751e.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792441497227185130
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=45-step=53865-292866759879.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792442445984038036
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=46-step=55062-24d3e535acaa.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792443410428858124
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=47-step=56259-90ab8aaa9cf4.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792444375483216227
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=48-step=57456-e7ae951f311a.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792445326832616774
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=49-step=58653-3ed7b018b9dd.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792446279043868244
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=50-step=59850-cc8f0280231e.ckpt",
+        "bytes": 51257458,
+        "mtime_ns": 1792447247203349029
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/last.ckpt",
+        "bytes": 51229952,
+        "mtime_ns": 1792418275000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/train-none-epoch=06-step=8000.ckpt",
+        "bytes": 17100514,
+        "mtime_ns": 1792404422000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/train-none-epoch=43-step=52000.ckpt",
+        "bytes": 17100514,
+        "mtime_ns": 1792440966000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=17-step=20949.ckpt",
+        "bytes": 51229952,
+        "mtime_ns": 1792415274000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=20-step=24540.ckpt",
+        "bytes": 51229952,
+        "mtime_ns": 1792418274000000000,
+        "sha256": "dd2d95921a78963e99b94a5aac23c8e302580c9896d6fb25ce7d855e7480d04c"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/lightning_logs/version_0/hparams.yaml",
+        "bytes": 1591,
+        "mtime_ns": 1792397604085280408,
+        "sha256": "416cf27ae49548e232bf87e27b2364277052650ef3467c8b4e88a9d2dfcb7598"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/lightning_logs/version_0/metrics.csv",
+        "bytes": 313585,
+        "mtime_ns": 1792447248037880372,
+        "sha256": "bf89de91001da537cd9cf1f1f874d79e94ca6dc319f8c1ef801bb375a76423ab"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/logs/gpu_usage.csv",
+        "bytes": 76886,
+        "mtime_ns": 1792447233941768690,
+        "sha256": "c68e31423a9d55977ab223ffd3645e8bc81efe8af01368704318c61f1611e69b"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/logs/train.log",
+        "bytes": 10162210,
+        "mtime_ns": 1792447252541957112
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/run.json",
+        "bytes": 3489,
+        "mtime_ns": 1792447250449051168,
+        "sha256": "e10c1a77224ec60fbe00bda216ed4a275c4a685090a35dcffe2e9069024ee6e5"
+      }
+    ],
+    "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50": [
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/TRAINING_COMPLETE",
+        "bytes": 0,
+        "mtime_ns": 1792483566211856518,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/best_checkpoint.txt",
+        "bytes": 146,
+        "mtime_ns": 1792483561970186940,
+        "sha256": "327735b4a1c948da7fa59af311eb2c5dfa70c28ff1d62507a4e67db54161b07e"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=00-step=0-599a1e010fd8.ckpt",
+        "bytes": 17098680,
+        "mtime_ns": 1792447260563322689
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=01-step=971-96c0d267d114.ckpt",
+        "bytes": 51223830,
+        "mtime_ns": 1792448014939778937
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=02-step=1942-74c8952037cb.ckpt",
+        "bytes": 51225316,
+        "mtime_ns": 1792448742906663473
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=03-step=2913-d045ae0807fd.ckpt",
+        "bytes": 51225380,
+        "mtime_ns": 1792449442272920393
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=04-step=3884-ee3f50ca92dd.ckpt",
+        "bytes": 51225380,
+        "mtime_ns": 1792450159164330261
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=05-step=4855-58b13ae72b9a.ckpt",
+        "bytes": 51225380,
+        "mtime_ns": 1792450890442854843
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=06-step=5826-45ba2222293e.ckpt",
+        "bytes": 51225380,
+        "mtime_ns": 1792451631658409870
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=07-step=6797-708b63ce0a3a.ckpt",
+        "bytes": 51225380,
+        "mtime_ns": 1792452355719168569
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=08-step=7768-1e6ba758431e.ckpt",
+        "bytes": 51225380,
+        "mtime_ns": 1792453063017320760
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=09-step=8739-7ca4e05b26d2.ckpt",
+        "bytes": 51225380,
+        "mtime_ns": 1792453788747232940
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=10-step=9710-996d26240755.ckpt",
+        "bytes": 51225380,
+        "mtime_ns": 1792454525191770334
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=11-step=10681-c024233514ae.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792455251929791679
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=12-step=11652-1df62608a06d.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792455967390063867
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=13-step=12623-405a907e2e15.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792456693392546160
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=14-step=13594-9eb9457681c2.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792457402563452869
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=15-step=14565-fb83ca1fbe83.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792458134271186396
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=16-step=15536-79bd83f6d9e2.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792458860859848417
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=17-step=16507-573bbb682825.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792459598902425032
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=18-step=17478-cd1cde1805e6.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792460333736571842
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=19-step=18449-cb7d32b043a6.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792461039715901198
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=20-step=19420-c427511a979c.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792461761894435570
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=21-step=20391-7c0a92ecfd6d.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792462487141722926
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=22-step=21362-a4d90ccf40ea.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792463216320840311
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=23-step=22333-817e4d9857eb.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792463971094691913
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=24-step=23304-8b2db0f10dfb.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792464682058187217
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=25-step=24275-621fd310228f.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792465419808672190
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=26-step=25246-702e37505c59.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792466155866213706
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=27-step=26217-0169b6f8d133.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792466878098905985
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=28-step=27188-96d3dadc46cf.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792467592787084568
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=29-step=28159-19b08511b119.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792468277668828483
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=30-step=29130-8231cda2d573.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792468984521244176
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=31-step=30101-b5b2dfaf279c.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792469701486789441
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=32-step=31072-6a7b4f82d88f.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792470438008134741
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=33-step=32043-56d0e97b60e8.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792471233349274104
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=34-step=33014-060d4d6170df.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792472017257029178
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=35-step=33985-3d2a22bdd370.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792472789519769071
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=36-step=34956-71c5ec58b362.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792473506365699950
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=37-step=35927-d2aad1e3c6a7.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792474230139212640
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=38-step=36898-231b1592aeb8.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792474960525407055
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=39-step=37869-a48ed1c71705.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792475697825733315
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=40-step=38840-35334f2a5dc9.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792476423861589053
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=41-step=39811-5a00bf2e657a.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792477158448241175
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=42-step=40782-31eb9a98fbbb.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792477870150331971
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=43-step=41753-72a8db17c207.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792478579739072819
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=44-step=42724-c7c3e5738706.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792479296114337794
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=45-step=43695-d1fc3d556ad4.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792479991971992394
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=46-step=44666-6875da575004.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792480706267402196
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=47-step=45637-d44203f25e8c.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792481431144381398
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=48-step=46608-11210e143612.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792482154583670333
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=49-step=47579-9d59b9dc935f.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792482862135105722
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=50-step=48550-e45fcb2eff9a.ckpt",
+        "bytes": 51226738,
+        "mtime_ns": 1792483558832520077
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/last.ckpt",
+        "bytes": 51199232,
+        "mtime_ns": 1792479883000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/train-none-epoch=19-step=18500.ckpt",
+        "bytes": 17090274,
+        "mtime_ns": 1792461088000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/train-none-epoch=26-step=26000.ckpt",
+        "bytes": 17090274,
+        "mtime_ns": 1792466717000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=44-step=43324.ckpt",
+        "bytes": 51199232,
+        "mtime_ns": 1792479738000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=44-step=43524.ckpt",
+        "bytes": 51199232,
+        "mtime_ns": 1792479881000000000,
+        "sha256": "e00b5dd7bf64eb3eafb23c2c6f8a8a11578bef3b90c1c49cf7ca795ab10ef494"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/lightning_logs/version_0/hparams.yaml",
+        "bytes": 1591,
+        "mtime_ns": 1792447260956497819,
+        "sha256": "4efe5d959b79717e2772ed9dfe45f0e7bb2bc9e5e0c117b69ebb77f046f24b4d"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/lightning_logs/version_0/metrics.csv",
+        "bytes": 224169,
+        "mtime_ns": 1792483559516853566,
+        "sha256": "97a49a3701cb2555f96b8538d8e9ec36d25fdbbae20582624ab704eb14f91441"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/logs/gpu_usage.csv",
+        "bytes": 56078,
+        "mtime_ns": 1792483511736373767,
+        "sha256": "0a41da51008cc833c7a30b3953fba922d4628b3e15d6012176f8ff61b336060e"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/logs/train.log",
+        "bytes": 8045678,
+        "mtime_ns": 1792483563773590335
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/run.json",
+        "bytes": 1838,
+        "mtime_ns": 1792483561983291121,
+        "sha256": "447c53c21a51d69f502a93bc2f87c5eae050207708793c8f1d2f994d6faed870"
+      }
+    ]
+  },
+  "configs": {
+    "configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml": "876c0fd72f69a6653954d9b6b4738a58aa0a2ebfbcf2f1dcf7550bb5528f0c5b",
+    "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml": "017cdecbc2e7f088d764bfcf31a2cd071a2b53ccef8b432e33c1b29361418ee2",
+    "configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml": "44b72b2a6f7a7d05635a76fb4c0cb859a37b7190e3fe2d91daf790d4da3bc819",
+    "configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml": "9ddbd72852149149a7f256404bbed833098406a5adf4c06110566866bb6c7b78"
+  },
+  "server_utc": "2026-10-21T22:57:03.265128+00:00",
+  "historical_baseline_files_verified": 63
+}

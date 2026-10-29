@@ -1,0 +1,24 @@
+{
+  "server_utc": "2026-10-21T23:05:27.038160+00:00",
+  "reason": "New standalone launcher lacked repository sys.path bootstrap; failure was before any training",
+  "changes": [
+    "Bootstrap repository imports",
+    "Allow explicit reuse of passed, exact-config/core-code-fingerprint preflights",
+    "Regression check for standalone bootstrap"
+  ],
+  "model_sources_unchanged": true,
+  "formal_training_had_not_started": true,
+  "standalone_import_check_passed": true,
+  "files": [
+    {
+      "path": "scripts/server/phone69_placement_pipeline.py",
+      "expected_sha256": "ef9624e1c37f1e95d8025791a99f0c4b9bbc84071a328266c8f90e1bab40249c",
+      "sha256": "646ad9177f49e4cf1016fda184df6e5da7905b764aaaa62f909b1c33923df197"
+    },
+    {
+      "path": "tests/test_placement_launch.py",
+      "expected_sha256": "28708c3d2f547a964397bf034022764f4b0d9b097092c75d3b3bc3668bdf1af8",
+      "sha256": "b4879b95a7be259010d973cd9ddf5ed4e4ac27385d78721a08b22fcb86437bd4"
+    }
+  ]
+}

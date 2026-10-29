@@ -1,0 +1,137 @@
+{
+  "server_utc": "2026-10-21T22:57:05.596668+00:00",
+  "files": [
+    {
+      "path": "conformer_rnnt/checkpoint_utils.py",
+      "sha256": "2b6be42fa3204a1c6bbe4234db6351d81785acd3c0ea17634fe88f30522d54af",
+      "previous_sha256": "2fc3c8cdf3ffe6b72acb95e4d5bf0bac402d2b15614e2234e62964c716dae37e",
+      "backup": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/source_backups/conformer_rnnt/checkpoint_utils.py"
+    },
+    {
+      "path": "conformer_rnnt/compression/natural.py",
+      "sha256": "55dd1ff2fa9d2b7b3c58c7e559ad40858eaea5f7e6038d96836f1be82b95d574",
+      "previous_sha256": "da9d17f4c6bb86f6741a85f925b35f2174baa9853639f1cfe5d1d49a4c492232",
+      "backup": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/source_backups/conformer_rnnt/compression/natural.py"
+    },
+    {
+      "path": "conformer_rnnt/compression/stages.py",
+      "sha256": "ad9ae1867efd0851e99bd29fb05e7939bbdca02aeeeab93c98ec58f3d77eae19",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "conformer_rnnt/staged_encoder.py",
+      "sha256": "3ffdbfca4de4afa8fb44aa008947092a48cfc7e52f1af013bff027de16c746b7",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "conformer_rnnt/model.py",
+      "sha256": "271f238654fc3bc74562cfa236cb869157142c46ac40e613e1755cc9f490c4d7",
+      "previous_sha256": "c36f2ac27cf8959469b49211c5c003430f7ed68a1bddd739bef72a93043a89f4",
+      "backup": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/source_backups/conformer_rnnt/model.py"
+    },
+    {
+      "path": "conformer_rnnt/lightning_module.py",
+      "sha256": "b6560230195b50ac711383b9de589199ed043e0b2230c83f56f85b09c57c7799",
+      "previous_sha256": "22dd7fc2d1b78bada367b26992fd36fd4e7a354eba1ceeeb739b145c62a669f6",
+      "backup": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/source_backups/conformer_rnnt/lightning_module.py"
+    },
+    {
+      "path": "eval.py",
+      "sha256": "3bf9396fe90bcd7c367e97ccaf3fe10d1a66691ae685ca013618e5df5d5b0a89",
+      "previous_sha256": "12ac5c8106be7c76388e6e21134a5eab39f6ea80f1a32105789d63ba0626a246",
+      "backup": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/source_backups/eval.py"
+    },
+    {
+      "path": "scripts/server/train_phone69_460h_one.py",
+      "sha256": "07316eaa5dac2775668dbd4f3e4e9bfc81c8ec5db55ab65841c40ce262c33ca0",
+      "previous_sha256": "dbcb9a297da5ad3a2af974617424708576b8a8da5e516e90a9431d04dccd319d",
+      "backup": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/source_backups/scripts/server/train_phone69_460h_one.py"
+    },
+    {
+      "path": "scripts/server/probe_phone69_training_memory.py",
+      "sha256": "2780582b1cdfb8c897364f1defb718c5cc6e73d101825867461f935fe7691c89",
+      "previous_sha256": "fb59081bd37d5d9d64a11ab3931045d9b79292b7ca2a43d00a3e67c094d644a3",
+      "backup": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/source_backups/scripts/server/probe_phone69_training_memory.py"
+    },
+    {
+      "path": "scripts/server/validate_phone69_placement.py",
+      "sha256": "a2c52647076d53d29433b99754e0da39769c75a5d6bc4a8bef20f1d7d6a9c2b1",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "scripts/server/phone69_placement_pipeline.py",
+      "sha256": "ef9624e1c37f1e95d8025791a99f0c4b9bbc84071a328266c8f90e1bab40249c",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "scripts/server/status_phone69_placement.py",
+      "sha256": "ddf0762ed1fdd7bf8828a419db69a1d4895380dd9c4bdea2e9421746e38b476b",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "tests/test_compression_placement.py",
+      "sha256": "40a04a4ff43a3b3b3376ea65a4103dd79466ef6da8a8ca0792e975e866d35dfa",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "tests/test_placement_launch.py",
+      "sha256": "28708c3d2f547a964397bf034022764f4b0d9b097092c75d3b3bc3668bdf1af8",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "docs/phone69_placement_stride1_launch_20261022.md",
+      "sha256": "4f81950215dbc1f8beecfb3e985cbc0e9c795cf3233086bf6ae8459c0c5e87f4",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/queue_plan.json",
+      "sha256": "ffbdc36d39ccded2d57e3cedb7b01411ad0b255371c8eafc90010abe3b5da824",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+      "sha256": "173391aa2e55ef15f01865c8bd6792e53f52d0475912dacad83a7297542f4354",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_mel_stride2_s42_e50.yaml",
+      "sha256": "50174ea97eace492aa9e2a6ee971c908d594fea61a28524b44713d5257274a4c",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "sha256": "77c6dbb159a17301e33ab354986405cf93b1f193cc1c7bdc279614f9e682fee4",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_layer5_stride2_s42_e50.yaml",
+      "sha256": "adf2cdc88983fceee80c9d531c87c20142682a7e2069dd6c95c8ed8396da8268",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50.yaml",
+      "sha256": "46fcd21d1a968f7e05cbe03cd8ed50e3d5bd62a69f1d932d1c68e0fcf26f4581",
+      "previous_sha256": null,
+      "backup": null
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_layers2_5_n3_stride2_s42_e50.yaml",
+      "sha256": "1249c9930e4dacfc58525975d5a10c689f233b865badcde4460c5ebc786e562c",
+      "previous_sha256": null,
+      "backup": null
+    }
+  ]
+}

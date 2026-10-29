@@ -1,0 +1,60 @@
+{
+  "analysis_date": "2026-10-18",
+  "seed": 42,
+  "purpose": "diagnostic_null_not_a_config_parameter_or_neural_ASR_result",
+  "assumptions": [
+    "continuous IID distances for the probability calculation",
+    "interior frame; finite-sequence endpoints are excluded from the limit",
+    "strict extrema; no plateau ties",
+    "mapping: peak -> p+1, valley -> v"
+  ],
+  "exact_order_counts": {
+    "orderings": 24,
+    "peak": 8,
+    "valley": 8,
+    "intersection": 5,
+    "union": 11
+  },
+  "interior_keep_probability": "11/24",
+  "interior_keep_probability_decimal": 0.4583333333333333,
+  "simulations": [
+    {
+      "hidden_frames": 1000,
+      "kept_centres": 458,
+      "observed_K_over_n": 0.458
+    },
+    {
+      "hidden_frames": 10000,
+      "kept_centres": 4573,
+      "observed_K_over_n": 0.4573
+    },
+    {
+      "hidden_frames": 100000,
+      "kept_centres": 45821,
+      "observed_K_over_n": 0.45821
+    }
+  ],
+  "monotonic_transform_checks": {
+    "affine": true,
+    "square_on_positive_domain": true,
+    "exponential": true
+  },
+  "curve_family_checks": {
+    "monotonic_ramp": {
+      "hidden_frames": 1000,
+      "kept_centres": 1
+    },
+    "alternating": {
+      "hidden_frames": 1000,
+      "kept_centres": 499
+    },
+    "smooth_eight_cycles": {
+      "hidden_frames": 1000,
+      "kept_centres": 16
+    }
+  },
+  "learned_predictor_parameters": 20677,
+  "proposed_capacity_control_parameters": 20688,
+  "script_sha256": "517d731c976edcdc61314a31452bda1fa951e2342421b5de614dd956145a63cb",
+  "training_files_modified": false
+}

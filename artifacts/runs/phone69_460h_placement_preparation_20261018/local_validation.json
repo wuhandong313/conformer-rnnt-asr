@@ -1,0 +1,48 @@
+{
+  "valid": true,
+  "scope": "local_code_preparation_only",
+  "python": "3.12.7",
+  "torch": "2.12.0",
+  "torchaudio": "2.11.0",
+  "pytorch_lightning": "2.6.1",
+  "lightning_runtime": "temporary pure-Python package links; installed environments unchanged",
+  "unit_tests": {
+    "passed": 63,
+    "failed": 0,
+    "skipped": 0,
+    "log": "tests_final.log"
+  },
+  "syntax_compilation_passed": true,
+  "full_lightning_save_load_resume_test_passed": true,
+  "synthetic_rnnt": "synthetic_validation.json",
+  "legacy_compatibility": "legacy_compatibility.json",
+  "current_recipes_unchanged": {
+    "configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml": "876c0fd72f69a6653954d9b6b4738a58aa0a2ebfbcf2f1dcf7550bb5528f0c5b",
+    "configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml": "44b72b2a6f7a7d05635a76fb4c0cb859a37b7190e3fe2d91daf790d4da3bc819",
+    "configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml": "9ddbd72852149149a7f256404bbed833098406a5adf4c06110566866bb6c7b78",
+    "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml": "017cdecbc2e7f088d764bfcf31a2cd071a2b53ccef8b432e33c1b29361418ee2"
+  },
+  "source_sha256": {
+    "conformer_rnnt/encoder.py": "46384d3f0fdd51c6af74693b8b195a71221cb4bdf2d020cbdc8f4507034983c1",
+    "conformer_rnnt/staged_encoder.py": "3ffdbfca4de4afa8fb44aa008947092a48cfc7e52f1af013bff027de16c746b7",
+    "conformer_rnnt/compression/stages.py": "ad9ae1867efd0851e99bd29fb05e7939bbdca02aeeeab93c98ec58f3d77eae19",
+    "conformer_rnnt/compression/natural.py": "55dd1ff2fa9d2b7b3c58c7e559ad40858eaea5f7e6038d96836f1be82b95d574",
+    "conformer_rnnt/model.py": "271f238654fc3bc74562cfa236cb869157142c46ac40e613e1755cc9f490c4d7",
+    "conformer_rnnt/lightning_module.py": "b6560230195b50ac711383b9de589199ed043e0b2230c83f56f85b09c57c7799",
+    "conformer_rnnt/checkpoint_utils.py": "2b6be42fa3204a1c6bbe4234db6351d81785acd3c0ea17634fe88f30522d54af",
+    "eval.py": "3bf9396fe90bcd7c367e97ccaf3fe10d1a66691ae685ca013618e5df5d5b0a89",
+    "scripts/server/train_phone69_460h_one.py": "07316eaa5dac2775668dbd4f3e4e9bfc81c8ec5db55ab65841c40ce262c33ca0",
+    "scripts/server/validate_phone69_placement.py": "a2c52647076d53d29433b99754e0da39769c75a5d6bc4a8bef20f1d7d6a9c2b1",
+    "tests/test_compression_placement.py": "40a04a4ff43a3b3b3376ea65a4103dd79466ef6da8a8ca0792e975e866d35dfa",
+    "docs/phone69_compression_placement_plan_20261018.md": "6af30a31dcbb34cbeabb7454eb56eff23f2690c0bb626040b3ec3ab0412ee13b",
+    "docs/dynamic_compression_paper_plan_20261018.md": "b5312978fc6857fd92c61c8f66026ed89b27cad37e8a77883fa516e0bbba8c2e",
+    "configs/server_phone69_460h_placement_mel_stride2_s42_e50.yaml": "36a0bb9e13502f8ac1b6ec4fc67b9f760cd057ebe8720e4ca1c26ac2043701c4",
+    "configs/server_phone69_460h_placement_layer5_stride2_s42_e50.yaml": "dfd9659b1c2077db30057f4815d33338d87e5b04cc80092d5c896e70cb4d803f",
+    "configs/server_phone69_460h_placement_layers2_5_n3_stride2_s42_e50.yaml": "6764d865ba5ee7caf04a06150de139db21dfed0f23608aef13f2876708781189"
+  },
+  "new_training_started": false,
+  "server_files_modified": false,
+  "real_batch_a100_memory_validated": false,
+  "inherited_phone_token_budget": 16000,
+  "launch_ready": false
+}

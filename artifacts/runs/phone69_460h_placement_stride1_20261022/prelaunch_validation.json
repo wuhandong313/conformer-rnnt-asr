@@ -1,0 +1,183 @@
+{
+  "valid": true,
+  "run_phase": "placement_stride1_20261022",
+  "models": [
+    {
+      "scheme": "mel",
+      "config": "configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+      "experiment": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50",
+      "initial_budget": 6500,
+      "budget": 6500,
+      "probe": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_mel_b6500.json",
+      "config_sha256": "173391aa2e55ef15f01865c8bd6792e53f52d0475912dacad83a7297542f4354",
+      "peak_reserved_GiB": 58.1484375
+    },
+    {
+      "scheme": "layer5",
+      "config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "experiment": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50",
+      "initial_budget": 6500,
+      "budget": 5000,
+      "probe": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layer5_b5000.json",
+      "config_sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+      "peak_reserved_GiB": 60.4140625
+    },
+    {
+      "scheme": "layers2_5_n3",
+      "config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50.yaml",
+      "experiment": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
+      "initial_budget": 6500,
+      "budget": 4000,
+      "probe": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b4000.json",
+      "config_sha256": "e60e15d89be9e141bfc3ab5812e3a3454ea888bd48893ef25443eccd8ab19e61",
+      "peak_reserved_GiB": 45.142578125
+    }
+  ],
+  "definitions": {
+    "mel": {
+      "version": 2,
+      "sequence_mode": "offline",
+      "tail_alignment": "zero_pad_ceil",
+      "stride": 1,
+      "input_dim": 80,
+      "input_projection": 128,
+      "encoding_dim": 256,
+      "num_heads": 8,
+      "ffn_dim": 512,
+      "depthwise_conv_kernel_size": 31,
+      "dropout": 0.1,
+      "num_layers": 10,
+      "layers": [
+        10
+      ],
+      "compression_stages": [
+        {
+          "after_layer": 0,
+          "detector": {
+            "type": "cosine_diff",
+            "preprocess": "none"
+          },
+          "mixer": {
+            "type": "learned"
+          },
+          "neighborhood_radius": 0,
+          "window_size": 5,
+          "weight_predictor_mode": "five_frames",
+          "feature_dim": 80,
+          "input_domain": "model_mel_input"
+        }
+      ],
+      "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+    },
+    "layer5": {
+      "version": 2,
+      "sequence_mode": "offline",
+      "tail_alignment": "zero_pad_ceil",
+      "stride": 1,
+      "input_dim": 80,
+      "input_projection": 128,
+      "encoding_dim": 256,
+      "num_heads": 8,
+      "ffn_dim": 512,
+      "depthwise_conv_kernel_size": 31,
+      "dropout": 0.1,
+      "num_layers": 10,
+      "layers": [
+        5,
+        5
+      ],
+      "compression_stages": [
+        {
+          "after_layer": 5,
+          "detector": {
+            "type": "cosine_diff",
+            "preprocess": "none"
+          },
+          "mixer": {
+            "type": "learned"
+          },
+          "neighborhood_radius": 0,
+          "window_size": 5,
+          "weight_predictor_mode": "five_frames",
+          "feature_dim": 128,
+          "input_domain": "encoder"
+        }
+      ],
+      "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+    },
+    "layers2_5_n3": {
+      "version": 2,
+      "sequence_mode": "offline",
+      "tail_alignment": "zero_pad_ceil",
+      "stride": 1,
+      "input_dim": 80,
+      "input_projection": 128,
+      "encoding_dim": 256,
+      "num_heads": 8,
+      "ffn_dim": 512,
+      "depthwise_conv_kernel_size": 31,
+      "dropout": 0.1,
+      "num_layers": 10,
+      "layers": [
+        2,
+        3,
+        5
+      ],
+      "compression_stages": [
+        {
+          "after_layer": 2,
+          "detector": {
+            "type": "cosine_diff",
+            "preprocess": "none"
+          },
+          "mixer": {
+            "type": "hard"
+          },
+          "neighborhood_radius": 1,
+          "feature_dim": 128,
+          "input_domain": "encoder"
+        },
+        {
+          "after_layer": 5,
+          "detector": {
+            "type": "cosine_diff",
+            "preprocess": "none"
+          },
+          "mixer": {
+            "type": "learned"
+          },
+          "neighborhood_radius": 0,
+          "window_size": 5,
+          "weight_predictor_mode": "five_frames",
+          "feature_dim": 128,
+          "input_domain": "encoder"
+        }
+      ],
+      "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+    }
+  },
+  "source_sha256": {
+    "conformer_rnnt/__init__.py": "53467afcb57ca9fa24a0ac716cae00b38c0a18af4c5f356920922667be4b4ca0",
+    "conformer_rnnt/checkpoint_utils.py": "2b6be42fa3204a1c6bbe4234db6351d81785acd3c0ea17634fe88f30522d54af",
+    "conformer_rnnt/compression/__init__.py": "5f912b187342ecfa0de09028c21c7a103124c5ca1cd8e844fbebd89be15fd145",
+    "conformer_rnnt/compression/core.py": "4c8435d13986cbbb9c102a25861fd58d8823881840b77081ef99ba158a3f9a12",
+    "conformer_rnnt/compression/detectors.py": "fa33ddba727aa570f9918978b0400ccbc5001ffc18d2eff4059469d825dc86ae",
+    "conformer_rnnt/compression/mixers.py": "bcec02719b2fb0f6909b30609b14757756a24f41443b7bb109e00b257894f422",
+    "conformer_rnnt/compression/natural.py": "55dd1ff2fa9d2b7b3c58c7e559ad40858eaea5f7e6038d96836f1be82b95d574",
+    "conformer_rnnt/compression/stages.py": "ad9ae1867efd0851e99bd29fb05e7939bbdca02aeeeab93c98ec58f3d77eae19",
+    "conformer_rnnt/encoder.py": "46384d3f0fdd51c6af74693b8b195a71221cb4bdf2d020cbdc8f4507034983c1",
+    "conformer_rnnt/joiner.py": "56a409bcc92c1ee3d21b2fbe2e9e62b9836268a871013940c568377414fc0889",
+    "conformer_rnnt/lightning_module.py": "b6560230195b50ac711383b9de589199ed043e0b2230c83f56f85b09c57c7799",
+    "conformer_rnnt/metrics.py": "911529445ec324a7422f2f7592cca4af1177f5c7e397319a4a58b7706f5b593b",
+    "conformer_rnnt/model.py": "271f238654fc3bc74562cfa236cb869157142c46ac40e613e1755cc9f490c4d7",
+    "conformer_rnnt/predictor.py": "da238c0e54bd16a1f01f252ef935410877792a7dbf6ccc37c8613342393fdaf1",
+    "conformer_rnnt/staged_encoder.py": "3ffdbfca4de4afa8fb44aa008947092a48cfc7e52f1af013bff027de16c746b7",
+    "common.py": "b2c0f0a35e57f96c09d9440ffec59e4b8576616e153f931e0d0c7b0b1ad34f51",
+    "train.py": "ae92155f5fff5f9e2331ac8c432bf5f7bfb2cb842a7cf3819075e7d70950da03",
+    "scripts/server/train_phone69_460h_one.py": "07316eaa5dac2775668dbd4f3e4e9bfc81c8ec5db55ab65841c40ce262c33ca0",
+    "scripts/server/phone69_epoch_checkpoint.py": "a18e0042ee64f1920977746e32fcb50e12f45304bf729702bf2da0891ad84edc",
+    "scripts/server/probe_phone69_training_memory.py": "2780582b1cdfb8c897364f1defb718c5cc6e73d101825867461f935fe7691c89",
+    "scripts/server/phone69_placement_pipeline.py": "646ad9177f49e4cf1016fda184df6e5da7905b764aaaa62f909b1c33923df197"
+  },
+  "server_utc": "2026-10-21T23:05:48.582682+00:00"
+}

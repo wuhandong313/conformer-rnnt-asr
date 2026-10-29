@@ -1,0 +1,45 @@
+{
+  "run_phase": "placement_stride1_20261022",
+  "authorization": "User 2026-10-22: run the three later placement experiments at stride1 and schedule hourly monitoring in 训练监控.",
+  "stride": 1,
+  "input_projection": 128,
+  "internal_dim": 128,
+  "epochs": 50,
+  "experiments": [
+    {
+      "scheme": "mel",
+      "config": "configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+      "experiment": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50",
+      "initial_budget": 6500
+    },
+    {
+      "scheme": "layer5",
+      "config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "experiment": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50",
+      "initial_budget": 6500
+    },
+    {
+      "scheme": "layers2_5_n3",
+      "config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50.yaml",
+      "experiment": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
+      "initial_budget": 6500
+    }
+  ],
+  "batch_candidates": [
+    6500,
+    5000,
+    4000,
+    3000,
+    2000
+  ],
+  "max_reserved_fraction": 0.9,
+  "protected_experiments": [
+    "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50",
+    "exp_phone69_460h_offline_native_stride4_none_s42_e50",
+    "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50",
+    "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50"
+  ],
+  "monitor_thread_id": "01a14d43-7d28-7a80-8a95-0aab77d7efa2",
+  "monitor_interval_minutes": 60,
+  "automatic_failure_restart_authorized": false
+}

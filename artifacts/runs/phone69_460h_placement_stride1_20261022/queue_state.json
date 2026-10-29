@@ -1,0 +1,10 @@
+{
+  "status": "training",
+  "run_phase": "placement_stride1_20261022",
+  "pid": 1960,
+  "server_utc": "2026-10-21T23:05:49.768953+00:00",
+  "experiment": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50",
+  "budget": 6500,
+  "training_pid": 2038,
+  "completed": []
+}

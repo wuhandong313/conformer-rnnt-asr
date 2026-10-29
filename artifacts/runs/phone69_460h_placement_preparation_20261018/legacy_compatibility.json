@@ -1,0 +1,20 @@
+{
+  "valid": true,
+  "comparison": "current implementation versus HEAD before this change",
+  "models": [
+    {
+      "mode": "legacy",
+      "state_tensors": 90,
+      "identical_initial_weights": true,
+      "identical_output": true,
+      "max_absolute_difference": 0.0
+    },
+    {
+      "mode": "offline",
+      "state_tensors": 90,
+      "identical_initial_weights": true,
+      "identical_output": true,
+      "max_absolute_difference": 0.0
+    }
+  ]
+}
