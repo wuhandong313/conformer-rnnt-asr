@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_20261025/run_cpu_evals.py", line 23, in <module>
+    if rc != 0: raise RuntimeError(item['scheme']+' eval.py exited '+str(rc))
+RuntimeError: mel eval.py exited -2

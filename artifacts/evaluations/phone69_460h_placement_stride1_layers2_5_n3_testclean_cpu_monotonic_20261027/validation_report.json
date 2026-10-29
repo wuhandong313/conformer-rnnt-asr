@@ -1,0 +1,10 @@
+{
+  "valid": true,
+  "sample_count": 2620,
+  "expected_samples": 2620,
+  "reference_phones": 189023,
+  "expected_reference_phones": 189023,
+  "reference_order_matches_mel_and_layer5": true,
+  "rtf_finite_nonnegative": true,
+  "completed_at_utc": "2026-10-27T03:42:47.505280+00:00"
+}

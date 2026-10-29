@@ -1,0 +1,11 @@
+{
+  "status": "failed",
+  "device": "cpu",
+  "timer": "time.perf_counter",
+  "test_subset": "test-clean",
+  "metric": "per",
+  "beam_width": 20,
+  "experiments": [],
+  "error": "RuntimeError('mel eval_monotonic.py exited 1')",
+  "failed_at_utc": "2026-10-25T01:28:32.555029+00:00"
+}

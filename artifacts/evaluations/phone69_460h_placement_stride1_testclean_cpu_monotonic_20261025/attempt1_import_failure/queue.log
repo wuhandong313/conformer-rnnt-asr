@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/run_cpu_evals.py", line 19, in <module>
+    if rc: raise RuntimeError(item['scheme']+' eval_monotonic.py exited '+str(rc))
+RuntimeError: mel eval_monotonic.py exited 1

@@ -1,10 +1,25 @@
 {
   "status": "training",
   "run_phase": "placement_stride1_20261022",
-  "pid": 1960,
-  "server_utc": "2026-10-21T23:05:49.768953+00:00",
-  "experiment": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50",
-  "budget": 6500,
-  "training_pid": 2038,
-  "completed": []
+  "pid": 8654,
+  "server_utc": "2026-10-24T12:18:06.672806+00:00",
+  "error": "AssertionError('layers2_5_n3 training failed; logs preserved')",
+  "message": "Preserved all logs and checkpoints; no automatic restart",
+  "experiment": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
+  "budget": 6000,
+  "training_pid": 8654,
+  "resume_config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+  "resume_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=03-step=12414-ffc3c9aa1e56.ckpt",
+  "completed": [
+    {
+      "scheme": "mel",
+      "epoch": 50,
+      "global_step": 126550
+    },
+    {
+      "scheme": "layer5",
+      "epoch": 50,
+      "global_step": 165000
+    }
+  ]
 }

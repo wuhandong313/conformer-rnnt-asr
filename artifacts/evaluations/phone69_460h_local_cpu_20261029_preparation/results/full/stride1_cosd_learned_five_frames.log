@@ -1,0 +1,163 @@
+Building model from config …
+/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/code/five_frames/conformer_rnnt/lightning_module.py:603: torchaudio.transforms._transforms.RNNTLoss has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+Evaluation metric: PER
+Decoding: beam_width=20 (beam=20)
+Loading checkpoint: /Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/models/stride1_cosd_learned_five_frames/val-none-epoch=27-step=69137.ckpt
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/ffmpeg.py:88: UserWarning: torio.io._streaming_media_decoder.StreamingMediaDecoder has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+  s = torchaudio.io.StreamReader(src, format, None, buffer_size)
+[   0] PER: 0.029 (cum: 0.029)  RTF: 0.1003 (cum: 0.1003)  |  ref: HH IY1 HH OW1 P T DH EH1 R W UH1 D B IY0 S T UW1 F ER0 D IH1  |  hyp: HH IY1 HH OW1 P T DH EH1 R W UH1 D B IY0 S T UW1 F ER0 D IH1
+[   5] PER: 0.022 (cum: 0.028)  RTF: 0.0760 (cum: 0.0783)  |  ref: TH IY0 M Y UW1 Z IH0 K K EY1 M N IH1 R ER0 AE1 N D HH IY1 R   |  hyp: TH IY0 M Y UW1 Z IH0 K K EY1 M N IH1 R ER0 AH0 N D HH IY1 R 
+[  10] PER: 0.077 (cum: 0.032)  RTF: 0.0628 (cum: 0.0740)  |  ref: W EH1 L N AW1 EH1 N IH0 S AY1 D IH0 K L EH1 R Y UW1 HH AE1 V  |  hyp: W EH1 L N AW1 IH0 N AH0 S AY1 D IH0 K L IH1 R Y UW1 HH AE1 V
+[  15] PER: 0.042 (cum: 0.026)  RTF: 0.0613 (cum: 0.0758)  |  ref: B AH1 T TH IY0 D AH1 S K D IY1 P AH0 N IH0 NG IH0 N DH S K U  |  hyp: B AH1 T TH IY0 D AH1 S K D IY1 P AH0 N IH0 NG IH0 N DH S K U
+[  20] PER: 0.030 (cum: 0.024)  RTF: 0.1123 (cum: 0.0801)  |  ref: IH1 F AH0 M AE1 N HH AE1 D S T OW1 L AH0 N AH0 P AW1 N D IH0  |  hyp: IH1 F AH0 M AE1 N HH AE1 D S T OW1 L AH0 N AH0 P AW1 N D IH0
+[  25] PER: 0.031 (cum: 0.024)  RTF: 0.0850 (cum: 0.0814)  |  ref: AH0 JH EH1 N T AH0 L K IH1 K F R AH1 M DH T AO1 L B OY1 IH2   |  hyp: AH0 JH EH1 N T AH0 L K IH1 K F R AH0 M DH T AO1 L B OY1 IH0 
+[  30] PER: 0.000 (cum: 0.024)  RTF: 0.0750 (cum: 0.0813)  |  ref: B IH0 W EH1 R AH1 V M EY1 K IH0 NG DH AE1 T M IH0 S T EY1 K  |  hyp: B IH0 W EH1 R AH1 V M EY1 K IH0 NG DH AE1 T M IH0 S T EY1 K
+[  35] PER: 0.000 (cum: 0.025)  RTF: 0.0854 (cum: 0.0805)  |  ref: HH IY1 HH AE1 D DH F EY1 TH IH1 N HH IH1 M DH AE1 T M UW1 V   |  hyp: HH IY1 HH AE1 D DH F EY1 TH IH1 N HH IH1 M DH AE1 T M UW1 V 
+[  40] PER: 0.042 (cum: 0.027)  RTF: 0.0808 (cum: 0.0807)  |  ref: HH IY1 S EH1 T AO1 F AH0 B R AH1 P T L IY0 F ER0 DH B UH1 L   |  hyp: HH IY1 S EH1 T AO1 F AH0 B R AH1 P T L IY0 F ER0 DH B UH1 L 
+[  45] PER: 0.000 (cum: 0.028)  RTF: 0.0704 (cum: 0.0796)  |  ref: S UW1 N DH HH OW1 L B R IH1 JH W AH0 Z T R EH1 M B AH0 L IH0  |  hyp: S UW1 N DH HH OW1 L B R IH1 JH W AH0 Z T R EH1 M B AH0 L IH0
+[  50] PER: 0.000 (cum: 0.028)  RTF: 0.1037 (cum: 0.0798)  |  ref: IH1 T W AH0 Z AY1 D AH0 L F AO1 R HH IH1 M T UW1 M UW1 V HH   |  hyp: IH1 T W AH0 Z AY1 D AH0 L F AO1 R HH IH1 M T UW1 M UW1 V HH 
+[  55] PER: 0.061 (cum: 0.029)  RTF: 0.0646 (cum: 0.0789)  |  ref: TH IY0 Y UH1 R AH0 P DH EY1 HH AE1 D K AH1 M F R AH1 M L EY1  |  hyp: TH IY0 Y UH1 R AH0 P DH EY1 HH AE1 D K AH1 M F R AH1 M L EY1
+[  60] PER: 0.019 (cum: 0.030)  RTF: 0.0660 (cum: 0.0776)  |  ref: HH IY1 S T UH1 D S T IH1 L IH0 N D EH1 F R AH0 N S T OW2 DH   |  hyp: HH IY1 S T UH1 D S T IH1 L IH0 N D EH1 F R AH0 N S T UW1 DH 
+[  65] PER: 0.159 (cum: 0.034)  RTF: 0.0556 (cum: 0.0764)  |  ref: DH EY1 Y UW0 N AY1 T EH1 V R IY0 K W AA1 L AH0 T IY0 AE1 N D  |  hyp: TH IY0 Y UW0 N AY1 T EH1 V R IY0 K W AA1 L AH0 T IY0 AE1 N D
+[  70] PER: 0.105 (cum: 0.036)  RTF: 0.0638 (cum: 0.0760)  |  ref: DH EH1 N HH IY1 K AH1 M Z T UW1 DH B IY1 K AH1 V IH0 T  |  hyp: DH EH1 N HH IY1 K AH1 M Z T UW1 DH B IY1 K AH1 V AH0 N
+[  75] PER: 0.033 (cum: 0.037)  RTF: 0.0905 (cum: 0.0772)  |  ref: DH EY1 AA1 R B IH0 AA1 N D AO1 L AH1 DH ER0 W ER1 K S DH AE1  |  hyp: DH EY1 AA1 R B IH0 AA1 N D AA2 L AH1 DH ER0 W ER1 K S DH AH0
+[  80] PER: 0.040 (cum: 0.039)  RTF: 0.1037 (cum: 0.0777)  |  ref: DH IH1 S AE1 T W AH1 N S K AH0 M P EH1 L Z Y UW1 T OW2 AH2 N  |  hyp: DH IH1 S AE1 T W AH1 N S K AH0 M P EH1 L Z Y UW1 T OW0 AH2 N
+[  85] PER: 0.019 (cum: 0.038)  RTF: 0.0839 (cum: 0.0781)  |  ref: IH1 T W IH1 L B IY0 HH OW1 L IY0 IH2 M P AA1 S AH0 B AH0 L F  |  hyp: IH1 T W IH1 L B IY0 HH OW1 L IY0 IH2 M P AA1 S AH0 B AH0 L F
+[  90] PER: 0.053 (cum: 0.039)  RTF: 0.0847 (cum: 0.0780)  |  ref: HH IY1 R IH1 Z AH0 N IY1 K W AH0 L IY0 T IH1 P IH0 K AH0 L G  |  hyp: HH IY1 R IH1 Z AH0 N IY1 K W AH0 L IY0 T IH1 P IH0 K AH0 L G
+[  95] PER: 0.114 (cum: 0.040)  RTF: 0.0575 (cum: 0.0773)  |  ref: DH EH1 R Z W AH1 N AH0 N D DH EH1 R Z AH0 N AH1 DH ER0 TH IY  |  hyp: DH EH1 R Z W AH1 N IH0 N DH EH1 R Z AH0 N AH1 DH ER0 TH IY0 
+[ 100] PER: 0.029 (cum: 0.039)  RTF: 0.0735 (cum: 0.0768)  |  ref: IH1 N B OW1 TH DH IY1 Z HH AY1 M IH1 TH AH0 K AH0 L S AH1 B   |  hyp: IH0 N B OW1 TH DH IY1 Z HH AY1 M IH1 TH IH0 K AH0 L S AH1 B 
+[ 105] PER: 0.022 (cum: 0.040)  RTF: 0.0654 (cum: 0.0763)  |  ref: IH1 T IH1 Z AH0 G L IY1 N ER0 B R IH1 NG IH0 NG D AW1 N HH E  |  hyp: IH1 T IH1 Z AH0 G L IY1 N ER0 B R IH1 NG IH0 NG D AW1 N HH E
+[ 110] PER: 0.133 (cum: 0.041)  RTF: 0.0504 (cum: 0.0755)  |  ref: HH ER0 AE1 NG DH T AY1 ER0 S AH0 M P R AA1 D AH0 K T AH1 V A  |  hyp: HH ER0 AE1 NG TH IY0 T AY1 ER0 S AH0 N D P R AA1 D AH0 K T A
+[ 115] PER: 0.000 (cum: 0.041)  RTF: 0.0508 (cum: 0.0746)  |  ref: HH ER0 EH1 D AH0 T IY0 TH IY0 K AA1 Z AH1 V AA2 L AW1 R F AO  |  hyp: HH ER0 EH1 D AH0 T IY0 TH IY0 K AA1 Z AH1 V AA2 L AW1 R F AO
+[ 120] PER: 0.000 (cum: 0.041)  RTF: 0.0538 (cum: 0.0738)  |  ref: HH AH1 Z B AH0 N D DH N EH1 K S T TH IH1 NG T UW1 AH0 W AY1   |  hyp: HH AH1 Z B AH0 N D DH N EH1 K S T TH IH1 NG T UW1 AH0 W AY1 
+[ 125] PER: 1.000 (cum: 0.041)  RTF: 0.0824 (cum: 0.0733)  |  ref: EY0 M IY1  |  hyp: AY1 AE1 M M IY1
+[ 130] PER: 0.066 (cum: 0.041)  RTF: 0.0752 (cum: 0.0732)  |  ref: OW1 T IH1 Z TH IY0 F ER1 S T T IH1 Z F L AE1 T ER0 IY0 IH0 N  |  hyp: OW1 T IH1 S TH F ER1 S T T IH1 S F L AE1 T ER0 IY0 IH0 N M A
+[ 135] PER: 0.050 (cum: 0.041)  RTF: 0.0732 (cum: 0.0732)  |  ref: S AH1 M W AH2 N EH1 L S T OW1 L D AH0 S T AO1 R IY0 N AA1 T   |  hyp: S AH1 M W AH1 N EH1 L S T OW1 L D S T AO1 R IY0 N AA1 T P ER
+[ 140] PER: 0.138 (cum: 0.042)  RTF: 0.0622 (cum: 0.0728)  |  ref: TH IY0 AH1 DH ER0 Z R IH0 Z EH1 N T IH0 D P OW0 S T P OW1 N   |  hyp: TH IY0 AH1 DH ER0 Z R IH0 Z EH1 N T IH0 D P AH0 S P OW1 N M 
+[ 145] PER: 0.000 (cum: 0.042)  RTF: 0.0802 (cum: 0.0728)  |  ref: SH IY1 W AH0 Z DH M OW1 S T AH0 G R IY1 AH0 B AH0 L W UH1 M   |  hyp: SH IY1 W AH0 Z DH M OW1 S T AH0 G R IY1 AH0 B AH0 L W UH1 M 
+[ 150] PER: 0.160 (cum: 0.042)  RTF: 0.0704 (cum: 0.0728)  |  ref: P R AA1 B AH0 B L IY0 N AA1 T T IH1 L DH S EH1 K AH0 N D P O  |  hyp: P R AA1 B AH0 B L IY0 N AA1 T OW1 DH S EH1 K AH0 N D P OW1 S
+[ 155] PER: 0.000 (cum: 0.042)  RTF: 0.0817 (cum: 0.0728)  |  ref: W OW1 N T Y UW1 T EH1 L D AH1 G L AH0 S  |  hyp: W OW1 N T Y UW1 T EH1 L D AH1 G L AH0 S
+[ 160] PER: 0.000 (cum: 0.041)  RTF: 0.0803 (cum: 0.0729)  |  ref: DH F ER1 S T AH1 V DH IY1 Z T AH1 CH IH0 Z K AH0 N V EY1 D D  |  hyp: DH F ER1 S T AH1 V DH IY1 Z T AH1 CH IH0 Z K AH0 N V EY1 D D
+[ 165] PER: 0.026 (cum: 0.041)  RTF: 0.0766 (cum: 0.0732)  |  ref: SH IY1 W AH0 Z Y AH1 NG AH0 N T R AY1 D N ER1 V AH0 S IH1 T   |  hyp: SH IY1 W AH0 Z Y AH1 NG AH0 N T R AY1 D N ER1 V AH0 S IH1 T 
+[ 170] PER: 0.029 (cum: 0.041)  RTF: 0.0774 (cum: 0.0735)  |  ref: B AH1 T W AH0 Z DH AE1 T AO1 L HH ER0 R IH0 W AO1 R D W AH2   |  hyp: B AH1 T W AH0 Z DH AE1 T AO1 L HH ER0 R IH0 W AO1 R D W AH1 
+[ 175] PER: 0.037 (cum: 0.040)  RTF: 0.0897 (cum: 0.0741)  |  ref: DH IH1 S AW1 T W ER0 D M Y UW1 T AH0 B IH1 L AH0 T IY0 IH1 N  |  hyp: DH IH1 S AW1 T W ER0 D M Y UW1 T AH0 B IH1 L AH0 T IY0 IH1 N
+[ 180] PER: 0.026 (cum: 0.039)  RTF: 0.0757 (cum: 0.0743)  |  ref: AE1 Z T UW1 EH1 N IY0 AH1 DH ER0 K AY1 N D AH1 V D IH1 S AH0  |  hyp: AE1 Z T UW1 EH1 N IY0 AH1 DH ER0 K AY1 N D AH1 V D IH1 S AH0
+[ 185] PER: 0.068 (cum: 0.039)  RTF: 0.0608 (cum: 0.0744)  |  ref: P ER1 L S AO1 AE1 N D G EY1 Z D IH2 N T EH1 N T L IY0 B AH1   |  hyp: P ER1 L S AO1 AE1 N D G EY1 S T IH2 N T EH1 N T L IY0 B AH1 
+[ 190] PER: 0.040 (cum: 0.039)  RTF: 0.0924 (cum: 0.0747)  |  ref: TH IY0 P IH1 R IY0 AH0 D W AH0 Z HH AA1 R D L IY0 IH1 F AE1   |  hyp: TH P IH1 R IY0 AH0 D W AH0 Z HH AA1 R D L IY0 IH1 F AE1 T AA
+[ 195] PER: 0.069 (cum: 0.039)  RTF: 0.0623 (cum: 0.0748)  |  ref: K AH1 M DH EH1 R F AO1 R AE1 N D L EH1 T AH1 S F L IH1 NG M   |  hyp: K AH1 M DH EH1 R F AO1 R AH0 N D L EH1 T AH1 S F L IH0 NG M 
+[ 200] PER: 0.040 (cum: 0.038)  RTF: 0.0743 (cum: 0.0749)  |  ref: L IH1 F T IH0 NG TH IY0 AY1 ER0 N HH AE1 M ER0 DH AE1 T HH A  |  hyp: L IH1 F T IH0 NG TH IY0 AY1 ER0 N HH AE1 M ER0 DH AE1 T HH A
+[ 205] PER: 0.033 (cum: 0.038)  RTF: 0.0795 (cum: 0.0749)  |  ref: L IH1 T AH0 L P ER1 L HH UW1 W AA1 Z AH0 S G R EY1 T L IY0 P  |  hyp: L IH1 T AH0 L P ER1 L HH UW1 W AA1 Z AH0 S G R EY1 T L IY0 P
+[ 210] PER: 0.045 (cum: 0.038)  RTF: 0.0874 (cum: 0.0749)  |  ref: DH EH1 R W ER1 AH0 F Y UW1 R OW1 Z B UH1 SH AH0 Z HH AW2 EH1  |  hyp: DH EH1 R W ER1 AH0 F Y UW1 R OW1 Z B UH1 SH IH0 Z HH AW2 EH1
+[ 215] PER: 0.018 (cum: 0.038)  RTF: 0.0745 (cum: 0.0748)  |  ref: F ER0 AH0 L AO1 NG T AY1 M HH IY1 HH AE1 D W IH1 SH T T UW1   |  hyp: F ER0 AH0 L AO1 NG T AY1 M HH IY1 HH AE1 D W IH1 SH T T UW1 
+[ 220] PER: 0.034 (cum: 0.038)  RTF: 0.0738 (cum: 0.0748)  |  ref: AO1 L DH M AO1 R N IH0 NG DH EY1 T R AH1 JH D AH1 P TH IY0 M  |  hyp: AO1 L DH M AO1 R N IH0 NG DH EY1 T R AH1 JH D AH1 P TH IY0 M
+[ 225] PER: 0.000 (cum: 0.038)  RTF: 0.0592 (cum: 0.0745)  |  ref: AE1 N D Y UW1 M AH1 S T B IY0 OW1 JH OW0 TH IY0 AH0 N L AH1   |  hyp: AE1 N D Y UW1 M AH1 S T B IY0 OW1 JH OW0 TH IY0 AH0 N L AH1 
+[ 230] PER: 0.087 (cum: 0.039)  RTF: 0.0779 (cum: 0.0744)  |  ref: IH1 T T EY1 K S M IY1 S EH1 V R AH0 L Y IH1 R Z T UW1 M EY1   |  hyp: IH1 T T EY1 K S M IY1 S EH1 V R AH0 L Y IH1 R Z T UW1 M EY1 
+[ 235] PER: 0.106 (cum: 0.039)  RTF: 0.0650 (cum: 0.0743)  |  ref: Y UW1 S IY1 AY1 V L IH1 V D AA2 L M AY1 L AY1 F W IH1 TH AH1  |  hyp: Y UW1 S IY1 AY1 V L IH1 V D AA1 N M AY1 L AY1 F W IH0 TH AH1
+[ 240] PER: 0.048 (cum: 0.040)  RTF: 0.0796 (cum: 0.0742)  |  ref: AH0 B EH1 D K W IH1 L T M EY1 D AA1 F P AE1 CH IH0 Z AH1 V D  |  hyp: AH0 B EH1 D K W IH1 L T M EY1 D AH1 V P AE1 CH IH0 Z AH1 V D
+[ 245] PER: 0.051 (cum: 0.040)  RTF: 0.0684 (cum: 0.0742)  |  ref: OW1 JH OW0 IH0 G Z AE1 M IH0 N D DH IH1 S K Y UH1 R IY0 AH0   |  hyp: OW1 JH UW1 IH0 G Z AE1 M AH0 N D DH IH1 S K Y UH1 R IY0 AH0 
+[ 250] PER: 0.143 (cum: 0.040)  RTF: 0.0772 (cum: 0.0743)  |  ref: N OW1 AY1 F ER0 G AA1 T AH0 L AH0 B AW1 T TH IY0 B R EY1 N Z  |  hyp: N OW1 AY1 F ER0 G AA1 T AA1 N AH0 B AW1 T T UW1 B R EY1 N Z 
+[ 255] PER: 0.015 (cum: 0.040)  RTF: 0.0695 (cum: 0.0742)  |  ref: DH EH1 R K AH0 N T EH1 N T S HH AE1 D AO1 L B OY1 L D AH0 W   |  hyp: DH EH1 R K AH0 N T EH1 N T S HH AE1 D AO1 L B OY1 L D AH0 W 
+[ 260] PER: 0.039 (cum: 0.040)  RTF: 0.0661 (cum: 0.0741)  |  ref: M OW1 S T P IY1 P AH0 L T AO1 K T UW1 M AH1 CH S OW1 IH0 T I  |  hyp: M OW1 S T P IY1 P AH0 L T AA1 P T UW1 M AH1 CH S OW1 IH0 T I
+[ 265] PER: 0.055 (cum: 0.040)  RTF: 0.0612 (cum: 0.0741)  |  ref: D IH1 R M IY1 W AH1 T AH0 CH AE1 T ER0 B AA2 K S Y UH1 R G E  |  hyp: D IH1 R M IY1 W AH1 T AH0 CH AE1 T ER0 B AA1 K S EH1 R G EH1
+[ 270] PER: 0.028 (cum: 0.040)  RTF: 0.0998 (cum: 0.0742)  |  ref: K AA1 N S T AH0 N T IY2 N IY1 Z AH0 L IY0 B IH0 L IY1 V D DH  |  hyp: K AA1 N S T AH0 N T IY1 N IY1 Z AH0 L IY0 B IH0 L IY1 V D DH
+[ 275] PER: 0.028 (cum: 0.040)  RTF: 0.0833 (cum: 0.0744)  |  ref: S IH1 N S DH P IH1 R IY0 AH0 D AH1 V AW1 R T EY1 L TH IY0 AE  |  hyp: S IH1 N S TH IY0 P IH1 R IY0 AH0 D AH1 V AW1 R T EY1 L TH IY
+[ 280] PER: 0.067 (cum: 0.039)  RTF: 0.0669 (cum: 0.0743)  |  ref: Y EH1 T HH IY1 R AA1 R W IY1 W IH0 DH IH1 N AH0 SH AO1 R T R  |  hyp: Y EH1 T HH IY1 R W IY1 W IH0 TH AH0 N AH0 SH AO1 R T R EY1 N
+[ 285] PER: 0.011 (cum: 0.039)  RTF: 0.0725 (cum: 0.0742)  |  ref: S IY1 S EH1 D AH1 N K AH0 S P OY1 N T IH0 NG N AO1 R TH AH0   |  hyp: S IY1 S EH1 D AH1 NG K AH0 S P OY1 N T IH0 NG N AO1 R TH AH0
+[ 290] PER: 0.123 (cum: 0.039)  RTF: 0.0644 (cum: 0.0741)  |  ref: DH HH OW1 L P AA1 R T IY0 K R AW1 D AH0 D T UW1 DH S P AA1 T  |  hyp: DH HH OW1 L P AA1 R T IY0 K R AW1 D IH0 D T UW1 DH S P AA1 T
+[ 295] PER: 0.000 (cum: 0.039)  RTF: 0.0710 (cum: 0.0740)  |  ref: DH EH1 R W AH0 Z S AH1 M TH IH0 NG IH0 N HH IH1 Z EH1 R AH0   |  hyp: DH EH1 R W AH0 Z S AH1 M TH IH0 NG IH0 N HH IH1 Z EH1 R AH0 
+[ 300] PER: 0.048 (cum: 0.039)  RTF: 0.0583 (cum: 0.0740)  |  ref: TH IY0 Y AH1 NG M AE1 N IH1 Z IH0 N B AA1 N D IH0 JH AE1 N D  |  hyp: TH IY0 Y AH1 NG M AE1 N IH1 Z IH0 N B AA1 N D AH0 JH AE1 N D
+[ 305] PER: 0.041 (cum: 0.039)  RTF: 0.0794 (cum: 0.0740)  |  ref: D IH0 L IH1 V ER0 D IH0 N AH0 S T R AO1 NG T OW1 N AH1 V AH0  |  hyp: D IH0 L IH1 V ER0 D IH0 N AH0 S T R AO1 NG T OW1 N AH1 V AH0
+[ 310] PER: 0.040 (cum: 0.039)  RTF: 0.0694 (cum: 0.0739)  |  ref: IH1 T W AH0 Z S AY1 L AH0 N T AH0 N D G L UW1 M IY0 B IY1 IH  |  hyp: IH1 T W AH0 Z S AY1 L AH0 N T AH0 N D G L UW1 M IY0 B IY1 IH
+[ 315] PER: 0.023 (cum: 0.039)  RTF: 0.0683 (cum: 0.0737)  |  ref: AH1 N K AH0 S HH UW1 HH AE1 D AO0 L R EH1 D IY0 AH0 P R OW1   |  hyp: AH1 NG K AH0 S HH UW1 HH AE1 D AO0 L R EH1 D IY0 AH0 P R OW1
+[ 320] PER: 0.044 (cum: 0.039)  RTF: 0.0856 (cum: 0.0737)  |  ref: M AY1 P ER0 S UW1 T S EH1 R P IY1 S F AH0 L AH0 N D M AY1 T   |  hyp: M AY1 P ER0 S UW1 T S AA1 R P IY1 S F AH0 L AH0 N D M AY1 T 
+[ 325] PER: 0.041 (cum: 0.039)  RTF: 0.0771 (cum: 0.0736)  |  ref: IH1 F HH AW2 EH1 V ER0 DH EY1 T EY1 K Y AO1 R S K AE1 L P AE  |  hyp: IH1 F HH AW2 EH1 V ER0 DH EY1 T EY1 K Y AO1 R S K AE1 L P AE
+[ 330] PER: 0.227 (cum: 0.039)  RTF: 0.0664 (cum: 0.0737)  |  ref: W IH1 L DH HH Y UH1 R AA2 N Z HH IY1 R HH IH1 Z G R OW1 N Z  |  hyp: W IH1 L DH HH ER0 EH1 N D Z HH IY1 R HH IH1 Z G R OW1 N Z
+[ 335] PER: 0.030 (cum: 0.039)  RTF: 0.0857 (cum: 0.0736)  |  ref: AY1 HH AE1 D AO1 L W EY2 Z N OW1 N HH IH1 M T UW1 B IY0 R EH  |  hyp: AY1 HH AE1 D AO1 L W EY2 Z N OW1 N HH IH1 M T UW1 B IY0 R EH
+[ 340] PER: 0.023 (cum: 0.039)  RTF: 0.0927 (cum: 0.0738)  |  ref: TH IY0 OW1 N L IY0 D UW1 P L AH0 K EY2 T W IH1 CH IH0 G Z IH  |  hyp: TH IY0 OW1 N L IY0 D UW1 P L AH0 K AH0 T W IH1 CH IH0 G Z IH
+[ 345] PER: 0.034 (cum: 0.039)  RTF: 0.0654 (cum: 0.0738)  |  ref: AH0 B R OW1 K AH0 N T IH1 P AH1 V L EH1 D W AH0 Z L AY1 IH0   |  hyp: AH0 B R OW1 K AH0 N T IH1 P AH1 V L AE1 D W AH0 Z L AY1 IH0 
+[ 350] PER: 0.026 (cum: 0.039)  RTF: 0.1002 (cum: 0.0740)  |  ref: AY1 W AH0 Z IH0 N S AH1 CH AH0 HH ER1 IY0 T UW2 K AH1 M T UW  |  hyp: AY1 W AH0 Z IH0 N S AH1 CH AH0 HH ER1 IY0 T UW1 K AH1 M T UW
+[ 355] PER: 0.105 (cum: 0.039)  RTF: 0.1390 (cum: 0.0745)  |  ref: DH EH1 R IH1 Z N OW0 OW1 P AH0 N IH0 NG IH0 K S EH1 P T DH W  |  hyp: DH EH1 R IH1 Z N OW1 OW1 P AH0 N IH0 NG IH0 K S EH1 P T DH W
+[ 360] PER: 0.000 (cum: 0.039)  RTF: 0.0822 (cum: 0.0754)  |  ref: AE1 Z AH0 M AE1 T ER0 AA1 F F AE1 K T HH IY1 K UH1 D N AA1 T  |  hyp: AE1 Z AH0 M AE1 T ER0 AA1 F F AE1 K T HH IY1 K UH1 D N AA1 T
+[ 365] PER: 0.033 (cum: 0.039)  RTF: 0.0659 (cum: 0.0754)  |  ref: HH OW1 L M Z HH EH1 L D AW1 T AH0 S M AO1 L CH IH1 P W IH0 T  |  hyp: HH OW1 M Z HH EH1 L D AW1 T AH0 S M AO1 L CH IH1 P W IH0 TH 
+[ 370] PER: 0.170 (cum: 0.039)  RTF: 0.0838 (cum: 0.0755)  |  ref: HH OW1 L M Z HH EH1 L D IH0 T AW1 T AA1 N HH IH1 Z OW1 P AH0  |  hyp: HH OW1 M S AE1 T IH0 T AW1 T AA1 N HH IH1 Z OW1 P AH0 N P AA
+[ 375] PER: 0.057 (cum: 0.039)  RTF: 0.0740 (cum: 0.0757)  |  ref: L EH1 T AH1 S HH IY1 R DH S AH0 S P IH1 SH AH0 N Z AY1 W IH1  |  hyp: L EH1 T AH1 S S IY1 DH S AH0 S P IH1 SH AH0 N Z AY1 W IH1 L 
+[ 380] PER: 0.029 (cum: 0.039)  RTF: 0.0724 (cum: 0.0759)  |  ref: B AH1 T AY1 HH AE1 V AH0 K EY1 ZH AH0 N AH0 L IY0 D AH1 N TH  |  hyp: B AH1 T AY1 HH AE1 V AH0 K EY1 ZH AH0 N AH0 L IY0 D AH1 N DH
+[ 385] PER: 0.000 (cum: 0.039)  RTF: 0.0735 (cum: 0.0758)  |  ref: OW1 N L IY0 F AO1 R AH0 M IH1 N AH0 T ER0 S OW1  |  hyp: OW1 N L IY0 F AO1 R AH0 M IH1 N AH0 T ER0 S OW1
+[ 390] PER: 0.085 (cum: 0.039)  RTF: 0.0706 (cum: 0.0757)  |  ref: DH IH1 S S EH1 T AA1 F R UW1 M Z IH2 S K W AY1 T TH IY0 OW1   |  hyp: TH IY0 S EH1 T AH1 V R UW1 M Z IH2 S K W AY1 T TH IY0 OW1 L 
+[ 395] PER: 0.143 (cum: 0.039)  RTF: 0.0709 (cum: 0.0757)  |  ref: T UW1 M AA1 R OW0 IH1 S TH IY0 IH0 G Z AE2 M AH0 N EY1 SH AH  |  hyp: T UW1 M AA1 R OW0 W AH0 Z TH IY0 IH0 G Z AE2 M AH0 N EY1 SH 
+[ 400] PER: 0.105 (cum: 0.039)  RTF: 0.0605 (cum: 0.0755)  |  ref: TH F AW1 L M AW1 DH D F EH1 L OW0 AH0 T TH IY0 T AA1 P  |  hyp: TH F AW1 L M AW1 TH F EH1 L OW0 AH0 T TH IY0 T AA1 P
+[ 405] PER: 0.000 (cum: 0.039)  RTF: 0.0751 (cum: 0.0754)  |  ref: N OW1 G UH1 D M AY1 D IH1 R W AA1 T S AH0 N  |  hyp: N OW1 G UH1 D M AY1 D IH1 R W AA1 T S AH0 N
+[ 410] PER: 0.000 (cum: 0.039)  RTF: 0.1357 (cum: 0.0761)  |  ref: AE1 N D W AH1 N M AO1 R DH IH1 S M AO1 R N IH0 NG  |  hyp: AE1 N D W AH1 N M AO1 R DH IH1 S M AO1 R N IH0 NG
+[ 415] PER: 0.000 (cum: 0.039)  RTF: 0.0712 (cum: 0.0763)  |  ref: N OW1 S ER1 S ER1 T AH0 N L IY0 N AA1 T  |  hyp: N OW1 S ER1 S ER1 T AH0 N L IY0 N AA1 T
+[ 420] PER: 0.035 (cum: 0.039)  RTF: 0.0941 (cum: 0.0765)  |  ref: F AO1 R AH0 M OW1 M AH0 N T G IH1 L K R IH1 S T W IH0 TH AH0  |  hyp: F AO1 R AH0 M OW1 M AH0 N T G IH1 L K R IH1 S T W IH0 TH AH1
+[ 425] PER: 0.000 (cum: 0.039)  RTF: 0.0841 (cum: 0.0766)  |  ref: HH W EH1 N AY1 AH0 P R OW1 CH T Y AO1 R R UW1 M AY1 IH0 G Z   |  hyp: HH W EH1 N AY1 AH0 P R OW1 CH T Y AO1 R R UW1 M AY1 IH0 G Z 
+[ 430] PER: 0.060 (cum: 0.039)  RTF: 0.0942 (cum: 0.0768)  |  ref: AH0 S AH1 D AH0 N IH2 M P AH1 L S K EY1 M OW1 V ER0 HH IH1 M  |  hyp: AH0 S AH1 D AH0 N IH2 M P AH1 L S K EY1 M OW1 V ER0 HH IH1 M
+[ 435] PER: 0.045 (cum: 0.039)  RTF: 0.1217 (cum: 0.0773)  |  ref: AY1 HH AE1 V AH0 L EH1 T ER0 HH IY1 R M IH1 S T ER0 S OW1 M   |  hyp: AY1 HH AE1 V AH0 L EH1 T ER0 HH IY1 R M IH1 S T ER0 S OW1 M 
+[ 440] PER: 0.066 (cum: 0.039)  RTF: 0.0871 (cum: 0.0774)  |  ref: TH IY0 S AW1 TH SH IY1 HH AE1 D N AA1 T TH AO1 T AH1 V S IH1  |  hyp: TH S AW1 TH SH IY1 HH AE1 D N AA1 T TH AO1 T AH1 V S IH1 R I
+[ 445] PER: 0.000 (cum: 0.039)  RTF: 0.0863 (cum: 0.0775)  |  ref: B IH1 N L UH1 K IH0 NG AH1 P T UW1 M Z K AW1 N T IY0  |  hyp: B IH1 N L UH1 K IH0 NG AH1 P T UW1 M Z K AW1 N T IY0
+[ 450] PER: 0.069 (cum: 0.039)  RTF: 0.0736 (cum: 0.0774)  |  ref: HH IY1 R SH IY1 W AH0 Z T IY1 CH IH0 NG D ER1 T IY0 CH IH1 L  |  hyp: HH IY1 R SH IY1 W AH0 Z T IY1 CH IH0 NG D ER1 T IY0 CH IH1 L
+[ 455] PER: 0.076 (cum: 0.040)  RTF: 0.0787 (cum: 0.0774)  |  ref: TH IY0 G L IH1 M ER0 IH0 NG S IY1 AH0 AO1 F D EH1 L AH0 K AH  |  hyp: TH IY0 G L IH1 M ER0 IH0 NG S IY1 AH1 V D EH1 L AH0 K AH0 T 
+[ 460] PER: 0.060 (cum: 0.040)  RTF: 0.0710 (cum: 0.0773)  |  ref: D OW1 N T N OW1 W EH1 L AH1 V AA2 L TH IH1 NG Z IH1 N W ER0   |  hyp: D OW1 N T N OW1 W EH1 L AH1 V AA2 L TH IH1 NG Z IH1 N W ER0 
+[ 465] PER: 0.033 (cum: 0.040)  RTF: 0.0783 (cum: 0.0773)  |  ref: N AW1 F AO1 R W AH1 N L IH1 T AH0 L HH AE1 F AW1 ER0 SH IY1   |  hyp: N AW1 F AO1 R W AH1 N L IH1 T AH0 L HH AE1 F AW1 ER0 SH IY1 
+[ 470] PER: 0.078 (cum: 0.041)  RTF: 0.1218 (cum: 0.0774)  |  ref: AE1 Z SH IY1 AH0 W EY1 T IH0 D HH ER0 G EH1 S T S SH IY1 S E  |  hyp: AE1 Z SH IY1 AH0 W EY1 T IH0 D HH ER0 G EH1 S SH IY1 S ER1 V
+[ 475] PER: 0.050 (cum: 0.041)  RTF: 0.0671 (cum: 0.0773)  |  ref: B AH1 T K R EH1 S W EH2 L AE1 D AH0 D S IH0 G N IH1 F IH0 K   |  hyp: B AH1 T K R EH1 S W EH2 L AE1 D AH0 D S AH0 G N IH1 F IH0 K 
+[ 480] PER: 0.076 (cum: 0.041)  RTF: 0.0760 (cum: 0.0774)  |  ref: F AO1 R CH AH0 N AH0 T L IY0 S EH1 D M IH1 S T ER0 V AE1 N D  |  hyp: F AO1 R CH AH0 N AH0 T L IY0 S EH1 D M IH1 S T ER0 V AE1 N D
+[ 485] PER: 0.021 (cum: 0.041)  RTF: 0.0674 (cum: 0.0774)  |  ref: HH IY1 P AE1 N T IH0 D T UW1 N OW1 IH1 F SH IY1 T UW1 N UW1   |  hyp: HH IY1 P AE1 N T IH0 D T UW1 N OW1 IH1 F SH IY1 T UW1 N UW1 
+[ 490] PER: 0.053 (cum: 0.041)  RTF: 0.0758 (cum: 0.0774)  |  ref: DH L AH0 G UW1 N HH AE1 D B IH1 N L EH1 V AH0 L W IH0 TH TH   |  hyp: DH L AH0 G UW1 N HH AE1 D B IH1 N L EH1 V AH0 L W IH0 TH AH0
+[ 495] PER: 0.040 (cum: 0.041)  RTF: 0.0844 (cum: 0.0774)  |  ref: HH IY1 S T UH1 D AH0 M OW1 M AH0 N T B IH0 W IH1 L D ER0 D D  |  hyp: HH IY1 S T UH1 D AH0 M OW1 M AH0 N T B IH0 W IH1 L D ER0 D D
+[ 500] PER: 0.024 (cum: 0.041)  RTF: 0.0686 (cum: 0.0774)  |  ref: HH IY1 S AE1 T D AW1 N W IY1 K B IH0 W IH1 L D ER0 D AE1 N D  |  hyp: HH IY1 S AE1 T D AW1 N W IY1 K B IH0 W IH1 L D ER0 D AE1 N D
+[ 505] PER: 0.098 (cum: 0.041)  RTF: 0.0726 (cum: 0.0774)  |  ref: F AO1 R AH0 W AY1 L SH IY1 L EY1 IH0 N HH ER0 CH EH1 R IH0 N  |  hyp: F AO1 R W AY1 L SH IY1 L EY1 IH0 N HH ER0 CH EH1 R IH0 N HH 
+[ 510] PER: 0.080 (cum: 0.041)  RTF: 0.0790 (cum: 0.0774)  |  ref: HH IY1 D AA1 R T IH0 D TH R UW1 TH IY0 T R IY1 Z AH0 N D P A  |  hyp: HH IY1 D AA1 R T IH0 D TH R UW1 TH IY0 T R IY1 Z AH0 N D P A
+[ 515] PER: 0.000 (cum: 0.041)  RTF: 0.0646 (cum: 0.0774)  |  ref: AE1 N D HH W AH1 T TH R UW1 DH L EH1 F T HH AE1 N D W IH1 N   |  hyp: AE1 N D HH W AH1 T TH R UW1 DH L EH1 F T HH AE1 N D W IH1 N 
+[ 520] PER: 0.056 (cum: 0.041)  RTF: 0.0716 (cum: 0.0774)  |  ref: F AO1 R TH IY0 G R EY1 T B AA1 R N D AO1 R Z AA1 R TH R OW1   |  hyp: W ER1 TH IY0 G R EY1 T B AA1 R N D AO1 R Z AA1 R TH R OW1 N 
+[ 525] PER: 0.023 (cum: 0.042)  RTF: 0.0858 (cum: 0.0774)  |  ref: TH IY0 F AE1 K T DH AE1 T IH1 T W AH0 Z CH ER1 N IH0 NG D EY  |  hyp: TH IY0 F AE1 K T DH AE1 T IH1 T W AH0 Z CH ER1 N IH0 NG D EY
+[ 530] PER: 0.200 (cum: 0.042)  RTF: 0.0669 (cum: 0.0774)  |  ref: K OW1 M DH W UH1 L F ER0 DH W IH1 T AO1 Z IH2 N D IY1 D  |  hyp: K AH1 M DH W UH1 L F F ER0 DH W IH1 D OW0 Z IH2 N D IY1 D
+[ 535] PER: 0.086 (cum: 0.042)  RTF: 0.0658 (cum: 0.0772)  |  ref: M AH1 N IY0 M AY1 AY1 ER0 N Z T W AY1 T T OW1 L D P IY1 Z P   |  hyp: M AH1 N IY0 M AY1 ER0 N Z T W AY1 T T OW1 L D B IY1 Z P UH1 
+[ 540] PER: 0.000 (cum: 0.042)  RTF: 0.0726 (cum: 0.0773)  |  ref: D IH1 D EH1 V ER0 EH1 N IY0 B AH0 D IY0 S IY1 DH L AY1 K S K  |  hyp: D IH1 D EH1 V ER0 EH1 N IY0 B AH0 D IY0 S IY1 DH L AY1 K S K
+[ 545] PER: 0.060 (cum: 0.042)  RTF: 0.0744 (cum: 0.0772)  |  ref: AE1 N D DH EH1 R Z L IH1 N AH0 N IH0 N DH HH AW1 S AH0 Z AY1  |  hyp: AE1 N D DH EH1 R Z L IH1 N AH0 N IH0 N DH HH AW1 S AH0 Z AY1
+[ 550] PER: 0.127 (cum: 0.042)  RTF: 0.0726 (cum: 0.0772)  |  ref: AY1 V S T R AO1 NG AH0 SH UH1 R AH0 N S DH AE1 T N OW1 IY1 V  |  hyp: AY1 V S T R AO1 NG AH0 S ER1 AH0 N S DH AE1 T N OW1 IY1 G AH
+[ 555] PER: 0.118 (cum: 0.042)  RTF: 0.0622 (cum: 0.0772)  |  ref: S EH1 D M IH1 S T ER0 ER1 W IH0 N W IH0 TH HH IH1 Z S T EY1   |  hyp: S EH1 D M IH1 S T ER0 ER1 W IH0 N W IH0 TH HH IH0 S S T EY1 
+[ 560] PER: 0.038 (cum: 0.042)  RTF: 0.0581 (cum: 0.0771)  |  ref: N OW1 S ER1 HH IY1 IH1 Z AH0 N T HH IY1 Z G AA1 N T UW1 R AA  |  hyp: N OW1 S ER1 HH IY1 IH1 Z AH0 N T HH IY1 Z G AA1 N T UW1 R AA
+[ 565] PER: 0.000 (cum: 0.042)  RTF: 0.0649 (cum: 0.0770)  |  ref: OW1 S ER1 S EH1 D M IH1 S IH0 Z P OY1 S ER0 R AE1 DH ER0 AH0  |  hyp: OW1 S ER1 S EH1 D M IH1 S IH0 Z P OY1 S ER0 R AE1 DH ER0 AH0
+[ 570] PER: 0.053 (cum: 0.042)  RTF: 0.0787 (cum: 0.0769)  |  ref: DH IH1 S M IH1 S IH0 Z P OY1 S ER0 S EH1 D B L AH1 SH IH0 NG  |  hyp: DH IH1 S M IH1 S IH0 Z P OY1 S AH1 V S EH1 D B L AH1 SH IH0 
+[ 575] PER: 0.033 (cum: 0.042)  RTF: 0.0855 (cum: 0.0769)  |  ref: TH IY0 D AY1 N AH0 M OW2 IH0 L EH1 K T R IH0 K M AH0 SH IY1   |  hyp: TH IY0 D AY1 N AH0 M OW2 IH0 L EH1 K T R IH0 K M AH0 SH IY1 
+[ 580] PER: 0.059 (cum: 0.042)  RTF: 0.0681 (cum: 0.0769)  |  ref: EH1 V R IY0 TH IH2 NG HH IY1 HH AE1 Z D AH1 N HH AE1 Z B IH1  |  hyp: EH1 V R IY0 TH IH2 NG HH IY1 IH1 Z D AH1 N HH AE1 Z B IH1 N 
+[ 585] PER: 0.032 (cum: 0.042)  RTF: 0.0910 (cum: 0.0769)  |  ref: AH0 N L EH1 S HH IY0 K UH1 D S IH0 K Y UH1 R AH0 N EH1 N JH   |  hyp: AH0 N L EH1 S HH IY1 K UH1 D S IH0 K Y UH1 R AH0 N EH1 N JH 
+[ 590] PER: 0.008 (cum: 0.042)  RTF: 0.0853 (cum: 0.0769)  |  ref: HH IY1 S UW1 N F AO1 R S AO2 DH AE1 T S T IH1 L G R EY1 T ER  |  hyp: HH IY1 S UW1 N F AO1 R S AO2 DH AE1 T S T IH1 L G R EY1 T ER
+[ 595] PER: 0.043 (cum: 0.042)  RTF: 0.0830 (cum: 0.0770)  |  ref: AY1 TH IH1 NG K HH IY1 W AH0 Z P ER0 HH AE1 P S M AO1 R AH0   |  hyp: AY1 TH IH1 NG K HH IY1 W AH0 Z P ER0 HH AE1 P S M AO1 R AH0 
+[ 600] PER: 0.036 (cum: 0.042)  RTF: 0.1056 (cum: 0.0770)  |  ref: DH EH1 R W AH0 Z IH1 N F AH0 N AH0 T S K EH1 P T AH0 S IH2 Z  |  hyp: DH EH1 R W AH0 Z IH1 N F AH0 N AH0 T S K EH1 P T AH0 S IH2 Z
+[ 605] PER: 0.073 (cum: 0.042)  RTF: 0.0807 (cum: 0.0770)  |  ref: IH1 N D IH0 S EH1 M B ER0 EY0 T IY1 N EY1 T IY0 EY1 T M IH1   |  hyp: IH1 N D IH0 S EH1 M B ER0 EY0 T IY1 N EY1 T IY0 EY1 T M IH1 
+[ 610] PER: 0.033 (cum: 0.042)  RTF: 0.0633 (cum: 0.0770)  |  ref: HH IY1 F EH1 L T HH IY0 W AH0 Z AH1 P AH0 G EH1 N S T IH0 T   |  hyp: HH IY1 F EH1 L T HH IY1 W AH0 Z AH1 P AH0 G EH1 N S T IH0 T 
+[ 615] PER: 0.041 (cum: 0.042)  RTF: 0.0792 (cum: 0.0771)  |  ref: EH1 V R IY0 CH AE1 N S SH IY1 K UH1 D S T IY1 L AE1 F T ER0   |  hyp: EH1 V R IY0 CH AE1 N S SH IY1 K UH1 D S T IY1 L AE1 F T ER0 
+[ 620] PER: 0.128 (cum: 0.042)  RTF: 0.0738 (cum: 0.0770)  |  ref: AE1 T DH IH0 S DH B AH1 N D AH0 L OW1 P AH0 N D S AH1 D AH0   |  hyp: AE1 T DH IH1 S TH IY0 B AH1 N D AH0 L OW1 P AH0 N S AH1 D AH
+Traceback (most recent call last):
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/code/five_frames/eval_cpu.py", line 352, in <module>
+    main()
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/code/five_frames/eval_cpu.py", line 341, in main
+    run_eval(
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/code/five_frames/eval_cpu.py", line 88, in run_eval
+    for idx, (batch, transcripts) in enumerate(dataloader):
+                                     ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 734, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 790, in _next_data
+    data = self._dataset_fetcher.fetch(index)  # may raise StopIteration
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+            ~~~~~~~~~~~~^^^^^
+  File "/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torch/utils/data/dataset.py", line 346, in __getitem__
+    return self.datasets[dataset_idx][sample_idx]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/code/five_frames/conformer_rnnt/lightning_module.py", line 211, in __getitem__
+    metadata = self.get_metadata(n)
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/code/five_frames/conformer_rnnt/lightning_module.py", line 204, in get_metadata
+    return _get_librispeech_metadata(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/code/five_frames/conformer_rnnt/lightning_module.py", line 117, in _get_librispeech_metadata
+    raise FileNotFoundError(f"Translation not found for {fileid_audio}")
+FileNotFoundError: Translation not found for 237-126133-0010 2

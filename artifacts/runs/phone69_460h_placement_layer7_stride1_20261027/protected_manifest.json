@@ -1,0 +1,1003 @@
+{
+  "experiments": {
+    "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50": [
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/TRAINING_COMPLETE",
+        "bytes": 0,
+        "mtime_ns": 1792704863563342045
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/best_checkpoint.txt",
+        "bytes": 136,
+        "mtime_ns": 1792704859745598771,
+        "sha256": "99a2b8a9b676cc7719a67cafa8531744173f9cd593c480d9bb49b0cf1107ebd0"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=00-step=0-535a8c77ba71.ckpt",
+        "bytes": 17104440,
+        "mtime_ns": 1792623950761888797
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=01-step=2531-fbe7721a1cc0.ckpt",
+        "bytes": 51231076,
+        "mtime_ns": 1792625599467806126
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=02-step=5062-a67464a60311.ckpt",
+        "bytes": 51231076,
+        "mtime_ns": 1792627231749383618
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=03-step=7593-0df0d5956401.ckpt",
+        "bytes": 51231076,
+        "mtime_ns": 1792628851132451375
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=04-step=10124-6976ce64818d.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792630482745723401
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=05-step=12655-cf165f763aa2.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792632107381904722
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=06-step=15186-42341a5bc15b.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792633779609918080
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=07-step=17717-ec49c325f976.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792635504454202387
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=08-step=20248-e7f8d3cae19e.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792637142771393140
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=09-step=22779-7c9d93fabc89.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792638793175397816
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=10-step=25310-08723d1a7e58.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792640419643207241
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=11-step=27841-f594da47b4f1.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792642060487912586
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=12-step=30372-495217332d52.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792643784659203011
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=13-step=32903-b06c0320f72f.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792645444900187657
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=14-step=35434-fcaf605f0fa5.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792647120141721551
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=15-step=37965-936fed9cf913.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792648787555704126
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=16-step=40496-e48290f18e1b.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792650416802463612
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=17-step=43027-2f959e063336.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792652073639822473
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=18-step=45558-8b21274a10a5.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792653701004536446
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=19-step=48089-0e74f8913f4e.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792655323713180929
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=20-step=50620-e70c07986706.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792656950237698799
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=21-step=53151-7217028823a9.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792658572772182451
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=22-step=55682-9f9efee40faf.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792660188013618243
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=23-step=58213-a97b188dd6f2.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792661805777142926
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=24-step=60744-b69b4d0fd6e9.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792663412126512380
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=25-step=63275-242a4ab16fad.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792665027155638434
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=26-step=65806-43ed71dd6f96.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792666650046782132
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=27-step=68337-fb7d4f6c4aae.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792668269180127860
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=28-step=70868-e453139a30d6.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792669901892398224
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=29-step=73399-71c9dae4735d.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792671492160158020
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=30-step=75930-abc95846e40b.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792673082159249320
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=31-step=78461-0abe43c531ed.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792674668198660997
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=32-step=80992-38199035ac75.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792676239794869689
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=33-step=83523-f0012848380e.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792677836711739010
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=34-step=86054-102857deee81.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792679423111796308
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=35-step=88585-6debb5943234.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792680996730389296
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=36-step=91116-f05be27e0bf5.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792682581140289263
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=37-step=93647-195df5623ded.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792684188141147353
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=38-step=96178-f101ebe9311c.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792685775099040058
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=39-step=98709-dbb8ef990503.ckpt",
+        "bytes": 51232434,
+        "mtime_ns": 1792687356719101018
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=40-step=101240-0470b05ee489.ckpt",
+        "bytes": 51233792,
+        "mtime_ns": 1792688946327677107
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=41-step=103771-a05e67edba28.ckpt",
+        "bytes": 51233792,
+        "mtime_ns": 1792690561985821489
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=42-step=106302-d4aec292e168.ckpt",
+        "bytes": 51233792,
+        "mtime_ns": 1792692154391669620
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=43-step=108833-22d045a9beaf.ckpt",
+        "bytes": 51233792,
+        "mtime_ns": 1792693734523704974
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=44-step=111364-ef6bc719b0b0.ckpt",
+        "bytes": 51233792,
+        "mtime_ns": 1792695320213163879
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=45-step=113895-589efacdd6b6.ckpt",
+        "bytes": 51233792,
+        "mtime_ns": 1792696905465900025
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=46-step=116426-4ae9cf1f6f34.ckpt",
+        "bytes": 51233792,
+        "mtime_ns": 1792698487417130405
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=47-step=118957-86c5b7840c01.ckpt",
+        "bytes": 51233792,
+        "mtime_ns": 1792700071685704729
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=48-step=121488-9443df3d5531.ckpt",
+        "bytes": 51233792,
+        "mtime_ns": 1792701670307843646
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=49-step=124019-5928ce2f7326.ckpt",
+        "bytes": 51233792,
+        "mtime_ns": 1792703260721661992
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=126550-25cdcfcd406b.ckpt",
+        "bytes": 51233792,
+        "mtime_ns": 1792704855387713944,
+        "sha256": "1d725b9bd094d6eac03ca8a74b6653ed8eb701896b3b07a866879c4f3f4b9673"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/last.ckpt",
+        "bytes": 51204928,
+        "mtime_ns": 1792701801000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/train-none-epoch=42-step=106500.ckpt",
+        "bytes": 17096098,
+        "mtime_ns": 1792692272000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/train-none-epoch=48-step=122500.ckpt",
+        "bytes": 17096098,
+        "mtime_ns": 1792702314000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/val-none-epoch=46-step=118426.ckpt",
+        "bytes": 51204992,
+        "mtime_ns": 1792699746000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/val-none-epoch=48-step=121688.ckpt",
+        "bytes": 51204928,
+        "mtime_ns": 1792701800000000000,
+        "sha256": "5630172734bcc316161794fe7168045376a6b47c94dc8fe8f30285ed5142e6a0"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/lightning_logs/version_0/hparams.yaml",
+        "bytes": 1783,
+        "mtime_ns": 1792623951175108723
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/lightning_logs/version_0/metrics.csv",
+        "bytes": 949401,
+        "mtime_ns": 1792704856095715405
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/logs/gpu_usage.csv",
+        "bytes": 110953,
+        "mtime_ns": 1792704823806635429
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/logs/train.log",
+        "bytes": 22465751,
+        "mtime_ns": 1792704861054655894
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/run.json",
+        "bytes": 9611,
+        "mtime_ns": 1792704859763584716,
+        "sha256": "b924e2557dfd5bd042c1844955dc4af7b5da8a525a777bfd11d08a0b61035329"
+      }
+    ],
+    "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50": [
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/TRAINING_COMPLETE",
+        "bytes": 0,
+        "mtime_ns": 1792832918673844696
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/best_checkpoint.txt",
+        "bytes": 139,
+        "mtime_ns": 1792832915474814816,
+        "sha256": "803fb462fd6beaf436443f58cb80d9c3da9d1ae43584d726fbcccd59b7bb5f2c"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=00-step=0-0b8ba37d6095.ckpt",
+        "bytes": 17135352,
+        "mtime_ns": 1792704869862849070
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=01-step=3300-fef0e8e31b08.ckpt",
+        "bytes": 51323364,
+        "mtime_ns": 1792707464067832000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=02-step=6600-2c3dda2c01aa.ckpt",
+        "bytes": 51323364,
+        "mtime_ns": 1792710050877278907
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=03-step=9900-ca862940bd6a.ckpt",
+        "bytes": 51323364,
+        "mtime_ns": 1792712639114206776
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=04-step=13200-2d9dabb5f6f1.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792715227067262569
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=05-step=16500-85c029d0d457.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792717797576778103
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=06-step=19800-1858b09e5243.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792720372964981143
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=07-step=23100-8f173304f811.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792722936565531861
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=08-step=26400-39d3db05e8ce.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792725484535762213
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=09-step=29700-46183b80830b.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792728034116061684
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=10-step=33000-1d39bdaad186.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792730577405753176
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=11-step=36300-df42abe05726.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792733097058308161
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=12-step=39600-a2e7833484b6.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792735650539122400
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=13-step=42900-b66f336ce71b.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792738194284503217
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=14-step=46200-e65dd27d3c7f.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792740727911401744
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=15-step=49500-0863e27f05c4.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792743260069855199
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=16-step=52800-21c58a915734.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792745785278144700
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=17-step=56100-98d8f48e7302.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792748293340980117
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=18-step=59400-f6eadb2a38e0.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792750801891139572
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=19-step=62700-e63c8f52dfd0.ckpt",
+        "bytes": 51324722,
+        "mtime_ns": 1792753305339284857
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=20-step=66000-f0497fdfebc4.ckpt",
+        "bytes": 51324786,
+        "mtime_ns": 1792755865815700285
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=21-step=69300-b637b76da784.ckpt",
+        "bytes": 51324786,
+        "mtime_ns": 1792758427463214587
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=22-step=72600-382112103464.ckpt",
+        "bytes": 51324786,
+        "mtime_ns": 1792760997252553534
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=23-step=75900-e689dd5a6d40.ckpt",
+        "bytes": 51324786,
+        "mtime_ns": 1792763578465906144
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=24-step=79200-29fd0de0b563.ckpt",
+        "bytes": 51324786,
+        "mtime_ns": 1792766163833662128
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=25-step=82500-3b8127eb187a.ckpt",
+        "bytes": 51324786,
+        "mtime_ns": 1792768728533367323
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=26-step=85800-c58393c8073b.ckpt",
+        "bytes": 51324786,
+        "mtime_ns": 1792771258988710498
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=27-step=89100-9ac4434c9f13.ckpt",
+        "bytes": 51324786,
+        "mtime_ns": 1792773775950074566
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=28-step=92400-b30c78cd8f0b.ckpt",
+        "bytes": 51324786,
+        "mtime_ns": 1792776298522445244
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=29-step=95700-2fa5de501fb1.ckpt",
+        "bytes": 51324786,
+        "mtime_ns": 1792778872217090689
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=30-step=99000-305fafdda17c.ckpt",
+        "bytes": 51324786,
+        "mtime_ns": 1792781414194107989
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=31-step=102300-47bc66815fea.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792783964047177079
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=32-step=105600-4fccf671fb7a.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792786528482227789
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=33-step=108900-d9db86b0426c.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792789089849854490
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=34-step=112200-6631bfb6261c.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792791652606821136
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=35-step=115500-f19691779aeb.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792794243001475565
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=36-step=118800-da054aa01bfa.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792796826468010824
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=37-step=122100-1d418206c8a2.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792799407918324733
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=38-step=125400-d100f3a19f9e.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792802018038619817
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=39-step=128700-99b27eb1bcd5.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792804587335900869
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=40-step=132000-50ac038c4920.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792807164040457819
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=41-step=135300-1864af405960.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792809756086614295
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=42-step=138600-e4c8e32c9ced.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792812349864262830
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=43-step=141900-77695301fe97.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792814926181472996
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=44-step=145200-ad62d271ee62.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792817506417509042
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=45-step=148500-988a9a0c68cf.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792820078283146253
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=46-step=151800-a3e25f2aa9d2.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792822651325245021
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=47-step=155100-787109d1c854.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792825238292005243
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=48-step=158400-7c78d5b2e8db.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792827802844924402
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=49-step=161700-03b1769e56c4.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792830352757503219
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=165000-03d646231711.ckpt",
+        "bytes": 51326144,
+        "mtime_ns": 1792832913011502893,
+        "sha256": "1ee928edd0b956eb91fa1cdfbf8ee3f7897a9b5efc38702d41b23b8457c0f805"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/last.ckpt",
+        "bytes": 51297280,
+        "mtime_ns": 1792822576000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/train-none-epoch=41-step=138500.ckpt",
+        "bytes": 17126946,
+        "mtime_ns": 1792812261000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/train-none-epoch=45-step=148700.ckpt",
+        "bytes": 17126946,
+        "mtime_ns": 1792820239000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/val-none-epoch=40-step=135200.ckpt",
+        "bytes": 51297280,
+        "mtime_ns": 1792809681000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/val-none-epoch=45-step=151700.ckpt",
+        "bytes": 51297280,
+        "mtime_ns": 1792822575000000000,
+        "sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/lightning_logs/version_0/hparams.yaml",
+        "bytes": 1783,
+        "mtime_ns": 1792704870263155510
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/lightning_logs/version_0/metrics.csv",
+        "bytes": 1450139,
+        "mtime_ns": 1792832913806063736
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/logs/gpu_usage.csv",
+        "bytes": 175632,
+        "mtime_ns": 1792832900776076582
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/logs/train.log",
+        "bytes": 29935447,
+        "mtime_ns": 1792832916786192577
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/run.json",
+        "bytes": 5158,
+        "mtime_ns": 1792832915492109358,
+        "sha256": "43ba7c3abf032dda9899e23871745751acde9da56a7071aa4e0f8f30302f08cd"
+      }
+    ],
+    "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50": [
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/TRAINING_COMPLETE",
+        "bytes": 0,
+        "mtime_ns": 1792968398062830813
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/best_checkpoint.txt",
+        "bytes": 144,
+        "mtime_ns": 1792962587685382937,
+        "sha256": "e2bca474255172086d2d02cbd45caf7ac2ad6718d26c3ec1f1183d8eb81bb310"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=00-step=0-6fa4f7f2be48.ckpt",
+        "bytes": 17135736,
+        "mtime_ns": 1792832925036414641
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=01-step=4138-79305242f45d.ckpt",
+        "bytes": 51323812,
+        "mtime_ns": 1792835925798094037
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=02-step=8276-25430280834c.ckpt",
+        "bytes": 51323812,
+        "mtime_ns": 1792838942913272203
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=03-step=12414-ffc3c9aa1e56.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792841959405710919
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=04-step=15158-b9861266b9b8.ckpt",
+        "bytes": 51325234,
+        "mtime_ns": 1792846874013797410
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=05-step=17902-770aa27f4ba4.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792849417001522098
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=06-step=20646-6ddca8c795ef.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792851932156386605
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=07-step=23390-d6139ded32fb.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792854488876609749
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=08-step=26134-fbc5f3b38b6a.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792857009851095043
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=09-step=28878-9f5e07c96224.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792859517580883304
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=10-step=31622-f6a42ee0b86c.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792862052018314644
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=11-step=34366-cf5f225f0f76.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792864572268353636
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=12-step=37110-49243ae239a3.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792867082852483240
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=13-step=39854-609c7a873d6d.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792869594411037106
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=14-step=42598-6889279032b8.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792872089356480045
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=15-step=45342-83008c23ff45.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792874602843428748
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=16-step=48086-b39aca93dea1.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792877117144224102
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=17-step=50830-ef6c445fd577.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792879628845564338
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=18-step=53574-dddc71ff9978.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792882153320415229
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=19-step=56318-78e8edea408d.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792884671136320448
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=20-step=59062-9e4bdb47463d.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792887211090856565
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=21-step=61806-45ce76ca7d55.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792889741609231986
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=22-step=64550-3beb64513156.ckpt",
+        "bytes": 51325170,
+        "mtime_ns": 1792892269791421580
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=23-step=67294-cc5da145c851.ckpt",
+        "bytes": 51325234,
+        "mtime_ns": 1792894785156926185
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=24-step=70038-188fa8860969.ckpt",
+        "bytes": 51325234,
+        "mtime_ns": 1792897294984233312
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=25-step=72782-45cd284d1024.ckpt",
+        "bytes": 51325234,
+        "mtime_ns": 1792899816366044678
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=26-step=75526-c9d21ab16c57.ckpt",
+        "bytes": 51325234,
+        "mtime_ns": 1792902334418042705
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=27-step=78270-4e83a7159672.ckpt",
+        "bytes": 51325234,
+        "mtime_ns": 1792904835049743100
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=28-step=81014-8a91d6770298.ckpt",
+        "bytes": 51325234,
+        "mtime_ns": 1792907331176801971
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=29-step=83758-3647b7354a36.ckpt",
+        "bytes": 51325234,
+        "mtime_ns": 1792909823258381062
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=30-step=86502-e23085e3b00d.ckpt",
+        "bytes": 51325234,
+        "mtime_ns": 1792912323772378211
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=31-step=89246-e04f4d8598b8.ckpt",
+        "bytes": 51325234,
+        "mtime_ns": 1792914834335470992
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=32-step=91990-5111005e5816.ckpt",
+        "bytes": 51325234,
+        "mtime_ns": 1792917411440092732
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=33-step=94734-f6bb0d285bc3.ckpt",
+        "bytes": 51325234,
+        "mtime_ns": 1792920099107491308
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=34-step=97478-d894181db737.ckpt",
+        "bytes": 51325234,
+        "mtime_ns": 1792922585354527863
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=35-step=100222-4e5002dec1a3.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792925138416314493
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=36-step=102966-f9df183a9010.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792927652492953151
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=37-step=105710-31960b3174ad.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792930173196734544
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=38-step=108454-dab864393a19.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792932644203950822
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=39-step=111198-e267399731a6.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792935123501255348
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=40-step=113942-4e30fb111cf6.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792937578446547035
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=41-step=116686-23583cfcc2de.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792940026508358463
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=42-step=119430-c86b011ecb33.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792942476390129563
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=43-step=122174-d8e4703de76b.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792944915960741091
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=44-step=124918-4eb3c5ab165e.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792947410015381134
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=45-step=127662-b7449891eec3.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792949932972858672
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=46-step=130406-03837e6479f4.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792952470246805561
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=47-step=133150-714c35a45aaf.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792955000756711920
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=48-step=135894-44f8de2f8ae2.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792957529979578013
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=49-step=138638-fe99d0e89ea7.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792960059178426860
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=141382-e74a7a871dc9.ckpt",
+        "bytes": 51326592,
+        "mtime_ns": 1792962583436509919,
+        "sha256": "572b622c41f28ca239c578286437d55e161aab81696590ead616771835894295"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/last.ckpt",
+        "bytes": 51297728,
+        "mtime_ns": 1792900198000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/train-none-epoch=03-step=13000.ckpt",
+        "bytes": 17127330,
+        "mtime_ns": 1792842382000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/train-none-epoch=03-step=15000.ckpt",
+        "bytes": 17127330,
+        "mtime_ns": 1792843872000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/train-none-epoch=43-step=122500.ckpt",
+        "bytes": 17127330,
+        "mtime_ns": 1792945202000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/train-none-epoch=48-step=137000.ckpt",
+        "bytes": 17127330,
+        "mtime_ns": 1792958547000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=03-step=14814.ckpt",
+        "bytes": 51297664,
+        "mtime_ns": 1792843748000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=03-step=15014.ckpt",
+        "bytes": 51297664,
+        "mtime_ns": 1792843901000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=21-step=64206.ckpt",
+        "bytes": 51297728,
+        "mtime_ns": 1792891966000000000
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
+        "bytes": 51297728,
+        "mtime_ns": 1792900197000000000,
+        "sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87"
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_0/hparams.yaml",
+        "bytes": 1904,
+        "mtime_ns": 1792832925415778564
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_0/metrics.csv",
+        "bytes": 147003,
+        "mtime_ns": 1792844001022960606
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_1/hparams.yaml",
+        "bytes": 1904,
+        "mtime_ns": 1792844283012302248
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_1/metrics.csv",
+        "bytes": 1009665,
+        "mtime_ns": 1792962584287934476
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/logs/gpu_usage.csv",
+        "bytes": 177303,
+        "mtime_ns": 1792962570787076725
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/logs/train.log",
+        "bytes": 25797064,
+        "mtime_ns": 1792962589316769655
+      },
+      {
+        "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/run.json",
+        "bytes": 8922,
+        "mtime_ns": 1792962587703241688,
+        "sha256": "adc04feb84d104fb187241d09b3a7e2a9aaefae5b1ea3065136069838a66980f"
+      }
+    ]
+  },
+  "configs": {
+    "configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml": "173391aa2e55ef15f01865c8bd6792e53f52d0475912dacad83a7297542f4354",
+    "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+    "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0"
+  },
+  "legacy_manifest": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/protected_manifest.json"
+}

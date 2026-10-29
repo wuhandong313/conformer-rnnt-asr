@@ -1,0 +1,20 @@
+{
+  "status": "failed",
+  "started_at_utc": "2026-10-25T01:30:16.454487+00:00",
+  "device": "cpu",
+  "timer": "time.perf_counter",
+  "current": "mel",
+  "completed": [],
+  "experiments": {
+    "mel": {
+      "status": "evaluating",
+      "started_at_utc": "2026-10-25T01:30:16.472456+00:00",
+      "pid": 10170
+    },
+    "layer5": {
+      "status": "queued"
+    }
+  },
+  "failed_at_utc": "2026-10-25T01:30:21.702956+00:00",
+  "error": "RuntimeError('mel eval_monotonic.py exited 1')"
+}

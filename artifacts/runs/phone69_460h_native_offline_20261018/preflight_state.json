@@ -1,0 +1,40 @@
+{
+  "status": "final_probes_complete",
+  "command": [
+    "scripts/diagnostics/check_phone69_offline_native.py",
+    "--out",
+    "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_native_offline_20261018/dimension_audit.json"
+  ],
+  "log": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_native_offline_20261018/dimension_audit_final.log",
+  "server_utc": "2026-10-17T16:07:02.078155+00:00",
+  "accepted": [
+    {
+      "scheme": "stride4_none",
+      "budget": 23500,
+      "probe": "artifacts/runs/phone69_460h_native_offline_20261018/probe_final_stride4_none_b23500_a1.json",
+      "peak_reserved_GiB": 70.171875,
+      "cases": 5
+    },
+    {
+      "scheme": "stride1_cosd_learned",
+      "budget": 6500,
+      "probe": "artifacts/runs/phone69_460h_native_offline_20261018/probe_final_stride1_cosd_learned_b6500_a3.json",
+      "peak_reserved_GiB": 67.306640625,
+      "cases": 5
+    },
+    {
+      "scheme": "stride2_cosd_learned",
+      "budget": 16000,
+      "probe": "artifacts/runs/phone69_460h_native_offline_20261018/probe_final_stride2_cosd_learned_b16000_a1.json",
+      "peak_reserved_GiB": 68.724609375,
+      "cases": 5
+    },
+    {
+      "scheme": "stride4_cosd_learned",
+      "budget": 32600,
+      "probe": "artifacts/runs/phone69_460h_native_offline_20261018/probe_final_stride4_cosd_learned_b32600_a4.json",
+      "peak_reserved_GiB": 65.8359375,
+      "cases": 6
+    }
+  ]
+}

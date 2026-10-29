@@ -1,0 +1,7 @@
+{
+  "status": "interrupted",
+  "experiment": "exp_phone69_460h_offline_native_stride1_cosd_learned_s42_e50",
+  "error": "Pipeline interrupted",
+  "pid": 10107,
+  "server_utc": "2026-10-18T04:42:31.844441+00:00"
+}

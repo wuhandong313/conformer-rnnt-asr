@@ -1,0 +1,48 @@
+{
+  "name": "placement_mel",
+  "status": "complete",
+  "num_samples": 2620,
+  "device": "cpu",
+  "threads": 2,
+  "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/val-none-epoch=48-step=121688.ckpt",
+  "checkpoint_sha256": "5630172734bcc316161794fe7168045376a6b47c94dc8fe8f30285ed5142e6a0",
+  "config": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/configs/mel_cpu_testclean.yaml",
+  "config_sha256": "1a45596e4658c5d4124c963d494aa7252fb131a95918688c775315be3f73ca3b",
+  "definition_matches_checkpoint": true,
+  "feature_signature": {
+    "sample_rate": 16000,
+    "n_fft": 400,
+    "n_mels": 80,
+    "hop_length": 160,
+    "transcript_suffix": "-ph",
+    "test_subset": "test-clean",
+    "dataset_path": "/test21/librispeech",
+    "global_stats_path": "/test21/librispeech/global_stats.json",
+    "tokenizer": {
+      "type": "phone69",
+      "vocab_path": "configs/phone69_vocab.json"
+    }
+  },
+  "reference_order_matches_previous_eval": true,
+  "input_sequence_sha256": "abc793e082b60912bf193ab34f0959ba374aff7ff5e8ef1553f6f7b10dc5bf9d",
+  "stride": 1,
+  "frame_totals": {
+    "input_mel_frames": 1947238,
+    "encoder_input_frames": 764937,
+    "encoder_output_frames": 764937
+  },
+  "overall_retention": 0.3928317955997161,
+  "overall_reduction": 0.607168204400284,
+  "mean_utterance_retention": 0.39306287095701975,
+  "stages": {
+    "after_layer_0": {
+      "input_frames": 1947238,
+      "output_frames": 764937,
+      "candidate_frames": 764937,
+      "retention": 0.3928317955997161,
+      "reduction": 0.607168204400284
+    }
+  },
+  "completed_at_utc": "2026-10-27T05:27:18.192489+00:00",
+  "elapsed_seconds": 186.5
+}

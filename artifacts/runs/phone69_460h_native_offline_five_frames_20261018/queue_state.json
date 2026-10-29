@@ -1,8 +1,8 @@
 {
-  "status": "training",
-  "experiment": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50",
+  "status": "complete",
+  "experiment": "",
   "error": "",
   "pid": 86247,
   "run_phase": "offline_native_five_frames_20261018",
-  "server_utc": "2026-10-18T04:54:35.859286+00:00"
+  "server_utc": "2026-10-20T08:06:07.030700+00:00"
 }

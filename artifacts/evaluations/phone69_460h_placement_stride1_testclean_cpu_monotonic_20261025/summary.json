@@ -1,0 +1,41 @@
+{
+  "status": "complete",
+  "device": "cpu",
+  "timer": "time.perf_counter",
+  "test_subset": "test-clean",
+  "metric": "per",
+  "beam_width": 20,
+  "experiments": [
+    {
+      "scheme": "mel",
+      "experiment": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50",
+      "status": "complete",
+      "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/val-none-epoch=48-step=121688.ckpt",
+      "num_samples": 2620,
+      "phone_errors": 10544,
+      "reference_phones": 189023,
+      "PER": 0.05578157155478434,
+      "mean_utterance_RTF": 0.14846708929033808,
+      "raw_csv": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50_per_sample.csv",
+      "log": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50.log",
+      "eval_config": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/configs/mel_cpu_testclean.yaml",
+      "eval_config_sha256": "1a45596e4658c5d4124c963d494aa7252fb131a95918688c775315be3f73ca3b"
+    },
+    {
+      "scheme": "layer5",
+      "experiment": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50",
+      "status": "complete",
+      "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/val-none-epoch=45-step=151700.ckpt",
+      "num_samples": 2620,
+      "phone_errors": 9037,
+      "reference_phones": 189023,
+      "PER": 0.04780899678875058,
+      "mean_utterance_RTF": 0.15654425494023405,
+      "raw_csv": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50_per_sample.csv",
+      "log": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50.log",
+      "eval_config": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/configs/layer5_cpu_testclean.yaml",
+      "eval_config_sha256": "6a2d4656b3998e93f0a3fb4da7d42f4bed1a13a86e0416b998cec9b9f74181bb"
+    }
+  ],
+  "completed_at_utc": "2026-10-25T03:05:59.586585+00:00"
+}

@@ -1,0 +1,19 @@
+{
+  "status": "failed",
+  "started_at_utc": "2026-10-25T01:26:52.045907+00:00",
+  "device": "cpu",
+  "current": "mel",
+  "completed": [],
+  "experiments": {
+    "mel": {
+      "status": "evaluating",
+      "started_at_utc": "2026-10-25T01:26:52.061841+00:00",
+      "pid": 10041
+    },
+    "layer5": {
+      "status": "queued"
+    }
+  },
+  "failed_at_utc": "2026-10-25T01:27:51.916730+00:00",
+  "error": "RuntimeError('mel eval.py exited -2')"
+}

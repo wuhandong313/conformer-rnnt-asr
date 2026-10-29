@@ -1,0 +1,100 @@
+{
+  "status": "running",
+  "parallelism": 4,
+  "test_subset": "test-clean",
+  "metric": "per",
+  "beam_width": 20,
+  "queue_complete": true,
+  "baseline_manifest_unchanged": true,
+  "jobs": [
+    {
+      "name": "stride4_none",
+      "pid": 66956,
+      "status": "running",
+      "log": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_five_frames_20261020/stride4_none.log",
+      "per_sample_csv": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_five_frames_20261020/stride4_none_per_sample.csv",
+      "argv": [
+        "/root/anaconda3/envs/whd/bin/python",
+        "-u",
+        "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/eval_monotonic.py",
+        "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+        "--checkpoint",
+        "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/val-none-epoch=41-step=46858.ckpt",
+        "--metric",
+        "per",
+        "--out",
+        "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_five_frames_20261020/stride4_none_per_sample.csv"
+      ],
+      "last_progress": "[ 800] PER: 0.227 (cum: 0.053)  RTF: 0.4545 (cum: 0.5490)  |  ref: P AO1 L K EY1 M L EY1 T ER0 AH0 N D IH1 Z B IH0 N IY1 TH AH1  |  hyp: P AA1 K IY0 M L EY1 T ER0 IH0 N HH IH1 Z B IH0 N IY1 TH AH1 "
+    },
+    {
+      "name": "stride1_cosd_learned",
+      "pid": 66957,
+      "status": "running",
+      "log": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_five_frames_20261020/stride1_cosd_learned.log",
+      "per_sample_csv": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_five_frames_20261020/stride1_cosd_learned_per_sample.csv",
+      "argv": [
+        "/root/anaconda3/envs/whd/bin/python",
+        "-u",
+        "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/eval_monotonic.py",
+        "configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+        "--checkpoint",
+        "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=27-step=69137.ckpt",
+        "--metric",
+        "per",
+        "--out",
+        "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_five_frames_20261020/stride1_cosd_learned_per_sample.csv"
+      ],
+      "last_progress": "[ 510] PER: 0.080 (cum: 0.041)  RTF: 1.2909 (cum: 0.8638)  |  ref: HH IY1 D AA1 R T IH0 D TH R UW1 TH IY0 T R IY1 Z AH0 N D P A  |  hyp: HH IY1 D AA1 R T IH0 D TH R UW1 TH IY0 T R IY1 Z AH0 N D P A"
+    },
+    {
+      "name": "stride2_cosd_learned",
+      "pid": 66958,
+      "status": "running",
+      "log": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_five_frames_20261020/stride2_cosd_learned.log",
+      "per_sample_csv": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_five_frames_20261020/stride2_cosd_learned_per_sample.csv",
+      "argv": [
+        "/root/anaconda3/envs/whd/bin/python",
+        "-u",
+        "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/eval_monotonic.py",
+        "configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+        "--checkpoint",
+        "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=20-step=24540.ckpt",
+        "--metric",
+        "per",
+        "--out",
+        "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_five_frames_20261020/stride2_cosd_learned_per_sample.csv"
+      ],
+      "last_progress": "[ 940] PER: 0.098 (cum: 0.064)  RTF: 0.4542 (cum: 0.4642)  |  ref: S OW1 DH OW1 Z AO1 F AH0 S IH0 Z HH W IH1 CH AA1 R B AY1 R A  |  hyp: S OW1 DH OW1 Z AH0 F IH1 S IH0 Z W IH1 CH AA1 R B AY1 R AY1 "
+    },
+    {
+      "name": "stride4_cosd_learned",
+      "pid": 66959,
+      "status": "running",
+      "log": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_five_frames_20261020/stride4_cosd_learned.log",
+      "per_sample_csv": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_five_frames_20261020/stride4_cosd_learned_per_sample.csv",
+      "argv": [
+        "/root/anaconda3/envs/whd/bin/python",
+        "-u",
+        "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/eval_monotonic.py",
+        "configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+        "--checkpoint",
+        "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=44-step=43524.ckpt",
+        "--metric",
+        "per",
+        "--out",
+        "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_five_frames_20261020/stride4_cosd_learned_per_sample.csv"
+      ],
+      "last_progress": "[1350] PER: 0.042 (cum: 0.073)  RTF: 0.2662 (cum: 0.3076)  |  ref: P ER0 HH AE1 P S AY1 AE1 M M IH0 S T EY1 K AH0 N AE1 N S ER0  |  hyp: P ER0 HH AE1 P S AY1 M M IH0 S T EY1 K AH0 N AE1 N S ER0 D S"
+    }
+  ],
+  "note": "User-approved four-model parallel test-clean evaluation.",
+  "updated_at_utc": "2026-10-20T09:32:25.634471+00:00",
+  "active_jobs": [
+    "stride4_none",
+    "stride1_cosd_learned",
+    "stride2_cosd_learned",
+    "stride4_cosd_learned"
+  ],
+  "gpu": "2238, 81920, 63"
+}

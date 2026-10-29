@@ -1,0 +1,124 @@
+{
+  "created_at_utc": "2026-10-25T01:26:51.957105+00:00",
+  "status": "queued",
+  "device": "cpu",
+  "test_subset": "test-clean",
+  "metric": "per",
+  "beam_width": 20,
+  "execution_order": [
+    "mel",
+    "layer5"
+  ],
+  "serial": true,
+  "cpu_limits": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "expected_samples": 2620,
+  "expected_reference_phones": 189023,
+  "experiments": [
+    {
+      "scheme": "mel",
+      "name": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50",
+      "training_config": "configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+      "training_config_sha256": "173391aa2e55ef15f01865c8bd6792e53f52d0475912dacad83a7297542f4354",
+      "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/val-none-epoch=48-step=121688.ckpt",
+      "checkpoint_bytes": 51204928,
+      "run_epoch": 50,
+      "run_global_step": 126550,
+      "compression_after_layer": 0,
+      "offline_native_definition": {
+        "version": 2,
+        "sequence_mode": "offline",
+        "tail_alignment": "zero_pad_ceil",
+        "stride": 1,
+        "input_dim": 80,
+        "input_projection": 128,
+        "encoding_dim": 256,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "num_layers": 10,
+        "layers": [
+          10
+        ],
+        "compression_stages": [
+          {
+            "after_layer": 0,
+            "detector": {
+              "type": "cosine_diff",
+              "preprocess": "none"
+            },
+            "mixer": {
+              "type": "learned"
+            },
+            "neighborhood_radius": 0,
+            "window_size": 5,
+            "weight_predictor_mode": "five_frames",
+            "feature_dim": 80,
+            "input_domain": "model_mel_input"
+          }
+        ],
+        "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+      },
+      "eval_config": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_20261025/configs/mel_cpu_testclean.yaml",
+      "eval_config_sha256": "1a45596e4658c5d4124c963d494aa7252fb131a95918688c775315be3f73ca3b",
+      "raw_csv": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_20261025/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50_per_sample.csv",
+      "log": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_20261025/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50.log"
+    },
+    {
+      "scheme": "layer5",
+      "name": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50",
+      "training_config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "training_config_sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+      "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/val-none-epoch=45-step=151700.ckpt",
+      "checkpoint_bytes": 51297280,
+      "run_epoch": 50,
+      "run_global_step": 165000,
+      "compression_after_layer": 5,
+      "offline_native_definition": {
+        "version": 2,
+        "sequence_mode": "offline",
+        "tail_alignment": "zero_pad_ceil",
+        "stride": 1,
+        "input_dim": 80,
+        "input_projection": 128,
+        "encoding_dim": 256,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "num_layers": 10,
+        "layers": [
+          5,
+          5
+        ],
+        "compression_stages": [
+          {
+            "after_layer": 5,
+            "detector": {
+              "type": "cosine_diff",
+              "preprocess": "none"
+            },
+            "mixer": {
+              "type": "learned"
+            },
+            "neighborhood_radius": 0,
+            "window_size": 5,
+            "weight_predictor_mode": "five_frames",
+            "feature_dim": 128,
+            "input_domain": "encoder"
+          }
+        ],
+        "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+      },
+      "eval_config": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_20261025/configs/layer5_cpu_testclean.yaml",
+      "eval_config_sha256": "6a2d4656b3998e93f0a3fb4da7d42f4bed1a13a86e0416b998cec9b9f74181bb",
+      "raw_csv": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_20261025/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50_per_sample.csv",
+      "log": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_20261025/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50.log"
+    }
+  ]
+}

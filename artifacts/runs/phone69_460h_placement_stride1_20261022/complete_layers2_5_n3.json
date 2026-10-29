@@ -1,0 +1,21 @@
+{
+  "scheme": "layers2_5_n3",
+  "epoch": 50,
+  "global_step": 141382,
+  "checkpoints": [
+    {
+      "kind": "best",
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
+      "full_model_optimizer_scheduler": true,
+      "definition_matches": true,
+      "model_finite": true
+    },
+    {
+      "kind": "epoch_boundary",
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=141382-e74a7a871dc9.ckpt",
+      "full_model_optimizer_scheduler": true,
+      "definition_matches": true,
+      "model_finite": true
+    }
+  ]
+}

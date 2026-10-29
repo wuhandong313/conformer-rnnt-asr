@@ -1,0 +1,55 @@
+{
+  "name": "placement_layers2_5_n3",
+  "status": "complete",
+  "num_samples": 2620,
+  "device": "cpu",
+  "threads": 2,
+  "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
+  "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
+  "config": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_layers2_5_n3_testclean_cpu_monotonic_20261027/configs/layers2_5_n3_cpu_testclean.yaml",
+  "config_sha256": "b064be6f57a99084a3350049c5ef323ae1c7a27eb4a2ec6598cc28c2ef2e6613",
+  "definition_matches_checkpoint": true,
+  "feature_signature": {
+    "sample_rate": 16000,
+    "n_fft": 400,
+    "n_mels": 80,
+    "hop_length": 160,
+    "transcript_suffix": "-ph",
+    "test_subset": "test-clean",
+    "dataset_path": "/test21/librispeech",
+    "global_stats_path": "/test21/librispeech/global_stats.json",
+    "tokenizer": {
+      "type": "phone69",
+      "vocab_path": "configs/phone69_vocab.json"
+    }
+  },
+  "reference_order_matches_previous_eval": true,
+  "input_sequence_sha256": "abc793e082b60912bf193ab34f0959ba374aff7ff5e8ef1553f6f7b10dc5bf9d",
+  "stride": 1,
+  "frame_totals": {
+    "input_mel_frames": 1947238,
+    "encoder_input_frames": 1947238,
+    "encoder_output_frames": 701681
+  },
+  "overall_retention": 0.3603468091727873,
+  "overall_reduction": 0.6396531908272127,
+  "mean_utterance_retention": 0.3598501167941942,
+  "stages": {
+    "after_layer_2": {
+      "input_frames": 1947238,
+      "output_frames": 1676099,
+      "candidate_frames": 745507,
+      "retention": 0.8607571339507548,
+      "reduction": 0.13924286604924518
+    },
+    "after_layer_5": {
+      "input_frames": 1676099,
+      "output_frames": 701681,
+      "candidate_frames": 701681,
+      "retention": 0.41863935244875156,
+      "reduction": 0.5813606475512485
+    }
+  },
+  "completed_at_utc": "2026-10-27T05:28:39.666828+00:00",
+  "elapsed_seconds": 274.1
+}

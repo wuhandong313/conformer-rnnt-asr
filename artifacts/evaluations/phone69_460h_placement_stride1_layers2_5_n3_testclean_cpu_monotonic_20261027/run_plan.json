@@ -1,0 +1,33 @@
+{
+  "created_at_utc": "2026-10-27T02:59:21.326523+00:00",
+  "scheme": "layers2_5_n3",
+  "status": "queued",
+  "device": "cpu",
+  "timer": "time.perf_counter",
+  "test_subset": "test-clean",
+  "metric": "per",
+  "beam_width": 20,
+  "expected_samples": 2620,
+  "expected_reference_phones": 189023,
+  "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
+  "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
+  "checkpoint_bytes": 51297728,
+  "training_config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+  "training_config_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
+  "eval_config": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_layers2_5_n3_testclean_cpu_monotonic_20261027/configs/layers2_5_n3_cpu_testclean.yaml",
+  "eval_config_sha256": "b064be6f57a99084a3350049c5ef323ae1c7a27eb4a2ec6598cc28c2ef2e6613",
+  "eval_script": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_layers2_5_n3_testclean_cpu_monotonic_20261027/eval_monotonic.py",
+  "eval_script_sha256": "ef28a19c07ecba1ac05abe1e2c2650fd7ba088cace9157eebe5ab43c8a0c131f",
+  "reference_csvs": [
+    "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50_per_sample.csv",
+    "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50_per_sample.csv"
+  ],
+  "cpu_limits": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "output_csv": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_layers2_5_n3_testclean_cpu_monotonic_20261027/layers2_5_n3_per_sample.csv",
+  "output_log": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_layers2_5_n3_testclean_cpu_monotonic_20261027/layers2_5_n3.log"
+}

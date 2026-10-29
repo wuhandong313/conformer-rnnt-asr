@@ -1,0 +1,23 @@
+{
+  "status": "complete",
+  "started_at_utc": "2026-10-27T05:24:25.148012+00:00",
+  "models": {
+    "old_stride4_none": "complete",
+    "old_stride1_cosd_learned": "complete",
+    "old_stride2_cosd_learned": "complete",
+    "old_stride4_cosd_learned": "complete",
+    "placement_mel": "complete",
+    "placement_layer5": "complete",
+    "placement_layers2_5_n3": "complete"
+  },
+  "pids": {
+    "old_stride4_none": 12564,
+    "old_stride1_cosd_learned": 12565,
+    "old_stride2_cosd_learned": 12566,
+    "old_stride4_cosd_learned": 12567,
+    "placement_mel": 12568,
+    "placement_layer5": 12569,
+    "placement_layers2_5_n3": 12570
+  },
+  "completed_at_utc": "2026-10-27T05:29:01.882018+00:00"
+}

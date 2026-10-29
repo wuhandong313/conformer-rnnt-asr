@@ -1,0 +1,58 @@
+{
+  "created_at_utc": "2026-10-25T01:28:30.118673+00:00",
+  "status": "queued",
+  "device": "cpu",
+  "timer": "time.perf_counter",
+  "eval_script": "eval_monotonic.py",
+  "eval_script_sha256": "ef28a19c07ecba1ac05abe1e2c2650fd7ba088cace9157eebe5ab43c8a0c131f",
+  "source_eval_sha256": "3bf9396fe90bcd7c367e97ccaf3fe10d1a66691ae685ca013618e5df5d5b0a89",
+  "timer_only_change": "time.time() -> time.perf_counter() at inference timing sites; model loading/decoding unchanged",
+  "test_subset": "test-clean",
+  "metric": "per",
+  "beam_width": 20,
+  "execution_order": [
+    "mel",
+    "layer5"
+  ],
+  "serial": true,
+  "expected_samples": 2620,
+  "expected_reference_phones": 189023,
+  "cpu_limits": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "experiments": [
+    {
+      "scheme": "mel",
+      "name": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50",
+      "training_config": "configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+      "training_config_sha256": "173391aa2e55ef15f01865c8bd6792e53f52d0475912dacad83a7297542f4354",
+      "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/val-none-epoch=48-step=121688.ckpt",
+      "checkpoint_bytes": 51204928,
+      "run_epoch": 50,
+      "run_global_step": 126550,
+      "compression_after_layer": 0,
+      "eval_config": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/configs/mel_cpu_testclean.yaml",
+      "eval_config_sha256": "1a45596e4658c5d4124c963d494aa7252fb131a95918688c775315be3f73ca3b",
+      "raw_csv": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50_per_sample.csv",
+      "log": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50.log"
+    },
+    {
+      "scheme": "layer5",
+      "name": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50",
+      "training_config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "training_config_sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+      "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/val-none-epoch=45-step=151700.ckpt",
+      "checkpoint_bytes": 51297280,
+      "run_epoch": 50,
+      "run_global_step": 165000,
+      "compression_after_layer": 5,
+      "eval_config": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/configs/layer5_cpu_testclean.yaml",
+      "eval_config_sha256": "6a2d4656b3998e93f0a3fb4da7d42f4bed1a13a86e0416b998cec9b9f74181bb",
+      "raw_csv": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50_per_sample.csv",
+      "log": "artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50.log"
+    }
+  ]
+}

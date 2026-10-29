@@ -1,0 +1,70 @@
+{
+  "valid": true,
+  "run_phase": "placement_stride1_20261022",
+  "scheme": "layers2_5_n3",
+  "user_override_utc": "2026-10-24T12:18:03.650295+00:00",
+  "previous_budget": 4000,
+  "new_budget": 6000,
+  "probe_report": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6000_user_override.json",
+  "probe_status": "passed",
+  "probe_peak_reserved_GiB": 68.052734375,
+  "probe_max_joint_elements": 1602364050,
+  "config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+  "config_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
+  "experiment": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
+  "resume_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=03-step=12414-ffc3c9aa1e56.ckpt",
+  "resume_completed_epochs": 3,
+  "resume_global_step": 12414,
+  "offline_native_definition": {
+    "version": 2,
+    "sequence_mode": "offline",
+    "tail_alignment": "zero_pad_ceil",
+    "stride": 1,
+    "input_dim": 80,
+    "input_projection": 128,
+    "encoding_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "depthwise_conv_kernel_size": 31,
+    "dropout": 0.1,
+    "num_layers": 10,
+    "layers": [
+      2,
+      3,
+      5
+    ],
+    "compression_stages": [
+      {
+        "after_layer": 2,
+        "detector": {
+          "type": "cosine_diff",
+          "preprocess": "none"
+        },
+        "mixer": {
+          "type": "hard"
+        },
+        "neighborhood_radius": 1,
+        "feature_dim": 128,
+        "input_domain": "encoder"
+      },
+      {
+        "after_layer": 5,
+        "detector": {
+          "type": "cosine_diff",
+          "preprocess": "none"
+        },
+        "mixer": {
+          "type": "learned"
+        },
+        "neighborhood_radius": 0,
+        "window_size": 5,
+        "weight_predictor_mode": "five_frames",
+        "feature_dim": 128,
+        "input_domain": "encoder"
+      }
+    ],
+    "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+  },
+  "optimizer_and_scheduler_state_present": true,
+  "resume_at_epoch_boundary": true
+}

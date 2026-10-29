@@ -1,0 +1,8 @@
+{
+  "status": "failed",
+  "server_utc": "2026-10-28T02:32:09.262347+00:00",
+  "controller_pid": 12893,
+  "run_phase": "placement_layer7_stride1_20261027",
+  "error": "AssertionError('Training failed; logs and checkpoints preserved')",
+  "message": "Preserved logs and checkpoints; no automatic restart"
+}

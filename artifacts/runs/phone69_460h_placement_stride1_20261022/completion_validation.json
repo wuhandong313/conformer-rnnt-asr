@@ -1,0 +1,75 @@
+{
+  "valid": true,
+  "run_phase": "placement_stride1_20261022",
+  "server_utc": "2026-10-25T22:46:34.115752+00:00",
+  "models": [
+    {
+      "scheme": "mel",
+      "epoch": 50,
+      "global_step": 126550,
+      "checkpoints": [
+        {
+          "kind": "best",
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/val-none-epoch=48-step=121688.ckpt",
+          "full_model_optimizer_scheduler": true,
+          "definition_matches": true,
+          "model_finite": true
+        },
+        {
+          "kind": "epoch_boundary",
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=126550-25cdcfcd406b.ckpt",
+          "full_model_optimizer_scheduler": true,
+          "definition_matches": true,
+          "model_finite": true
+        }
+      ]
+    },
+    {
+      "scheme": "layer5",
+      "epoch": 50,
+      "global_step": 165000,
+      "checkpoints": [
+        {
+          "kind": "best",
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/val-none-epoch=45-step=151700.ckpt",
+          "full_model_optimizer_scheduler": true,
+          "definition_matches": true,
+          "model_finite": true
+        },
+        {
+          "kind": "epoch_boundary",
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=165000-03d646231711.ckpt",
+          "full_model_optimizer_scheduler": true,
+          "definition_matches": true,
+          "model_finite": true
+        }
+      ]
+    },
+    {
+      "scheme": "layers2_5_n3",
+      "epoch": 50,
+      "global_step": 141382,
+      "checkpoints": [
+        {
+          "kind": "best",
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
+          "full_model_optimizer_scheduler": true,
+          "definition_matches": true,
+          "model_finite": true
+        },
+        {
+          "kind": "epoch_boundary",
+          "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=141382-e74a7a871dc9.ckpt",
+          "full_model_optimizer_scheduler": true,
+          "definition_matches": true,
+          "model_finite": true
+        }
+      ]
+    }
+  ],
+  "protected_artifacts_unchanged": true,
+  "protected_manifest_check": "valid",
+  "resume_config_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
+  "resume_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=03-step=12414-ffc3c9aa1e56.ckpt",
+  "historical_controller_error": "The stale queue error came from the prior interrupted 4000-budget controller; the resumed 6000-budget trainer completed normally."
+}

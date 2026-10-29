@@ -1,0 +1,40 @@
+{
+  "status": "complete",
+  "started_at_utc": "2026-10-27T02:59:21.597209+00:00",
+  "scheme": "layers2_5_n3",
+  "device": "cpu",
+  "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
+  "pid": 12349,
+  "completed_at_utc": "2026-10-27T03:42:47.551745+00:00",
+  "result": {
+    "status": "complete",
+    "scheme": "layers2_5_n3",
+    "device": "cpu",
+    "timer": "time.perf_counter",
+    "test_subset": "test-clean",
+    "metric": "per",
+    "beam_width": 20,
+    "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
+    "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
+    "num_samples": 2620,
+    "phone_errors": 10247,
+    "reference_phones": 189023,
+    "PER": 0.05421033419213535,
+    "mean_utterance_RTF": 0.1402812517310912,
+    "raw_csv": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_layers2_5_n3_testclean_cpu_monotonic_20261027/layers2_5_n3_per_sample.csv",
+    "log": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_layers2_5_n3_testclean_cpu_monotonic_20261027/layers2_5_n3.log",
+    "eval_config": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_layers2_5_n3_testclean_cpu_monotonic_20261027/configs/layers2_5_n3_cpu_testclean.yaml",
+    "eval_config_sha256": "b064be6f57a99084a3350049c5ef323ae1c7a27eb4a2ec6598cc28c2ef2e6613",
+    "completed_at_utc": "2026-10-27T03:42:47.505247+00:00"
+  },
+  "validation": {
+    "valid": true,
+    "sample_count": 2620,
+    "expected_samples": 2620,
+    "reference_phones": 189023,
+    "expected_reference_phones": 189023,
+    "reference_order_matches_mel_and_layer5": true,
+    "rtf_finite_nonnegative": true,
+    "completed_at_utc": "2026-10-27T03:42:47.505280+00:00"
+  }
+}

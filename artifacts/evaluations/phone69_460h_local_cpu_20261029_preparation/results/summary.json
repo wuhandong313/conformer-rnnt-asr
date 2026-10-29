@@ -1,0 +1,14 @@
+[
+  {
+    "utterances": 2620,
+    "phone_errors": 11585,
+    "reference_phones": 189023,
+    "corpus_per": 0.061288837866291405,
+    "mean_utterance_rtf": 0.04847569005032297,
+    "reference_order_sha256": "64b7de04f68896a1ac3aa362908f64095670fb1d9d3e4e2bfd1b8b62a20ad413",
+    "csv_sha256": "dbad31d07361d7123a9c989f3fecc22986cf392b1e19380a3bb494d499617117",
+    "name": "stride4_none",
+    "phase": "full",
+    "process_wall_seconds": 982.5532724999939
+  }
+]

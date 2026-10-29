@@ -1,0 +1,29 @@
+{
+  "run_phase": "placement_layer7_stride1_20261027",
+  "created_at_utc": "2026-10-27T05:36:25.642578+00:00",
+  "user_request": "Add layer7 training using prior stride1 placement recipe",
+  "base_config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+  "base_config_sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+  "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50",
+  "official_config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+  "stage_after_layer": 7,
+  "stride": 1,
+  "epochs": 50,
+  "seed": 42,
+  "fresh_training": true,
+  "batch_candidates": [
+    6500,
+    5000,
+    4000,
+    3000,
+    2000
+  ],
+  "max_reserved_fraction": 0.9,
+  "only_reduce_budget_for": [
+    "oom",
+    "unsafe_joint",
+    "reserved_memory_safety_margin"
+  ],
+  "no_automatic_failure_restart": true,
+  "no_independent_evaluation": true
+}

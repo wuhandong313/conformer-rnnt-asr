@@ -1,0 +1,63 @@
+Building model from config …
+Evaluation metric: PER
+Decoding: beam_width=20 (beam=20)
+Loading checkpoint: /test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/val-none-epoch=48-step=121688.ckpt
+[   0] PER: 0.029 (cum: 0.029)  RTF: 0.1587 (cum: 0.1587)  |  ref: HH IY1 HH OW1 P T DH EH1 R W UH1 D B IY0 S T UW1 F ER0 D IH1  |  hyp: HH IY1 HH OW1 P T DH EH1 R W UH1 D B IY0 S T UW1 V ER0 D IH1
+[   5] PER: 0.022 (cum: 0.037)  RTF: 0.1493 (cum: 0.1529)  |  ref: TH IY0 M Y UW1 Z IH0 K K EY1 M N IH1 R ER0 AE1 N D HH IY1 R   |  hyp: TH IY0 M Y UW1 Z IH0 K K EY1 M N IH1 R ER0 AH0 N D HH IY1 R 
+[  10] PER: 0.077 (cum: 0.037)  RTF: -1.2463 (cum: 0.0235)  |  ref: W EH1 L N AW1 EH1 N IH0 S AY1 D IH0 K L EH1 R Y UW1 HH AE1 V  |  hyp: W EH1 L N AW1 IH0 N DH IH1 S AY1 D IH0 K L EH1 R Y UW1 HH AE
+[  15] PER: 0.042 (cum: 0.029)  RTF: 0.1320 (cum: 0.0612)  |  ref: B AH1 T TH IY0 D AH1 S K D IY1 P AH0 N IH0 NG IH0 N DH S K U  |  hyp: B AH1 T TH IY0 D AH1 S K D IY1 P AH0 N IH0 NG IH0 N DH S K U
+[  20] PER: 0.030 (cum: 0.028)  RTF: 0.1683 (cum: 0.0836)  |  ref: IH1 F AH0 M AE1 N HH AE1 D S T OW1 L AH0 N AH0 P AW1 N D IH0  |  hyp: IH1 F AH0 M AE1 N HH AE1 D S T OW1 L AH0 N AH0 P AW1 N D IH0
+[  25] PER: 0.016 (cum: 0.025)  RTF: 0.1323 (cum: 0.0957)  |  ref: AH0 JH EH1 N T AH0 L K IH1 K F R AH1 M DH T AO1 L B OY1 IH2   |  hyp: AH0 JH EH1 N T AH0 L K IH1 K F R AH1 M DH T AO1 L B OY1 IH0 
+[  30] PER: 0.000 (cum: 0.026)  RTF: 0.1367 (cum: 0.1023)  |  ref: B IH0 W EH1 R AH1 V M EY1 K IH0 NG DH AE1 T M IH0 S T EY1 K  |  hyp: B IH0 W EH1 R AH1 V M EY1 K IH0 NG DH AE1 T M IH0 S T EY1 K
+[  35] PER: 0.000 (cum: 0.026)  RTF: 0.1440 (cum: 0.1077)  |  ref: HH IY1 HH AE1 D DH F EY1 TH IH1 N HH IH1 M DH AE1 T M UW1 V   |  hyp: HH IY1 HH AE1 D DH F EY1 TH IH1 N HH IH1 M DH AE1 T M UW1 V 
+[  40] PER: 0.042 (cum: 0.027)  RTF: 0.1361 (cum: 0.1114)  |  ref: HH IY1 S EH1 T AO1 F AH0 B R AH1 P T L IY0 F ER0 DH B UH1 L   |  hyp: HH IY1 S EH1 T AO1 F AH0 B R AH1 P T L IY0 F ER0 DH B UH1 L 
+[  45] PER: 0.088 (cum: 0.028)  RTF: 0.1276 (cum: 0.1135)  |  ref: S UW1 N DH HH OW1 L B R IH1 JH W AH0 Z T R EH1 M B AH0 L IH0  |  hyp: S UW1 N DH HH OW1 L B R EY1 CH W AH0 Z T R EH1 M B AH0 L IH0
+[  50] PER: 0.000 (cum: 0.029)  RTF: 0.1731 (cum: 0.1171)  |  ref: IH1 T W AH0 Z AY1 D AH0 L F AO1 R HH IH1 M T UW1 M UW1 V HH   |  hyp: IH1 T W AH0 Z AY1 D AH0 L F AO1 R HH IH1 M T UW1 M UW1 V HH 
+Traceback (most recent call last):
+  File "/test21/conformer-rnnt-asr/eval.py", line 352, in <module>
+    main()
+  File "/test21/conformer-rnnt-asr/eval.py", line 341, in main
+    run_eval(
+  File "/test21/conformer-rnnt-asr/eval.py", line 114, in run_eval
+    predicted = model(batch)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/test21/conformer-rnnt-asr/conformer_rnnt/lightning_module.py", line 1071, in forward
+    hypotheses = decoder(
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torchaudio/models/rnnt_decoder.py", line 293, in forward
+    return self._search(enc_out, None, beam_width)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torchaudio/models/rnnt_decoder.py", line 251, in _search
+    a_hypos = self._gen_a_hypos(
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torchaudio/models/rnnt_decoder.py", line 199, in _gen_a_hypos
+    new_hypos = self._gen_new_hypos(base_hypos, new_tokens, new_scores, t, device)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torchaudio/models/rnnt_decoder.py", line 215, in _gen_new_hypos
+    pred_out, _, pred_states = self.model.predict(
+  File "/test21/conformer-rnnt-asr/conformer_rnnt/model.py", line 76, in predict
+    return self.predictor(targets, target_lengths, state)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/test21/conformer-rnnt-asr/conformer_rnnt/predictor.py", line 156, in forward
+    x, lstm_state_out = lstm(
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/test21/conformer-rnnt-asr/conformer_rnnt/predictor.py", line 67, in forward
+    gates = self.g_norm(gates)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/modules/normalization.py", line 217, in forward
+    return F.layer_norm(
+  File "/root/anaconda3/envs/whd/lib/python3.10/site-packages/torch/nn/functional.py", line 2910, in layer_norm
+    return torch.layer_norm(
+KeyboardInterrupt

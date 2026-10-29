@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/eval_monotonic.py", line 352, in <module>
+    main()
+  File "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/eval_monotonic.py", line 298, in main
+    config = load_config(args.config)
+  File "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/eval_monotonic.py", line 33, in load_config
+    with open(path, "r") as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'artifacts/evaluations/phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025/configs/mel_cpu_testclean.yaml'

@@ -1,0 +1,10 @@
+{
+  "name": "old_stride4_cosd_learned",
+  "status": "complete",
+  "pid": 12567,
+  "samples": 2620,
+  "started_at_utc": "2026-10-27T05:24:28.896452+00:00",
+  "updated_at_utc": "2026-10-27T05:26:15.291491+00:00",
+  "elapsed_seconds": 118.1,
+  "completed_at_utc": "2026-10-27T05:26:16.182533+00:00"
+}
