@@ -18,6 +18,10 @@ lightning_logs/
 *.model
 *.pt
 *.pth
+*.safetensors
+
+# Downloaded evaluation assets (audio, checkpoints, per-sample results)
+output/local_cpu_*/
 
 # Data (should be managed separately)
 librispeech/
