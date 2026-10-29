@@ -1,0 +1,290 @@
+[
+  {
+    "experiment": "exp",
+    "checkpoint_count": 6,
+    "bytes": 1123842370,
+    "status": null,
+    "best_recorded": null,
+    "has_best_marker": false,
+    "sample_checkpoints": [
+      "exp/a3-none-s42/checkpoints/val-none-h2-frz-sl1-post-epoch=56-step=149500.ckpt",
+      "exp/a3-none-s1111/checkpoints/val-none-h2-frz-sl1-post-epoch=17-step=45500.ckpt",
+      "exp/checkpoints/val-attn-savgol-epoch42-step26700.ckpt",
+      "exp/checkpoints/val-epoch=41-step=26600.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_a4",
+    "checkpoint_count": 20,
+    "bytes": 3549292768,
+    "status": null,
+    "best_recorded": null,
+    "has_best_marker": false,
+    "sample_checkpoints": [
+      "exp_a4/a4-uniform/checkpoints/val-attn-uniform-hard-r0.27-epoch=31-step=19700.ckpt",
+      "exp_a4/a4-uniform/checkpoints/val-attn-uniform-hard-r0.27-epoch=31-step=19800.ckpt",
+      "exp_a4/a4-avg-pool/checkpoints/val-attn-avg_pool-seg_avg-r0.27-epoch=30-step=19100.ckpt",
+      "exp_a4/a4-avg-pool/checkpoints/val-attn-avg_pool-seg_avg-r0.27-epoch=29-step=19000.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_b",
+    "checkpoint_count": 34,
+    "bytes": 6033825440,
+    "status": null,
+    "best_recorded": null,
+    "has_best_marker": false,
+    "sample_checkpoints": [
+      "exp_b/b-cosine_diff-learned/checkpoints/val-attn-cosine_diff-learned-r0.27-epoch=47-step=29800.ckpt",
+      "exp_b/b-cosine_diff-learned/checkpoints/val-attn-cosine_diff-learned-r0.27-epoch=47-step=29900.ckpt",
+      "exp_b/b-cosine_diff_savgol-seg_avg/checkpoints/val-attn-cosine_diff_savgol-seg_avg-r0.27-epoch=39-step=24800.ckpt",
+      "exp_b/b-cosine_diff_savgol-seg_avg/checkpoints/val-attn-cosine_diff_savgol-seg_avg-r0.27-epoch=38-step=24700.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_baseline_none",
+    "checkpoint_count": 2,
+    "bytes": 354928880,
+    "status": null,
+    "best_recorded": null,
+    "has_best_marker": false,
+    "sample_checkpoints": [
+      "exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16500.ckpt",
+      "exp_baseline_none/checkpoints/val-attn-none-epoch=26-step=16600.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_iter2",
+    "checkpoint_count": 2,
+    "bytes": 473913312,
+    "status": null,
+    "best_recorded": null,
+    "has_best_marker": false,
+    "sample_checkpoints": [
+      "exp_iter2/checkpoints/val-naive-h2-free-sl-post-chain-disp10-epoch=24-step=65600.ckpt",
+      "exp_iter2/checkpoints/val-naive-h2-free-sl-post-chain-disp10-epoch=32-step=86600.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_lstm_naive_repro",
+    "checkpoint_count": 2,
+    "bytes": 322546772,
+    "status": null,
+    "best_recorded": null,
+    "has_best_marker": false,
+    "sample_checkpoints": [
+      "exp_lstm_naive_repro/checkpoints/val-naive-epoch=34-step=22000.ckpt",
+      "exp_lstm_naive_repro/checkpoints/val-naive-epoch=34-step=22100.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_phone69_100h_none_s42_e40",
+    "checkpoint_count": 8,
+    "bytes": 2902039758,
+    "status": "completed",
+    "best_recorded": "/test21/conformer-rnnt-asr/exp_phone69_100h_none_s42_e40/checkpoints/val-none-epoch=26-step=11047.ckpt",
+    "has_best_marker": false,
+    "sample_checkpoints": [
+      "exp_phone69_100h_none_s42_e40/checkpoints/train-none-epoch=34-step=14000.ckpt",
+      "exp_phone69_100h_none_s42_e40/checkpoints/train-none-epoch=36-step=14500.ckpt",
+      "exp_phone69_100h_none_s42_e40/checkpoints/last.ckpt",
+      "exp_phone69_100h_none_s42_e40/checkpoints/val-none-epoch=26-step=11047.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50",
+    "checkpoint_count": 56,
+    "bytes": 2771542254,
+    "status": "trained",
+    "best_recorded": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/val-none-epoch=45-step=151700.ckpt",
+    "has_best_marker": true,
+    "sample_checkpoints": [
+      "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=44-step=145200-ad62d271ee62.ckpt",
+      "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=19-step=62700-e63c8f52dfd0.ckpt",
+      "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=21-step=69300-b637b76da784.ckpt",
+      "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=02-step=6600-2c3dda2c01aa.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50",
+    "checkpoint_count": 56,
+    "bytes": 2771529648,
+    "status": "trained",
+    "best_recorded": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/val-none-epoch=46-step=118826.ckpt",
+    "has_best_marker": true,
+    "sample_checkpoints": [
+      "exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/epoch-boundary-epoch=16-step=40496-088757baadf1.ckpt",
+      "exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/epoch-boundary-epoch=02-step=5062-aba8f6e8840b.ckpt",
+      "exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/epoch-boundary-epoch=35-step=88585-5002c37aae86.ckpt",
+      "exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/epoch-boundary-epoch=47-step=118957-5c949e91273a.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
+    "checkpoint_count": 60,
+    "bytes": 2908412936,
+    "status": "trained",
+    "best_recorded": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
+    "has_best_marker": true,
+    "sample_checkpoints": [
+      "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=32-step=91990-5111005e5816.ckpt",
+      "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
+      "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=25-step=72782-45cd284d1024.ckpt",
+      "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=47-step=133150-714c35a45aaf.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50",
+    "checkpoint_count": 56,
+    "bytes": 2766544048,
+    "status": "trained",
+    "best_recorded": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/val-none-epoch=48-step=121688.ckpt",
+    "has_best_marker": true,
+    "sample_checkpoints": [
+      "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=18-step=45558-8b21274a10a5.ckpt",
+      "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=39-step=98709-dbb8ef990503.ckpt",
+      "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=25-step=63275-242a4ab16fad.ckpt",
+      "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=34-step=86054-102857deee81.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50",
+    "checkpoint_count": 56,
+    "bytes": 2771201392,
+    "status": "trained",
+    "best_recorded": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=27-step=69137.ckpt",
+    "has_best_marker": true,
+    "sample_checkpoints": [
+      "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=42-step=108502.ckpt",
+      "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/train-none-epoch=33-step=85500.ckpt",
+      "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=21-step=53151-ee4213887596.ckpt",
+      "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=38-step=96178-02eb20415bd0.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50",
+    "checkpoint_count": 12,
+    "bytes": 515138238,
+    "status": "training",
+    "best_recorded": null,
+    "has_best_marker": false,
+    "sample_checkpoints": [
+      "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/checkpoints/epoch-boundary-epoch=02-step=5062-ba24feb0687d.ckpt",
+      "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/checkpoints/epoch-boundary-epoch=00-step=0-d438ede2d72e.ckpt",
+      "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/checkpoints/epoch-boundary-epoch=05-step=12655-4e292ee1c4ca.ckpt",
+      "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/checkpoints/epoch-boundary-epoch=03-step=7593-842d6644505b.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50",
+    "checkpoint_count": 56,
+    "bytes": 2767861776,
+    "status": "trained",
+    "best_recorded": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=20-step=24540.ckpt",
+    "has_best_marker": true,
+    "sample_checkpoints": [
+      "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=10-step=11970-fc2910ea25c3.ckpt",
+      "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=19-step=22743-3c153f8ea8ea.ckpt",
+      "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=03-step=3591-5fee7044155c.ckpt",
+      "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=50-step=59850-cc8f0280231e.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50",
+    "checkpoint_count": 56,
+    "bytes": 2766198630,
+    "status": "trained",
+    "best_recorded": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=44-step=43524.ckpt",
+    "has_best_marker": true,
+    "sample_checkpoints": [
+      "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=36-step=34956-71c5ec58b362.ckpt",
+      "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=44-step=43524.ckpt",
+      "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=41-step=39811-5a00bf2e657a.ckpt",
+      "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=01-step=971-96c0d267d114.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_phone69_460h_offline_native_stride4_none_s42_e50",
+    "checkpoint_count": 56,
+    "bytes": 2752499436,
+    "status": "trained",
+    "best_recorded": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/val-none-epoch=41-step=46858.ckpt",
+    "has_best_marker": true,
+    "sample_checkpoints": [
+      "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=14-step=15932-9ae961765811.ckpt",
+      "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=10-step=11380-cba5a715fd4f.ckpt",
+      "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=29-step=33002-3232aed65235.ckpt",
+      "exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=31-step=35278-2dc537438a95.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_word_960h",
+    "checkpoint_count": 30,
+    "bytes": 9250789793,
+    "status": null,
+    "best_recorded": null,
+    "has_best_marker": false,
+    "sample_checkpoints": [
+      "exp_word_960h/checkpoints/last-v1.ckpt",
+      "exp_word_960h/checkpoints/train-none-epoch=03-step=75200.ckpt",
+      "exp_word_960h/checkpoints/train-none-epoch=00-step=11000.ckpt",
+      "exp_word_960h/checkpoints/train-none-epoch=10-step=231900.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_word_960h_bigdec",
+    "checkpoint_count": 5,
+    "bytes": 3683835511,
+    "status": null,
+    "best_recorded": null,
+    "has_best_marker": false,
+    "sample_checkpoints": [
+      "exp_word_960h_bigdec/checkpoints/train-none-epoch=08-step=189200.ckpt",
+      "exp_word_960h_bigdec/checkpoints/val-none-epoch=12-step=292000.ckpt",
+      "exp_word_960h_bigdec/checkpoints/train-none-epoch=14-step=324300.ckpt",
+      "exp_word_960h_bigdec/checkpoints/last.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_word_960h_cosd_learned",
+    "checkpoint_count": 6,
+    "bytes": 2398284608,
+    "status": null,
+    "best_recorded": null,
+    "has_best_marker": false,
+    "sample_checkpoints": [
+      "exp_word_960h_cosd_learned/checkpoints/val-none-epoch=06-step=150000.ckpt",
+      "exp_word_960h_cosd_learned/checkpoints/train-none-epoch=06-step=148600.ckpt",
+      "exp_word_960h_cosd_learned/checkpoints/batch_tuning_source_step192000_20261014_105720.ckpt",
+      "exp_word_960h_cosd_learned/checkpoints/last.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_word_960h_cosd_learned_b10000",
+    "checkpoint_count": 7,
+    "bytes": 2912175301,
+    "status": null,
+    "best_recorded": null,
+    "has_best_marker": false,
+    "sample_checkpoints": [
+      "exp_word_960h_cosd_learned_b10000/checkpoints/last-v1.ckpt",
+      "exp_word_960h_cosd_learned_b10000/checkpoints/val-none-epoch=08-step=194000.ckpt",
+      "exp_word_960h_cosd_learned_b10000/checkpoints/last.ckpt",
+      "exp_word_960h_cosd_learned_b10000/checkpoints/train-none-epoch=08-step=193800.ckpt"
+    ]
+  },
+  {
+    "experiment": "exp_word_960h_cosd_learned_b14000",
+    "checkpoint_count": 6,
+    "bytes": 2398276230,
+    "status": null,
+    "best_recorded": null,
+    "has_best_marker": false,
+    "sample_checkpoints": [
+      "exp_word_960h_cosd_learned_b14000/checkpoints/last-v1.ckpt",
+      "exp_word_960h_cosd_learned_b14000/checkpoints/train-none-epoch=14-step=251700.ckpt",
+      "exp_word_960h_cosd_learned_b14000/checkpoints/train-none-epoch=11-step=222200.ckpt",
+      "exp_word_960h_cosd_learned_b14000/checkpoints/val-none-epoch=11-step=227500.ckpt"
+    ]
+  }
+]
