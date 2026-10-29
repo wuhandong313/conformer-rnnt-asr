@@ -1,0 +1,6 @@
+{
+  "server_utc": "2026-10-29T08:28:39.285407+00:00",
+  "watcher_pid": 32285,
+  "was_alive": true,
+  "reason": "Small GPU checks and real training measurement completed; old deferred benchmark assumes the pre-handoff config hash. Training was not stopped."
+}
