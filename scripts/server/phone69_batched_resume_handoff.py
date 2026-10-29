@@ -6,7 +6,7 @@ available. The new runner appends to the existing log and keeps the old model,
 optimizer, scheduler, budget and epoch count. It does not rewrite checkpoints.
 """
 from __future__ import annotations
-import fcntl, json, os, re, shutil, signal, subprocess, sys, time, traceback
+import fcntl, hashlib, json, os, re, shutil, signal, subprocess, sys, time, traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -61,6 +61,14 @@ def progress_after_boundary(completed):
     return any(int(epoch) >= completed and int(batch) > 0 for epoch, batch in matches)
 
 
+def source_fingerprints():
+    paths = sorted((ROOT / 'conformer_rnnt').rglob('*.py')) + [
+        ROOT / 'train.py', TRAINER, ROOT / 'scripts/server/phone69_epoch_checkpoint.py',
+        CONFIG, ORIGINAL,
+    ]
+    return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
+
+
 def main():
     import torch, yaml
     sys.path.insert(0, str(ROOT))
@@ -69,6 +77,7 @@ def main():
 
     os.chdir(ROOT)
     assert subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() == EXPECTED_HEAD
+    fingerprints = source_fingerprints()
     config = yaml.safe_load(CONFIG.read_text())
     original = yaml.safe_load(ORIGINAL.read_text())
     check = yaml.safe_load(CONFIG.read_text())
@@ -109,6 +118,8 @@ def main():
                 time.sleep(0.05)
             else:
                 raise RuntimeError('Trainer did not pause')
+            assert subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() == EXPECTED_HEAD
+            assert source_fingerprints() == fingerprints, 'Training source changed while waiting'
             if progress_after_boundary(epoch):
                 completed = epoch
                 os.kill(trainer_pid, signal.SIGCONT)
@@ -170,6 +181,7 @@ def main():
             runtime_path = WORK / 'reference_fallback_runtime.yaml'
             runtime_path.write_text(yaml.safe_dump(fallback, sort_keys=False))
         state('starting', backend=backend, checkpoint=str(path), epoch=epoch, step=step, preflight_exit=preflight_exit)
+        assert source_fingerprints() == fingerprints, 'Training source changed during preflight'
         with (EXP / 'logs/train.log').open('a') as log, (EXP / 'logs/gpu_usage.csv').open('a') as gpu:
             log.write('\n--- '+now()+' resume backend='+backend+' checkpoint='+str(path)+' ---\n');log.flush()
             child = subprocess.Popen([sys.executable, '-u', str(TRAINER), str(runtime_path)], cwd=ROOT, env=dict(os.environ, RESUME_LAST='0'), stdout=log, stderr=subprocess.STDOUT)
