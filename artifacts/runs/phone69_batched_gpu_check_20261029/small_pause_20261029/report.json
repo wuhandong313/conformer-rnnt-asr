@@ -1,0 +1,78 @@
+{
+  "device": "NVIDIA A100-SXM4-80GB",
+  "torch": "2.6.0+cu124",
+  "data": "synthetic",
+  "repeats": 5,
+  "timing": "synchronized forward and backward",
+  "process_peak_allocated_mib": 47.2607421875,
+  "results": [
+    {
+      "window": 5,
+      "shape": [
+        4,
+        128,
+        128
+      ],
+      "indices_match": true,
+      "output_max_abs_diff": 0.0,
+      "input_grad_max_abs_diff": 7.275957614183426e-12,
+      "weight_grad_max_abs_diff": 2.7939677238464355e-09,
+      "median_ms": {
+        "reference": 8.119821548461914,
+        "batched": 3.469248302280903
+      },
+      "speedup": 2.3405132296594138
+    },
+    {
+      "window": 5,
+      "shape": [
+        8,
+        384,
+        128
+      ],
+      "indices_match": true,
+      "output_max_abs_diff": 3.5762786865234375e-07,
+      "input_grad_max_abs_diff": 3.637978807091713e-12,
+      "weight_grad_max_abs_diff": 5.122274160385132e-09,
+      "median_ms": {
+        "reference": 16.241302713751793,
+        "batched": 3.678114153444767
+      },
+      "speedup": 4.415660318356588
+    },
+    {
+      "window": 9,
+      "shape": [
+        4,
+        128,
+        128
+      ],
+      "indices_match": true,
+      "output_max_abs_diff": 2.384185791015625e-07,
+      "input_grad_max_abs_diff": 7.275957614183426e-12,
+      "weight_grad_max_abs_diff": 5.820766091346741e-10,
+      "median_ms": {
+        "reference": 12.958592735230923,
+        "batched": 5.042121745646
+      },
+      "speedup": 2.570067401966443
+    },
+    {
+      "window": 9,
+      "shape": [
+        8,
+        384,
+        128
+      ],
+      "indices_match": true,
+      "output_max_abs_diff": 2.384185791015625e-07,
+      "input_grad_max_abs_diff": 1.8189894035458565e-12,
+      "weight_grad_max_abs_diff": 1.3969838619232178e-09,
+      "median_ms": {
+        "reference": 26.03950724005699,
+        "batched": 9.407692588865757
+      },
+      "speedup": 2.7678952085313044
+    }
+  ]
+}
