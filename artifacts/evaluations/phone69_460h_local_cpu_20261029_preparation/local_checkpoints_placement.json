@@ -1,0 +1,39 @@
+{
+  "valid": true,
+  "inference_performed": false,
+  "group": "placement",
+  "training_stats_loaded": true,
+  "torch": "2.8.0",
+  "torchaudio": "2.8.0",
+  "pytorch_lightning": "2.6.1",
+  "models": [
+    {
+      "name": "placement_mel_stride1",
+      "definition": true,
+      "tokenizer": true,
+      "state_dict_layout": true,
+      "local_checkpoint_loaded": true
+    },
+    {
+      "name": "placement_layer5_stride1",
+      "definition": true,
+      "tokenizer": true,
+      "state_dict_layout": true,
+      "local_checkpoint_loaded": true
+    },
+    {
+      "name": "placement_layer7_stride1",
+      "definition": true,
+      "tokenizer": true,
+      "state_dict_layout": true,
+      "local_checkpoint_loaded": true
+    },
+    {
+      "name": "placement_layers2_5_n3_stride1",
+      "definition": true,
+      "tokenizer": true,
+      "state_dict_layout": true,
+      "local_checkpoint_loaded": true
+    }
+  ]
+}

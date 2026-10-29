@@ -1,0 +1,16 @@
+Building model from config …
+/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/code/placement/conformer_rnnt/lightning_module.py:608: torchaudio.transforms._transforms.RNNTLoss has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+Evaluation metric: PER
+Decoding: beam_width=20 (beam=20)
+Loading checkpoint: /Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/models/placement_layers2_5_n3_stride1/val-none-epoch=25-step=73182.ckpt
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/ffmpeg.py:88: UserWarning: torio.io._streaming_media_decoder.StreamingMediaDecoder has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+  s = torchaudio.io.StreamReader(src, format, None, buffer_size)
+[   0] PER: 0.029 (cum: 0.029)  RTF: 0.0562 (cum: 0.0562)  |  ref: HH IY1 HH OW1 P T DH EH1 R W UH1 D B IY0 S T UW1 F ER0 D IH1  |  hyp: HH IY1 HH OW1 P T DH EH1 R W UH1 D B IY0 S T UW1 F ER0 D IH1
+============================================================
+Evaluation complete — 2 samples
+PER: 0.0301 (4 phone errors / 133 reference phones)
+RTF: 0.0543
+============================================================
+Per-sample results saved to: /Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/smoke/placement_layers2_5_n3_stride1.csv

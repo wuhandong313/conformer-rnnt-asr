@@ -1,0 +1,39 @@
+{
+  "valid": true,
+  "inference_performed": false,
+  "group": "five_frames",
+  "training_stats_loaded": true,
+  "torch": "2.8.0",
+  "torchaudio": "2.8.0",
+  "pytorch_lightning": "2.6.1",
+  "models": [
+    {
+      "name": "stride4_none",
+      "definition": true,
+      "tokenizer": true,
+      "state_dict_layout": true,
+      "local_checkpoint_loaded": true
+    },
+    {
+      "name": "stride1_cosd_learned_five_frames",
+      "definition": true,
+      "tokenizer": true,
+      "state_dict_layout": true,
+      "local_checkpoint_loaded": true
+    },
+    {
+      "name": "stride2_cosd_learned_five_frames",
+      "definition": true,
+      "tokenizer": true,
+      "state_dict_layout": true,
+      "local_checkpoint_loaded": true
+    },
+    {
+      "name": "stride4_cosd_learned_five_frames",
+      "definition": true,
+      "tokenizer": true,
+      "state_dict_layout": true,
+      "local_checkpoint_loaded": true
+    }
+  ]
+}

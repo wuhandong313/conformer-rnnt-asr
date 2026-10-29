@@ -1,0 +1,71 @@
+{
+  "branch": "main",
+  "head": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
+  "rsync": null,
+  "models": [
+    {
+      "name": "stride4_none",
+      "best_match": true,
+      "config_match": true,
+      "stats_match": true,
+      "trained": true,
+      "best_path_match": true
+    },
+    {
+      "name": "stride1_cosd_learned_five_frames",
+      "best_match": true,
+      "config_match": true,
+      "stats_match": true,
+      "trained": true,
+      "best_path_match": true
+    },
+    {
+      "name": "stride2_cosd_learned_five_frames",
+      "best_match": true,
+      "config_match": true,
+      "stats_match": true,
+      "trained": true,
+      "best_path_match": true
+    },
+    {
+      "name": "stride4_cosd_learned_five_frames",
+      "best_match": true,
+      "config_match": true,
+      "stats_match": true,
+      "trained": true,
+      "best_path_match": true
+    },
+    {
+      "name": "placement_mel_stride1",
+      "best_match": true,
+      "config_match": true,
+      "stats_match": true,
+      "trained": true,
+      "best_path_match": true
+    },
+    {
+      "name": "placement_layer5_stride1",
+      "best_match": true,
+      "config_match": true,
+      "stats_match": true,
+      "trained": true,
+      "best_path_match": true
+    },
+    {
+      "name": "placement_layer7_stride1",
+      "best_match": true,
+      "config_match": true,
+      "stats_match": true,
+      "trained": true,
+      "best_path_match": true
+    },
+    {
+      "name": "placement_layers2_5_n3_stride1",
+      "best_match": true,
+      "config_match": true,
+      "stats_match": true,
+      "trained": true,
+      "best_path_match": true
+    }
+  ]
+}

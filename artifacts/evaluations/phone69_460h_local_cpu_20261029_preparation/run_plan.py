@@ -76,11 +76,53 @@ def transfer():
         print('Verified download:', destination.name, flush=True)
     local_data = WORK / 'librispeech'
     local_data.mkdir(exist_ok=True)
-    subprocess.run(['sshpass', '-e', 'rsync', '-rt', '--partial',
-                    '--files-from=' + str(HERE / 'dataset_files.txt'),
-                    '-e', 'ssh -o ConnectTimeout=20 -o ServerAliveInterval=15',
-                    'internal:' + PLAN['dataset']['root'] + '/', str(local_data) + '/'],
-                   check=True, env=env)
+    # The training server has no rsync. Stream only audited paths through tar;
+    # no temporary archive is written on the server.
+    for record in PLAN['dataset']['files']:
+        relative = Path(record['relative_path'])
+        if relative.is_absolute() or '..' in relative.parts or '\n' in str(relative):
+            raise ValueError('Unsafe dataset path: ' + str(relative))
+    if PLAN['dataset']['root'] != '/test21/librispeech':
+        raise ValueError('Unexpected dataset root')
+    pending = []
+    for record in PLAN['dataset']['files']:
+        local = local_data / record['relative_path']
+        if local.exists():
+            try:
+                verify_file(local, record)
+                continue
+            except ValueError:
+                pass
+        pending.append(record)
+    for start in range(0, len(pending), 300):
+        batch = pending[start:start + 300]
+        # Read a fixed number of paths so SSH proxy descriptor lifetime does
+        # not prevent the archive from closing.
+        remote_command = 'head -n %d | tar -C /test21/librispeech -cf - -T -' % len(batch)
+        remote = subprocess.Popen(
+            ['sshpass', '-e', 'ssh', '-o', 'ConnectTimeout=20', '-o', 'ServerAliveInterval=15',
+             'internal', remote_command], stdin=subprocess.PIPE, stdout=subprocess.PIPE, env=env)
+        extraction = subprocess.Popen(['tar', '--no-same-owner', '-xf', '-', '-C', str(local_data)],
+                                      stdin=remote.stdout)
+        remote.stdout.close()
+        try:
+            remote.stdin.write(''.join(r['relative_path'] + '\n' for r in batch).encode())
+            remote.stdin.close()
+            remote_code = remote.wait()
+            extraction_code = extraction.wait()
+            if remote_code or extraction_code:
+                raise RuntimeError('Dataset transfer failed: SSH=%s, tar=%s' %
+                                   (remote_code, extraction_code))
+        finally:
+            if remote.poll() is None:
+                remote.kill()
+                remote.wait()
+            if extraction.poll() is None:
+                extraction.kill()
+                extraction.wait()
+        for record in batch:
+            verify_file(local_data / record['relative_path'], record)
+        print('Verified dataset files:', start + len(batch), '/', len(pending), flush=True)
     verify_downloads()
 
 
