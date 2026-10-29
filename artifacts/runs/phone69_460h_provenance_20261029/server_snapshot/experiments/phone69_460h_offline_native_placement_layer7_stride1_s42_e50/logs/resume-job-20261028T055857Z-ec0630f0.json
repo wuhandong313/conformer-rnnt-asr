@@ -1,0 +1,11 @@
+{
+  "state": "spawned",
+  "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/epoch-boundary-epoch=29-step=73399-0a09ed6bd960.ckpt",
+  "resume_global_step": 73399,
+  "resume_completed_epochs": 29,
+  "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+  "log": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/logs/train-resume-20261028T055857Z-ec0630f0.log",
+  "before_run_backup": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/logs/run-before-resume-20261028T055857Z-ec0630f0.json",
+  "created_at": "2026-10-28T05:58:57.672333+00:00",
+  "pid": 24714
+}

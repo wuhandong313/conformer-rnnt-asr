@@ -1,0 +1,40 @@
+{
+  "status": "trained",
+  "config": "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+  "config_sha256": "017cdecbc2e7f088d764bfcf31a2cd071a2b53ccef8b432e33c1b29361418ee2",
+  "code_commit": "389b1b17fd0214c1134eeb6f442bfc8ad178ce81",
+  "pid": 10114,
+  "started_at": "2026-10-17T16:12:20.795373+00:00",
+  "epochs": 50,
+  "early_stopping": false,
+  "max_token_limit": 23500,
+  "train_subset": [
+    "train-clean-100",
+    "train-clean-360"
+  ],
+  "val_subset": "dev-clean",
+  "test_subset": "test-clean",
+  "tokenizer": "phone69",
+  "resume_checkpoint": null,
+  "internal_dim": 128,
+  "num_heads": 8,
+  "sequence_mode": "offline",
+  "compression": {
+    "filter": "none"
+  },
+  "output_dim": 256,
+  "ffn_dim": 512,
+  "time_reduction_stride": 4,
+  "updated_at": "2026-10-18T00:58:51.743242+00:00",
+  "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=50-step=56900-c0dcc6788e76.ckpt",
+  "epoch_boundary_metadata": {
+    "previous_max_token_limit": 23500,
+    "resume_global_step": 56900,
+    "resume_completed_epochs": 50,
+    "resume_at_epoch_boundary": true
+  },
+  "epoch": 50,
+  "global_step": 56900,
+  "observed_compression_lengths": null,
+  "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/val-none-epoch=41-step=46858.ckpt"
+}

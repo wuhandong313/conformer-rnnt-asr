@@ -1,0 +1,1 @@
+/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/val-none-epoch=46-step=118826.ckpt

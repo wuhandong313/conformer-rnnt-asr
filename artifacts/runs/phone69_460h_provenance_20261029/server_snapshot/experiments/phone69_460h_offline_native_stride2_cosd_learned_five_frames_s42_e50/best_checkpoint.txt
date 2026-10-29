@@ -1,0 +1,1 @@
+/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=20-step=24540.ckpt

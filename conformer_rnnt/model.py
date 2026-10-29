@@ -4,12 +4,14 @@ Combines ConformerEncoder + Predictor + Joiner into a complete transducer.
 Provides both manual and config-driven factory functions.
 """
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import torch
 from torch import Tensor
 
 from conformer_rnnt.encoder import ConformerEncoder
+from conformer_rnnt.staged_encoder import StagedConformerEncoder
+from conformer_rnnt.compression.stages import placement_options_from_config
 from conformer_rnnt.predictor import Predictor
 from conformer_rnnt.joiner import Joiner
 
@@ -27,7 +29,7 @@ class ConformerRNNT(torch.nn.Module):
         Joint network — additive fusion → activation → linear → logits.
     """
 
-    def __init__(self, transcriber: ConformerEncoder, predictor: Predictor, joiner: Joiner) -> None:
+    def __init__(self, transcriber: Union[ConformerEncoder, StagedConformerEncoder], predictor: Predictor, joiner: Joiner) -> None:
         super().__init__()
         self.transcriber = transcriber
         self.predictor = predictor
@@ -111,6 +113,8 @@ def conformer_rnnt_model(
     compression_mixer: Optional[dict] = None,
     compression_keep_rate: Optional[float] = None,
     sequence_mode: str = "legacy",
+    encoder_num_layers: Optional[int] = None,
+    compression_stages: Optional[List[dict]] = None,
     # Predictor
     num_symbols: int,
     symbol_embedding_dim: int = 128,
@@ -126,8 +130,24 @@ def conformer_rnnt_model(
 
     All parameters are keyword-only to prevent positional confusion.
     """
-    return ConformerRNNT(
-        transcriber=ConformerEncoder(
+    if compression_stages is not None:
+        if (sequence_mode != "offline" or right_context_length != 0
+                or compression_right_context_length is not None or compression_keep_rate is not None):
+            raise ValueError("Staged compression is offline, without context partitions or a target rate")
+        if compression_detector is not None or compression_mixer is not None:
+            raise ValueError("Explicit stages cannot be combined with a single-stage detector or mixer")
+        transcriber = StagedConformerEncoder(
+            input_dim=input_dim, output_dim=encoding_dim,
+            time_reduction_input_dim=time_reduction_input_dim,
+            time_reduction_stride=time_reduction_stride,
+            num_heads=num_heads, ffn_dim=ffn_dim, num_layers=encoder_num_layers,
+            compression_stages=compression_stages, dropout=dropout,
+            depthwise_conv_kernel_size=depthwise_conv_kernel_size,
+        )
+    else:
+        if encoder_num_layers is not None:
+            raise ValueError("encoder_num_layers requires explicit compression_stages")
+        transcriber = ConformerEncoder(
             input_dim=input_dim,
             output_dim=encoding_dim,
             right_context_length=right_context_length,
@@ -147,7 +167,9 @@ def conformer_rnnt_model(
             compression_mixer=compression_mixer,
             compression_keep_rate=compression_keep_rate,
             sequence_mode=sequence_mode,
-        ),
+        )
+    return ConformerRNNT(
+        transcriber=transcriber,
         predictor=Predictor(
             num_symbols=num_symbols,
             output_dim=encoding_dim,
@@ -204,6 +226,7 @@ def conformer_rnnt_model_from_config(config: Dict[str, Any]) -> ConformerRNNT:
         encoding_dim=m.get("encoding_dim", 512),
         num_symbols=num_symbols + 1,  # +blank
         **sequence_options_from_config(m),
+        **placement_options_from_config(m),
         time_reduction_input_dim=m.get("time_reduction_input_dim", 128),
         time_reduction_stride=m.get("time_reduction_stride", 4),
         num_heads=m.get("num_heads", 8),
@@ -212,9 +235,9 @@ def conformer_rnnt_model_from_config(config: Dict[str, Any]) -> ConformerRNNT:
         num_layers_block2=m.get("num_layers_block2", 8),
         dropout=m.get("dropout", 0.1),
         depthwise_conv_kernel_size=m.get("depthwise_conv_kernel_size", 31),
-        compression_filter=c.get("filter", "hanning"),
+        compression_filter=c.get("filter", "none" if "stages" in c else "hanning"),
         hanning_window_size=c.get("hanning_window_size", 5),
-        weight_predictor_mode=c.get("weight_predictor_mode", "diff5"),
+        weight_predictor_mode=c.get("weight_predictor_mode", "five_frames" if "stages" in c else "diff5"),
         compression_detector=c.get("detector"),
         compression_mixer=c.get("mixer"),
         compression_keep_rate=c.get("keep_rate"),

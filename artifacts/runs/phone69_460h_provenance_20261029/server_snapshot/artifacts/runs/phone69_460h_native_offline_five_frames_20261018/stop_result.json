@@ -1,0 +1,8 @@
+{
+  "server_utc": "2026-10-18T04:45:20.218249+00:00",
+  "status": "stopped",
+  "stopped_training_pids": [],
+  "baseline_untouched": true,
+  "previous_pipeline_pid": 10107,
+  "gpu": "4 MiB, 81920 MiB, 0 %"
+}

@@ -1,0 +1,31 @@
+{
+  "valid": true,
+  "server_utc": "2026-10-21T23:07:33.707193+00:00",
+  "experiment": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50",
+  "pid": 2038,
+  "epoch": 1,
+  "global_step": 100,
+  "starting_from_scratch": true,
+  "full_initial_epoch_boundary": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=00-step=0-535a8c77ba71.ckpt",
+  "initial_model_optimizer_scheduler_verified": true,
+  "definition_version": 2,
+  "definition_matches_gate": true,
+  "protected_four_experiments_unchanged": true,
+  "budgets": {
+    "mel": 6500,
+    "layer5": 5000,
+    "layers2_5_n3": 4000
+  },
+  "process": "PID   PPID STAT     ELAPSED COMMAND\n  2038   1960 Rl         01:56 /root/anaconda3/envs/whd/bin/python -u scripts/server/train_phone69_460h_one.py configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+  "log_tail": [
+    "Epoch 0:   4%|▍         | 108/2531 [01:11<26:37,  1.52it/s, v_num=0]",
+    "Epoch 0:   4%|▍         | 108/2531 [01:11<26:37,  1.52it/s, v_num=0]",
+    "Epoch 0:   4%|▍         | 109/2531 [01:11<26:37,  1.52it/s, v_num=0]",
+    "Epoch 0:   4%|▍         | 109/2531 [01:11<26:38,  1.52it/s, v_num=0]",
+    "Epoch 0:   4%|▍         | 110/2531 [01:13<26:46,  1.51it/s, v_num=0]",
+    "Epoch 0:   4%|▍         | 110/2531 [01:13<26:46,  1.51it/s, v_num=0]",
+    "Epoch 0:   4%|▍         | 111/2531 [01:13<26:46,  1.51it/s, v_num=0]",
+    "Epoch 0:   4%|▍         | 111/2531 [01:13<26:46,  1.51it/s, v_num=0]"
+  ],
+  "gpu": "70967 MiB, 81920 MiB, 3 %"
+}

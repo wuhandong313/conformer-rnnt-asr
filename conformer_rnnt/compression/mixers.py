@@ -76,6 +76,14 @@ class LearnedWeightMixer(torch.nn.Module):
                 torch.nn.ReLU(),
                 torch.nn.Linear(32, window_size),
             )
+        elif weight_predictor_mode == "nine_frames":
+            if window_size != 9:
+                raise ValueError("nine_frames requires window_size=9")
+            self.weight_predictor = torch.nn.Sequential(
+                torch.nn.Linear(9 * feature_dim, 32),
+                torch.nn.ReLU(),
+                torch.nn.Linear(32, 9),
+            )
         elif weight_predictor_mode == "single_frame":
             self.weight_predictor = torch.nn.Sequential(
                 torch.nn.Linear(feature_dim, 32),
@@ -100,6 +108,10 @@ class LearnedWeightMixer(torch.nn.Module):
             offsets = torch.tensor([-2, -1, 0, 1, 2], device=frames.device)
             idx5 = (indices.unsqueeze(-1) + offsets).clamp(0, main_len - 1)
             peak_features = frames[idx5].reshape(N, -1)  # (N, 5*F)
+        elif self.weight_predictor_mode == "nine_frames":
+            offsets = torch.arange(-4, 5, device=frames.device)
+            idx9 = (indices.unsqueeze(-1) + offsets).clamp(0, main_len - 1)
+            peak_features = frames[idx9].reshape(N, -1)  # (N, 9*F)
         else:  # single_frame
             peak_features = frames[indices]  # (N, F)
 

@@ -1,0 +1,129 @@
+2026-10-21T14:26:09.766289+00:00 start
+Collecting package metadata (current_repodata.json): ...working... done
+Solving environment: ...working... failed with repodata from current_repodata.json, will retry with next repodata source.
+Collecting package metadata (repodata.json): ...working... done
+Solving environment: ...working... done
+
+## Package Plan ##
+
+  environment location: /root/anaconda3/envs/whd
+
+  added / updated specs:
+    - python=3.10.18
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    _libgcc_mutex-0.1          |             main           3 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    _openmp_mutex-5.1          |           52_gnu           7 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    bzip2-1.0.8                |       h5eee18b_6         262 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    ca-certificates-2026.10.20 |       h06a4308_0         113 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    expat-2.7.1                |       h6a678d5_0         182 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    ld_impl_linux-64-2.40      |       h12ee557_0         710 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    libffi-3.4.4               |       h6a678d5_1         141 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    libgcc-ng-11.2.0           |       h1234567_1         5.3 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    libstdcxx-ng-11.2.0        |       h1234567_1         4.7 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    libuuid-1.41.5             |       h5eee18b_0          27 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    libxcb-1.17.0              |       h9b100fa_0         430 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    libzlib-1.3.1              |       hb25bd0a_0          59 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    ncurses-6.5                |       h7934f7d_0         1.1 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    openssl-3.0.17             |       h5eee18b_0         5.2 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    packaging-26.3             |  py310h06a4308_0         329 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    pip-26.2.1                 |     pyhc872135_0         1.1 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    pthread-stubs-0.3          |       h0ce48e5_1           5 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    python-3.10.18             |       h1a3bd86_0        26.5 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    readline-8.3               |       hc2a1206_0         471 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    setuptools-84.0.0          |  py310h06a4308_0         968 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    sqlite-3.50.2              |       hb25bd0a_1         1.1 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    tk-8.6.15                  |       h54e0aa7_0         3.4 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    tzdata-2026c               |       he532380_0         117 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    wheel-0.48.0               |  py310h06a4308_0          59 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    xorg-libx11-1.8.12         |       h9b100fa_1         895 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    xorg-libxau-1.0.12         |       h9b100fa_0          13 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    xorg-libxdmcp-1.1.5        |       h9b100fa_0          19 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    xorg-xorgproto-2024.1      |       h5eee18b_1         580 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    xz-5.6.4                   |       h5eee18b_1         567 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    zlib-1.3.1                 |       hb25bd0a_0          96 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+    ------------------------------------------------------------
+                                           Total:        54.5 MB
+
+The following NEW packages will be INSTALLED:
+
+  _libgcc_mutex      anaconda/pkgs/main/linux-64::_libgcc_mutex-0.1-main
+  _openmp_mutex      anaconda/pkgs/main/linux-64::_openmp_mutex-5.1-52_gnu
+  bzip2              anaconda/pkgs/main/linux-64::bzip2-1.0.8-h5eee18b_6
+  ca-certificates    anaconda/pkgs/main/linux-64::ca-certificates-2026.10.20-h06a4308_0
+  expat              anaconda/pkgs/main/linux-64::expat-2.7.1-h6a678d5_0
+  ld_impl_linux-64   anaconda/pkgs/main/linux-64::ld_impl_linux-64-2.40-h12ee557_0
+  libffi             anaconda/pkgs/main/linux-64::libffi-3.4.4-h6a678d5_1
+  libgcc-ng          anaconda/pkgs/main/linux-64::libgcc-ng-11.2.0-h1234567_1
+  libstdcxx-ng       anaconda/pkgs/main/linux-64::libstdcxx-ng-11.2.0-h1234567_1
+  libuuid            anaconda/pkgs/main/linux-64::libuuid-1.41.5-h5eee18b_0
+  libxcb             anaconda/pkgs/main/linux-64::libxcb-1.17.0-h9b100fa_0
+  libzlib            anaconda/pkgs/main/linux-64::libzlib-1.3.1-hb25bd0a_0
+  ncurses            anaconda/pkgs/main/linux-64::ncurses-6.5-h7934f7d_0
+  openssl            anaconda/pkgs/main/linux-64::openssl-3.0.17-h5eee18b_0
+  packaging          anaconda/pkgs/main/linux-64::packaging-26.3-py310h06a4308_0
+  pip                anaconda/pkgs/main/noarch::pip-26.2.1-pyhc872135_0
+  pthread-stubs      anaconda/pkgs/main/linux-64::pthread-stubs-0.3-h0ce48e5_1
+  python             anaconda/pkgs/main/linux-64::python-3.10.18-h1a3bd86_0
+  readline           anaconda/pkgs/main/linux-64::readline-8.3-hc2a1206_0
+  setuptools         anaconda/pkgs/main/linux-64::setuptools-84.0.0-py310h06a4308_0
+  sqlite             anaconda/pkgs/main/linux-64::sqlite-3.50.2-hb25bd0a_1
+  tk                 anaconda/pkgs/main/linux-64::tk-8.6.15-h54e0aa7_0
+  tzdata             anaconda/pkgs/main/noarch::tzdata-2026c-he532380_0
+  wheel              anaconda/pkgs/main/linux-64::wheel-0.48.0-py310h06a4308_0
+  xorg-libx11        anaconda/pkgs/main/linux-64::xorg-libx11-1.8.12-h9b100fa_1
+  xorg-libxau        anaconda/pkgs/main/linux-64::xorg-libxau-1.0.12-h9b100fa_0
+  xorg-libxdmcp      anaconda/pkgs/main/linux-64::xorg-libxdmcp-1.1.5-h9b100fa_0
+  xorg-xorgproto     anaconda/pkgs/main/linux-64::xorg-xorgproto-2024.1-h5eee18b_1
+  xz                 anaconda/pkgs/main/linux-64::xz-5.6.4-h5eee18b_1
+  zlib               anaconda/pkgs/main/linux-64::zlib-1.3.1-hb25bd0a_0
+
+
+
+Downloading and Extracting Packages
+ncurses-6.5          | 1.1 MB    |            |   0% ncurses-6.5          | 1.1 MB    | 1          |   1% ncurses-6.5          | 1.1 MB    | 4          |   4% ncurses-6.5          | 1.1 MB    | #          |  10% ncurses-6.5          | 1.1 MB    | ##         |  20% ncurses-6.5          | 1.1 MB    | ###7       |  37% ncurses-6.5          | 1.1 MB    | #######3   |  73% ncurses-6.5          | 1.1 MB    | ########## | 100% ncurses-6.5          | 1.1 MB    | ########## | 100% 
+python-3.10.18       | 26.5 MB   |            |   0% python-3.10.18       | 26.5 MB   |            |   0% python-3.10.18       | 26.5 MB   | 2          |   2% python-3.10.18       | 26.5 MB   | 4          |   5% python-3.10.18       | 26.5 MB   | #2         |  13% python-3.10.18       | 26.5 MB   | ##1        |  22% python-3.10.18       | 26.5 MB   | ##6        |  27% python-3.10.18       | 26.5 MB   | ###2       |  33% python-3.10.18       | 26.5 MB   | ###7       |  38% python-3.10.18       | 26.5 MB   | ####1      |  41% python-3.10.18       | 26.5 MB   | #####      |  51% python-3.10.18       | 26.5 MB   | #####5     |  56% python-3.10.18       | 26.5 MB   | ######3    |  64% python-3.10.18       | 26.5 MB   | #######    |  70% python-3.10.18       | 26.5 MB   | #######7   |  78% python-3.10.18       | 26.5 MB   | ########3  |  84% python-3.10.18       | 26.5 MB   | ########9  |  90% python-3.10.18       | 26.5 MB   | #########5 |  95% python-3.10.18       | 26.5 MB   | ########## | 100% 
+setuptools-84.0.0    | 968 KB    |            |   0% setuptools-84.0.0    | 968 KB    | 1          |   2% setuptools-84.0.0    | 968 KB    | ########## | 100% setuptools-84.0.0    | 968 KB    | ########## | 100% 
+xorg-xorgproto-2024. | 580 KB    |            |   0% xorg-xorgproto-2024. | 580 KB    | 2          |   3% xorg-xorgproto-2024. | 580 KB    | ########## | 100% 
+ld_impl_linux-64-2.4 | 710 KB    |            |   0% ld_impl_linux-64-2.4 | 710 KB    | 2          |   2% ld_impl_linux-64-2.4 | 710 KB    | ########## | 100% 
+zlib-1.3.1           | 96 KB     |            |   0% zlib-1.3.1           | 96 KB     | #6         |  17% zlib-1.3.1           | 96 KB     | ########## | 100% 
+pthread-stubs-0.3    | 5 KB      |            |   0% pthread-stubs-0.3    | 5 KB      | ########## | 100% pthread-stubs-0.3    | 5 KB      | ########## | 100% 
+expat-2.7.1          | 182 KB    |            |   0% expat-2.7.1          | 182 KB    | 8          |   9% expat-2.7.1          | 182 KB    | ########## | 100% 
+xorg-libxau-1.0.12   | 13 KB     |            |   0% xorg-libxau-1.0.12   | 13 KB     | ########## | 100% xorg-libxau-1.0.12   | 13 KB     | ########## | 100% 
+libstdcxx-ng-11.2.0  | 4.7 MB    |            |   0% libstdcxx-ng-11.2.0  | 4.7 MB    |            |   0% libstdcxx-ng-11.2.0  | 4.7 MB    | ####3      |  44% libstdcxx-ng-11.2.0  | 4.7 MB    | #######9   |  79% libstdcxx-ng-11.2.0  | 4.7 MB    | ########## | 100% 
+tk-8.6.15            | 3.4 MB    |            |   0% tk-8.6.15            | 3.4 MB    |            |   0% tk-8.6.15            | 3.4 MB    | #####8     |  59% tk-8.6.15            | 3.4 MB    | ########## | 100% tk-8.6.15            | 3.4 MB    | ########## | 100% 
+pip-26.2.1           | 1.1 MB    |            |   0% pip-26.2.1           | 1.1 MB    | 1          |   1% pip-26.2.1           | 1.1 MB    | ########## | 100% pip-26.2.1           | 1.1 MB    | ########## | 100% 
+tzdata-2026c         | 117 KB    |            |   0% tzdata-2026c         | 117 KB    | #3         |  14% tzdata-2026c         | 117 KB    | ########## | 100% 
+xz-5.6.4             | 567 KB    |            |   0% xz-5.6.4             | 567 KB    | 2          |   3% xz-5.6.4             | 567 KB    | ########## | 100% xz-5.6.4             | 567 KB    | ########## | 100% 
+xorg-libxdmcp-1.1.5  | 19 KB     |            |   0% xorg-libxdmcp-1.1.5  | 19 KB     | ########5  |  85% xorg-libxdmcp-1.1.5  | 19 KB     | ########## | 100% 
+bzip2-1.0.8          | 262 KB    |            |   0% bzip2-1.0.8          | 262 KB    | 6          |   6% bzip2-1.0.8          | 262 KB    | ########## | 100% 
+packaging-26.3       | 329 KB    |            |   0% packaging-26.3       | 329 KB    | 4          |   5% packaging-26.3       | 329 KB    | ########## | 100% 
+libzlib-1.3.1        | 59 KB     |            |   0% libzlib-1.3.1        | 59 KB     | ##6        |  27% libzlib-1.3.1        | 59 KB     | ########## | 100% 
+_openmp_mutex-5.1    | 7 KB      |            |   0% _openmp_mutex-5.1    | 7 KB      | ########## | 100% _openmp_mutex-5.1    | 7 KB      | ########## | 100% 
+xorg-libx11-1.8.12   | 895 KB    |            |   0% xorg-libx11-1.8.12   | 895 KB    | 1          |   2% xorg-libx11-1.8.12   | 895 KB    | ########## | 100% 
+libxcb-1.17.0        | 430 KB    |            |   0% libxcb-1.17.0        | 430 KB    | 3          |   4% libxcb-1.17.0        | 430 KB    | ########## | 100% 
+readline-8.3         | 471 KB    |            |   0% readline-8.3         | 471 KB    | 3          |   3% readline-8.3         | 471 KB    | ########## | 100% 
+libuuid-1.41.5       | 27 KB     |            |   0% libuuid-1.41.5       | 27 KB     | #####8     |  58% libuuid-1.41.5       | 27 KB     | ########## | 100% 
+openssl-3.0.17       | 5.2 MB    |            |   0% openssl-3.0.17       | 5.2 MB    |            |   0% openssl-3.0.17       | 5.2 MB    | ##5        |  26% openssl-3.0.17       | 5.2 MB    | #####1     |  51% openssl-3.0.17       | 5.2 MB    | #######6   |  76% openssl-3.0.17       | 5.2 MB    | #########8 |  99% openssl-3.0.17       | 5.2 MB    | ########## | 100% 
+wheel-0.48.0         | 59 KB     |            |   0% wheel-0.48.0         | 59 KB     | ########## | 100% wheel-0.48.0         | 59 KB     | ########## | 100% 
+sqlite-3.50.2        | 1.1 MB    |            |   0% sqlite-3.50.2        | 1.1 MB    | 1          |   1% sqlite-3.50.2        | 1.1 MB    | #########3 |  94% sqlite-3.50.2        | 1.1 MB    | ########## | 100% 
+libffi-3.4.4         | 141 KB    |            |   0% libffi-3.4.4         | 141 KB    | #1         |  11% libffi-3.4.4         | 141 KB    | ########## | 100% libffi-3.4.4         | 141 KB    | ########## | 100% 
+_libgcc_mutex-0.1    | 3 KB      |            |   0% _libgcc_mutex-0.1    | 3 KB      | ########## | 100% _libgcc_mutex-0.1    | 3 KB      | ########## | 100% 
+ca-certificates-2026 | 113 KB    |            |   0% ca-certificates-2026 | 113 KB    | ########## | 100% 
+libgcc-ng-11.2.0     | 5.3 MB    |            |   0% libgcc-ng-11.2.0     | 5.3 MB    |            |   0% libgcc-ng-11.2.0     | 5.3 MB    | ##6        |  26% libgcc-ng-11.2.0     | 5.3 MB    | ####5      |  45% libgcc-ng-11.2.0     | 5.3 MB    | ######5    |  66% libgcc-ng-11.2.0     | 5.3 MB    | ########7  |  87% libgcc-ng-11.2.0     | 5.3 MB    | ########## | 100% 
+Preparing transaction: ...working... done
+Verifying transaction: ...working... done
+Executing transaction: ...working... done
+#
+# To activate this environment, use
+#
+#     $ conda activate whd
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+

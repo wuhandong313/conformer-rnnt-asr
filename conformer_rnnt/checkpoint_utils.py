@@ -3,9 +3,11 @@
 from pathlib import Path
 
 
-def phone69_resume_metadata(checkpoint, batch_budget):
+def phone69_resume_metadata(checkpoint, batch_budget, expected_definition=None):
     if not checkpoint.get('optimizer_states') or not checkpoint.get('lr_schedulers'):
         raise ValueError('Resume requires optimizer and scheduler state')
+    if expected_definition is not None and checkpoint.get('offline_native_definition') != expected_definition:
+        raise ValueError('Checkpoint does not match the configured offline compression stages')
     old_budget = checkpoint.get('hyper_parameters', {}).get('max_token_limit')
     if old_budget is None:
         raise ValueError('Checkpoint does not record its batch budget')
@@ -21,7 +23,7 @@ def phone69_resume_metadata(checkpoint, batch_budget):
     }
 
 
-def select_phone69_resume_checkpoint(paths, batch_budget):
+def select_phone69_resume_checkpoint(paths, batch_budget, expected_definition=None):
     import torch
 
     candidates = sorted({Path(path) for path in paths}, key=lambda path: path.stat().st_mtime, reverse=True)
@@ -29,7 +31,7 @@ def select_phone69_resume_checkpoint(paths, batch_budget):
     for path in candidates:
         checkpoint = torch.load(path, map_location='cpu', weights_only=False)
         try:
-            metadata = phone69_resume_metadata(checkpoint, batch_budget)
+            metadata = phone69_resume_metadata(checkpoint, batch_budget, expected_definition)
         except ValueError as error:
             errors.append('{}: {}'.format(path, error))
             print('Skipping incompatible resume checkpoint: {}'.format(errors[-1]), flush=True)

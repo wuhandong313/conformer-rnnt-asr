@@ -30,6 +30,7 @@ from common import (
     WarmupLR,
 )
 from conformer_rnnt.model import conformer_rnnt_model, sequence_options_from_config
+from conformer_rnnt.compression.stages import placement_options_from_config
 from ipa_tokenizer import DEFAULT_VOCAB, FixedIPATokenizer, encode_transcript
 from phone69_tokenizer import DEFAULT_PHONE69_VOCAB, FixedPhone69Tokenizer
 from ipa_labels import ExternalIPALabels
@@ -463,6 +464,8 @@ class LibriSpeechRNNTModule(LightningModule):
         compression_mixer: Optional[dict] = None,
         compression_keep_rate: Optional[float] = None,
         sequence_mode: str = "legacy",
+        encoder_num_layers: Optional[int] = None,
+        compression_stages: Optional[List[dict]] = None,
         # Model — predictor
         symbol_embedding_dim: int = 128,
         num_lstm_layers: int = 2,
@@ -581,6 +584,8 @@ class LibriSpeechRNNTModule(LightningModule):
             compression_mixer=compression_mixer,
             compression_keep_rate=compression_keep_rate,
             sequence_mode=sequence_mode,
+            encoder_num_layers=encoder_num_layers,
+            compression_stages=compression_stages,
             symbol_embedding_dim=symbol_embedding_dim,
             num_lstm_layers=num_lstm_layers,
             lstm_hidden_dim=lstm_hidden_dim,
@@ -631,6 +636,17 @@ class LibriSpeechRNNTModule(LightningModule):
                 "filter": compression_filter, "window_size": hanning_window_size,
                 "weight_predictor_mode": weight_predictor_mode,
             }
+            if compression_stages is not None:
+                self.offline_native_definition = {
+                    "version": 2, "sequence_mode": sequence_mode,
+                    "tail_alignment": "zero_pad_ceil",
+                    "stride": time_reduction_stride,
+                    "input_dim": input_dim, "input_projection": time_reduction_input_dim,
+                    "encoding_dim": encoding_dim, "num_heads": num_heads, "ffn_dim": ffn_dim,
+                    "depthwise_conv_kernel_size": depthwise_conv_kernel_size,
+                    "dropout": dropout,
+                    **self.model.transcriber.placement_definition,
+                }
         right_pad = right_context_length  # legacy only; offline pipeline omits this operation
         self.train_data_pipeline = torch.nn.Sequential(
             FunctionalModule(piecewise_linear_log),
@@ -723,6 +739,7 @@ class LibriSpeechRNNTModule(LightningModule):
             input_dim=model_cfg.get("input_dim", 80),
             encoding_dim=model_cfg.get("encoding_dim", 512),
             **sequence_options_from_config(model_cfg),
+            **placement_options_from_config(model_cfg),
             time_reduction_input_dim=model_cfg.get("time_reduction_input_dim", 128),
             time_reduction_stride=model_cfg.get("time_reduction_stride", 4),
             num_heads=model_cfg.get("num_heads", 8),
@@ -732,9 +749,9 @@ class LibriSpeechRNNTModule(LightningModule):
             depthwise_conv_kernel_size=model_cfg.get("depthwise_conv_kernel_size", 31),
             dropout=model_cfg.get("dropout", 0.1),
             # Compression
-            compression_filter=comp_cfg.get("filter", "hanning"),
+            compression_filter=comp_cfg.get("filter", "none" if "stages" in comp_cfg else "hanning"),
             hanning_window_size=comp_cfg.get("hanning_window_size", 5),
-            weight_predictor_mode=comp_cfg.get("weight_predictor_mode", "diff5"),
+            weight_predictor_mode=comp_cfg.get("weight_predictor_mode", "five_frames" if "stages" in comp_cfg else "diff5"),
             compression_detector=comp_cfg.get("detector"),
             compression_mixer=comp_cfg.get("mixer"),
             compression_keep_rate=comp_cfg.get("keep_rate"),

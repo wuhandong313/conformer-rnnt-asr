@@ -1,0 +1,37 @@
+{
+  "run_phase": "offline_native_five_frames_20261018",
+  "approved_audit_item": "A05",
+  "tmux": "phone69_460h_five_frames",
+  "pipeline": "scripts/server/phone69_460h_five_frames_pipeline.sh",
+  "pipeline_log": "artifacts/logs/phone69_460h_five_frames_pipeline.log",
+  "preserved_baseline": {
+    "scheme": "stride4_none",
+    "role": "preserved_baseline",
+    "config": "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+    "experiment": "exp_phone69_460h_offline_native_stride4_none_s42_e50",
+    "budget": 23500
+  },
+  "experiments": [
+    {
+      "scheme": "stride1_cosd_learned",
+      "role": "dynamic_retrain",
+      "config": "configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+      "experiment": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50",
+      "budget": 6500
+    },
+    {
+      "scheme": "stride2_cosd_learned",
+      "role": "dynamic_retrain",
+      "config": "configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+      "experiment": "exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50",
+      "budget": 16000
+    },
+    {
+      "scheme": "stride4_cosd_learned",
+      "role": "dynamic_retrain",
+      "config": "configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+      "experiment": "exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50",
+      "budget": 32600
+    }
+  ]
+}

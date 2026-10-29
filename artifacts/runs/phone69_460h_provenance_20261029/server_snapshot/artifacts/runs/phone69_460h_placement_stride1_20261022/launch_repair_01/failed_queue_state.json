@@ -1,0 +1,8 @@
+{
+  "status": "failed",
+  "run_phase": "placement_stride1_20261022",
+  "pid": 1405,
+  "server_utc": "2026-10-21T23:02:40.954468+00:00",
+  "error": "ModuleNotFoundError(\"No module named 'conformer_rnnt'\")",
+  "message": "Preserved all logs and checkpoints; no automatic restart"
+}

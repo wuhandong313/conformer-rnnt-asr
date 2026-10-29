@@ -1,0 +1,9 @@
+{
+  "status": "launched",
+  "created_at_utc": "2026-10-27T05:36:25.662592+00:00",
+  "audio_cache_sha256": "7c3e5c4a5a3152b64a2071e6051da01cacdb0cc40603d86599aa249f608452ae",
+  "controller_sha256": "01131291dd7cbc7d413477201f109d6ed59b12d3675dbac21e8bddd51d3683fc",
+  "run_phase": "placement_layer7_stride1_20261027",
+  "controller_pid": 12893,
+  "launched_at_utc": "2026-10-27T05:36:25.697610+00:00"
+}

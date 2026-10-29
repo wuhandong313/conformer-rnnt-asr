@@ -1,0 +1,21 @@
+{
+  "scheme": "mel",
+  "epoch": 50,
+  "global_step": 126550,
+  "checkpoints": [
+    {
+      "kind": "best",
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/val-none-epoch=48-step=121688.ckpt",
+      "full_model_optimizer_scheduler": true,
+      "definition_matches": true,
+      "model_finite": true
+    },
+    {
+      "kind": "epoch_boundary",
+      "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=126550-25cdcfcd406b.ckpt",
+      "full_model_optimizer_scheduler": true,
+      "definition_matches": true,
+      "model_finite": true
+    }
+  ]
+}

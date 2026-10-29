@@ -1,0 +1,445 @@
+{
+  "base_commit": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
+  "gates": [
+    {
+      "gate": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_nine_frames_20261029/prelaunch_validation.json",
+      "sources": [
+        {
+          "path": "conformer_rnnt/__init__.py",
+          "sha256": "53467afcb57ca9fa24a0ac716cae00b38c0a18af4c5f356920922667be4b4ca0",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/checkpoint_utils.py",
+          "sha256": "2b6be42fa3204a1c6bbe4234db6351d81785acd3c0ea17634fe88f30522d54af",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/__init__.py",
+          "sha256": "5f912b187342ecfa0de09028c21c7a103124c5ca1cd8e844fbebd89be15fd145",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/core.py",
+          "sha256": "4c8435d13986cbbb9c102a25861fd58d8823881840b77081ef99ba158a3f9a12",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/detectors.py",
+          "sha256": "fa33ddba727aa570f9918978b0400ccbc5001ffc18d2eff4059469d825dc86ae",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/mixers.py",
+          "sha256": "8fef25607c3de380204598780786700307e13d5973c52c48789e4138a11753ad",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/natural.py",
+          "sha256": "55dd1ff2fa9d2b7b3c58c7e559ad40858eaea5f7e6038d96836f1be82b95d574",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/stages.py",
+          "sha256": "ad9ae1867efd0851e99bd29fb05e7939bbdca02aeeeab93c98ec58f3d77eae19",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/encoder.py",
+          "sha256": "46384d3f0fdd51c6af74693b8b195a71221cb4bdf2d020cbdc8f4507034983c1",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/joiner.py",
+          "sha256": "56a409bcc92c1ee3d21b2fbe2e9e62b9836268a871013940c568377414fc0889",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/lightning_module.py",
+          "sha256": "b6560230195b50ac711383b9de589199ed043e0b2230c83f56f85b09c57c7799",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/metrics.py",
+          "sha256": "911529445ec324a7422f2f7592cca4af1177f5c7e397319a4a58b7706f5b593b",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/model.py",
+          "sha256": "271f238654fc3bc74562cfa236cb869157142c46ac40e613e1755cc9f490c4d7",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/predictor.py",
+          "sha256": "da238c0e54bd16a1f01f252ef935410877792a7dbf6ccc37c8613342393fdaf1",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/staged_encoder.py",
+          "sha256": "3ffdbfca4de4afa8fb44aa008947092a48cfc7e52f1af013bff027de16c746b7",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "common.py",
+          "sha256": "b2c0f0a35e57f96c09d9440ffec59e4b8576616e153f931e0d0c7b0b1ad34f51",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "train.py",
+          "sha256": "ae92155f5fff5f9e2331ac8c432bf5f7bfb2cb842a7cf3819075e7d70950da03",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/train_phone69_460h_one.py",
+          "sha256": "07316eaa5dac2775668dbd4f3e4e9bfc81c8ec5db55ab65841c40ce262c33ca0",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/phone69_epoch_checkpoint.py",
+          "sha256": "a18e0042ee64f1920977746e32fcb50e12f45304bf729702bf2da0891ad84edc",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/phone69_nine_frames_pipeline.py",
+          "sha256": "88e49b97b9fbfbd8640665efd8d9974d8e63b7a7f9672b8b965b704c0867096d",
+          "matching_source": "current_workspace"
+        }
+      ]
+    },
+    {
+      "gate": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_layer7_stride1_20261027/prelaunch_validation.json",
+      "sources": [
+        {
+          "path": "conformer_rnnt/__init__.py",
+          "sha256": "53467afcb57ca9fa24a0ac716cae00b38c0a18af4c5f356920922667be4b4ca0",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/checkpoint_utils.py",
+          "sha256": "2b6be42fa3204a1c6bbe4234db6351d81785acd3c0ea17634fe88f30522d54af",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/__init__.py",
+          "sha256": "5f912b187342ecfa0de09028c21c7a103124c5ca1cd8e844fbebd89be15fd145",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/core.py",
+          "sha256": "4c8435d13986cbbb9c102a25861fd58d8823881840b77081ef99ba158a3f9a12",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/detectors.py",
+          "sha256": "fa33ddba727aa570f9918978b0400ccbc5001ffc18d2eff4059469d825dc86ae",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/mixers.py",
+          "sha256": "bcec02719b2fb0f6909b30609b14757756a24f41443b7bb109e00b257894f422",
+          "matching_source": "git_bae6d2c"
+        },
+        {
+          "path": "conformer_rnnt/compression/natural.py",
+          "sha256": "55dd1ff2fa9d2b7b3c58c7e559ad40858eaea5f7e6038d96836f1be82b95d574",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/stages.py",
+          "sha256": "ad9ae1867efd0851e99bd29fb05e7939bbdca02aeeeab93c98ec58f3d77eae19",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/encoder.py",
+          "sha256": "46384d3f0fdd51c6af74693b8b195a71221cb4bdf2d020cbdc8f4507034983c1",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/joiner.py",
+          "sha256": "56a409bcc92c1ee3d21b2fbe2e9e62b9836268a871013940c568377414fc0889",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/lightning_module.py",
+          "sha256": "b6560230195b50ac711383b9de589199ed043e0b2230c83f56f85b09c57c7799",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/metrics.py",
+          "sha256": "911529445ec324a7422f2f7592cca4af1177f5c7e397319a4a58b7706f5b593b",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/model.py",
+          "sha256": "271f238654fc3bc74562cfa236cb869157142c46ac40e613e1755cc9f490c4d7",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/predictor.py",
+          "sha256": "da238c0e54bd16a1f01f252ef935410877792a7dbf6ccc37c8613342393fdaf1",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/staged_encoder.py",
+          "sha256": "3ffdbfca4de4afa8fb44aa008947092a48cfc7e52f1af013bff027de16c746b7",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "common.py",
+          "sha256": "b2c0f0a35e57f96c09d9440ffec59e4b8576616e153f931e0d0c7b0b1ad34f51",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "train.py",
+          "sha256": "ae92155f5fff5f9e2331ac8c432bf5f7bfb2cb842a7cf3819075e7d70950da03",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/train_phone69_460h_one.py",
+          "sha256": "07316eaa5dac2775668dbd4f3e4e9bfc81c8ec5db55ab65841c40ce262c33ca0",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/phone69_epoch_checkpoint.py",
+          "sha256": "a18e0042ee64f1920977746e32fcb50e12f45304bf729702bf2da0891ad84edc",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/probe_phone69_training_memory.py",
+          "sha256": "2780582b1cdfb8c897364f1defb718c5cc6e73d101825867461f935fe7691c89",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/validate_phone69_placement.py",
+          "sha256": "a2c52647076d53d29433b99754e0da39769c75a5d6bc4a8bef20f1d7d6a9c2b1",
+          "matching_source": "current_workspace"
+        }
+      ]
+    },
+    {
+      "gate": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_native_offline_five_frames_20261018/prelaunch_validation.json",
+      "sources": [
+        {
+          "path": "conformer_rnnt/checkpoint_utils.py",
+          "sha256": "2fc3c8cdf3ffe6b72acb95e4d5bf0bac402d2b15614e2234e62964c716dae37e",
+          "matching_source": "git_bae6d2c"
+        },
+        {
+          "path": "conformer_rnnt/joiner.py",
+          "sha256": "56a409bcc92c1ee3d21b2fbe2e9e62b9836268a871013940c568377414fc0889",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/__init__.py",
+          "sha256": "53467afcb57ca9fa24a0ac716cae00b38c0a18af4c5f356920922667be4b4ca0",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/predictor.py",
+          "sha256": "da238c0e54bd16a1f01f252ef935410877792a7dbf6ccc37c8613342393fdaf1",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/metrics.py",
+          "sha256": "911529445ec324a7422f2f7592cca4af1177f5c7e397319a4a58b7706f5b593b",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/lightning_module.py",
+          "sha256": "22dd7fc2d1b78bada367b26992fd36fd4e7a354eba1ceeeb739b145c62a669f6",
+          "matching_source": "git_bae6d2c"
+        },
+        {
+          "path": "conformer_rnnt/encoder.py",
+          "sha256": "46384d3f0fdd51c6af74693b8b195a71221cb4bdf2d020cbdc8f4507034983c1",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/model.py",
+          "sha256": "c36f2ac27cf8959469b49211c5c003430f7ed68a1bddd739bef72a93043a89f4",
+          "matching_source": "git_bae6d2c"
+        },
+        {
+          "path": "conformer_rnnt/compression/__init__.py",
+          "sha256": "5f912b187342ecfa0de09028c21c7a103124c5ca1cd8e844fbebd89be15fd145",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/core.py",
+          "sha256": "4c8435d13986cbbb9c102a25861fd58d8823881840b77081ef99ba158a3f9a12",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/mixers.py",
+          "sha256": "bcec02719b2fb0f6909b30609b14757756a24f41443b7bb109e00b257894f422",
+          "matching_source": "git_bae6d2c"
+        },
+        {
+          "path": "conformer_rnnt/compression/natural.py",
+          "sha256": "da9d17f4c6bb86f6741a85f925b35f2174baa9853639f1cfe5d1d49a4c492232",
+          "matching_source": "git_bae6d2c"
+        },
+        {
+          "path": "conformer_rnnt/compression/detectors.py",
+          "sha256": "fa33ddba727aa570f9918978b0400ccbc5001ffc18d2eff4059469d825dc86ae",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "common.py",
+          "sha256": "b2c0f0a35e57f96c09d9440ffec59e4b8576616e153f931e0d0c7b0b1ad34f51",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "train.py",
+          "sha256": "ae92155f5fff5f9e2331ac8c432bf5f7bfb2cb842a7cf3819075e7d70950da03",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/train_phone69_460h_one.py",
+          "sha256": "dbcb9a297da5ad3a2af974617424708576b8a8da5e516e90a9431d04dccd319d",
+          "matching_source": "git_bae6d2c"
+        },
+        {
+          "path": "scripts/server/phone69_epoch_checkpoint.py",
+          "sha256": "a18e0042ee64f1920977746e32fcb50e12f45304bf729702bf2da0891ad84edc",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/phone69_460h_five_frames_pipeline.sh",
+          "sha256": "f93ab0d0b2d54ceff7031adce6b6044ab7009c270496b7152dc82feec38c7d75",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/validate_phone69_five_frames_launch.py",
+          "sha256": "a5ce0e42802925bae1ad8d2cf561bc422430a2b31624b48f8bb719fb3ea61d39",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/status_phone69_460h_five_frames.py",
+          "sha256": "81a2a63c5b89d078c56aa6b34af800c3c5d051761588300518657a5f5addfc53",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/preflight_phone69_five_frames.py",
+          "sha256": "bf12a4f81e7b8aa84bb30d443d47ff349e81e7f1127adaaa2ef3dfc0e61f1d3b",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/diagnostics/check_phone69_offline_native.py",
+          "sha256": "29ad0c5fceec6c9f62cbcdda6791abde8dea7c67fad288d45d8e9bb03dfcc762",
+          "matching_source": "current_workspace"
+        }
+      ]
+    },
+    {
+      "gate": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/prelaunch_validation.json",
+      "sources": [
+        {
+          "path": "conformer_rnnt/__init__.py",
+          "sha256": "53467afcb57ca9fa24a0ac716cae00b38c0a18af4c5f356920922667be4b4ca0",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/checkpoint_utils.py",
+          "sha256": "2b6be42fa3204a1c6bbe4234db6351d81785acd3c0ea17634fe88f30522d54af",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/__init__.py",
+          "sha256": "5f912b187342ecfa0de09028c21c7a103124c5ca1cd8e844fbebd89be15fd145",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/core.py",
+          "sha256": "4c8435d13986cbbb9c102a25861fd58d8823881840b77081ef99ba158a3f9a12",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/detectors.py",
+          "sha256": "fa33ddba727aa570f9918978b0400ccbc5001ffc18d2eff4059469d825dc86ae",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/mixers.py",
+          "sha256": "bcec02719b2fb0f6909b30609b14757756a24f41443b7bb109e00b257894f422",
+          "matching_source": "git_bae6d2c"
+        },
+        {
+          "path": "conformer_rnnt/compression/natural.py",
+          "sha256": "55dd1ff2fa9d2b7b3c58c7e559ad40858eaea5f7e6038d96836f1be82b95d574",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/compression/stages.py",
+          "sha256": "ad9ae1867efd0851e99bd29fb05e7939bbdca02aeeeab93c98ec58f3d77eae19",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/encoder.py",
+          "sha256": "46384d3f0fdd51c6af74693b8b195a71221cb4bdf2d020cbdc8f4507034983c1",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/joiner.py",
+          "sha256": "56a409bcc92c1ee3d21b2fbe2e9e62b9836268a871013940c568377414fc0889",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/lightning_module.py",
+          "sha256": "b6560230195b50ac711383b9de589199ed043e0b2230c83f56f85b09c57c7799",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/metrics.py",
+          "sha256": "911529445ec324a7422f2f7592cca4af1177f5c7e397319a4a58b7706f5b593b",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/model.py",
+          "sha256": "271f238654fc3bc74562cfa236cb869157142c46ac40e613e1755cc9f490c4d7",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/predictor.py",
+          "sha256": "da238c0e54bd16a1f01f252ef935410877792a7dbf6ccc37c8613342393fdaf1",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "conformer_rnnt/staged_encoder.py",
+          "sha256": "3ffdbfca4de4afa8fb44aa008947092a48cfc7e52f1af013bff027de16c746b7",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "common.py",
+          "sha256": "b2c0f0a35e57f96c09d9440ffec59e4b8576616e153f931e0d0c7b0b1ad34f51",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "train.py",
+          "sha256": "ae92155f5fff5f9e2331ac8c432bf5f7bfb2cb842a7cf3819075e7d70950da03",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/train_phone69_460h_one.py",
+          "sha256": "07316eaa5dac2775668dbd4f3e4e9bfc81c8ec5db55ab65841c40ce262c33ca0",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/phone69_epoch_checkpoint.py",
+          "sha256": "a18e0042ee64f1920977746e32fcb50e12f45304bf729702bf2da0891ad84edc",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/probe_phone69_training_memory.py",
+          "sha256": "2780582b1cdfb8c897364f1defb718c5cc6e73d101825867461f935fe7691c89",
+          "matching_source": "current_workspace"
+        },
+        {
+          "path": "scripts/server/phone69_placement_pipeline.py",
+          "sha256": "646ad9177f49e4cf1016fda184df6e5da7905b764aaaa62f909b1c33923df197",
+          "matching_source": "current_workspace"
+        }
+      ]
+    }
+  ]
+}

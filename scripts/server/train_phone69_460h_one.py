@@ -50,7 +50,9 @@ def main(config_path):
         if config['model'].get('sequence_mode') == 'offline':
             candidates.extend(glob.glob(os.path.join(checkpoint_dir, "epoch-boundary-*.ckpt")))
     checkpoint_path, resume_info = select_phone69_resume_checkpoint(
-        candidates, config['data']['max_token_limit'])
+        candidates, config['data']['max_token_limit'],
+        expected_definition=(model.offline_native_definition
+                             if config['model'].get('compression', {}).get('stages') is not None else None))
     if checkpoint_path:
         print("Resuming from {}".format(checkpoint_path), flush=True)
     if checkpoint_path is None:
@@ -76,6 +78,8 @@ def main(config_path):
         'time_reduction_stride': config['model']['time_reduction_stride'],
         **resume_info,
     }
+    if config['model'].get('compression', {}).get('stages') is not None:
+        state['offline_native_definition'] = model.offline_native_definition
 
     def save_status(**updates):
         state.update(updates, updated_at=datetime.now(timezone.utc).isoformat())

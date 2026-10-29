@@ -23,10 +23,19 @@ class NaturalPeakCompression(torch.nn.Module):
         window_size: int = 5,
         weight_predictor_mode: str = "diff5",
         passthrough: bool = False,
+        neighborhood_radius: int = 0,
     ) -> None:
         super().__init__()
         self.passthrough = passthrough
         self.last_lengths = None
+        if type(neighborhood_radius) is not int or neighborhood_radius < 0:
+            raise ValueError("neighborhood_radius must be a non-negative integer")
+        if neighborhood_radius and (mixer or {}).get("type") != "hard":
+            raise ValueError("Neighborhood retention requires the hard mixer")
+        self.neighborhood_radius = neighborhood_radius
+        self.last_candidate_lengths = None
+        self.record_indices = False
+        self.last_indices = None
         if passthrough:
             return
         detector = detector or {"type": "cosine_diff"}
@@ -46,10 +55,16 @@ class NaturalPeakCompression(torch.nn.Module):
         if self.passthrough:
             return input, lengths
         output = []
+        candidate_lengths = []
+        centre_trace, retained_trace = [], []
         for frames, n in zip(input, sizes):
             frames = frames[:n]
             if n <= 1:
                 output.append(frames)
+                candidate_lengths.append(n)
+                if self.record_indices:
+                    centre_trace.append(list(range(n)))
+                    retained_trace.append(list(range(n)))
                 continue
             diff = (frames[1:] - frames[:-1]).abs().sum(dim=-1)
             with torch.no_grad():
@@ -57,9 +72,24 @@ class NaturalPeakCompression(torch.nn.Module):
                 indices = torch.unique(indices[(indices >= 0) & (indices < n)], sorted=True)
                 if indices.numel() == 0:
                     indices = torch.zeros(1, dtype=torch.long, device=input.device)
+                candidate_lengths.append(indices.numel())
+                if self.record_indices:
+                    centre_trace.append(indices.tolist())
+                if self.neighborhood_radius:
+                    offsets = torch.arange(
+                        -self.neighborhood_radius, self.neighborhood_radius + 1, device=input.device
+                    )
+                    expanded = (indices[:, None] + offsets).flatten()
+                    indices = torch.unique(expanded[(expanded >= 0) & (expanded < n)], sorted=True)
+                if self.record_indices:
+                    retained_trace.append(indices.tolist())
             output.append(self.mixer.mix(frames, indices, diff, n))
         output_sizes = [x.size(0) for x in output]
         self.last_lengths = dict(input=sizes, output=output_sizes)
+        self.last_candidate_lengths = candidate_lengths
+        self.last_indices = (
+            {"centres": centre_trace, "retained": retained_trace} if self.record_indices else None
+        )
         return (
             pad_sequence(output, batch_first=True),
             lengths.new_tensor(output_sizes),

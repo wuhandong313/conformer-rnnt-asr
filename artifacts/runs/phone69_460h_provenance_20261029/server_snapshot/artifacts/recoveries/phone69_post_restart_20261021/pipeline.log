@@ -1,0 +1,8 @@
+2026-10-21T14:26:04.711925+00:00 protected_artifact_precheck
+2026-10-21T14:26:09.761782+00:00 creating_python_environment
+2026-10-21T14:26:49.100019+00:00 installing_recorded_dependencies
+2026-10-21T14:48:05.549906+00:00 verifying_runtime
+2026-10-21T14:49:04.884082+00:00 verifying_training_checkpoints
+2026-10-21T14:49:18.528978+00:00 launching_four_model_test_clean
+2026-10-21T14:49:18.746697+00:00 evaluating
+RECOVERY_AND_EVALUATION_COMPLETE 2026-10-21T17:19:43.455340+00:00

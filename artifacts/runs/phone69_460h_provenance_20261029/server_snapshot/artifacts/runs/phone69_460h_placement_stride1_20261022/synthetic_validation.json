@@ -1,0 +1,295 @@
+{
+  "valid": true,
+  "scope": "synthetic_rnnt_forward_backward_optimizer_step",
+  "device": "cpu",
+  "torch": "2.6.0+cu124",
+  "torchaudio": "2.6.0+cu124",
+  "real_batch_gpu_memory_validated": false,
+  "launch_ready": false,
+  "models": [
+    {
+      "config": "configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+      "config_sha256": "173391aa2e55ef15f01865c8bd6792e53f52d0475912dacad83a7297542f4354",
+      "parameters": 4228619,
+      "layers": [
+        10
+      ],
+      "placement_definition": {
+        "num_layers": 10,
+        "layers": [
+          10
+        ],
+        "compression_stages": [
+          {
+            "after_layer": 0,
+            "detector": {
+              "type": "cosine_diff",
+              "preprocess": "none"
+            },
+            "mixer": {
+              "type": "learned"
+            },
+            "neighborhood_radius": 0,
+            "window_size": 5,
+            "weight_predictor_mode": "five_frames",
+            "feature_dim": 80,
+            "input_domain": "model_mel_input"
+          }
+        ],
+        "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+      },
+      "weight_predictor_first_layer_shapes": [
+        [
+          32,
+          400
+        ]
+      ],
+      "logits_shape": [
+        2,
+        21,
+        4,
+        70
+      ],
+      "encoded_lengths": [
+        21,
+        17
+      ],
+      "observed_compression_lengths": {
+        "input": [
+          47,
+          35
+        ],
+        "stages": [
+          {
+            "after_layer": 0,
+            "input_domain": "model_mel_input",
+            "input": [
+              47,
+              35
+            ],
+            "candidates": [
+              21,
+              17
+            ],
+            "output": [
+              21,
+              17
+            ]
+          }
+        ],
+        "encoder_input": [
+          21,
+          17
+        ],
+        "stride": 1,
+        "output": [
+          21,
+          17
+        ]
+      },
+      "finite_rnnt_loss": 130.22427368164062,
+      "finite_gradients_and_optimizer_step": true
+    },
+    {
+      "config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "config_sha256": "77c6dbb159a17301e33ab354986405cf93b1f193cc1c7bdc279614f9e682fee4",
+      "parameters": 4236299,
+      "layers": [
+        5,
+        5
+      ],
+      "placement_definition": {
+        "num_layers": 10,
+        "layers": [
+          5,
+          5
+        ],
+        "compression_stages": [
+          {
+            "after_layer": 5,
+            "detector": {
+              "type": "cosine_diff",
+              "preprocess": "none"
+            },
+            "mixer": {
+              "type": "learned"
+            },
+            "neighborhood_radius": 0,
+            "window_size": 5,
+            "weight_predictor_mode": "five_frames",
+            "feature_dim": 128,
+            "input_domain": "encoder"
+          }
+        ],
+        "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+      },
+      "weight_predictor_first_layer_shapes": [
+        [
+          32,
+          640
+        ]
+      ],
+      "logits_shape": [
+        2,
+        20,
+        4,
+        70
+      ],
+      "encoded_lengths": [
+        20,
+        14
+      ],
+      "observed_compression_lengths": {
+        "input": [
+          47,
+          35
+        ],
+        "stages": [
+          {
+            "after_layer": 5,
+            "input_domain": "encoder",
+            "input": [
+              47,
+              35
+            ],
+            "candidates": [
+              20,
+              14
+            ],
+            "output": [
+              20,
+              14
+            ]
+          }
+        ],
+        "encoder_input": [
+          47,
+          35
+        ],
+        "stride": 1,
+        "output": [
+          20,
+          14
+        ]
+      },
+      "finite_rnnt_loss": 156.84461975097656,
+      "finite_gradients_and_optimizer_step": true
+    },
+    {
+      "config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50.yaml",
+      "config_sha256": "46fcd21d1a968f7e05cbe03cd8ed50e3d5bd62a69f1d932d1c68e0fcf26f4581",
+      "parameters": 4236299,
+      "layers": [
+        2,
+        3,
+        5
+      ],
+      "placement_definition": {
+        "num_layers": 10,
+        "layers": [
+          2,
+          3,
+          5
+        ],
+        "compression_stages": [
+          {
+            "after_layer": 2,
+            "detector": {
+              "type": "cosine_diff",
+              "preprocess": "none"
+            },
+            "mixer": {
+              "type": "hard"
+            },
+            "neighborhood_radius": 1,
+            "feature_dim": 128,
+            "input_domain": "encoder"
+          },
+          {
+            "after_layer": 5,
+            "detector": {
+              "type": "cosine_diff",
+              "preprocess": "none"
+            },
+            "mixer": {
+              "type": "learned"
+            },
+            "neighborhood_radius": 0,
+            "window_size": 5,
+            "weight_predictor_mode": "five_frames",
+            "feature_dim": 128,
+            "input_domain": "encoder"
+          }
+        ],
+        "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+      },
+      "weight_predictor_first_layer_shapes": [
+        [
+          32,
+          640
+        ]
+      ],
+      "logits_shape": [
+        2,
+        19,
+        4,
+        70
+      ],
+      "encoded_lengths": [
+        19,
+        13
+      ],
+      "observed_compression_lengths": {
+        "input": [
+          47,
+          35
+        ],
+        "stages": [
+          {
+            "after_layer": 2,
+            "input_domain": "encoder",
+            "input": [
+              47,
+              35
+            ],
+            "candidates": [
+              22,
+              11
+            ],
+            "output": [
+              46,
+              29
+            ]
+          },
+          {
+            "after_layer": 5,
+            "input_domain": "encoder",
+            "input": [
+              46,
+              29
+            ],
+            "candidates": [
+              19,
+              13
+            ],
+            "output": [
+              19,
+              13
+            ]
+          }
+        ],
+        "encoder_input": [
+          47,
+          35
+        ],
+        "stride": 1,
+        "output": [
+          19,
+          13
+        ]
+      },
+      "finite_rnnt_loss": 150.82443237304688,
+      "finite_gradients_and_optimizer_step": true
+    }
+  ]
+}

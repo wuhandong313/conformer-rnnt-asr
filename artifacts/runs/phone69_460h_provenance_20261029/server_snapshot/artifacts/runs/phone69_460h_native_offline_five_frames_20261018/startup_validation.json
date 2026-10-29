@@ -1,0 +1,61 @@
+{
+  "valid": true,
+  "server_utc": "2026-10-18T04:56:49.827055+00:00",
+  "run_phase": "offline_native_five_frames_20261018",
+  "experiment": "exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50",
+  "pid": 86253,
+  "epoch": 1,
+  "global_step": 100,
+  "resume_checkpoint": null,
+  "starting_from_scratch": true,
+  "full_initial_boundary": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=00-step=0-41ecce59cca5.ckpt",
+  "initial_boundary_metadata": {
+    "previous_max_token_limit": 6500,
+    "resume_global_step": 0,
+    "resume_completed_epochs": 0,
+    "resume_at_epoch_boundary": true
+  },
+  "offline_native_definition": {
+    "version": 1,
+    "sequence_mode": "offline",
+    "tail_alignment": "zero_pad_ceil",
+    "stride": 1,
+    "input_projection": 128,
+    "encoding_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "layers": [
+      2,
+      8
+    ],
+    "detector": {
+      "type": "cosine_diff"
+    },
+    "mixer": {
+      "type": "learned"
+    },
+    "filter": "hanning",
+    "window_size": 5,
+    "weight_predictor_mode": "five_frames"
+  },
+  "weight_predictor_shapes": {
+    "model.transcriber.compression.mixer.weight_predictor.0.weight": [
+      32,
+      640
+    ],
+    "model.transcriber.compression.mixer.weight_predictor.0.bias": [
+      32
+    ],
+    "model.transcriber.compression.mixer.weight_predictor.2.weight": [
+      5,
+      32
+    ],
+    "model.transcriber.compression.mixer.weight_predictor.2.bias": [
+      5
+    ]
+  },
+  "model_finite": true,
+  "baseline_still_unchanged": true,
+  "baseline_files_verified": 63,
+  "gpu": "72933 MiB, 81920 MiB, 39 %"
+}

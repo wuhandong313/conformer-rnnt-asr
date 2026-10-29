@@ -88,6 +88,7 @@ def select_batches(datasets, samples, model, cfg):
                 'dataset_index': dataset_index, 'subset': base._url, 'batch_index': batch_index,
                 'utterances': b, 'max_feature_frames': raw_t, 'max_target_phones': u,
                 'attention_elements': b * m['num_heads'] * (
+                    m['num_layers'] * t1**2 if 'stages' in comp else
                     m['num_layers_block1'] * t1**2 + m['num_layers_block2'] * t2**2),
                 'joint_elements': b * t2 * (u + 1) * (m['num_symbols'] + 1),
             })
@@ -200,7 +201,14 @@ def main():
             observed = getattr(model.model.transcriber.compression, 'last_lengths', None)
             if observed:
                 result['observed_lengths'] = observed
-                result['observed_retention'] = sum(observed['output']) / sum(observed['input'])
+                if 'stages' in observed:
+                    result['observed_stage_retention'] = [
+                        dict(after_layer=stage['after_layer'],
+                             ratio=sum(stage['output']) / max(1, sum(stage['input'])))
+                        for stage in observed['stages']
+                    ]
+                else:
+                    result['observed_retention'] = sum(observed['output']) / sum(observed['input'])
             report['results'].append(result)
             print(json.dumps(result), flush=True)
             save_json(output, report)

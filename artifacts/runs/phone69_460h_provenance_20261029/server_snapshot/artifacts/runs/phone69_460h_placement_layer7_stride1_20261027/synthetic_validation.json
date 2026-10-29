@@ -1,0 +1,96 @@
+{
+  "valid": true,
+  "scope": "synthetic_rnnt_forward_backward_optimizer_step",
+  "device": "cpu",
+  "torch": "2.6.0+cu124",
+  "torchaudio": "2.6.0+cu124",
+  "real_batch_gpu_memory_validated": false,
+  "launch_ready": false,
+  "models": [
+    {
+      "config": "artifacts/runs/phone69_460h_placement_layer7_stride1_20261027/config_layer7_b6500.yaml",
+      "config_sha256": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca",
+      "parameters": 4236299,
+      "layers": [
+        7,
+        3
+      ],
+      "placement_definition": {
+        "num_layers": 10,
+        "layers": [
+          7,
+          3
+        ],
+        "compression_stages": [
+          {
+            "after_layer": 7,
+            "detector": {
+              "type": "cosine_diff",
+              "preprocess": "none"
+            },
+            "mixer": {
+              "type": "learned"
+            },
+            "neighborhood_radius": 0,
+            "window_size": 5,
+            "weight_predictor_mode": "five_frames",
+            "feature_dim": 128,
+            "input_domain": "encoder"
+          }
+        ],
+        "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+      },
+      "weight_predictor_first_layer_shapes": [
+        [
+          32,
+          640
+        ]
+      ],
+      "logits_shape": [
+        2,
+        20,
+        4,
+        70
+      ],
+      "encoded_lengths": [
+        20,
+        14
+      ],
+      "observed_compression_lengths": {
+        "input": [
+          47,
+          35
+        ],
+        "stages": [
+          {
+            "after_layer": 7,
+            "input_domain": "encoder",
+            "input": [
+              47,
+              35
+            ],
+            "candidates": [
+              20,
+              14
+            ],
+            "output": [
+              20,
+              14
+            ]
+          }
+        ],
+        "encoder_input": [
+          47,
+          35
+        ],
+        "stride": 1,
+        "output": [
+          20,
+          14
+        ]
+      },
+      "finite_rnnt_loss": 159.04237365722656,
+      "finite_gradients_and_optimizer_step": true
+    }
+  ]
+}
