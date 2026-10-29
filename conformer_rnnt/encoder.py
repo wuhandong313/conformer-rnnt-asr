@@ -106,8 +106,11 @@ class ConformerEncoder(torch.nn.Module):
         compression_mixer: Optional[dict] = None,
         compression_keep_rate: Optional[float] = None,
         sequence_mode: str = "legacy",
+        compression_execution_backend: str = "reference",
     ) -> None:
         super().__init__()
+        if compression_execution_backend != "reference" and sequence_mode != "offline":
+            raise ValueError("Batched compression backend requires offline mode")
         if sequence_mode not in {"legacy", "offline"}:
             raise ValueError(f"Unknown sequence_mode: {sequence_mode}")
         self.sequence_mode = sequence_mode
@@ -144,6 +147,7 @@ class ConformerEncoder(torch.nn.Module):
                 detector=compression_detector, mixer=compression_mixer, feature_dim=dim,
                 window_size=hanning_window_size, weight_predictor_mode=weight_predictor_mode,
                 passthrough=compression_filter == "none" and compression_detector is None,
+                execution_backend=compression_execution_backend,
             )
         elif compression_detector is not None or compression_mixer is not None:
             det_cfg = compression_detector or {"type": "raw"}

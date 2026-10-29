@@ -466,6 +466,7 @@ class LibriSpeechRNNTModule(LightningModule):
         sequence_mode: str = "legacy",
         encoder_num_layers: Optional[int] = None,
         compression_stages: Optional[List[dict]] = None,
+        compression_execution_backend: str = "reference",
         # Model — predictor
         symbol_embedding_dim: int = 128,
         num_lstm_layers: int = 2,
@@ -586,6 +587,7 @@ class LibriSpeechRNNTModule(LightningModule):
             sequence_mode=sequence_mode,
             encoder_num_layers=encoder_num_layers,
             compression_stages=compression_stages,
+            compression_execution_backend=compression_execution_backend,
             symbol_embedding_dim=symbol_embedding_dim,
             num_lstm_layers=num_lstm_layers,
             lstm_hidden_dim=lstm_hidden_dim,
@@ -755,6 +757,7 @@ class LibriSpeechRNNTModule(LightningModule):
             compression_detector=comp_cfg.get("detector"),
             compression_mixer=comp_cfg.get("mixer"),
             compression_keep_rate=comp_cfg.get("keep_rate"),
+            compression_execution_backend=comp_cfg.get("execution_backend", "reference"),
             # Predictor
             symbol_embedding_dim=pred_cfg.get("symbol_embedding_dim", 128),
             num_lstm_layers=pred_cfg.get("num_lstm_layers", 2),

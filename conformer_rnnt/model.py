@@ -115,6 +115,7 @@ def conformer_rnnt_model(
     sequence_mode: str = "legacy",
     encoder_num_layers: Optional[int] = None,
     compression_stages: Optional[List[dict]] = None,
+    compression_execution_backend: str = "reference",
     # Predictor
     num_symbols: int,
     symbol_embedding_dim: int = 128,
@@ -131,6 +132,8 @@ def conformer_rnnt_model(
     All parameters are keyword-only to prevent positional confusion.
     """
     if compression_stages is not None:
+        if compression_execution_backend != "reference":
+            raise ValueError("Batched backend is not implemented for staged compression")
         if (sequence_mode != "offline" or right_context_length != 0
                 or compression_right_context_length is not None or compression_keep_rate is not None):
             raise ValueError("Staged compression is offline, without context partitions or a target rate")
@@ -167,6 +170,7 @@ def conformer_rnnt_model(
             compression_mixer=compression_mixer,
             compression_keep_rate=compression_keep_rate,
             sequence_mode=sequence_mode,
+            compression_execution_backend=compression_execution_backend,
         )
     return ConformerRNNT(
         transcriber=transcriber,
@@ -241,6 +245,7 @@ def conformer_rnnt_model_from_config(config: Dict[str, Any]) -> ConformerRNNT:
         compression_detector=c.get("detector"),
         compression_mixer=c.get("mixer"),
         compression_keep_rate=c.get("keep_rate"),
+        compression_execution_backend=c.get("execution_backend", "reference"),
         symbol_embedding_dim=p.get("symbol_embedding_dim", 128),
         num_lstm_layers=p.get("num_lstm_layers", 2),
         lstm_hidden_dim=p.get("lstm_hidden_dim", 128),

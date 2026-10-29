@@ -10,8 +10,9 @@ import torch
 from torch import Tensor
 from torch.nn.utils.rnn import pad_sequence
 
-from conformer_rnnt.compression.detectors import build_detector
-from conformer_rnnt.compression.mixers import build_mixer
+from conformer_rnnt.compression.detectors import build_detector, CosineDiffPeaksDetector
+from conformer_rnnt.compression.mixers import build_mixer, LearnedWeightMixer
+from conformer_rnnt.compression.batched_cosine import batched_natural_cosine_fusion
 
 
 class NaturalPeakCompression(torch.nn.Module):
@@ -24,9 +25,13 @@ class NaturalPeakCompression(torch.nn.Module):
         weight_predictor_mode: str = "diff5",
         passthrough: bool = False,
         neighborhood_radius: int = 0,
+        execution_backend: str = "reference",
     ) -> None:
         super().__init__()
         self.passthrough = passthrough
+        if execution_backend not in {"reference", "batched"}:
+            raise ValueError(f"Unknown compression execution backend: {execution_backend}")
+        self.execution_backend = execution_backend
         self.last_lengths = None
         if type(neighborhood_radius) is not int or neighborhood_radius < 0:
             raise ValueError("neighborhood_radius must be a non-negative integer")
@@ -37,6 +42,8 @@ class NaturalPeakCompression(torch.nn.Module):
         self.record_indices = False
         self.last_indices = None
         if passthrough:
+            if execution_backend != "reference":
+                raise ValueError("Batched backend requires active cosine compression")
             return
         detector = detector or {"type": "cosine_diff"}
         if detector["type"] not in {"raw", "savgol", "fir", "cosine_diff"}:
@@ -45,10 +52,29 @@ class NaturalPeakCompression(torch.nn.Module):
         self.mixer = build_mixer(
             mixer or {"type": "learned"}, feature_dim, window_size, weight_predictor_mode
         )
+        if execution_backend == "batched":
+            if not isinstance(self.detector, CosineDiffPeaksDetector) or self.detector.preprocess != "none":
+                raise ValueError("Batched backend requires unsmoothed cosine_diff")
+            if not isinstance(self.mixer, LearnedWeightMixer) or self.mixer.weight_predictor_mode not in {"five_frames", "nine_frames"}:
+                raise ValueError("Batched backend requires a five_frames or nine_frames learned mixer")
+            expected = 5 if self.mixer.weight_predictor_mode == "five_frames" else 9
+            if self.mixer.window_size != expected or self.neighborhood_radius:
+                raise ValueError("Batched backend requires matching window and no neighborhood retention")
 
     def forward(self, input: Tensor, lengths: Tensor):
         if input.dim() != 3 or lengths.dim() != 1 or input.size(0) != lengths.size(0):
             raise ValueError("Expected (B,T,F) features and (B,) lengths")
+        if self.execution_backend == "batched":
+            output, result_lengths, selected = batched_natural_cosine_fusion(input, lengths, self.mixer)
+            stats = torch.stack((lengths.to(result_lengths.device), result_lengths)).detach().cpu().tolist()
+            self.last_lengths = dict(input=stats[0], output=stats[1])
+            self.last_candidate_lengths = stats[1]
+            self.last_indices = None
+            if self.record_indices:
+                selected_cpu = selected.detach().cpu()
+                retained = [torch.where(row)[0].tolist() for row in selected_cpu]
+                self.last_indices = {"centres": retained, "retained": retained}
+            return output, result_lengths
         sizes = lengths.tolist()
         if any(n < 0 or n > input.size(1) for n in sizes):
             raise ValueError("Sequence length exceeds available frames")
