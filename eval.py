@@ -329,7 +329,10 @@ def main():
     # Load checkpoint
     logging.info("Loading checkpoint: %s", ckpt_path)
     ckpt = torch.load(ckpt_path, map_location="cpu")
-    model.validate_tokenizer_checkpoint(ckpt)
+    if config.get("model", {}).get("compression", {}).get("stages") is not None:
+        model.on_load_checkpoint(ckpt)
+    else:
+        model.validate_tokenizer_checkpoint(ckpt)
     state_dict = ckpt.get("state_dict", ckpt)
     model.load_state_dict(state_dict, strict=model.tokenizer_type in {"ipa", "phone69"})
 
