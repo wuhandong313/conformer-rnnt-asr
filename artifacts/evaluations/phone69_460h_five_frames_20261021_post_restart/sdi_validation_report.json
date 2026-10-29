@@ -1,0 +1,19 @@
+{
+  "valid": true,
+  "computed_at_utc": "2026-10-23T15:01:26.867631+00:00",
+  "models": 4,
+  "samples_per_model": 2620,
+  "reference_phones_per_model": 189023,
+  "every_sample_S_D_I_matches_phone_errors": true,
+  "same_reference_order": true,
+  "corpus_PER_and_mean_RTF_match_original_summary": true,
+  "RTF_finite_nonnegative": true,
+  "original_files_preserved": true,
+  "input_sha256": {
+    "summary.json": "20eb5d2d203b9f71fccf15060aacb4b6f94eaff928fe2ce3177a127183d3344c",
+    "stride4_none_per_sample.csv": "889ea457799b096826b01351d0cae9cddf2f864de57799f3182b8dac76fae0f0",
+    "stride1_cosd_learned_per_sample.csv": "ca86306ed2a5b1ea70a7fde11554d39fd48a0f70ffdf86111b89bbd814fc9f82",
+    "stride2_cosd_learned_per_sample.csv": "021ee4d937d79ae1319b8263a3531fc1495c6c46810093f9c996bec8889e0be5",
+    "stride4_cosd_learned_per_sample.csv": "12fcafee3b5ab83525dd1cb321a90caf13a3e0812125a1090e6a9ec09526e9cf"
+  }
+}
