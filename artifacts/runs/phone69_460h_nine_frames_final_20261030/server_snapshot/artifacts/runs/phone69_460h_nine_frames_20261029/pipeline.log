@@ -1,0 +1,4 @@
+{"status": "preflight", "server_utc": "2026-10-29T02:54:21.720836+00:00", "pid": 31090, "stage": "regression_tests"}
+{"status": "preflight", "server_utc": "2026-10-29T02:54:30.189674+00:00", "pid": 31090, "stage": "synthetic_rnnt"}
+{"status": "preflight", "server_utc": "2026-10-29T02:54:35.590771+00:00", "pid": 31090, "stage": "real_batch_memory", "budget": 6500}
+{"status": "training", "server_utc": "2026-10-29T02:55:58.217415+00:00", "pid": 31090, "training_pid": 31220, "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50", "budget": 6500}

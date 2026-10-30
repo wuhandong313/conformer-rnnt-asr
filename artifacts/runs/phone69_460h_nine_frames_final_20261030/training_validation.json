@@ -1,0 +1,79 @@
+{
+  "valid": true,
+  "boundary": {
+    "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/checkpoints/epoch-boundary-epoch=50-step=126550-93fab52ca940.ckpt",
+    "bytes": 51518720,
+    "sha256": "1834809ac9698389c3223cdc48fb9e8a98c93cfbe2cf15208c9ee686c99cd6b4"
+  },
+  "boundary_checks": {
+    "model_nonempty": true,
+    "finite_model": true,
+    "optimizer_states": true,
+    "lr_schedulers": true,
+    "nine_frames": true,
+    "window9": true,
+    "stride1": true,
+    "layers2_8": true,
+    "ready_50": true,
+    "completed_50": true,
+    "resume_50": true,
+    "resume_step": true
+  },
+  "best": {
+    "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/checkpoints/val-none-epoch=13-step=33303.ckpt",
+    "bytes": 51489664,
+    "sha256": "ccd603becefe37b729b904863c29beb810a908c10a6dab2abc5084db0b045002"
+  },
+  "best_checks": {
+    "model_nonempty": true,
+    "finite_model": true,
+    "optimizer_states": true,
+    "lr_schedulers": true,
+    "nine_frames": true,
+    "window9": true,
+    "stride1": true,
+    "layers2_8": true,
+    "definition_matches_boundary": true
+  },
+  "best_definition": {
+    "version": 1,
+    "sequence_mode": "offline",
+    "tail_alignment": "zero_pad_ceil",
+    "stride": 1,
+    "input_projection": 128,
+    "encoding_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "layers": [
+      2,
+      8
+    ],
+    "detector": {
+      "type": "cosine_diff"
+    },
+    "mixer": {
+      "type": "learned"
+    },
+    "filter": "hanning",
+    "window_size": 9,
+    "weight_predictor_mode": "nine_frames"
+  },
+  "best_epoch": 13,
+  "best_global_step": 33303,
+  "run_config": {
+    "path": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_nine_frames_20261029/batched_handoff_20261029/batched_runtime.yaml",
+    "bytes": 2233,
+    "sha256": "00d7bbc4c19a4a98ecd7f9215486ee040388397f828fa16af52c80220d1f58c7"
+  },
+  "code_commit": "3dd2a38fca4d5ff3b3de579568faf2203fa258b0",
+  "train_log": {
+    "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/logs/train.log",
+    "bytes": 22460271,
+    "sha256": "ca749a85e71bfa2d00ff0bfaa58473623e7fa182becd1c2a4183818144a84897"
+  },
+  "gpu_log": {
+    "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/logs/gpu_usage.csv",
+    "bytes": 110763,
+    "sha256": "4faf4498f47537f01020b4bbf14b0e2b78f45b670feda06ca964efb09e284031"
+  }
+}

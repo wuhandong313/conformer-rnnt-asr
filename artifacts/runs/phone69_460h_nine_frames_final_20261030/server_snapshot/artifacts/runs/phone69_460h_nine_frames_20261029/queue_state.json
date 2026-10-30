@@ -1,0 +1,9 @@
+{
+  "status": "complete",
+  "server_utc": "2026-10-30T01:25:26.395773+00:00",
+  "pid": 35007,
+  "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50",
+  "training_pid": 35568,
+  "backend": "batched",
+  "global_step": 126550
+}

@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "parameters": 4252815,
+  "loss": 149.61941528320312,
+  "lengths": [
+    18,
+    16
+  ],
+  "definition": {
+    "version": 1,
+    "sequence_mode": "offline",
+    "tail_alignment": "zero_pad_ceil",
+    "stride": 1,
+    "input_projection": 128,
+    "encoding_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "layers": [
+      2,
+      8
+    ],
+    "detector": {
+      "type": "cosine_diff"
+    },
+    "mixer": {
+      "type": "learned"
+    },
+    "filter": "hanning",
+    "window_size": 9,
+    "weight_predictor_mode": "nine_frames"
+  }
+}

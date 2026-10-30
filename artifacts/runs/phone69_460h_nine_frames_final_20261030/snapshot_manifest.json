@@ -1,0 +1,152 @@
+{
+  "server_root": "/test21/conformer-rnnt-asr",
+  "files": [
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/queue_state.json",
+      "bytes": 288,
+      "sha256": "9e881ec356ada0b040aba923cb2236c732bc29d6920bafb96584fbc3010f661f"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/pipeline.log",
+      "bytes": 609,
+      "sha256": "ef8982bdf3ca05c3ebdb16f911183fd6f01cacac91e73a943ffa112c3848ef55"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/tests.log",
+      "bytes": 7834,
+      "sha256": "672a1f27ea3c96f24470920f952c0d96ce880329ca05fb99e93eb3680a565ad8"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/synthetic.log",
+      "bytes": 567,
+      "sha256": "6b696920501bf5e5803f59f0104221569e1361d2d548c712fc35b95ae7fc31c3"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/memory_probe.json",
+      "bytes": 29718,
+      "sha256": "2837ed5be526f7f211ffc67be4d343528cbed1fa8781cb2d7ad18416c5111349"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/memory_probe.log",
+      "bytes": 11650,
+      "sha256": "916d67fdda3e92f0c6eea0e1ba4b5ff141128615fa464534e63d602d9ed6afc7"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/prelaunch_validation.json",
+      "bytes": 2552,
+      "sha256": "b26ee042b38f9e0b1fd65937413aca5a8cc69593879a84e3f8021f0f1a0460b4"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/batched_handoff_launcher.log",
+      "bytes": 1616,
+      "sha256": "1793af28f91fb4f8b38f62fa099dbc622e2edca4e8087af15f2232d78a4d1e12"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/batched_handoff_20261029/state.json",
+      "bytes": 144,
+      "sha256": "b0d8be68809743b2b4b66a23223f4b46cb43d01df7bb1dae3a4bd275ff7d9c5d"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/batched_handoff_20261029/batched_runtime.yaml",
+      "bytes": 2233,
+      "sha256": "00d7bbc4c19a4a98ecd7f9215486ee040388397f828fa16af52c80220d1f58c7"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/batched_handoff_20261029/memory_preflight.json",
+      "bytes": 29844,
+      "sha256": "136c943eed22d09b57ad899ed72a50c7f1116088da1885d65ae779fc79edf24a"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/batched_handoff_20261029/memory_preflight.log",
+      "bytes": 11679,
+      "sha256": "344f1aa0bbd11b7ba8845ca51e8632a99504a223028fd054262769736357b991"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/batched_handoff_20261029/queue_before_handoff.json",
+      "bytes": 257,
+      "sha256": "6f309511ae28041f3858825ed2e9398f257b24b3d0782f73d025bfe4e4276bfe"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/batched_handoff_20261029/run_before_handoff.json",
+      "bytes": 3116,
+      "sha256": "7de8c2af565641d887013a3a2811b45366dbdb0f8aca350c7f172e19b49e02e0"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_nine_frames_20261029/batched_handoff_20261029/speed_monotonic.json",
+      "bytes": 605,
+      "sha256": "d23a23a5701c148293fac8a5c7759140460e8754a00dd20d454d16ccd06b60f3"
+    },
+    {
+      "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/run.json",
+      "bytes": 4384,
+      "sha256": "e55e2115a6ab5bc7d17fbd0cee09024bde2f3ee196990be3388e952b1881a1d3"
+    },
+    {
+      "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/TRAINING_COMPLETE",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/best_checkpoint.txt",
+      "bytes": 146,
+      "sha256": "6e236c5237d8f591299ceee4fd6295e19064f37914170d60195612a8cbbf98e5"
+    },
+    {
+      "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/logs/gpu_usage.csv",
+      "bytes": 110763,
+      "sha256": "4faf4498f47537f01020b4bbf14b0e2b78f45b670feda06ca964efb09e284031"
+    },
+    {
+      "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/lightning_logs/version_0/metrics.csv",
+      "bytes": 183562,
+      "sha256": "d29a8bccaf9f7020862199a1c24460aaa92bfdf96dfc69212365c46f108b28da"
+    },
+    {
+      "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/lightning_logs/version_0/hparams.yaml",
+      "bytes": 1641,
+      "sha256": "112dc5bc882a2d4a5fd9695027ecc9a0b1129444571a79907eba381e6bfb958e"
+    },
+    {
+      "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/lightning_logs/version_1/metrics.csv",
+      "bytes": 764344,
+      "sha256": "f5106ce058f2ba2e6895d425a1cdfc59ff412df12fe642926205a9954d905f79"
+    },
+    {
+      "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/lightning_logs/version_1/hparams.yaml",
+      "bytes": 1680,
+      "sha256": "6ed5b5ffdf567b360d623f94180720227004f306d5437721653d66f026787f33"
+    },
+    {
+      "path": "configs/server_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50.yaml",
+      "bytes": 2119,
+      "sha256": "6bfb66c0ad87c78c4bb10061008784df94ff513a6be43eb457896efb52cba2dd"
+    },
+    {
+      "path": "configs/server_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_batched_resume_s42_e50.yaml",
+      "bytes": 2150,
+      "sha256": "816b388291bb36a5f3881a4966065bce8a543afcb8f653291b1205c44ff35deb"
+    }
+  ],
+  "excluded_large_files": [
+    {
+      "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/logs/train.log",
+      "bytes": 22460271,
+      "sha256": "ca749a85e71bfa2d00ff0bfaa58473623e7fa182becd1c2a4183818144a84897",
+      "reason": "large log or checkpoint kept on server"
+    },
+    {
+      "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/checkpoints/epoch-boundary-epoch=50-step=126550-93fab52ca940.ckpt",
+      "bytes": 51518720,
+      "sha256": "1834809ac9698389c3223cdc48fb9e8a98c93cfbe2cf15208c9ee686c99cd6b4",
+      "reason": "large log or checkpoint kept on server"
+    },
+    {
+      "path": "exp_phone69_460h_offline_native_stride1_cosd_learned_nine_frames_s42_e50/checkpoints/val-none-epoch=13-step=33303.ckpt",
+      "bytes": 51489664,
+      "sha256": "ccd603becefe37b729b904863c29beb810a908c10a6dab2abc5084db0b045002",
+      "reason": "large log or checkpoint kept on server"
+    }
+  ],
+  "training_code_commit": "3dd2a38fca4d5ff3b3de579568faf2203fa258b0",
+  "snapshot_date": "2026-10-30"
+}
