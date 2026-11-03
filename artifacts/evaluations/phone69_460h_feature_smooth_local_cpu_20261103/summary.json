@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "name": "feature_smooth_a025",
+  "description": "stride1 + cosine_diff detector with feature_smoothing_alpha=0.25 + learned mixer + five_frames weight predictor",
+  "phase": "full",
+  "environment": {
+    "python": "/opt/anaconda3/envs/emformer/bin/python",
+    "torch": "2.10.0",
+    "torchaudio": "2.10.0",
+    "pytorch_lightning": "2.6.1",
+    "threads": 4,
+    "accelerator": "cpu",
+    "beam_width": 20,
+    "metric": "per"
+  },
+  "config": {
+    "path": "artifacts/evaluations/phone69_460h_feature_smooth_local_cpu_20261103/configs_cpu/feature_smooth_a025.yaml",
+    "sha256": "4b9836d1647a66ccc33033d5639e4454b641f5033c2f0e13f682b623e2aa0365",
+    "source": "configs/server_phone69_460h_offline_native_stride1_cosd_learned_feature_smooth_a025_s42_e50.yaml",
+    "source_sha256": "b2e902ef38a892564dc5ca49072bda8f4279cca2eab3fe1beb83c932cb40f9a7"
+  },
+  "checkpoint": {
+    "path": "output/local_cpu_20261103/models/feature_smooth/val-none-epoch=16-step=41496.ckpt",
+    "sha256": "ca6e6a66cb1e975df26b6f0f87a8283e559297175673c509ba4e418ca32442fb",
+    "epoch": 16,
+    "step": 41496,
+    "val_loss": 10.9702,
+    "note": "best val_loss checkpoint; the epoch-16 step-42696 file written later was not used"
+  },
+  "result": {
+    "utterances": 2620,
+    "phone_errors": 11275,
+    "reference_phones": 189023,
+    "corpus_per": 0.059648825804267204,
+    "mean_utterance_rtf": 0.053135780121457026,
+    "max_utterance_rtf": 0.1329153063038071,
+    "reference_order_sha256": "64b7de04f68896a1ac3aa362908f64095670fb1d9d3e4e2bfd1b8b62a20ad413",
+    "csv_sha256": "521ee21712c61693db3ce43c7fcaa17b59acd0a4d5033be4b70a202e5a00777d"
+  },
+  "validation": {
+    "expected_utterances": 2620,
+    "expected_reference_phones": 189023,
+    "utterances_ok": true,
+    "reference_phones_ok": true,
+    "idx_contiguous": true,
+    "per_consistent": true,
+    "rtf_finite": true,
+    "reference_order_matches_20261029": true
+  },
+  "comparison": {
+    "vs_stride1_cosd_learned_five_frames": {
+      "baseline_per": 0.05514143781444586,
+      "delta_pp": 0.4507387989821344,
+      "relative_change_pct": 8.174230068118575
+    },
+    "ranking_among_9": {
+      "rank": 6,
+      "of": 9,
+      "order": [
+        {
+          "name": "placement_layer5_stride1",
+          "corpus_per": 0.04780899678875058
+        },
+        {
+          "name": "placement_layer7_stride1",
+          "corpus_per": 0.048602551012310674
+        },
+        {
+          "name": "placement_layers2_5_n3_stride1",
+          "corpus_per": 0.05421033419213535
+        },
+        {
+          "name": "stride1_cosd_learned_five_frames",
+          "corpus_per": 0.05514143781444586
+        },
+        {
+          "name": "placement_mel_stride1",
+          "corpus_per": 0.05578157155478434
+        },
+        {
+          "name": "feature_smooth_a025",
+          "corpus_per": 0.059648825804267204
+        },
+        {
+          "name": "stride4_none",
+          "corpus_per": 0.061288837866291405
+        },
+        {
+          "name": "stride2_cosd_learned_five_frames",
+          "corpus_per": 0.06713468731318412
+        },
+        {
+          "name": "stride4_cosd_learned_five_frames",
+          "corpus_per": 0.07608068859345159
+        }
+      ]
+    }
+  }
+}
