@@ -30,6 +30,8 @@ Keep training options in YAML: `train.py` accepts one configuration path. Keep m
 
 No coverage threshold is configured. Add focused regression tests as `tests/test_<feature>.py` and run them with `python -m unittest discover -s tests`. For compression changes, verify tensor shapes, sequence lengths, preserved right-context frames, and legacy behavior. Run a small evaluation when assets are available; fixed phone69/IPA configs report corpus PER and word-BPE configs report corpus WER, along with RTF.
 
+Run unit, regression, smoke, and other software tests on the local development machine. Do not run tests on the training server; reserve it for explicitly authorized training or evaluation jobs.
+
 ## Commit & Pull Request Guidelines
 
 History commonly uses short, imperative messages with prefixes such as `feat(eval):`, `fix(pipeline):`, and `artifacts:`. Follow that pattern and keep commits focused.
