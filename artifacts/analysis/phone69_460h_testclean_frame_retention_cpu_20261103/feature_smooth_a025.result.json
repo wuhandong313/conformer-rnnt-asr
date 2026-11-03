@@ -1,0 +1,32 @@
+{
+  "name": "feature_smooth_a025",
+  "status": "complete",
+  "num_samples": 2620,
+  "device": "cpu",
+  "threads": 4,
+  "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261103/models/feature_smooth/val-none-epoch=16-step=41496.ckpt",
+  "checkpoint_sha256": "ca6e6a66cb1e975df26b6f0f87a8283e559297175673c509ba4e418ca32442fb",
+  "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_feature_smooth_local_cpu_20261103/configs_cpu/feature_smooth_a025.yaml",
+  "config_sha256": "4b9836d1647a66ccc33033d5639e4454b641f5033c2f0e13f682b623e2aa0365",
+  "definition_matches_checkpoint": true,
+  "input_sequence_sha256": "abc793e082b60912bf193ab34f0959ba374aff7ff5e8ef1553f6f7b10dc5bf9d",
+  "stride": 1,
+  "frame_totals": {
+    "input_mel_frames": 1947238,
+    "encoder_input_frames": 1947238,
+    "encoder_output_frames": 793371
+  },
+  "overall_retention": 0.40743401679712493,
+  "overall_reduction": 0.5925659832028751,
+  "mean_utterance_retention": 0.4077025059806306,
+  "stages": {
+    "after_layer_2": {
+      "input_frames": 1947238,
+      "output_frames": 793371,
+      "candidate_frames": 793371,
+      "retention": 0.40743401679712493,
+      "reduction": 0.5925659832028751
+    }
+  },
+  "elapsed_seconds": 113.0
+}

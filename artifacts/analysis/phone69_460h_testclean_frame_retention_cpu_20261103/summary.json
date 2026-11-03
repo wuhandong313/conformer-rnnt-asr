@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "dataset": "test-clean",
+  "samples": 2620,
+  "device": "cpu",
+  "threads": 4,
+  "definitions": {
+    "overall_retention": "sum of final encoder output frames / sum of original input Mel frames",
+    "stage_retention": "sum of stage output frames / sum of stage input frames",
+    "candidate_frames": "frames selected by the detector before mixer expansion"
+  },
+  "input_sequence_sha256": "abc793e082b60912bf193ab34f0959ba374aff7ff5e8ef1553f6f7b10dc5bf9d",
+  "input_matches_20261027": true,
+  "measured": {
+    "name": "feature_smooth_a025",
+    "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261103/models/feature_smooth/val-none-epoch=16-step=41496.ckpt",
+    "checkpoint_sha256": "ca6e6a66cb1e975df26b6f0f87a8283e559297175673c509ba4e418ca32442fb",
+    "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_feature_smooth_local_cpu_20261103/configs_cpu/feature_smooth_a025.yaml",
+    "config_sha256": "4b9836d1647a66ccc33033d5639e4454b641f5033c2f0e13f682b623e2aa0365",
+    "frame_totals": {
+      "input_mel_frames": 1947238,
+      "encoder_input_frames": 1947238,
+      "encoder_output_frames": 793371
+    },
+    "overall_retention": 0.40743401679712493,
+    "mean_utterance_retention": 0.4077025059806306,
+    "stages": {
+      "after_layer_2": {
+        "input_frames": 1947238,
+        "output_frames": 793371,
+        "candidate_frames": 793371,
+        "retention": 0.40743401679712493,
+        "reduction": 0.5925659832028751
+      }
+    },
+    "elapsed_seconds": 113.0
+  },
+  "comparison": {
+    "baseline": "old_stride1_cosd_learned",
+    "baseline_overall_retention": 0.40712896934016285,
+    "delta_pp": 0.030504745696208202,
+    "relative_change_pct": 0.07492649256977302,
+    "extra_output_frames": 594,
+    "ranking": [
+      {
+        "name": "old_stride4_cosd_learned",
+        "overall_retention": 0.10053470608112619
+      },
+      {
+        "name": "old_stride2_cosd_learned",
+        "overall_retention": 0.20069863057315027
+      },
+      {
+        "name": "old_stride4_none",
+        "overall_retention": 0.25049891179198436
+      },
+      {
+        "name": "placement_layers2_5_n3",
+        "overall_retention": 0.3603468091727873
+      },
+      {
+        "name": "placement_mel",
+        "overall_retention": 0.3928317955997161
+      },
+      {
+        "name": "placement_layer5",
+        "overall_retention": 0.3943549786928973
+      },
+      {
+        "name": "old_stride1_cosd_learned",
+        "overall_retention": 0.40712896934016285
+      },
+      {
+        "name": "feature_smooth_a025",
+        "overall_retention": 0.40743401679712493
+      }
+    ]
+  }
+}
