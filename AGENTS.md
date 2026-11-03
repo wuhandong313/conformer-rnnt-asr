@@ -40,6 +40,8 @@ PRs should explain the behavior change, affected configuration, validation comma
 
 Keep credentials in ignored `remote-access.md`. Keep datasets and files larger than 10 MiB untracked. Small logs, scripts, experiment records and word tokenizer models are synchronized when explicitly requested; runtime caches and environments stay local. Match tokenizer vocabulary and preprocessing settings to the checkpoint, and use distinct experiment/output paths. See `docs/repository_sync.md` for consolidated branches and server paths.
 
+For source code and configuration intended for a server run, use Git to synchronize: commit and push from the development checkout, then fetch/pull the matching branch on the server before launching. Do not deploy code by copying files directly. Keep credentials, datasets, checkpoints, and other large artifacts outside Git according to the rules above.
+
 `configs/ipa_vocab.json` is the tracked fixed IPA inventory. IPA labels use whitespace-delimited complete phones in external Epitran files, read from external `<subset_with_underscores>/ipa` files by `ipa_labels.py`; do not split Unicode characters or mix legacy phoneme conventions. See `docs/ipa_vocabulary_review.md` for the mapping and data audit.
 
 `configs/phone69_vocab.json` fixes exactly 69 stressed ARPABET phones (blank ID 69); source noise label `spn` is explicitly filtered during encoding. Phone69 reads external per-chapter `*-ph.trans.txt`; preserve case, stress and spaces. Phone69 SentencePiece configs/checkpoints are no longer supported. Server `train-other-500` uses IPA and cannot join phone69 training. See `docs/phone69_tokenizer.md`.
