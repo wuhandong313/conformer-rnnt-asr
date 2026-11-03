@@ -19,7 +19,7 @@ os.environ['PATH'] = '/root/anaconda3/envs/whd/bin:/usr/local/sbin:/usr/local/bi
 AUDIT = ROOT / 'artifacts/runs/phone69_460h_stride4_dim512_20261103'
 CONFIG = ROOT / 'configs/server_phone69_460h_offline_native_stride4_none_dim512_s42_e50.yaml'
 EXP = ROOT / 'exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50'
-BUDGET = 23500
+BUDGET = 7000
 AUDIT.mkdir(parents=True, exist_ok=True)
 
 
