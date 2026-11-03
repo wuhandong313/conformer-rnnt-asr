@@ -64,3 +64,10 @@ remote-access.md
 
 # Large assets retained outside Git (over 10 MiB).
 /papers/divprune-cvpr25-2503.02175.pdf
+
+# Server-side ephemeral recovery and source snapshots (kept on the server).
+/artifacts/recoveries/*/
+/artifacts/runs/*/source_before/
+/artifacts/runs/*/source_snapshot/
+/artifacts/runs/phone69_460h_hard_centers_20261030/
+/artifacts/runs/phone69_460h_stride1_five_frames_dim32_20261101/

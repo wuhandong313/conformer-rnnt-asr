@@ -1,0 +1,5 @@
+{
+  "reason": "process no longer running; partial log preserved; no traceback in log",
+  "archived_log": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/interrupted/20261029_174227/stride1_cosd_learned_five_frames.log",
+  "time": "20261029_174227"
+}

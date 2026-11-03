@@ -132,7 +132,20 @@ def verify_downloads():
     verify_file(WORK / 'assets/global_stats.json', PLAN['models'][0]['server']['stats'])
     for record in PLAN['dataset']['files']:
         verify_file(WORK / 'librispeech' / record['relative_path'], record)
+    verify_audio_membership()
     print('Verified all checkpoint, statistics and dataset SHA-256 values.', flush=True)
+
+
+def verify_audio_membership():
+    root = WORK / 'librispeech'
+    expected = {r['relative_path'] for r in PLAN['dataset']['files']
+                if r['relative_path'].endswith('.flac')}
+    test_root = root / 'LibriSpeech/test-clean'
+    actual = {str(path.relative_to(root)) for path in test_root.glob('*/*/*.flac')}
+    extra, missing = actual - expected, expected - actual
+    if extra or missing:
+        raise ValueError('Test audio set differs from manifest; extra=%s missing=%s' %
+                         (sorted(extra), sorted(missing)))
 
 
 def preflight():
@@ -164,6 +177,7 @@ def validate_csv(path, expected_count):
 
 
 def run_one(item, phase, max_utts):
+    verify_audio_membership()
     directory = RESULTS / phase
     directory.mkdir(parents=True, exist_ok=True)
     output = directory / (item['name'] + '.csv')
@@ -186,13 +200,33 @@ def run_one(item, phase, max_utts):
 
 def evaluate():
     preflight()
-    smoke = [run_one(item, 'smoke', PLAN['expected_smoke_utterances']) for item in PLAN['models']]
-    (RESULTS / 'smoke_summary.json').write_text(json.dumps(smoke, indent=2) + '\n')
+    smoke_path = RESULTS / 'smoke_summary.json'
+    if smoke_path.exists():
+        smoke = json.loads(smoke_path.read_text())
+        assert [r['name'] for r in smoke] == [m['name'] for m in PLAN['models']]
+        for row in smoke:
+            path = RESULTS / 'smoke' / (row['name'] + '.csv')
+            assert validate_csv(path, PLAN['expected_smoke_utterances'])['csv_sha256'] == row['csv_sha256']
+        print('Reusing verified smoke results.', flush=True)
+    else:
+        smoke = [run_one(item, 'smoke', PLAN['expected_smoke_utterances']) for item in PLAN['models']]
+        smoke_path.write_text(json.dumps(smoke, indent=2) + '\n')
+    summary_path = RESULTS / 'summary.json'
+    previous = json.loads(summary_path.read_text()) if summary_path.exists() else []
+    assert [r['name'] for r in previous] == [m['name'] for m in PLAN['models'][:len(previous)]]
     full = []
-    for item in PLAN['models']:
-        full.append(run_one(item, 'full', 0))
+    for index, item in enumerate(PLAN['models']):
+        if index < len(previous):
+            path = RESULTS / 'full' / (item['name'] + '.csv')
+            checked = validate_csv(path, PLAN['expected_utterances'])
+            assert checked['csv_sha256'] == previous[index]['csv_sha256']
+            assert checked['reference_order_sha256'] == previous[index]['reference_order_sha256']
+            full.append(previous[index])
+            print('Reusing verified full result:', item['name'], flush=True)
+        else:
+            full.append(run_one(item, 'full', 0))
         assert len({row['reference_order_sha256'] for row in full}) == 1
-        (RESULTS / 'summary.json').write_text(json.dumps(full, indent=2) + '\n')
+        summary_path.write_text(json.dumps(full, indent=2) + '\n')
     (RESULTS / 'COMPLETE').touch()
 
 

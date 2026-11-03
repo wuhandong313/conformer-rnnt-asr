@@ -1,0 +1,9 @@
+{
+  "reason": "unlisted extra audio caused missing transcript; retained for inspection",
+  "original_extra_path": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/librispeech/LibriSpeech/test-clean/237/126133/237-126133-0010 2.flac",
+  "extra_sha256": "b82651434cffee5cffcbd61b56057bc600a40a8dddde5e46f7b06fbb6de63fa4",
+  "expected_audio_sha256": "0b637c683002566eace1f983c067793473e9dcff957a6fc2e8a006f8e35243a7",
+  "saved_extra_path": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/quarantine/20261029_173752/237-126133-0010 2.flac",
+  "saved_interrupted_log": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/interrupted/20261029_173752/stride1_cosd_learned_five_frames.log",
+  "time": "20261029_173752"
+}
