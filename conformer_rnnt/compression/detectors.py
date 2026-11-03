@@ -41,6 +41,11 @@ import torch
 from scipy.signal import find_peaks, savgol_filter, firwin, filtfilt
 from torch import Tensor
 
+from conformer_rnnt.compression.feature_smoothing import (
+    smooth_feature_frames,
+    validate_smoothing_alpha,
+)
+
 
 class Detector:
     """Base class. Subclasses set ``fixed_rate`` and implement ``detect``."""
@@ -180,16 +185,28 @@ class CosineDiffPeaksDetector(Detector):
         "none"   — raw cosine distance → find_peaks (default)
         "savgol" — Savitzky-Golay smooth of ``c`` → find_peaks
                    (signal × smoothing grid completion: cos + savgol)
+
+    feature_smoothing_alpha optionally smooths encoder vectors *before*
+    normalization and cosine computation. It is independent of the mixer,
+    which still receives original features, and cannot be combined with
+    distance-curve smoothing in the same detector.
     """
 
     fixed_rate = False
 
-    def __init__(self, preprocess: str = "none") -> None:
+    def __init__(
+        self, preprocess: str = "none", feature_smoothing_alpha: float = 0.0,
+    ) -> None:
         if preprocess not in ("none", "savgol"):
             raise ValueError(f"Unknown preprocess '{preprocess}'")
         self.preprocess = preprocess
+        self.feature_smoothing_alpha = validate_smoothing_alpha(feature_smoothing_alpha)
+        if self.feature_smoothing_alpha > 0 and preprocess != "none":
+            raise ValueError("Feature smoothing cannot be combined with distance-curve smoothing")
 
     def detect(self, frames, diff, diff_np, main_len):
+        if self.feature_smoothing_alpha > 0:
+            frames = smooth_feature_frames(frames[:main_len], self.feature_smoothing_alpha)
         f = torch.nn.functional.normalize(frames, dim=-1)
         c = (1.0 - (f[1:] * f[:-1]).sum(dim=-1)).cpu().numpy()
         if len(c) < 3:

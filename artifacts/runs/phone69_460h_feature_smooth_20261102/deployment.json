@@ -1,0 +1,18 @@
+{
+  "server_utc": "2026-11-02T05:47:35.010948+00:00",
+  "base_commit": "2e1eb030bd66c4b7ec9836621d617f7a0f77882a",
+  "deployed_sha256": {
+    "conformer_rnnt/compression/detectors.py": "a3cb19db86f0747b7fc8a2366daf6e9fc9ac07741ca69bbfbdda86da3d544014",
+    "conformer_rnnt/compression/natural.py": "73a5a898f8a4ae7dfd32d1fb037f296e25bb6a61be8cdfb6240028001f236554",
+    "conformer_rnnt/compression/batched_cosine.py": "6a9f052a89fbc236e6496d4963150c61b5328b5f8371fe1b9632dabfd51092c3",
+    "conformer_rnnt/compression/feature_smoothing.py": "e6c9151b8f8b3b1af70850ef80986d77355b9544124b25b3309769ed18edc8e9",
+    "configs/server_phone69_460h_offline_native_stride1_cosd_learned_feature_smooth_a025_s42_e50.yaml": "b2e902ef38a892564dc5ca49072bda8f4279cca2eab3fe1beb83c932cb40f9a7",
+    "tests/test_feature_smoothing.py": "749873a3d90691b0601418d99814ddf6abc3b8a54f6eac0c5f254eaebd471f8c",
+    "scripts/server/phone69_feature_smooth_pipeline.py": "5c9cd9f7f522ce0ce100cad5cd032f601b9928f78c54c238eea6f5fe3ae1a569",
+    "scripts/server/validate_phone69_feature_smoothing.py": "0ad2e19d76df2c5e92e22a0da5be3f7e334897560b9e6f72f7abb3264a38c223",
+    "scripts/server/status_phone69_feature_smooth.py": "8dba73c5b52af1f4cd8fdeb26cee4ab5de9e141ee67f193d0eea3835a3fb76eb",
+    "docs/encoder_feature_smoothing_20261102.md": "d30276d164f147ac3bbf7c2d4df1434e39c4cefdbee7ef65969af1f89b53e3b2"
+  },
+  "protected_files": 757,
+  "authorization": "User requested training and monitoring after confirming 128-dimensional feature-smoothing configuration"
+}

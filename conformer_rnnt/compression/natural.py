@@ -54,7 +54,7 @@ class NaturalPeakCompression(torch.nn.Module):
         )
         if execution_backend == "batched":
             if not isinstance(self.detector, CosineDiffPeaksDetector) or self.detector.preprocess != "none":
-                raise ValueError("Batched backend requires unsmoothed cosine_diff")
+                raise ValueError("Batched backend requires cosine_diff without distance-curve smoothing")
             if not isinstance(self.mixer, LearnedWeightMixer) or self.mixer.weight_predictor_mode not in {"five_frames", "nine_frames"}:
                 raise ValueError("Batched backend requires a five_frames or nine_frames learned mixer")
             expected = 5 if self.mixer.weight_predictor_mode == "five_frames" else 9
@@ -65,7 +65,10 @@ class NaturalPeakCompression(torch.nn.Module):
         if input.dim() != 3 or lengths.dim() != 1 or input.size(0) != lengths.size(0):
             raise ValueError("Expected (B,T,F) features and (B,) lengths")
         if self.execution_backend == "batched":
-            output, result_lengths, selected = batched_natural_cosine_fusion(input, lengths, self.mixer)
+            output, result_lengths, selected = batched_natural_cosine_fusion(
+                input, lengths, self.mixer,
+                feature_smoothing_alpha=self.detector.feature_smoothing_alpha,
+            )
             stats = torch.stack((lengths.to(result_lengths.device), result_lengths)).detach().cpu().tolist()
             self.last_lengths = dict(input=stats[0], output=stats[1])
             self.last_candidate_lengths = stats[1]

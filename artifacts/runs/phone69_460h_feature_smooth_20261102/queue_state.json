@@ -1,0 +1,12 @@
+{
+  "status": "training",
+  "pipeline_pid": 3881,
+  "server_utc": "2026-11-02T05:48:55.013330+00:00",
+  "stage": "training",
+  "preflight_pid": 3942,
+  "preflight_log": "memory_probe.log",
+  "budget": 6500,
+  "training_pid": 3992,
+  "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_feature_smooth_a025_s42_e50",
+  "config_sha256": "b2e902ef38a892564dc5ca49072bda8f4279cca2eab3fe1beb83c932cb40f9a7"
+}

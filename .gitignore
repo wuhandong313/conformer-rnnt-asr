@@ -12,6 +12,7 @@ exp/
 exp_*/
 output/
 lightning_logs/
+*.log
 
 # Model artifacts (large binaries, not in repo)
 *.ckpt

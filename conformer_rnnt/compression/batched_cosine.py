@@ -9,6 +9,11 @@ import torch
 from torch import Tensor
 from torch.nn import functional as F
 
+from conformer_rnnt.compression.feature_smoothing import (
+    smooth_feature_frames,
+    validate_smoothing_alpha,
+)
+
 
 def frame_mask_from_cosine_distances(distances: Tensor, lengths: Tensor) -> Tensor:
     """Return selected [B,T] frame mask for raw distances [B,T-1].
@@ -47,13 +52,18 @@ def frame_mask_from_cosine_distances(distances: Tensor, lengths: Tensor) -> Tens
     return frame_mask
 
 
-def batched_natural_cosine_fusion(input: Tensor, lengths: Tensor, mixer):
+def batched_natural_cosine_fusion(
+    input: Tensor, lengths: Tensor, mixer, feature_smoothing_alpha: float = 0.0,
+):
     """Return compressed features, lengths, and selected mask.
 
     A single batch-level scalar synchronization is used to allocate only the
     observed maximum retained length. It is not a retention budget or quota.
     Both five_frames and nine_frames share the original predictor parameters.
+    Optional temporal feature smoothing precedes cosine computation only;
+    predictor inputs and fusion windows always use original features.
     """
+    feature_smoothing_alpha = validate_smoothing_alpha(feature_smoothing_alpha)
     if input.ndim != 3 or lengths.ndim != 1 or input.shape[0] != lengths.shape[0]:
         raise ValueError('Expected (B,T,F) features and (B,) lengths')
     batch, time, feature = input.shape
@@ -74,7 +84,10 @@ def batched_natural_cosine_fusion(input: Tensor, lengths: Tensor, mixer):
     if torch.any(length_cpu < 0) or torch.any(length_cpu > time):
         raise ValueError('Sequence length exceeds available frames')
     with torch.no_grad():
-        normalized = F.normalize(input, dim=-1)
+        detection_input = input
+        if feature_smoothing_alpha > 0:
+            detection_input = smooth_feature_frames(input, feature_smoothing_alpha, lengths)
+        normalized = F.normalize(detection_input, dim=-1)
         distances = 1.0 - (normalized[:, 1:] * normalized[:, :-1]).sum(dim=-1)
         frame_mask = frame_mask_from_cosine_distances(distances, lengths)
         counts = frame_mask.sum(dim=1)

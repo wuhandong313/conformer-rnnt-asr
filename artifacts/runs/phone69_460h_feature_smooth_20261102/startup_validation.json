@@ -1,0 +1,49 @@
+{
+  "valid": true,
+  "server_utc": "2026-11-02T05:53:08.555143+00:00",
+  "pipeline_pid": 3881,
+  "training_pid": 3992,
+  "epoch": 1,
+  "global_step": 300,
+  "config_sha256": "b2e902ef38a892564dc5ca49072bda8f4279cca2eab3fe1beb83c932cb40f9a7",
+  "parameters": 4236299,
+  "offline_native_definition": {
+    "version": 1,
+    "sequence_mode": "offline",
+    "tail_alignment": "zero_pad_ceil",
+    "stride": 1,
+    "input_projection": 128,
+    "encoding_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "layers": [
+      2,
+      8
+    ],
+    "detector": {
+      "type": "cosine_diff",
+      "params": {
+        "feature_smoothing_alpha": 0.25
+      }
+    },
+    "mixer": {
+      "type": "learned"
+    },
+    "filter": "hanning",
+    "window_size": 5,
+    "weight_predictor_mode": "five_frames"
+  },
+  "initial_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_feature_smooth_a025_s42_e50/checkpoints/epoch-boundary-epoch=00-step=0-94987f45f0c6.ckpt",
+  "initial_checkpoint_sha256": "f1654516b6f84d6da8f1970f63591c78ed8de98ed58b5c2993018cf1d21927da",
+  "full_optimizer_and_scheduler": true,
+  "protected_files_verified": 757,
+  "regression_test_summary": [
+    "----------------------------------------------------------------------",
+    "Ran 84 tests in 5.041s",
+    "",
+    "OK"
+  ],
+  "gpu": "NVIDIA A100-SXM4-80GB, 77791 MiB, 81920 MiB, 64 %",
+  "gpu_processes": "27840, 77772 MiB",
+  "latest_batch_observed_retention": 0.4243346510743173
+}

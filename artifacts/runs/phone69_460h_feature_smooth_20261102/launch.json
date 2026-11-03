@@ -1,0 +1,9 @@
+{
+  "status": "preflight_dispatched",
+  "pipeline_pid": 3881,
+  "audit": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_feature_smooth_20261102",
+  "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_feature_smooth_a025_s42_e50",
+  "server_utc": "2026-11-02T05:47:35.048808+00:00",
+  "deployed_files": 10,
+  "protected_files": 757
+}
