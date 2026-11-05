@@ -1,0 +1,8 @@
+{
+  "status": "complete",
+  "server_utc": "2026-11-03T20:16:36.395665+00:00",
+  "pid": 8594,
+  "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50",
+  "global_step": 117500,
+  "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50/checkpoints/val-none-epoch=09-step=23150.ckpt"
+}
