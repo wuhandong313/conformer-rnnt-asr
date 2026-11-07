@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "name": "placement_mel_layer5_stride1_b6500_to_b11050",
+  "phase": "full",
+  "environment": {
+    "python": "/opt/anaconda3/envs/aligner/bin/python",
+    "accelerator": "cpu",
+    "threads": 4,
+    "interop_threads": 1,
+    "workers": 0,
+    "beam_width": 20,
+    "metric": "per",
+    "python_version": "3.12.9",
+    "torch": "2.8.0",
+    "torchaudio": "2.8.0",
+    "pytorch_lightning": "2.6.1",
+    "cpu": "Apple M4"
+  },
+  "dataset": {
+    "name": "LibriSpeech test-clean",
+    "files_verified": 2707,
+    "audio_files": 2620,
+    "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
+  },
+  "checkpoint": {
+    "path": "output/local_cpu_20261107/models/mel_layer5/val-none-epoch=49-step=89901.ckpt",
+    "sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+    "epoch": 49,
+    "global_step": 89901,
+    "selection": "lowest saved dev-clean loss among the retained stage-specific validation checkpoints",
+    "dev_loss": 10.211566925048828,
+    "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_resume_b11050/checkpoints/val-none-epoch=49-step=89901.ckpt"
+  },
+  "configuration": {
+    "path": "artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/configs_cpu/mel_layer5.yaml",
+    "sha256": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4",
+    "code_commit": "a05b80c3aacff5417b25bedca818c8054e1cb67d",
+    "cpu_eval_script_sha256": "31e185ce098a0b4012aaf637658468f7cde421616e508851843f639fc3331f82",
+    "parameters": 4249296,
+    "cpu_eval_script_path": "artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/eval_cpu.py"
+  },
+  "result": {
+    "utterances": 2620,
+    "phone_errors": 10752,
+    "reference_phones": 189023,
+    "corpus_per": 0.05688196674478767,
+    "mean_utterance_rtf": 0.06777837188808325,
+    "median_utterance_rtf": 0.0649441553314313,
+    "p90_utterance_rtf": 0.10432983252120745,
+    "reference_order_sha256": "64b7de04f68896a1ac3aa362908f64095670fb1d9d3e4e2bfd1b8b62a20ad413",
+    "csv_sha256": "cbc2f8ea09e34af7aa7138132b2d2e290eac928d1b1bafad017da2b15a1a394c"
+  },
+  "comparison": {
+    "original_mel": {
+      "corpus_per": 0.05578157155478434,
+      "mean_utterance_rtf": 0.061335748484191176,
+      "delta_per_percentage_points": 0.11003951900033296,
+      "relative_per_change_pct": 1.9726858877086473,
+      "rtf_ratio": 1.1050386367348661
+    },
+    "single_layer5": {
+      "corpus_per": 0.04780899678875058,
+      "mean_utterance_rtf": 0.0721518493270629,
+      "delta_per_percentage_points": 0.907296995603709,
+      "relative_per_change_pct": 18.977536793183567,
+      "rtf_ratio": 0.9393850957422483
+    }
+  },
+  "limitations": [
+    "Single seed; train budget changed from 6500 to 11050 after epoch 16.",
+    "Lightning reported non-resumable dataloader on the mid-epoch bridge; some samples may have repeated or been skipped.",
+    "Mean utterance RTF measures model decoding with per-utterance averaging and may vary with CPU load; it is not a matched compute study.",
+    "Other applications were active during evaluation; mean RTF is not a controlled speed comparison."
+  ],
+  "validation": {
+    "reference_order_matches_previous": true,
+    "references_match_sample_by_sample": true,
+    "idx_contiguous": true,
+    "counts_match": true,
+    "per_consistent": true,
+    "rtf_finite": true
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "selection_rule": "minimum recorded dev-clean validation loss among retained per-stage validation checkpoints; no test-clean selection",
+  "original_best": {
+    "step": 39965,
+    "val_loss": 13.014982223510742
+  },
+  "bridge_best": {
+    "step": 40365,
+    "val_loss": 13.068623542785645
+  },
+  "resumed_best": {
+    "step": 89901,
+    "val_loss": 10.211566925048828,
+    "sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+    "bytes": 51458928
+  },
+  "selection_note": "stored losses are utterance-weighted; dynamic validation batch budget changed from 6500 to 11050, so coverage/rounding may differ",
+  "training_note": "mid-epoch bridge resumed with non-resumable dataloader warning; batches changed from 6500 to 11050 after epoch16",
+  "dataset": "LibriSpeech test-clean phone69",
+  "expected_utterances": 2620,
+  "expected_reference_phones": 189023,
+  "beam_width": 20,
+  "cpu_threads": 4,
+  "dataloader_workers": 0,
+  "training_code_commit": "a05b80c3aacff5417b25bedca818c8054e1cb67d",
+  "source_config_sha256": "2b9909965c50808e96ee5546a3f53eede597e415449ae79bb845b60ab1728192",
+  "cpu_config_sha256": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4"
+}
