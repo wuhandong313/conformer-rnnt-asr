@@ -1,0 +1,161 @@
+{
+  "valid": true,
+  "device": "cpu",
+  "server_tests_performed": false,
+  "config": "configs/server_phone69_460h_placement_mel_layer5_layer8_stride1_s42_b11050_e50.yaml",
+  "config_sha256": "04e89690cd2297d4fbe79202b5c7ddbc3ed0c435cebf27c7c32e043c5d609250",
+  "parameters": 4269973,
+  "synthetic_rnnt_loss": 262.1052551269531,
+  "synthetic_input_lengths": [
+    256,
+    224
+  ],
+  "observed_lengths": {
+    "input": [
+      256,
+      224
+    ],
+    "stages": [
+      {
+        "after_layer": 0,
+        "input_domain": "model_mel_input",
+        "input": [
+          256,
+          224
+        ],
+        "candidates": [
+          122,
+          99
+        ],
+        "output": [
+          122,
+          99
+        ]
+      },
+      {
+        "after_layer": 5,
+        "input_domain": "encoder",
+        "input": [
+          122,
+          99
+        ],
+        "candidates": [
+          59,
+          47
+        ],
+        "output": [
+          59,
+          47
+        ]
+      },
+      {
+        "after_layer": 8,
+        "input_domain": "encoder",
+        "input": [
+          59,
+          47
+        ],
+        "candidates": [
+          24,
+          21
+        ],
+        "output": [
+          24,
+          21
+        ]
+      }
+    ],
+    "encoder_input": [
+      122,
+      99
+    ],
+    "stride": 1,
+    "output": [
+      24,
+      21
+    ]
+  },
+  "mixer_gradients": [
+    {
+      "after_layer": 0,
+      "gradient_l1": 1605.8331298828125
+    },
+    {
+      "after_layer": 5,
+      "gradient_l1": 1070.82861328125
+    },
+    {
+      "after_layer": 8,
+      "gradient_l1": 817.4425048828125
+    }
+  ],
+  "full_model_optimizer_scheduler_restored": true,
+  "offline_native_definition": {
+    "version": 2,
+    "sequence_mode": "offline",
+    "tail_alignment": "zero_pad_ceil",
+    "stride": 1,
+    "input_dim": 80,
+    "input_projection": 128,
+    "encoding_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "depthwise_conv_kernel_size": 31,
+    "dropout": 0.1,
+    "num_layers": 10,
+    "layers": [
+      5,
+      3,
+      2
+    ],
+    "compression_stages": [
+      {
+        "after_layer": 0,
+        "detector": {
+          "type": "cosine_diff",
+          "preprocess": "none"
+        },
+        "mixer": {
+          "type": "learned"
+        },
+        "neighborhood_radius": 0,
+        "window_size": 5,
+        "weight_predictor_mode": "five_frames",
+        "feature_dim": 80,
+        "input_domain": "model_mel_input"
+      },
+      {
+        "after_layer": 5,
+        "detector": {
+          "type": "cosine_diff",
+          "preprocess": "none"
+        },
+        "mixer": {
+          "type": "learned"
+        },
+        "neighborhood_radius": 0,
+        "window_size": 5,
+        "weight_predictor_mode": "five_frames",
+        "feature_dim": 128,
+        "input_domain": "encoder"
+      },
+      {
+        "after_layer": 8,
+        "detector": {
+          "type": "cosine_diff",
+          "preprocess": "none"
+        },
+        "mixer": {
+          "type": "learned"
+        },
+        "neighborhood_radius": 0,
+        "window_size": 5,
+        "weight_predictor_mode": "five_frames",
+        "feature_dim": 128,
+        "input_domain": "encoder"
+      }
+    ],
+    "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+  },
+  "torch": "2.8.0"
+}

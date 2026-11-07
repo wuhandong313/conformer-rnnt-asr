@@ -1,0 +1,19 @@
+{
+  "local_only": true,
+  "full_suite": {
+    "command": "python -m unittest discover -s tests -v",
+    "tests": 89,
+    "passed": true
+  },
+  "server_git_compatibility_followup": {
+    "command": "python -m unittest discover -s tests -p test_triple_compression_launch.py -v",
+    "tests": 4,
+    "passed": true
+  },
+  "synthetic_full_dimension_training_and_restore": true,
+  "log_sha256": {
+    "tests.log": "c54673c9903408982542a7a6057d6494c853cbb9506d79ced2e655dab629b255",
+    "launch_tests.log": "336f28dd81cadaa22573f75db8ea1be8b22d24dff0012a3489cff0941748f2e6",
+    "local_check.log": "025b672a0b0b4d36bfb0b819ee239ebec8d4c5a5b44f356e42566b8d197ddb15"
+  }
+}

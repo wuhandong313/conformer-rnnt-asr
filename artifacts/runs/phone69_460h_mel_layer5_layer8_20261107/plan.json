@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "name": "phone69_460h_mel_layer5_layer8",
+  "configuration": "configs/server_phone69_460h_placement_mel_layer5_layer8_stride1_s42_b11050_e50.yaml",
+  "config_sha256": "04e89690cd2297d4fbe79202b5c7ddbc3ed0c435cebf27c7c32e043c5d609250",
+  "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_layer8_stride1_s42_b11050_e50",
+  "start": "random initialization; no checkpoint resume",
+  "seed": 42,
+  "epochs": 50,
+  "phone_token_budget": 11050,
+  "compression_positions": [
+    0,
+    5,
+    8
+  ],
+  "conformer_blocks": [
+    5,
+    3,
+    2
+  ],
+  "backbone_dim": 128,
+  "parameters": 4269973,
+  "detector": "cosine_diff local peaks and valleys, no additional smoothing",
+  "mixer": "learned, five_frames, reference backend",
+  "train_subsets": [
+    "train-clean-100",
+    "train-clean-360"
+  ],
+  "validation_subset": "dev-clean",
+  "test_subset_reserved_for_local_final_eval": "test-clean",
+  "deployment": "commit/push local, server fetch + fast-forward pull, then launch tracked script",
+  "software_tests": "local only; no GPU memory probe on training server",
+  "comparison": {
+    "original_mel_parameters": 4228619,
+    "double_stage_parameters": 4249296,
+    "added_parameters_over_double": 20677,
+    "original_mel_per": 0.05578157155478434,
+    "double_stage_per": 0.05688196674478767,
+    "double_stage_retested_mean_rtf": 0.03786553141825142,
+    "limitations": [
+      "One seed.",
+      "Triple-stage uses a fixed 11050 budget for all epochs; double-stage changed from 6500 to 11050 after epoch 16, including a non-exact mid-epoch bridge.",
+      "Accuracy and runtime advantages are hypotheses until local evaluation after training."
+    ]
+  }
+}

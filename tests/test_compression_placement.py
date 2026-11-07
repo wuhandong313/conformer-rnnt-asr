@@ -83,6 +83,21 @@ class PlacementSchemaTests(unittest.TestCase):
             self.assertEqual([(x["after_layer"], x["mixer"]["type"], x["neighborhood_radius"]) for x in stages], layout)
         self.assertEqual(len(outputs), 3)
 
+    def test_triple_recipe_extends_current_double_stage_at_fixed_budget(self):
+        base = yaml.safe_load((REPO / 'configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml').read_text())
+        config = yaml.safe_load((REPO / 'configs/server_phone69_460h_placement_mel_layer5_layer8_stride1_s42_b11050_e50.yaml').read_text())
+        self.assertIsNone(config['paths']['from_checkpoint'])
+        self.assertNotEqual(config['paths']['exp_dir'], base['paths']['exp_dir'])
+        for key in ('training', 'data', 'trainer', 'tokenizer', 'decoding', 'seed'):
+            self.assertEqual(config[key], base[key])
+        stages = config['model']['compression']['stages']
+        self.assertEqual([s['after_layer'] for s in stages], [0, 5, 8])
+        self.assertEqual(stages[:2], base['model']['compression']['stages'])
+        first_two = deepcopy(config['model'])
+        first_two['compression']['stages'].pop()
+        self.assertEqual(first_two, base['model'])
+        self.assertEqual(config['data']['max_token_limit'], 11050)
+
 
 class NeighbourhoodRetentionTests(unittest.TestCase):
     def test_original_frames_are_sorted_deduplicated_and_differentiable(self):
@@ -119,7 +134,8 @@ class EncoderPlacementTests(unittest.TestCase):
         torch.set_num_threads(2)
 
     def test_exact_global_layer_order_and_total_depth(self):
-        cases = ([learned(0)], [learned(5)], [neighbourhood(), learned(5)])
+        cases = ([learned(0)], [learned(5)], [neighbourhood(), learned(5)],
+                 [learned(0), learned(5), learned(8)])
         for stages in cases:
             with self.subTest(stages=stages):
                 model = conformer_rnnt_model_from_config(small_config(stages)).eval()
@@ -150,7 +166,8 @@ class EncoderPlacementTests(unittest.TestCase):
                 self.assertTrue(torch.isfinite(result).all())
 
     def test_mel_dimension_and_all_learned_stages_receive_gradients(self):
-        for stages in ([learned(0)], [learned(5)], [neighbourhood(), learned(5)]):
+        for stages in ([learned(0)], [learned(5)], [neighbourhood(), learned(5)],
+                       [learned(0), learned(5), learned(8)]):
             model = conformer_rnnt_model_from_config(small_config(stages)).eval()
             frames = torch.randn(2, 35, 8, requires_grad=True)
             output, _ = model.transcribe(frames, torch.tensor([35, 29]))
@@ -187,7 +204,8 @@ class EncoderPlacementTests(unittest.TestCase):
         self.assertEqual(encoder.compression.last_indices[1]["centres"], [[7]])
 
     def test_input_padding_is_not_seen_by_any_stage(self):
-        for stages in ([learned(0)], [learned(5)], [neighbourhood(), learned(5)]):
+        for stages in ([learned(0)], [learned(5)], [neighbourhood(), learned(5)],
+                       [learned(0), learned(5), learned(8)]):
             model = conformer_rnnt_model_from_config(small_config(stages)).eval()
             frames = torch.randn(2, 33, 8)
             lengths = torch.tensor([33, 25])
@@ -268,7 +286,8 @@ class PlacementCheckpointTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             stats = Path(directory)/"stats.json"
             stats.write_text(json.dumps({"mean": [0.]*8, "invstddev": [1.]*8}))
-            for stages in ([learned(0)], [learned(5)], [neighbourhood(), learned(5)]):
+            for stages in ([learned(0)], [learned(5)], [neighbourhood(), learned(5)],
+                           [learned(0), learned(5), learned(8)]):
                 config = small_config(stages)
                 config.update(paths={"dataset_path": directory, "global_stats_path": str(stats)},
                               data={"n_mels": 8, "num_workers": 0, "hop_length": 160})
