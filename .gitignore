@@ -24,6 +24,11 @@ lightning_logs/
 # Downloaded evaluation assets (audio, checkpoints, per-sample results)
 output/local_cpu_*/
 
+# Generated research documents and result summaries stay local.
+/artifacts/research/
+/docs/experiments/
+/docs/research/
+
 # Data (should be managed separately)
 librispeech/
 *.tar.gz
