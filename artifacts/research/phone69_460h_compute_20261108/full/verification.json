@@ -1,0 +1,100 @@
+{
+  "status": "passed",
+  "scope": "major model MACs per second of input audio",
+  "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
+  "independent_lengths_sha256": "6159b8935239aba0bbfacaae78acc7b8460f05f6104d55650975ef52e90cb4e2",
+  "summary_sha256": "e469abb03be34cc0ac2cc527e275efc47a60c8d9916f30bc1df564448ca3d1f6",
+  "checked_model_utterances": 26200,
+  "models": [
+    {
+      "id": "E01",
+      "file_sha256": "7bae630a1858a54454ce6b23003db1b218163c6e5baddfbef79e6b5eed717ad6",
+      "config_sha256": "c781d6b13c3a89ae314562a1b0ea18fda549cf4c771f0fdbd963dc2a18932d83",
+      "checkpoint_sha256": "856b24c15f7450c4334810728f3681596ee43653ac855e73efddd51cbd47fd3b",
+      "rows_verified": 2620,
+      "pilot_rows_identical": 24,
+      "total_major_macs": 4747126391040
+    },
+    {
+      "id": "E02",
+      "file_sha256": "7035559cad6b73e7efc70c38609194413cacead93e278e34dd0bcb2c577794d2",
+      "config_sha256": "733b2b28c723c90328f688b1063c425daa8cf424ca617519997ca6891baa5e0f",
+      "checkpoint_sha256": "c314db27cc84ebc90c128ad84751d7f4c7b6620ffbc6687c9b579a76d5e91317",
+      "rows_verified": 2620,
+      "pilot_rows_identical": 24,
+      "total_major_macs": 9461053866336
+    },
+    {
+      "id": "E03",
+      "file_sha256": "2b300ce50946a6eaae45a134b88db335436833eea5c18b6335a3db36d46fa664",
+      "config_sha256": "696e16cdb7e91d6089d8b1da227ef1e65235f3ba49cc5ccec233737ab7b1e9d2",
+      "checkpoint_sha256": "dd2d95921a78963e99b94a5aac23c8e302580c9896d6fb25ce7d855e7480d04c",
+      "rows_verified": 2620,
+      "pilot_rows_identical": 24,
+      "total_major_macs": 4570001913376
+    },
+    {
+      "id": "E04",
+      "file_sha256": "54e228a997d81b4bdfee8159d4418d4b8425967b4798c8b94a499d96aabed17b",
+      "config_sha256": "752ea4b568f2e61dd839ff378218b623910e4c2f6e7b35bed43314b2dfa909b9",
+      "checkpoint_sha256": "e00b5dd7bf64eb3eafb23c2c6f8a8a11578bef3b90c1c49cf7ca795ab10ef494",
+      "rows_verified": 2620,
+      "pilot_rows_identical": 24,
+      "total_major_macs": 2586798934304
+    },
+    {
+      "id": "E05",
+      "file_sha256": "d57a3a071926a3acefe4eaf855f5a3285c99b5141aace93835a55a16dc83b40f",
+      "config_sha256": "584a45b39917382123fd4116356f77ebc13eb94f1beb0c3652c3fd611b5e01a3",
+      "checkpoint_sha256": "5630172734bcc316161794fe7168045376a6b47c94dc8fe8f30285ed5142e6a0",
+      "rows_verified": 2620,
+      "pilot_rows_identical": 24,
+      "total_major_macs": 7432215105344
+    },
+    {
+      "id": "E06",
+      "file_sha256": "484efee7f1511a1db48e74a2eb79db6585d16f3d92ed4c16bb97a31b26f658bf",
+      "config_sha256": "99742e054c65ff6a2e7b2a0a2a175a697bafda81599e49135c75a0ac5c610c6d",
+      "checkpoint_sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c",
+      "rows_verified": 2620,
+      "pilot_rows_identical": 24,
+      "total_major_macs": 12160127819168
+    },
+    {
+      "id": "E07",
+      "file_sha256": "2f9f6ed278b0afa6d7977408c31ad0a53721a29d936fec054c1c077be967090c",
+      "config_sha256": "8d94308e6d24536f29985588c6f1d7409486d453c451128afea8112edb7d1605",
+      "checkpoint_sha256": "c452301ca02f49a42b544cfdb7db26d893069fcff73adfbe890ed3798c9d165b",
+      "rows_verified": 2620,
+      "pilot_rows_identical": 24,
+      "total_major_macs": 13687140648352
+    },
+    {
+      "id": "E08",
+      "file_sha256": "dc9a64598b8b19686c27378f3eb46290b566dabd21457617e13cfc53d536cc0d",
+      "config_sha256": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
+      "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
+      "rows_verified": 2620,
+      "pilot_rows_identical": 24,
+      "total_major_macs": 10939032468544
+    },
+    {
+      "id": "E09",
+      "file_sha256": "32e164529117f2e88ccb54a2b23b2e077c99f9d36e068e785fbb5b9f1fa27b92",
+      "config_sha256": "773e1ca8b7b335463b2475935cdd235bc1d7ac1e8ed17b9e5c73df7cb8a1ced7",
+      "checkpoint_sha256": "005b39b31850128e7033f670cd58c6732d3dcc6ff738af1d79befc3d1a8c04a3",
+      "rows_verified": 2620,
+      "pilot_rows_identical": 24,
+      "total_major_macs": 18031914695680
+    },
+    {
+      "id": "E10",
+      "file_sha256": "424625ab26112c73fe03dc5e94b939a708e0b8e1db8c38fda2ad2766a270c550",
+      "config_sha256": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4",
+      "checkpoint_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+      "rows_verified": 2620,
+      "pilot_rows_identical": 24,
+      "total_major_macs": 4523039184064
+    }
+  ]
+}

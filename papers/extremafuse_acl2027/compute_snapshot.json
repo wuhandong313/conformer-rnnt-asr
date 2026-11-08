@@ -38,14 +38,13 @@
     "E03",
     "E04",
     "E05",
-    "E06"
-  ],
-  "pending_full_counts": [
+    "E06",
     "E07",
     "E08",
     "E09",
     "E10"
   ],
+  "pending_full_counts": [],
   "models": [
     {
       "id": "E01",
@@ -80,7 +79,8 @@
         "sample_per_quartile": null,
         "torch": "2.8.0",
         "torchaudio": "2.8.0"
-      }
+      },
+      "total_ratio_to_E09": 0.26326246941359444
     },
     {
       "id": "E02",
@@ -115,7 +115,8 @@
         "sample_per_quartile": null,
         "torch": "2.8.0",
         "torchaudio": "2.8.0"
-      }
+      },
+      "total_ratio_to_E09": 0.5246838189958071
     },
     {
       "id": "E03",
@@ -150,7 +151,8 @@
         "sample_per_quartile": null,
         "torch": "2.8.0",
         "torchaudio": "2.8.0"
-      }
+      },
+      "total_ratio_to_E09": 0.25343963691614285
     },
     {
       "id": "E04",
@@ -185,7 +187,8 @@
         "sample_per_quartile": null,
         "torch": "2.8.0",
         "torchaudio": "2.8.0"
-      }
+      },
+      "total_ratio_to_E09": 0.14345669763642643
     },
     {
       "id": "E05",
@@ -220,7 +223,8 @@
         "sample_per_quartile": null,
         "torch": "2.8.0",
         "torchaudio": "2.8.0"
-      }
+      },
+      "total_ratio_to_E09": 0.4121700457647226
     },
     {
       "id": "E06",
@@ -255,7 +259,8 @@
         "sample_per_quartile": null,
         "torch": "2.8.0",
         "torchaudio": "2.8.0"
-      }
+      },
+      "total_ratio_to_E09": 0.6743669779050843
     },
     {
       "id": "E07",
@@ -263,10 +268,35 @@
       "per_percent": 4.8602551012310675,
       "projection": 128,
       "backbone": 128,
-      "count_status": "pending",
-      "encoder_compression_gmac_per_audio_second": null,
-      "predictor_joiner_gmac_per_audio_second": null,
-      "total_gmac_per_audio_second": null
+      "count_status": "complete",
+      "encoder_compression_gmac_per_audio_second": 0.5222799229140473,
+      "predictor_joiner_gmac_per_audio_second": 0.18133936925795036,
+      "total_gmac_per_audio_second": 0.7036192921719977,
+      "total_ratio_to_E09": 0.7590508761463418,
+      "components_macs": {
+        "encoder_weights": 6027097148800,
+        "attention_products": 4072776845568,
+        "projections": 43934576640,
+        "fusion_mlp": 15113949600,
+        "detector_dots": 248911104,
+        "fusion_weighted_sum": 468649600,
+        "predictor": 3078909296640,
+        "joiner": 448591270400
+      },
+      "total_major_macs": 13687140648352,
+      "source": "artifacts/research/phone69_460h_compute_20261108/full/E07.json",
+      "source_sha256": "2f9f6ed278b0afa6d7977408c31ad0a53721a29d936fec054c1c077be967090c",
+      "config_sha256": "8d94308e6d24536f29985588c6f1d7409486d453c451128afea8112edb7d1605",
+      "checkpoint_sha256": "c452301ca02f49a42b544cfdb7db26d893069fcff73adfbe890ed3798c9d165b",
+      "provenance": {
+        "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
+        "counter_sha256": "a8e121caf614f1686f832318738d8a149521a07fd2ff9f8af9f62962dabc3e5d",
+        "index_sha256": "67d5c7848b418cb40229d47d7d3138f619ed00a6ae608650ef48abfe0c9c48bb",
+        "subset": "test-clean",
+        "sample_per_quartile": null,
+        "torch": "2.8.0",
+        "torchaudio": "2.8.0"
+      }
     },
     {
       "id": "E08",
@@ -274,10 +304,35 @@
       "per_percent": 5.4210334192135345,
       "projection": 128,
       "backbone": 128,
-      "count_status": "pending",
-      "encoder_compression_gmac_per_audio_second": null,
-      "predictor_joiner_gmac_per_audio_second": null,
-      "total_gmac_per_audio_second": null
+      "count_status": "complete",
+      "encoder_compression_gmac_per_audio_second": 0.3838753080597401,
+      "predictor_joiner_gmac_per_audio_second": 0.17847109286587454,
+      "total_gmac_per_audio_second": 0.5623464009256146,
+      "total_ratio_to_E09": 0.6066484149442389,
+      "components_macs": {
+        "encoder_weights": 4733802483200,
+        "attention_products": 2675197166080,
+        "projections": 42932432896,
+        "fusion_mlp": 14482716480,
+        "detector_dots": 463117312,
+        "fusion_weighted_sum": 449076480,
+        "predictor": 3036643393536,
+        "joiner": 435062082560
+      },
+      "total_major_macs": 10939032468544,
+      "source": "artifacts/research/phone69_460h_compute_20261108/full/E08.json",
+      "source_sha256": "dc9a64598b8b19686c27378f3eb46290b566dabd21457617e13cfc53d536cc0d",
+      "config_sha256": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
+      "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
+      "provenance": {
+        "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
+        "counter_sha256": "a8e121caf614f1686f832318738d8a149521a07fd2ff9f8af9f62962dabc3e5d",
+        "index_sha256": "67d5c7848b418cb40229d47d7d3138f619ed00a6ae608650ef48abfe0c9c48bb",
+        "subset": "test-clean",
+        "sample_per_quartile": null,
+        "torch": "2.8.0",
+        "torchaudio": "2.8.0"
+      }
     },
     {
       "id": "E09",
@@ -285,10 +340,35 @@
       "per_percent": 5.742687397829894,
       "projection": 128,
       "backbone": 512,
-      "count_status": "pending",
-      "encoder_compression_gmac_per_audio_second": null,
-      "predictor_joiner_gmac_per_audio_second": null,
-      "total_gmac_per_audio_second": null
+      "count_status": "complete",
+      "encoder_compression_gmac_per_audio_second": 0.8020664161454215,
+      "predictor_joiner_gmac_per_audio_second": 0.12490608897074791,
+      "total_gmac_per_audio_second": 0.9269725051161695,
+      "total_ratio_to_E09": 1.0,
+      "components_macs": {
+        "encoder_weights": 14142995471360,
+        "attention_products": 1375311800320,
+        "projections": 83874148352,
+        "fusion_mlp": 0,
+        "detector_dots": 0,
+        "fusion_weighted_sum": 0,
+        "predictor": 2126629306368,
+        "joiner": 303103969280
+      },
+      "total_major_macs": 18031914695680,
+      "source": "artifacts/research/phone69_460h_compute_20261108/full/E09.json",
+      "source_sha256": "32e164529117f2e88ccb54a2b23b2e077c99f9d36e068e785fbb5b9f1fa27b92",
+      "config_sha256": "773e1ca8b7b335463b2475935cdd235bc1d7ac1e8ed17b9e5c73df7cb8a1ced7",
+      "checkpoint_sha256": "005b39b31850128e7033f670cd58c6732d3dcc6ff738af1d79befc3d1a8c04a3",
+      "provenance": {
+        "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
+        "counter_sha256": "a8e121caf614f1686f832318738d8a149521a07fd2ff9f8af9f62962dabc3e5d",
+        "index_sha256": "67d5c7848b418cb40229d47d7d3138f619ed00a6ae608650ef48abfe0c9c48bb",
+        "subset": "test-clean",
+        "sample_per_quartile": null,
+        "torch": "2.8.0",
+        "torchaudio": "2.8.0"
+      }
     },
     {
       "id": "E10",
@@ -296,10 +376,35 @@
       "per_percent": 5.688196674478767,
       "projection": 128,
       "backbone": 128,
-      "count_status": "pending",
-      "encoder_compression_gmac_per_audio_second": null,
-      "predictor_joiner_gmac_per_audio_second": null,
-      "total_gmac_per_audio_second": null
+      "count_status": "complete",
+      "encoder_compression_gmac_per_audio_second": 0.13207142737416297,
+      "predictor_joiner_gmac_per_audio_second": 0.10044591944951493,
+      "total_gmac_per_audio_second": 0.23251734682367792,
+      "total_ratio_to_E09": 0.2508352141410478,
+      "components_macs": {
+        "encoder_weights": 2041762016000,
+        "attention_products": 492434327040,
+        "projections": 17906102272,
+        "fusion_mlp": 16258570560,
+        "detector_dots": 253147680,
+        "fusion_weighted_sum": 502718560,
+        "predictor": 1739018207232,
+        "joiner": 214904094720
+      },
+      "total_major_macs": 4523039184064,
+      "source": "artifacts/research/phone69_460h_compute_20261108/full/E10.json",
+      "source_sha256": "424625ab26112c73fe03dc5e94b939a708e0b8e1db8c38fda2ad2766a270c550",
+      "config_sha256": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4",
+      "checkpoint_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+      "provenance": {
+        "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
+        "counter_sha256": "a8e121caf614f1686f832318738d8a149521a07fd2ff9f8af9f62962dabc3e5d",
+        "index_sha256": "67d5c7848b418cb40229d47d7d3138f619ed00a6ae608650ef48abfe0c9c48bb",
+        "subset": "test-clean",
+        "sample_per_quartile": null,
+        "torch": "2.8.0",
+        "torchaudio": "2.8.0"
+      }
     }
   ],
   "paired_per_differences": [
@@ -349,5 +454,7 @@
     "speakers": 40,
     "draws": 10000,
     "seed": 42
-  }
+  },
+  "full_verification_source": "artifacts/research/phone69_460h_compute_20261108/full/verification.json",
+  "full_verification_sha256": "ecac4ae6a88405e2ec9671d070ed6205b4198341b8b1bb11aca51f171e628c10"
 }

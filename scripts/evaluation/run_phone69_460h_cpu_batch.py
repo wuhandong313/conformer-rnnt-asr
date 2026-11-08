@@ -79,11 +79,20 @@ def worker_environment(out, runtime):
 
 
 def code_fingerprints(source):
+    """Fingerprint the files in the specified source tree, including its runner."""
     files = sorted((source / "conformer_rnnt").rglob("*.py"))
     files.extend(source / name for name in ("common.py", "phone69_tokenizer.py"))
     # Historical snapshots keep their frozen dependencies for reproducibility.
     files.extend(source.glob("ipa_*.py"))
-    result = {str(file.relative_to(source)): sha(file) for file in files}
+    snapshot_runner = source / Path(__file__).resolve().relative_to(ROOT)
+    if snapshot_runner.is_file():
+        files.append(snapshot_runner)
+    return {str(file.relative_to(source)): sha(file) for file in files}
+
+
+def execution_fingerprints(source):
+    """The timing job executes this runner with model code from source."""
+    result = code_fingerprints(source)
     runner = Path(__file__).resolve()
     result[str(runner.relative_to(ROOT))] = sha(runner)
     return result
@@ -141,7 +150,7 @@ def prepare(out):
     manifest = dict(schema=1, primary_baseline=BASELINE, models=entries,
                     ledger_sha256=sha(LEDGER), audio=audio,
                     chapter_labels={f.name:sha(f) for f in sorted(dataset.glob("*/*/*-ph.trans.txt"))},
-                    code_sha256=code_fingerprints(source),
+                    code_sha256=execution_fingerprints(source),
                     protocol=dict(device="cpu", threads=CPU_THREADS, interop_threads=INTEROP_THREADS, data_workers=0,
                                   openmp_max_active_levels=1,
                                   batch=1, beam=20, dtype="float32", warmup_utterances=WARMUP,
@@ -175,7 +184,7 @@ def package_version(name):
 def worker(out, name, attempt):
     manifest = json.loads(read(out / "manifest.json"))
     source = out / "model_source" if manifest["runtime"]["model_source"] == "snapshot" else ROOT
-    if code_fingerprints(source) != manifest["code_sha256"]:
+    if execution_fingerprints(source) != manifest["code_sha256"]:
         raise ValueError(f"{name}: benchmark sources differ from the recorded manifest")
     sys.path.insert(0, str(source))
     import torch

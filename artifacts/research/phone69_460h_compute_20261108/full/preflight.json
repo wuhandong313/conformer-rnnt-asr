@@ -1,0 +1,262 @@
+{
+  "scope": "Correctness review before the formal full-corpus decode; major inference MACs only.",
+  "counter_sha256": "a8e121caf614f1686f832318738d8a149521a07fd2ff9f8af9f62962dabc3e5d",
+  "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
+  "archived_checksum_entries_verified": 95,
+  "checkpoints_hash_verified": 10,
+  "corpus_audio_hashes_and_headers_verified": 2620,
+  "smoke": {
+    "models": 10,
+    "matched_predictions": 40,
+    "independent_formula_rows": 280
+  },
+  "software_tests": {
+    "passed": 99,
+    "failed": 0
+  },
+  "dispatch_audit": {
+    "method": "A separate TorchDispatchMode intercepted actual matrix products, convolution and attention ops; compression-region elementwise tensor products were counted directly. Compared with the module hooks on the same recorded utterances.",
+    "matched_model_utterance_cases": 13,
+    "cases": {
+      "E01/2217": {
+        "dispatched_macs": {
+          "projection": 2408448,
+          "layers": 221276160,
+          "predictor": 259817472,
+          "joiner": 35499520
+        },
+        "elementwise_fusion": {},
+        "operators": {
+          "aten::mm": 231522304,
+          "aten::addmm": 249703936,
+          "aten::_scaled_dot_product_flash_attention_for_cpu": 8028160,
+          "aten::convolution": 29747200
+        }
+      },
+      "E02/2217": {
+        "dispatched_macs": {
+          "projection": 5505024,
+          "layers": 514504704,
+          "fusion": 2022720,
+          "predictor": 317915136,
+          "joiner": 54082560
+        },
+        "elementwise_fusion": {
+          "detector_dots": 28544,
+          "fusion_weighted_sum": 62720
+        },
+        "operators": {
+          "aten::mm": 284884992,
+          "aten::addmm": 498342208,
+          "aten::_scaled_dot_product_flash_attention_for_cpu": 45359104,
+          "aten::convolution": 65443840
+        }
+      },
+      "E02/171": {
+        "dispatched_macs": {
+          "projection": 28958720,
+          "layers": 3749548032,
+          "fusion": 10216800,
+          "predictor": 2209185792,
+          "joiner": 311288320
+        },
+        "elementwise_fusion": {
+          "detector_dots": 159104,
+          "fusion_weighted_sum": 316800
+        },
+        "operators": {
+          "aten::mm": 1976459264,
+          "aten::addmm": 2696071008,
+          "aten::_scaled_dot_product_flash_attention_for_cpu": 1294149632,
+          "aten::convolution": 342517760
+        }
+      },
+      "E03/2217": {
+        "dispatched_macs": {
+          "projection": 2686976,
+          "layers": 239426560,
+          "fusion": 970080,
+          "predictor": 253034496,
+          "joiner": 31861760
+        },
+        "elementwise_fusion": {
+          "detector_dots": 14208,
+          "fusion_weighted_sum": 30080
+        },
+        "operators": {
+          "aten::mm": 226066432,
+          "aten::addmm": 259094880,
+          "aten::_scaled_dot_product_flash_attention_for_cpu": 10946560,
+          "aten::convolution": 31872000
+        }
+      },
+      "E04/2217": {
+        "dispatched_macs": {
+          "projection": 1294336,
+          "layers": 112267264,
+          "fusion": 454080,
+          "predictor": 150405120,
+          "joiner": 16665600
+        },
+        "elementwise_fusion": {
+          "detector_dots": 7040,
+          "fusion_weighted_sum": 14080
+        },
+        "operators": {
+          "aten::mm": 134266880,
+          "aten::addmm": 128924096,
+          "aten::_scaled_dot_product_flash_attention_for_cpu": 2596864,
+          "aten::convolution": 15298560
+        }
+      },
+      "E05/2217": {
+        "dispatched_macs": {
+          "fusion": 1166400,
+          "projection": 3870720,
+          "layers": 363456000,
+          "predictor": 303759360,
+          "joiner": 50355200
+        },
+        "elementwise_fusion": {
+          "detector_dots": 17840,
+          "fusion_weighted_sum": 36000
+        },
+        "operators": {
+          "aten::addmm": 383133760,
+          "aten::mm": 270929920,
+          "aten::_scaled_dot_product_flash_attention_for_cpu": 20736000,
+          "aten::convolution": 47808000
+        }
+      },
+      "E06/2217": {
+        "dispatched_macs": {
+          "projection": 5210112,
+          "layers": 670316160,
+          "fusion": 1836960,
+          "predictor": 398426112,
+          "joiner": 55749120
+        },
+        "elementwise_fusion": {
+          "detector_dots": 28544,
+          "fusion_weighted_sum": 56960
+        },
+        "operators": {
+          "aten::mm": 356450304,
+          "aten::addmm": 617591200,
+          "aten::_scaled_dot_product_flash_attention_for_cpu": 74364160,
+          "aten::convolution": 83132800
+        }
+      },
+      "E06/171": {
+        "dispatched_macs": {
+          "projection": 28991488,
+          "layers": 5608706560,
+          "fusion": 10237440,
+          "predictor": 2307981312,
+          "joiner": 317649920
+        },
+        "elementwise_fusion": {
+          "detector_dots": 159104,
+          "fusion_weighted_sum": 317440
+        },
+        "operators": {
+          "aten::mm": 2064277504,
+          "aten::addmm": 3451398656,
+          "aten::_scaled_dot_product_flash_attention_for_cpu": 2295746560,
+          "aten::convolution": 462144000
+        }
+      },
+      "E07/2217": {
+        "dispatched_macs": {
+          "projection": 5177344,
+          "layers": 793488384,
+          "fusion": 1816320,
+          "predictor": 328237056,
+          "joiner": 51125760
+        },
+        "elementwise_fusion": {
+          "detector_dots": 28544,
+          "fusion_weighted_sum": 56320
+        },
+        "operators": {
+          "aten::mm": 294060032,
+          "aten::addmm": 692606208,
+          "aten::_scaled_dot_product_flash_attention_for_cpu": 95862784,
+          "aten::convolution": 97315840
+        }
+      },
+      "E08/2217": {
+        "dispatched_macs": {
+          "projection": 4947968,
+          "layers": 619560960,
+          "fusion": 1671840,
+          "predictor": 417890304,
+          "joiner": 54064640
+        },
+        "elementwise_fusion": {
+          "detector_dots": 54144,
+          "fusion_weighted_sum": 51840
+        },
+        "operators": {
+          "aten::mm": 373751808,
+          "aten::addmm": 581925024,
+          "aten::_scaled_dot_product_flash_attention_for_cpu": 65116160,
+          "aten::convolution": 77342720
+        }
+      },
+      "E09/2217": {
+        "dispatched_macs": {
+          "projection": 9633792,
+          "layers": 1655808000,
+          "predictor": 255688704,
+          "joiner": 35248640
+        },
+        "elementwise_fusion": {},
+        "operators": {
+          "aten::mm": 229572608,
+          "aten::addmm": 1245403648,
+          "aten::_scaled_dot_product_flash_attention_for_cpu": 32112640,
+          "aten::convolution": 449290240
+        }
+      },
+      "E10/2217": {
+        "dispatched_macs": {
+          "fusion": 1888800,
+          "projection": 2068480,
+          "layers": 249936000,
+          "predictor": 237109248,
+          "joiner": 26593280
+        },
+        "elementwise_fusion": {
+          "detector_dots": 29232,
+          "fusion_weighted_sum": 58400
+        },
+        "operators": {
+          "aten::addmm": 260774432,
+          "aten::mm": 211685376,
+          "aten::_scaled_dot_product_flash_attention_for_cpu": 11936000,
+          "aten::convolution": 33200000
+        }
+      },
+      "E10/171": {
+        "dispatched_macs": {
+          "fusion": 10440000,
+          "projection": 11458560,
+          "layers": 1676064000,
+          "predictor": 1220050944,
+          "joiner": 143664640
+        },
+        "elementwise_fusion": {
+          "detector_dots": 162672,
+          "fusion_weighted_sum": 322800
+        },
+        "operators": {
+          "aten::addmm": 1426551616,
+          "aten::mm": 1089558528,
+          "aten::_scaled_dot_product_flash_attention_for_cpu": 362304000,
+          "aten::convolution": 183264000
+        }
+      }
+    }
+  }
+}

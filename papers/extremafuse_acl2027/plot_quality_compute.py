@@ -29,18 +29,21 @@ def main() -> None:
     fig.subplots_adjust(left=0.065, right=0.985, bottom=0.19, top=0.86, wspace=0.42)
 
     left.axhline(baseline_per, color="#777777", lw=1, ls="--", zorder=0)
-    left.text(0.98, baseline_per + 0.07, "E09 PER", ha="right", va="bottom",
+    left.text(0.04, baseline_per + 0.07, "E09 PER", ha="left", va="bottom",
               transform=left.get_yaxis_transform(), color="#666666", fontsize=10)
     colors = {"E01": "#596a80", "E02": "#247c84", "E03": "#247c84",
-              "E04": "#247c84", "E05": "#b97a21", "E06": "#8d4273"}
+              "E04": "#247c84", "E05": "#b97a21", "E06": "#8d4273",
+              "E09": "#293c51", "E10": "#087969"}
     for model in complete:
         x = model["total_gmac_per_audio_second"]
         y = model["per_percent"]
-        left.scatter(x, y, s=55, color=colors.get(model["id"], "#247c84"), zorder=3)
-        left.annotate(model["id"], (x, y), xytext=(7, 6),
+        marker = {"E09": "s", "E10": "D"}.get(model["id"], "o")
+        left.scatter(x, y, s=55, marker=marker, color=colors.get(model["id"], "#247c84"), zorder=3)
+        offset = (5, -13) if model["id"] == "E10" else (5, 6)
+        left.annotate(model["id"], (x, y), xytext=offset,
                       textcoords="offset points", fontsize=10)
     left.set(xlabel="Major GMAC / input-audio second", ylabel="Phone error rate (%)",
-             title="(a) Completed full-corpus counts", xlim=(0.09, 0.69), ylim=(4.45, 8.0))
+             title="(a) Full-corpus counts including decoder", xlim=(0.07, 1.02), ylim=(4.45, 8.0))
     left.grid(alpha=0.17)
 
     comparisons = snapshot["paired_per_differences"]

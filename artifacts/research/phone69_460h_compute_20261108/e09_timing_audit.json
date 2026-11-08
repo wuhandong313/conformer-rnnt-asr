@@ -1,0 +1,795 @@
+{
+  "scope": "Diagnostic of the prior E09 timing change, separate from the authoritative full-batch RTF and from the new MAC pilot.",
+  "sources": [
+    {
+      "path": "artifacts/evaluations/phone69_460h_dim512_local_cpu_20261104/full/dim512.csv",
+      "sha256": "64d60ee1399d304202409633495f926fbbe770c3de8fe999e2337c9a61ee428f"
+    },
+    {
+      "path": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E09/attempt_01/utterances.csv",
+      "sha256": "ddb61d71075f1b9a00ebee4c335bf9920e32a65c6532c51b865a52eeab8524f8"
+    },
+    {
+      "path": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/manifest.json",
+      "sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb"
+    }
+  ],
+  "full_corpus": {
+    "utterances": 2620,
+    "audio_seconds": 19452.480625,
+    "old_model_seconds_reconstructed": 1318.0696056810018,
+    "new_model_seconds": 772.498231216,
+    "old_mean_utterance_mel_rtf": 0.07211698728705879,
+    "new_mean_utterance_mel_rtf": 0.04299666252751939,
+    "old_corpus_rtf": 0.06775843302920662,
+    "new_corpus_rtf": 0.0397120678903645,
+    "new_faster_utterances": 2620,
+    "changed_transcripts": 0
+  },
+  "runtime_probe": {
+    "protocol": "E09, same cached input tensors, checkpoint and frozen model source, batch 1 beam 20 CPU FP32, four compute/BLAS threads and one inter-op thread, ten warm-up utterances per fresh process. Among the other test-clean utterances take six per audio-duration quartile at random, seed 42. Sequential A/B/B/A. Each round's time includes only model(batch). No dedicated CPU reservation; this is a small version-environment diagnostic, not an official timing run.",
+    "common_inputs_sha256": "0ea4b3f3c2da07a23b55a934191d6ab494ad64d800f8d1382e75dc9e5a487914",
+    "rounds": [
+      {
+        "round": "A1",
+        "torch": "2.10.0",
+        "pools": [
+          [
+            "openmp",
+            4,
+            "/opt/anaconda3/envs/emformer/lib/libomp.dylib"
+          ],
+          [
+            "openblas",
+            4,
+            "/opt/anaconda3/envs/emformer/lib/libopenblas.0.dylib"
+          ]
+        ],
+        "audio": 174.65,
+        "rtf": 0.0602168694531921,
+        "cpu_rtf": 0.0633050959060979,
+        "same": 24,
+        "rows": [
+          {
+            "i": 2010,
+            "duration": 12.015,
+            "wall": 0.544325375,
+            "cpu": 0.596561,
+            "hyp_equal": true
+          },
+          {
+            "i": 2087,
+            "duration": 8.5,
+            "wall": 0.375189709,
+            "cpu": 0.4104,
+            "hyp_equal": true
+          },
+          {
+            "i": 1860,
+            "duration": 11.695,
+            "wall": 0.640284667,
+            "cpu": 0.693121,
+            "hyp_equal": true
+          },
+          {
+            "i": 860,
+            "duration": 5.415,
+            "wall": 0.315572542,
+            "cpu": 0.340578,
+            "hyp_equal": true
+          },
+          {
+            "i": 1577,
+            "duration": 6.865,
+            "wall": 0.404736084,
+            "cpu": 0.431059,
+            "hyp_equal": true
+          },
+          {
+            "i": 1195,
+            "duration": 2.72,
+            "wall": 0.204290542,
+            "cpu": 0.220541,
+            "hyp_equal": true
+          },
+          {
+            "i": 1974,
+            "duration": 5.56,
+            "wall": 0.311746833,
+            "cpu": 0.338453,
+            "hyp_equal": true
+          },
+          {
+            "i": 2322,
+            "duration": 15.19,
+            "wall": 0.78432775,
+            "cpu": 0.849556,
+            "hyp_equal": true
+          },
+          {
+            "i": 1246,
+            "duration": 9.215,
+            "wall": 0.413564458,
+            "cpu": 0.450679,
+            "hyp_equal": true
+          },
+          {
+            "i": 1638,
+            "duration": 3.97,
+            "wall": 0.252718291,
+            "cpu": 0.272673,
+            "hyp_equal": true
+          },
+          {
+            "i": 2423,
+            "duration": 3.755,
+            "wall": 0.255192583,
+            "cpu": 0.273806,
+            "hyp_equal": true
+          },
+          {
+            "i": 1164,
+            "duration": 1.95,
+            "wall": 0.178055416,
+            "cpu": 0.1901,
+            "hyp_equal": true
+          },
+          {
+            "i": 2244,
+            "duration": 20.355,
+            "wall": 1.024391292,
+            "cpu": 1.114525,
+            "hyp_equal": true
+          },
+          {
+            "i": 455,
+            "duration": 5.9,
+            "wall": 0.451862625,
+            "cpu": 0.465314,
+            "hyp_equal": true
+          },
+          {
+            "i": 1879,
+            "duration": 2.665,
+            "wall": 0.283939041,
+            "cpu": 0.292228,
+            "hyp_equal": true
+          },
+          {
+            "i": 1620,
+            "duration": 2.615,
+            "wall": 0.319599333,
+            "cpu": 0.279578,
+            "hyp_equal": true
+          },
+          {
+            "i": 2279,
+            "duration": 19.945,
+            "wall": 1.218425542,
+            "cpu": 1.225031,
+            "hyp_equal": true
+          },
+          {
+            "i": 420,
+            "duration": 4.995,
+            "wall": 0.408262,
+            "cpu": 0.392657,
+            "hyp_equal": true
+          },
+          {
+            "i": 1243,
+            "duration": 6.2,
+            "wall": 0.435180167,
+            "cpu": 0.429451,
+            "hyp_equal": true
+          },
+          {
+            "i": 2466,
+            "duration": 2.34,
+            "wall": 0.265377625,
+            "cpu": 0.27054,
+            "hyp_equal": true
+          },
+          {
+            "i": 2217,
+            "duration": 2.235,
+            "wall": 0.208195959,
+            "cpu": 0.218499,
+            "hyp_equal": true
+          },
+          {
+            "i": 821,
+            "duration": 3.935,
+            "wall": 0.289413291,
+            "cpu": 0.300334,
+            "hyp_equal": true
+          },
+          {
+            "i": 1924,
+            "duration": 9.82,
+            "wall": 0.540993208,
+            "cpu": 0.577445,
+            "hyp_equal": true
+          },
+          {
+            "i": 396,
+            "duration": 6.795,
+            "wall": 0.391231917,
+            "cpu": 0.423106,
+            "hyp_equal": true
+          }
+        ]
+      },
+      {
+        "round": "B1",
+        "torch": "2.8.0",
+        "pools": [
+          [
+            "openmp",
+            4,
+            "/opt/anaconda3/envs/aligner/lib/libomp.dylib"
+          ],
+          [
+            "openblas",
+            4,
+            "/opt/anaconda3/envs/aligner/lib/libopenblas.0.dylib"
+          ]
+        ],
+        "audio": 174.65,
+        "rtf": 0.05700146722588033,
+        "cpu_rtf": 0.06128221013455482,
+        "same": 24,
+        "rows": [
+          {
+            "i": 2010,
+            "duration": 12.015,
+            "wall": 0.532226333,
+            "cpu": 0.583484,
+            "hyp_equal": true
+          },
+          {
+            "i": 2087,
+            "duration": 8.5,
+            "wall": 0.401456708,
+            "cpu": 0.43478,
+            "hyp_equal": true
+          },
+          {
+            "i": 1860,
+            "duration": 11.695,
+            "wall": 0.611634542,
+            "cpu": 0.664757,
+            "hyp_equal": true
+          },
+          {
+            "i": 860,
+            "duration": 5.415,
+            "wall": 0.351203625,
+            "cpu": 0.371583,
+            "hyp_equal": true
+          },
+          {
+            "i": 1577,
+            "duration": 6.865,
+            "wall": 0.359543209,
+            "cpu": 0.390018,
+            "hyp_equal": true
+          },
+          {
+            "i": 1195,
+            "duration": 2.72,
+            "wall": 0.195980083,
+            "cpu": 0.215598,
+            "hyp_equal": true
+          },
+          {
+            "i": 1974,
+            "duration": 5.56,
+            "wall": 0.36188675,
+            "cpu": 0.381698,
+            "hyp_equal": true
+          },
+          {
+            "i": 2322,
+            "duration": 15.19,
+            "wall": 0.936314875,
+            "cpu": 0.991449,
+            "hyp_equal": true
+          },
+          {
+            "i": 1246,
+            "duration": 9.215,
+            "wall": 0.382917083,
+            "cpu": 0.422607,
+            "hyp_equal": true
+          },
+          {
+            "i": 1638,
+            "duration": 3.97,
+            "wall": 0.234126,
+            "cpu": 0.253574,
+            "hyp_equal": true
+          },
+          {
+            "i": 2423,
+            "duration": 3.755,
+            "wall": 0.231654042,
+            "cpu": 0.250226,
+            "hyp_equal": true
+          },
+          {
+            "i": 1164,
+            "duration": 1.95,
+            "wall": 0.159161916,
+            "cpu": 0.174233,
+            "hyp_equal": true
+          },
+          {
+            "i": 2244,
+            "duration": 20.355,
+            "wall": 1.048016625,
+            "cpu": 1.132495,
+            "hyp_equal": true
+          },
+          {
+            "i": 455,
+            "duration": 5.9,
+            "wall": 0.402091417,
+            "cpu": 0.424217,
+            "hyp_equal": true
+          },
+          {
+            "i": 1879,
+            "duration": 2.665,
+            "wall": 0.226940334,
+            "cpu": 0.241872,
+            "hyp_equal": true
+          },
+          {
+            "i": 1620,
+            "duration": 2.615,
+            "wall": 0.208536709,
+            "cpu": 0.225899,
+            "hyp_equal": true
+          },
+          {
+            "i": 2279,
+            "duration": 19.945,
+            "wall": 1.159713792,
+            "cpu": 1.248132,
+            "hyp_equal": true
+          },
+          {
+            "i": 420,
+            "duration": 4.995,
+            "wall": 0.249488125,
+            "cpu": 0.272081,
+            "hyp_equal": true
+          },
+          {
+            "i": 1243,
+            "duration": 6.2,
+            "wall": 0.336660458,
+            "cpu": 0.356359,
+            "hyp_equal": true
+          },
+          {
+            "i": 2466,
+            "duration": 2.34,
+            "wall": 0.216639125,
+            "cpu": 0.228279,
+            "hyp_equal": true
+          },
+          {
+            "i": 2217,
+            "duration": 2.235,
+            "wall": 0.1791115,
+            "cpu": 0.192709,
+            "hyp_equal": true
+          },
+          {
+            "i": 821,
+            "duration": 3.935,
+            "wall": 0.255463,
+            "cpu": 0.274592,
+            "hyp_equal": true
+          },
+          {
+            "i": 1924,
+            "duration": 9.82,
+            "wall": 0.534657625,
+            "cpu": 0.572196,
+            "hyp_equal": true
+          },
+          {
+            "i": 396,
+            "duration": 6.795,
+            "wall": 0.379882375,
+            "cpu": 0.4001,
+            "hyp_equal": true
+          }
+        ]
+      },
+      {
+        "round": "B2",
+        "torch": "2.8.0",
+        "pools": [
+          [
+            "openmp",
+            4,
+            "/opt/anaconda3/envs/aligner/lib/libomp.dylib"
+          ],
+          [
+            "openblas",
+            4,
+            "/opt/anaconda3/envs/aligner/lib/libopenblas.0.dylib"
+          ]
+        ],
+        "audio": 174.65,
+        "rtf": 0.050470199685084455,
+        "cpu_rtf": 0.05511264815344976,
+        "same": 24,
+        "rows": [
+          {
+            "i": 2010,
+            "duration": 12.015,
+            "wall": 0.510014625,
+            "cpu": 0.564261,
+            "hyp_equal": true
+          },
+          {
+            "i": 2087,
+            "duration": 8.5,
+            "wall": 0.377523667,
+            "cpu": 0.414607,
+            "hyp_equal": true
+          },
+          {
+            "i": 1860,
+            "duration": 11.695,
+            "wall": 0.559616709,
+            "cpu": 0.611975,
+            "hyp_equal": true
+          },
+          {
+            "i": 860,
+            "duration": 5.415,
+            "wall": 0.267952083,
+            "cpu": 0.292583,
+            "hyp_equal": true
+          },
+          {
+            "i": 1577,
+            "duration": 6.865,
+            "wall": 0.327223416,
+            "cpu": 0.356874,
+            "hyp_equal": true
+          },
+          {
+            "i": 1195,
+            "duration": 2.72,
+            "wall": 0.179448083,
+            "cpu": 0.195449,
+            "hyp_equal": true
+          },
+          {
+            "i": 1974,
+            "duration": 5.56,
+            "wall": 0.34060275,
+            "cpu": 0.358049,
+            "hyp_equal": true
+          },
+          {
+            "i": 2322,
+            "duration": 15.19,
+            "wall": 0.786118875,
+            "cpu": 0.85126,
+            "hyp_equal": true
+          },
+          {
+            "i": 1246,
+            "duration": 9.215,
+            "wall": 0.382913417,
+            "cpu": 0.42171,
+            "hyp_equal": true
+          },
+          {
+            "i": 1638,
+            "duration": 3.97,
+            "wall": 0.235172458,
+            "cpu": 0.255286,
+            "hyp_equal": true
+          },
+          {
+            "i": 2423,
+            "duration": 3.755,
+            "wall": 0.225375292,
+            "cpu": 0.24411,
+            "hyp_equal": true
+          },
+          {
+            "i": 1164,
+            "duration": 1.95,
+            "wall": 0.161976584,
+            "cpu": 0.175275,
+            "hyp_equal": true
+          },
+          {
+            "i": 2244,
+            "duration": 20.355,
+            "wall": 0.964438542,
+            "cpu": 1.060994,
+            "hyp_equal": true
+          },
+          {
+            "i": 455,
+            "duration": 5.9,
+            "wall": 0.309909083,
+            "cpu": 0.338085,
+            "hyp_equal": true
+          },
+          {
+            "i": 1879,
+            "duration": 2.665,
+            "wall": 0.193096125,
+            "cpu": 0.210088,
+            "hyp_equal": true
+          },
+          {
+            "i": 1620,
+            "duration": 2.615,
+            "wall": 0.186545834,
+            "cpu": 0.203185,
+            "hyp_equal": true
+          },
+          {
+            "i": 2279,
+            "duration": 19.945,
+            "wall": 0.927046541,
+            "cpu": 1.020464,
+            "hyp_equal": true
+          },
+          {
+            "i": 420,
+            "duration": 4.995,
+            "wall": 0.246646333,
+            "cpu": 0.268908,
+            "hyp_equal": true
+          },
+          {
+            "i": 1243,
+            "duration": 6.2,
+            "wall": 0.28681175,
+            "cpu": 0.314641,
+            "hyp_equal": true
+          },
+          {
+            "i": 2466,
+            "duration": 2.34,
+            "wall": 0.181288125,
+            "cpu": 0.195125,
+            "hyp_equal": true
+          },
+          {
+            "i": 2217,
+            "duration": 2.235,
+            "wall": 0.1559605,
+            "cpu": 0.168994,
+            "hyp_equal": true
+          },
+          {
+            "i": 821,
+            "duration": 3.935,
+            "wall": 0.221961125,
+            "cpu": 0.243282,
+            "hyp_equal": true
+          },
+          {
+            "i": 1924,
+            "duration": 9.82,
+            "wall": 0.468090042,
+            "cpu": 0.510945,
+            "hyp_equal": true
+          },
+          {
+            "i": 396,
+            "duration": 6.795,
+            "wall": 0.318888416,
+            "cpu": 0.349274,
+            "hyp_equal": true
+          }
+        ]
+      },
+      {
+        "round": "A2",
+        "torch": "2.10.0",
+        "pools": [
+          [
+            "openmp",
+            4,
+            "/opt/anaconda3/envs/emformer/lib/libomp.dylib"
+          ],
+          [
+            "openblas",
+            4,
+            "/opt/anaconda3/envs/emformer/lib/libopenblas.0.dylib"
+          ]
+        ],
+        "audio": 174.65,
+        "rtf": 0.04987158842828513,
+        "cpu_rtf": 0.05431701116518751,
+        "same": 24,
+        "rows": [
+          {
+            "i": 2010,
+            "duration": 12.015,
+            "wall": 0.535149667,
+            "cpu": 0.583877,
+            "hyp_equal": true
+          },
+          {
+            "i": 2087,
+            "duration": 8.5,
+            "wall": 0.347821583,
+            "cpu": 0.382593,
+            "hyp_equal": true
+          },
+          {
+            "i": 1860,
+            "duration": 11.695,
+            "wall": 0.525477083,
+            "cpu": 0.578533,
+            "hyp_equal": true
+          },
+          {
+            "i": 860,
+            "duration": 5.415,
+            "wall": 0.267707167,
+            "cpu": 0.292387,
+            "hyp_equal": true
+          },
+          {
+            "i": 1577,
+            "duration": 6.865,
+            "wall": 0.325971833,
+            "cpu": 0.355388,
+            "hyp_equal": true
+          },
+          {
+            "i": 1195,
+            "duration": 2.72,
+            "wall": 0.179282708,
+            "cpu": 0.195636,
+            "hyp_equal": true
+          },
+          {
+            "i": 1974,
+            "duration": 5.56,
+            "wall": 0.281663542,
+            "cpu": 0.307045,
+            "hyp_equal": true
+          },
+          {
+            "i": 2322,
+            "duration": 15.19,
+            "wall": 0.734482875,
+            "cpu": 0.803964,
+            "hyp_equal": true
+          },
+          {
+            "i": 1246,
+            "duration": 9.215,
+            "wall": 0.391572,
+            "cpu": 0.427515,
+            "hyp_equal": true
+          },
+          {
+            "i": 1638,
+            "duration": 3.97,
+            "wall": 0.239629584,
+            "cpu": 0.258,
+            "hyp_equal": true
+          },
+          {
+            "i": 2423,
+            "duration": 3.755,
+            "wall": 0.230881917,
+            "cpu": 0.248176,
+            "hyp_equal": true
+          },
+          {
+            "i": 1164,
+            "duration": 1.95,
+            "wall": 0.164648292,
+            "cpu": 0.178045,
+            "hyp_equal": true
+          },
+          {
+            "i": 2244,
+            "duration": 20.355,
+            "wall": 0.996022084,
+            "cpu": 1.087997,
+            "hyp_equal": true
+          },
+          {
+            "i": 455,
+            "duration": 5.9,
+            "wall": 0.292562334,
+            "cpu": 0.318332,
+            "hyp_equal": true
+          },
+          {
+            "i": 1879,
+            "duration": 2.665,
+            "wall": 0.189876625,
+            "cpu": 0.205979,
+            "hyp_equal": true
+          },
+          {
+            "i": 1620,
+            "duration": 2.615,
+            "wall": 0.189049166,
+            "cpu": 0.203809,
+            "hyp_equal": true
+          },
+          {
+            "i": 2279,
+            "duration": 19.945,
+            "wall": 0.89374475,
+            "cpu": 0.980937,
+            "hyp_equal": true
+          },
+          {
+            "i": 420,
+            "duration": 4.995,
+            "wall": 0.233713,
+            "cpu": 0.254609,
+            "hyp_equal": true
+          },
+          {
+            "i": 1243,
+            "duration": 6.2,
+            "wall": 0.2828395,
+            "cpu": 0.309093,
+            "hyp_equal": true
+          },
+          {
+            "i": 2466,
+            "duration": 2.34,
+            "wall": 0.178733542,
+            "cpu": 0.191461,
+            "hyp_equal": true
+          },
+          {
+            "i": 2217,
+            "duration": 2.235,
+            "wall": 0.158347375,
+            "cpu": 0.170651,
+            "hyp_equal": true
+          },
+          {
+            "i": 821,
+            "duration": 3.935,
+            "wall": 0.2323475,
+            "cpu": 0.250752,
+            "hyp_equal": true
+          },
+          {
+            "i": 1924,
+            "duration": 9.82,
+            "wall": 0.523722084,
+            "cpu": 0.557511,
+            "hyp_equal": true
+          },
+          {
+            "i": 396,
+            "duration": 6.795,
+            "wall": 0.314826708,
+            "cpu": 0.344176,
+            "hyp_equal": true
+          }
+        ]
+      }
+    ]
+  }
+}
