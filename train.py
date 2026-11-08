@@ -5,7 +5,7 @@ All configuration comes from a single YAML file. No other arguments.
 
 Usage::
 
-    python train.py configs/default.yaml
+    python train.py configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml
 """
 
 from __future__ import annotations

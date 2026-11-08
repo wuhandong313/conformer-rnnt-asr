@@ -59,7 +59,7 @@ def batched_natural_cosine_fusion(
 
     A single batch-level scalar synchronization is used to allocate only the
     observed maximum retained length. It is not a retention budget or quota.
-    Both five_frames and nine_frames share the original predictor parameters.
+    The five-frame mixer retains its original predictor parameters.
     Optional temporal feature smoothing precedes cosine computation only;
     predictor inputs and fusion windows always use original features.
     """
@@ -73,9 +73,9 @@ def batched_natural_cosine_fusion(
         if torch.any(lengths != 0):
             raise ValueError('Sequence length exceeds available frames')
         return input, lengths.new_zeros((batch,)), torch.zeros((batch,0),device=input.device,dtype=torch.bool)
-    if mixer.weight_predictor_mode not in ('five_frames', 'nine_frames'):
-        raise ValueError('Batched cosine fusion requires five_frames or nine_frames')
-    window = 5 if mixer.weight_predictor_mode == 'five_frames' else 9
+    if mixer.weight_predictor_mode != 'five_frames':
+        raise ValueError('Batched cosine fusion requires five_frames')
+    window = 5
     if mixer.window_size != window:
         raise ValueError('Batched cosine fusion requires matching predictor and fusion windows')
     # Length checks run on CPU once for consistent error behavior and are

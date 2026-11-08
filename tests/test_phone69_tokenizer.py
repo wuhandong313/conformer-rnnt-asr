@@ -4,8 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from ipa_tokenizer import encode_transcript
-from phone69_tokenizer import CONSONANTS, PHONE69, VOWELS, FixedPhone69Tokenizer
+from phone69_tokenizer import CONSONANTS, PHONE69, VOWELS, FixedPhone69Tokenizer, encode_transcript
 
 
 class Phone69TokenizerTests(unittest.TestCase):

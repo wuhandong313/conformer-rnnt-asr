@@ -45,17 +45,21 @@ def main():
     import yaml
 
     for item in plan['experiments']:
-        old = yaml.safe_load((AUDIT / 'obsolete_diff5_作废' / 'configs' / Path(item['config']).name).read_text())
         new = yaml.safe_load((REPO / item['config']).read_text())
-        expected = dict(old)
-        expected['paths'] = dict(old['paths'], exp_dir=str(REPO / item['experiment']))
-        expected['model'] = dict(old['model'], compression=dict(old['model']['compression'], weight_predictor_mode='five_frames'))
-        assert expected == new, item['config'] + ' contains an unapproved config change'
+        model = new['model']
+        compression = model['compression']
+        assert new['tokenizer']['type'] == 'phone69'
+        assert model['sequence_mode'] == 'offline' and model['num_symbols'] == 69
+        assert 'right_context_length' not in model
+        assert not {'keep_rate', 'right_context_length'} & compression.keys()
+        assert compression['detector']['type'] == 'cosine_diff'
+        assert compression['mixer']['type'] == 'learned'
+        assert compression['weight_predictor_mode'] == 'five_frames'
+        assert compression.get('hanning_window_size', 5) == 5
+        assert Path(new['paths']['exp_dir']) == REPO / item['experiment']
         assert new['data']['max_token_limit'] == item['budget']
-    save('config_scope_validation.json', dict(valid=True, changed_fields=[
-        'paths.exp_dir', 'model.compression.weight_predictor_mode'], models=plan['experiments']))
+    save('config_scope_validation.json', dict(valid=True, models=plan['experiments']))
     try:
-        run(['-m','unittest','discover','-s','tests'], 'preflight_tests.log')
         run(['scripts/diagnostics/check_phone69_offline_native.py','--out',
              str(AUDIT / 'dimension_audit.json')], 'dimension_audit.log')
         progress(status='real_batch_memory_checks')

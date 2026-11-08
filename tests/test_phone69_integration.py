@@ -3,7 +3,6 @@
 import builtins
 import json
 import tempfile
-import types
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -73,7 +72,7 @@ class Phone69IntegrationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "strip_spaces"):
             LibriSpeechRNNTModule(**{**self.kwargs, "strip_spaces": True})
         with self.assertRaisesRegex(ValueError, "fixed tokenizer"):
-            LibriSpeechRNNTModule(**{**self.kwargs, "tokenizer_type": "sentencepiece", "sp_model_path": "old.model"})
+            LibriSpeechRNNTModule(**{**self.kwargs, "tokenizer_type": "sentencepiece"})
         with self.assertRaisesRegex(ValueError, "does not match"):
             LibriSpeechRNNTModule(**{**self.kwargs, "num_symbols": 74})
 
@@ -109,21 +108,16 @@ class Phone69IntegrationTests(unittest.TestCase):
         self.assertEqual((result["phone_errors"], result["reference_phones"]), (1, 2))
         self.assertAlmostEqual(result["per"], 1 / 2)
 
-    def test_word_bpe_still_loads_its_own_spm(self):
-        class WordTokenizer:
-            def __init__(self, model_file):
-                self.model_file = model_file
+    def test_factories_reject_removed_tokenizer_types(self):
+        from conformer_rnnt.model import conformer_rnnt_model_from_config
 
-            def get_piece_size(self):
-                return 4000
-
-        with patch.dict("sys.modules", {"sentencepiece": types.SimpleNamespace(SentencePieceProcessor=WordTokenizer)}):
-            model = LibriSpeechRNNTModule(**{
-                **self.kwargs, "tokenizer_type": "sentencepiece", "transcript_suffix": "",
-                "sp_model_path": "word.model", "num_symbols": 4000,
-            })
-        self.assertEqual(model.tokenizer.model_file, "word.model")
-        self.assertEqual((model.blank_idx, model.padding_idx), (4000, 1))
+        for tokenizer_type in ("ipa", "sentencepiece"):
+            config = {"tokenizer": {"type": tokenizer_type}, "model": {"num_symbols": 69}}
+            with self.subTest(tokenizer_type=tokenizer_type):
+                with self.assertRaisesRegex(ValueError, "Only the fixed tokenizer phone69"):
+                    LibriSpeechRNNTModule.from_config(config)
+                with self.assertRaisesRegex(ValueError, "Only the fixed tokenizer phone69"):
+                    conformer_rnnt_model_from_config(config)
 
 
 if __name__ == "__main__":

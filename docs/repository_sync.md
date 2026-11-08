@@ -1,15 +1,21 @@
 # 原仓库分支与三端同步
 
+当前本地文件布局以 [FILE_LAYOUT.md](FILE_LAYOUT.md) 为准。以下分支与迁移清单记录 2026-10-15 历史状态；当前主线已清理九帧、100h、IPA、Word-BPE 和作废实验，未改动远程分支。
+
 2026-10-15 按用户要求收拢工作树，各实验保留为独立分支。默认工作分支为 `main`。
 
 ## 仓库位置
 
-- 本地：`/Users/wuhandong/Desktop/python/conformer-rnnt-asr`
+- 本地：`/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr`
 - 服务器：`/test21/conformer-rnnt-asr`
 - Gitee：`wu3134/conformer-rnnt-asr`
 - GitHub：`wuhandong313/conformer-rnnt-asr`，同步镜像。
 
 三端同步以同名分支的完整提交 ID 和 Git 文件树一致为准。不同实验分支继续保留不同代码，切换实验时在原仓库选择对应分支。
+
+当前同步包含本地开发 checkout、Gitee origin、GitHub 镜像和服务器。完成的源码、配置、文档与小型实验记录先在本地提交，推送两个远端，再由服务器 fetch 并快进到同一提交；不通过直接复制部署源码。同步后核对完整提交 ID、Git 文件树及工作区状态。
+
+除正在编辑或由进行中任务生成的文件外，不保留非忽略的未追踪文件。提交前识别其他 chat 的进行中工作并明确排除，完成的论文材料、评估结果和文档引用的小型研究记录纳入 Git。凭据、数据集、checkpoint、大文件和运行缓存继续遵守忽略与文件大小规则。
 
 九个分支均已整理文件布局，具体迁移表见各分支的 [FILE_LAYOUT.md](FILE_LAYOUT.md)。根目录保留运行入口和共享模块；小日志、评估结果、曲线、图表、checkpoint 路径记录归入 `artifacts/`，词表模型和特征统计归入 `assets/`，论文归入 `papers/`，辅助脚本归入 `scripts/diagnostics/` 与 `scripts/server/`，研究计划和报告归入 `docs/`。代码、配置与文档中的相关路径同时更新。
 

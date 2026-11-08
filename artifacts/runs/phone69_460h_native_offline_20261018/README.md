@@ -1,7 +1,5 @@
-# 原始 offline_native 审计与基线证据
+# 有效无压缩基线启动证据
 
-本目录保留已训练完成 stride4_none 基线的有效启动、配置与验证证据。基线实验、checkpoint 和日志均保留不动。
+本目录只保留当前 E01 stride4_none 的启动状态、启动验证、GPU 采样、归一化统计量及无压缩基线显存探测。混存的旧动态 diff5 配置、预检和队列记录已清理。
 
-本目录中三组动态方案的 diff5 配置快照、预检和旧启动记录已经作废；用户单独批准 A05 后，从头训练 five_frames 三组。旧动态实验目录按删除清单清理。旧 prelaunch_validation.json 是历史证据，不可用于启动修改后的动态配置。
-
-当前队列、预检、删除清单和基线保留指纹见 ../phone69_460h_native_offline_five_frames_20261018/。其它审计项仍逐项等待批准。
+当前五帧队列记录位于相邻 phone69_460h_native_offline_five_frames_20261018 目录。指标以 papers/phone69_460h_cpu_authoritative_20261108 为准。

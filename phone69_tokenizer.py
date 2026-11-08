@@ -8,6 +8,15 @@ from pathlib import Path
 
 
 DEFAULT_PHONE69_VOCAB = Path(__file__).resolve().parent / "configs" / "phone69_vocab.json"
+
+
+def encode_transcript(tokenizer, text: str, strip_spaces: bool = False) -> list[int]:
+    """Encode the same complete phones for collation and batch guarding."""
+    if strip_spaces:
+        raise ValueError("phone69 requires strip_spaces: false to preserve phone boundaries")
+    return tokenizer.encode(text)
+
+
 CONSONANTS = tuple("B CH D DH F G HH JH K L M N NG P R S SH T TH V W Y Z ZH".split())
 VOWELS = tuple("AA AE AH AO AW AY EH ER EY IH IY OW OY UH UW".split())
 PHONE69 = tuple(sorted((*CONSONANTS, *(f"{v}{s}" for v in VOWELS for s in range(3)))))

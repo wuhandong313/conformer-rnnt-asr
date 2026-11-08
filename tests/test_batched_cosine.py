@@ -38,7 +38,7 @@ class BatchedCosineTests(unittest.TestCase):
         np.testing.assert_array_equal(actual,expected)
     def test_reference_output_indices_and_gradients(self):
         torch.manual_seed(718)
-        for mode,window in [('five_frames',5),('nine_frames',9)]:
+        for mode,window in [('five_frames',5)]:
             for device in ['cpu']+(['cuda'] if torch.cuda.is_available() else []):
                 ref=NaturalPeakCompression(detector={'type':'cosine_diff'},mixer={'type':'learned'},feature_dim=8,window_size=window,weight_predictor_mode=mode).to(device)
                 ref.record_indices=True
@@ -55,7 +55,7 @@ class BatchedCosineTests(unittest.TestCase):
                 for p,g in zip(ref.mixer.parameters(),gp):torch.testing.assert_close(p.grad,g,rtol=3e-5,atol=3e-6)
     def test_constant_near_tie_random_and_padding(self):
         torch.manual_seed(14)
-        ref=NaturalPeakCompression(detector={'type':'cosine_diff'},mixer={'type':'learned'},feature_dim=8,window_size=9,weight_predictor_mode='nine_frames');ref.record_indices=True
+        ref=NaturalPeakCompression(detector={'type':'cosine_diff'},mixer={'type':'learned'},feature_dim=8,window_size=5,weight_predictor_mode='five_frames');ref.record_indices=True
         for k in range(20):
             x=torch.randn(16,100,8);lengths=torch.randint(0,101,(16,),dtype=torch.int32)
             if k%2==0:x[0]=1
@@ -80,7 +80,7 @@ class BatchedCosineTests(unittest.TestCase):
                 'sequence_mode':'offline','input_dim':8,'encoding_dim':16,'num_symbols':69,
                 'time_reduction_input_dim':8,'time_reduction_stride':1,'num_heads':2,'ffn_dim':32,
                 'num_layers_block1':2,'num_layers_block2':1,'depthwise_conv_kernel_size':3,'dropout':0.,
-                'compression':{'detector':{'type':'cosine_diff'},'mixer':{'type':'learned'},'weight_predictor_mode':'nine_frames','hanning_window_size':9},
+                'compression':{'detector':{'type':'cosine_diff'},'mixer':{'type':'learned'},'weight_predictor_mode':'five_frames','hanning_window_size':5},
                 'predictor':{'symbol_embedding_dim':8,'num_lstm_layers':1,'lstm_hidden_dim':8,'lstm_dropout':0.}},'data':{'n_mels':8}}
             original=LibriSpeechRNNTModule.from_config(cfg).eval();fast_cfg=copy.deepcopy(cfg);fast_cfg['model']['compression']['execution_backend']='batched'
             fast=LibriSpeechRNNTModule.from_config(fast_cfg).eval();self.assertEqual(fast.model.transcriber.compression.execution_backend,'batched')

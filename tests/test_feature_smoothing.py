@@ -123,7 +123,7 @@ class FeatureSmoothingTests(unittest.TestCase):
     def test_reference_and_batched_indices_outputs_and_gradients(self):
         devices = ["cpu"] + (["cuda"] if torch.cuda.is_available() else [])
         for device in devices:
-            for mode, window in (("five_frames", 5), ("nine_frames", 9)):
+            for mode, window in (("five_frames", 5),):
                 for alpha in (0.0, 0.25, 0.5):
                     with self.subTest(device=device, mode=mode, alpha=alpha):
                         torch.manual_seed(314)

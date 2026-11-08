@@ -15,7 +15,7 @@
 
 ## 配置与读取
 
-`configs/default.yaml`、`configs/server.yaml`、`configs/server_lstm_naive.yaml` 已移除音素 SPM 模型路径，使用：
+当前 `configs/server_phone69_460h_offline_native_*.yaml` 和 `configs/server_phone69_460h_placement_*.yaml` 使用：
 
 ```yaml
 tokenizer:
@@ -29,7 +29,7 @@ data:
   max_token_limit: 4000
 ```
 
-词表路径相对于运行目录，训练和评估应在仓库根目录执行。`max_token_limit` 现在按真实音素数计数；服务器配方从原来的 16000 字符预算调整为 4000 音素，本地 default 保留较小的 1000 音素预算。精确批次和显存需求会变化，应在正式训练时核对。
+词表路径相对于运行目录，训练和评估应在仓库根目录执行。`max_token_limit` 现在按真实音素数计数；各配方的具体预算由对应 YAML 指定。精确批次和显存需求会变化，应在正式训练时核对。
 
 音频和标签仍在仓库外，当前读取方式是：
 
@@ -52,17 +52,16 @@ data:
 
 本地独立原始标签的上述四个子集也全部通过，dev-other 的 2864 句及 test-other 的 2939 句也符合词表。但服务器 dev-other/test-other 当前缺少 chapter `-ph` 标签，不能直接用于当前读取方式。
 
-服务器 train-other-500 虽然有 `-ph.trans.txt`，内容实际是 simple IPA；本地也没有该子集的 phone69 文件。不要将其加入 phone69 训练列表。遇到这些 IPA 标签会报未知音素错误，不会自动混用。当前 phone69 默认训练 clean-100，可按需扩展为 clean-100 + clean-360。
+服务器 train-other-500 虽然有 `-ph.trans.txt`，内容实际是 simple IPA；本地也没有该子集的 phone69 文件。不要将其加入 phone69 训练列表。遇到这些 IPA 标签会报未知音素错误，不会自动混用。当前 460h 实验使用 clean-100 + clean-360。
 
 ## 训练、评估和迁移
 
-固定 phone69 自动报告 corpus PER：全语料音素编辑错误数除以参考音素数。一个 `AH0 → AH1` 替换计一个音素错误。word-BPE 配置继续使用它们的 SPM 和 WER；IPA 配置维持独立模式。
+固定 phone69 自动报告 corpus PER：全语料音素编辑错误数除以参考音素数。一个 `AH0 → AH1` 替换计一个音素错误。当前入口仅支持固定 Phone69；IPA 和 Word-BPE 配置、资源及专用代码已移除。
 
 Checkpoint 保存词表指纹与 token 顺序；训练恢复和评估均检查指纹。旧 74 类音素 SPM checkpoint 不能直接恢复为固定 phone69，需重新训练。新实验输出目录与旧实验分开，不覆盖旧结果。
 
-## 已验证与待完成
+## 当前入口
 
-- 31 项回归测试通过，包含小模型 RNN-T loss/backward、padding、解码 ID 0、批次音素计数、PER、词表指纹及 word-BPE 路径。
-- 已启动固定 40 轮、不早停的 clean-100、compression none 基线，完成真实音频 smoke 及首次正式验证；训练和完整 PER 评估仍在进行，见 [实验记录](experiments/phone69_100h_none.md)。
-- 服务器原有修改、调试脚本和小日志已保存并接回各自分支；当前 main 保留新版 phone69/IPA 评估逻辑。
-- 工作树收拢到原仓库，独立实验以分支保留；三端同步方式见 [repository_sync.md](repository_sync.md)。
+当前配置、模型与验证结果见 [文件布局](FILE_LAYOUT.md) 和 [460h 实验结果](phone69_460h_results.md)。E01–E10 的论文指标取自 [权威 CPU 评测归档](../papers/phone69_460h_cpu_authoritative_20261108/README.md)。
+
+测试使用本地训练运行环境执行 `python -m unittest discover -s tests`。代码和配置的服务器同步方式见 [repository_sync.md](repository_sync.md)。

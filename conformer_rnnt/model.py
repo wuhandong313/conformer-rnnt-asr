@@ -205,24 +205,19 @@ def sequence_options_from_config(model_config: Dict[str, Any]) -> Dict[str, Any]
 def conformer_rnnt_model_from_config(config: Dict[str, Any]) -> ConformerRNNT:
     """Build a Conformer-RNNT model from a config dictionary.
 
-    Expects the ``model`` section of ``configs/default.yaml``.
+    Accepts a full Phone69 config or its ``model`` section.
     """
     m = config.get("model", config)
     c = m.get("compression", {})
     p = m.get("predictor", {})
     j = m.get("joiner", {})
     num_symbols = m.get("num_symbols")
+    tokenizer = config.get("tokenizer", {})
+    if tokenizer.get("type", "phone69") != "phone69":
+        raise ValueError("Only the fixed tokenizer phone69 is supported")
     if num_symbols is None:
-        tokenizer = config.get("tokenizer", {})
-        tokenizer_type = tokenizer.get("type", "phone69")
-        if tokenizer_type == "phone69":
-            from phone69_tokenizer import DEFAULT_PHONE69_VOCAB, FixedPhone69Tokenizer
-            num_symbols = FixedPhone69Tokenizer(tokenizer.get("vocab_path") or DEFAULT_PHONE69_VOCAB).get_piece_size()
-        elif tokenizer_type == "ipa":
-            from ipa_tokenizer import DEFAULT_VOCAB, FixedIPATokenizer
-            num_symbols = FixedIPATokenizer(tokenizer.get("vocab_path") or DEFAULT_VOCAB).get_piece_size()
-        else:
-            raise ValueError("Word-BPE model factory requires model.num_symbols")
+        from phone69_tokenizer import DEFAULT_PHONE69_VOCAB, FixedPhone69Tokenizer
+        num_symbols = FixedPhone69Tokenizer(tokenizer.get("vocab_path") or DEFAULT_PHONE69_VOCAB).get_piece_size()
 
     return conformer_rnnt_model(
         input_dim=m.get("input_dim", 80),

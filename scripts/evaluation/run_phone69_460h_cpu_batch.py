@@ -80,9 +80,9 @@ def worker_environment(out, runtime):
 
 def code_fingerprints(source):
     files = sorted((source / "conformer_rnnt").rglob("*.py"))
-    files.extend(source / name for name in (
-        "common.py", "ipa_tokenizer.py", "phone69_tokenizer.py", "ipa_labels.py", "ipa_features.py"
-    ))
+    files.extend(source / name for name in ("common.py", "phone69_tokenizer.py"))
+    # Historical snapshots keep their frozen dependencies for reproducibility.
+    files.extend(source.glob("ipa_*.py"))
     result = {str(file.relative_to(source)): sha(file) for file in files}
     runner = Path(__file__).resolve()
     result[str(runner.relative_to(ROOT))] = sha(runner)

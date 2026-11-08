@@ -1,8 +1,0 @@
-{
-  "status": "complete",
-  "updated_at_utc": "2026-10-17T11:09:16.164514+00:00",
-  "original_RTF_valid": false,
-  "final_RTF_valid": true,
-  "summary": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/summary.json",
-  "validation": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_testclean_20261017/rtf_monotonic/validation_report.json"
-}

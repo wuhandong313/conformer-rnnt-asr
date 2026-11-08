@@ -31,10 +31,7 @@ from common import (
 )
 from conformer_rnnt.model import conformer_rnnt_model, sequence_options_from_config
 from conformer_rnnt.compression.stages import placement_options_from_config
-from ipa_tokenizer import DEFAULT_VOCAB, FixedIPATokenizer, encode_transcript
-from phone69_tokenizer import DEFAULT_PHONE69_VOCAB, FixedPhone69Tokenizer
-from ipa_labels import ExternalIPALabels
-from ipa_features import DEFAULT_FEATURES, IPAFeatureTable
+from phone69_tokenizer import DEFAULT_PHONE69_VOCAB, FixedPhone69Tokenizer, encode_transcript
 
 
 # ---------------------------------------------------------------------------
@@ -135,17 +132,14 @@ def _get_librispeech_metadata(
 class LIBRISPEECH(Dataset):
     """LibriSpeech dataset with phoneme-level transcriptions.
 
-    Reads ``.flac`` audio in the standard LibriSpeech layout. Targets can use
-    legacy chapter ``.trans.txt`` files or external whole-subset Epitran files.
+    Reads ``.flac`` audio and per-chapter Phone69 labels in the standard
+    LibriSpeech layout.
 
     Args:
         root: Path to the dataset root directory.
         url: Dataset subset name, e.g. ``"train-clean-100"``.
         folder_in_archive: Top-level directory name inside the archive.
         download: If ``True``, download the dataset when not found locally.
-        ipa_labels_path: Separate label root containing ``train_clean_100/ipa``.
-        ipa_label_filename: Fixed inventory variant; currently ``"ipa"``.
-        ipa_tokenizer: Shared fixed tokenizer used to validate external labels.
     """
 
     _ext_txt = ".trans.txt"
@@ -158,9 +152,6 @@ class LIBRISPEECH(Dataset):
         folder_in_archive: str = FOLDER_IN_ARCHIVE,
         download: bool = False,
         transcript_suffix: str = "-ph",
-        ipa_labels_path: Optional[str] = None,
-        ipa_label_filename: str = "ipa",
-        ipa_tokenizer=None,
     ) -> None:
         self._url = url
         self._transcript_suffix = transcript_suffix
@@ -182,26 +173,13 @@ class LIBRISPEECH(Dataset):
                     f"Set `download=True` to download automatically."
                 )
 
-        self._ipa_labels = (
-            ExternalIPALabels(ipa_labels_path, url, ipa_label_filename, ipa_tokenizer)
-            if ipa_labels_path is not None else None
-        )
         self._walker = sorted(
             str(p.stem) for p in Path(self._path).glob("*/*/*" + self._ext_audio)
         )
-        if self._ipa_labels is not None:
-            self._ipa_labels.validate_audio_ids(self._walker)
 
     def get_metadata(self, n: int) -> Tuple[str, int, str, int, int, int]:
         """Get metadata for the n-th sample (filepath instead of waveform)."""
         fileid = self._walker[n]
-        if self._ipa_labels is not None:
-            speaker, chapter, utterance = fileid.split("-")
-            return (
-                os.path.join(self._url, speaker, chapter, fileid + self._ext_audio),
-                SAMPLE_RATE, self._ipa_labels.transcripts[fileid],
-                int(speaker), int(chapter), int(utterance),
-            )
         return _get_librispeech_metadata(
             fileid, self._archive, self._url, self._ext_audio, self._ext_txt,
             transcript_suffix=self._transcript_suffix,
@@ -235,7 +213,7 @@ class CustomDataset(torch.utils.data.Dataset):
     Args:
         base_dataset: A :class:`LIBRISPEECH` instance.
         max_token_limit: Maximum target phones (IPA) or legacy chars per batch.
-        sp_model: Fixed phone tokenizer or word SentencePiece model.
+        sp_model: Fixed Phone69 tokenizer.
         rnnt_vocab: RNNT output vocab size V incl. blank (guard needs V > 0).
         strip_spaces: Space-stripping applied before legacy encoding — must
             match the training label extraction exactly.
@@ -282,10 +260,6 @@ class CustomDataset(torch.utils.data.Dataset):
             )
 
     def _transcript(self, fileid: str, fileid_to_transcript: dict) -> str:
-        if self.base_dataset._ipa_labels is not None:
-            text = self.base_dataset._ipa_labels.transcripts[fileid]
-            fileid_to_transcript[fileid] = text
-            return text
         if fileid not in fileid_to_transcript:
             speaker_id, chapter_id, _ = fileid.split("-")
             file_text = (
@@ -384,7 +358,6 @@ class LibriSpeechRNNTModule(LightningModule):
 
     Args:
         librispeech_path: Path to the LibriSpeech dataset root.
-        sp_model_path: Path to the SentencePiece model file.
         global_stats_path: Path to the global feature statistics JSON.
         num_symbols: Tokenizer vocabulary size (blank auto +1).
         input_dim: Mel filterbank dimension.
@@ -435,13 +408,8 @@ class LibriSpeechRNNTModule(LightningModule):
         # Paths
         librispeech_path: str,
         global_stats_path: str,
-        sp_model_path: Optional[str] = None,
         tokenizer_type: str = "phone69",
-        ipa_vocab_path: Optional[str] = None,
         phone69_vocab_path: Optional[str] = None,
-        ipa_features_path: Optional[str] = None,
-        ipa_labels_path: Optional[str] = None,
-        ipa_label_filename: str = "ipa",
         # Model — encoder
         num_symbols: Optional[int] = None,
         input_dim: int = 80,
@@ -511,13 +479,10 @@ class LibriSpeechRNNTModule(LightningModule):
         val_subset: Union[str, List[str]] = "dev-clean",
         test_subset: Union[str, List[str]] = "test-clean",
         # Data — transcript protocol
-        # transcript_suffix: per-chapter transcript filename suffix ("-ph" for
-        # ARPABET transcripts, "-ipa" for IPA, "" for official word transcripts).
-        # Keep phone boundaries and word spaces intact.
+        # Per-chapter ARPABET transcript suffix; preserve complete phones.
         transcript_suffix: str = "-ph",
         strip_spaces: bool = False,
-        # Data — RNNT kernel overflow guard (word-BPE V=4001 can exceed the
-        # int32 indexing limit of the torchaudio RNNT CUDA kernel)
+        # Data — RNNT kernel overflow guard for the joint output tensor.
         rnnt_numel_limit: float = 1.9e9,
         rnnt_frames_per_char: float = 3.0,
         # Decoding
@@ -526,34 +491,14 @@ class LibriSpeechRNNTModule(LightningModule):
         super().__init__()
         self.save_hyperparameters()
 
-        # Fixed phone inventories do not import or load SentencePiece.
+        # Only the fixed stressed ARPABET inventory is supported.
         self.tokenizer_type = tokenizer_type
-        self.is_phone_tokenizer = tokenizer_type in {"ipa", "phone69"}
-        if self.is_phone_tokenizer and strip_spaces:
+        if tokenizer_type != "phone69":
+            raise ValueError("Only the fixed tokenizer phone69 is supported")
+        self.is_phone_tokenizer = True
+        if strip_spaces:
             raise ValueError(f"{tokenizer_type} requires data.strip_spaces: false to preserve phone boundaries")
-        if tokenizer_type == "phone69":
-            if ipa_labels_path is not None:
-                raise ValueError("External Epitran labels require tokenizer.type: ipa")
-            self.tokenizer = FixedPhone69Tokenizer(phone69_vocab_path or DEFAULT_PHONE69_VOCAB)
-        elif tokenizer_type == "ipa":
-            self.tokenizer = FixedIPATokenizer(ipa_vocab_path or DEFAULT_VOCAB)
-            self.ipa_features = IPAFeatureTable(self.tokenizer, ipa_features_path or DEFAULT_FEATURES)
-            self.register_buffer(
-                "ipa_articulatory_table",
-                torch.tensor([*self.ipa_features.vectors, (0,) * 24], dtype=torch.float32),
-                persistent=False,
-            )
-        elif tokenizer_type == "sentencepiece":
-            if ipa_labels_path is not None:
-                raise ValueError("External Epitran labels require tokenizer.type: ipa")
-            if transcript_suffix == "-ph":
-                raise ValueError("Phone labels require a fixed tokenizer (phone69 or ipa), not SentencePiece")
-            import sentencepiece as spm
-            if not sp_model_path:
-                raise ValueError("SentencePiece mode requires paths.sp_model_path")
-            self.tokenizer = spm.SentencePieceProcessor(model_file=sp_model_path)
-        else:
-            raise ValueError(f"Unknown tokenizer type: {tokenizer_type!r}")
+        self.tokenizer = FixedPhone69Tokenizer(phone69_vocab_path or DEFAULT_PHONE69_VOCAB)
         self.sp_model = self.tokenizer  # Legacy batch/decoding adapter name.
         self.blank_idx = self.tokenizer.get_piece_size()
         if num_symbols is not None and num_symbols != self.blank_idx:
@@ -561,7 +506,7 @@ class LibriSpeechRNNTModule(LightningModule):
                 f"model.num_symbols={num_symbols} does not match tokenizer size {self.blank_idx} (excluding blank)"
             )
         num_symbols = self.blank_idx
-        self.padding_idx = self.blank_idx if self.is_phone_tokenizer else 1
+        self.padding_idx = self.blank_idx
 
         # ---- Build model ----
         self.model = conformer_rnnt_model(
@@ -679,8 +624,6 @@ class LibriSpeechRNNTModule(LightningModule):
 
         # ---- Data config ----
         self.librispeech_path = librispeech_path
-        self.ipa_labels_path = ipa_labels_path
-        self.ipa_label_filename = ipa_label_filename
         self.max_token_limit = max_token_limit
         self.num_workers = num_workers
         self.prefetch_factor = prefetch_factor
@@ -711,7 +654,7 @@ class LibriSpeechRNNTModule(LightningModule):
     def from_config(cls, config: dict) -> "LibriSpeechRNNTModule":
         """Build a LibriSpeechRNNTModule from a configuration dictionary.
 
-        The config dict should follow the structure of ``configs/default.yaml``.
+        The config dict uses paths, tokenizer, model, training and data sections.
         """
         paths = config.get("paths", {})
         model_cfg = config.get("model", {})
@@ -726,18 +669,11 @@ class LibriSpeechRNNTModule(LightningModule):
         return cls(
             # Paths
             librispeech_path=paths.get("dataset_path", "./librispeech/Librispeech_phoneme_transcription"),
-            sp_model_path=paths.get("sp_model_path"),
             global_stats_path=paths.get("global_stats_path", "assets/statistics/global_stats.json"),
             # Encoder
             num_symbols=model_cfg.get("num_symbols"),
-            tokenizer_type=config.get("tokenizer", {}).get(
-                "type", "sentencepiece" if data_cfg.get("transcript_suffix", "-ph") == "" else "phone69"
-            ),
-            ipa_vocab_path=config.get("tokenizer", {}).get("vocab_path"),
+            tokenizer_type=config.get("tokenizer", {}).get("type", "phone69"),
             phone69_vocab_path=config.get("tokenizer", {}).get("vocab_path"),
-            ipa_features_path=config.get("tokenizer", {}).get("features_path"),
-            ipa_labels_path=paths.get("ipa_labels_path"),
-            ipa_label_filename=data_cfg.get("ipa_label_filename", "ipa"),
             input_dim=model_cfg.get("input_dim", 80),
             encoding_dim=model_cfg.get("encoding_dim", 512),
             **sequence_options_from_config(model_cfg),
@@ -831,16 +767,6 @@ class LibriSpeechRNNTModule(LightningModule):
             .to(dtype=torch.int32)
         )
         return targets, lengths
-
-    def _extract_articulatory_labels(self, samples: List):
-        """Optional fixed targets [B, U, 24] with padding/blank masked out."""
-        if self.tokenizer_type != "ipa":
-            raise ValueError("Articulatory targets require the fixed IPA tokenizer")
-        targets, lengths = self._extract_labels(samples)
-        targets = targets.to(self.ipa_articulatory_table.device)
-        vectors = self.ipa_articulatory_table[targets.long()]
-        mask = torch.arange(targets.size(1), device=targets.device)[None, :] < lengths.to(targets.device)[:, None]
-        return vectors, mask
 
     # ------------------------------------------------------------------
     # Feature extraction
@@ -1029,12 +955,6 @@ class LibriSpeechRNNTModule(LightningModule):
                 "fingerprint": self.tokenizer.fingerprint,
                 "tokens": list(self.tokenizer.tokens),
             }
-        if self.tokenizer_type == "ipa":
-            checkpoint["ipa_tokenizer"] = {
-                "fingerprint": self.tokenizer.fingerprint,
-                "tokens": list(self.tokenizer.tokens),
-                "features_fingerprint": self.ipa_features.fingerprint,
-            }
 
     def validate_tokenizer_checkpoint(self, checkpoint):
         if self.tokenizer_type == "phone69":
@@ -1044,15 +964,6 @@ class LibriSpeechRNNTModule(LightningModule):
                     "Checkpoint phone69 vocabulary is missing or differs from the configured inventory. "
                     "SPM checkpoints cannot be resumed as fixed phone69 checkpoints."
                 )
-        if self.tokenizer_type == "ipa":
-            metadata = checkpoint.get("ipa_tokenizer") or {}
-            if metadata.get("fingerprint") != self.tokenizer.fingerprint:
-                raise ValueError(
-                    "Checkpoint IPA vocabulary is missing or differs from the configured inventory. "
-                    "Word/SPM checkpoints cannot be resumed as IPA checkpoints."
-                )
-            if metadata.get("features_fingerprint") != self.ipa_features.fingerprint:
-                raise ValueError("Checkpoint PanPhon feature table is missing or differs from the configuration")
 
     def on_load_checkpoint(self, checkpoint):
         self.validate_tokenizer_checkpoint(checkpoint)
@@ -1099,9 +1010,6 @@ class LibriSpeechRNNTModule(LightningModule):
                         self.librispeech_path,
                         url=subset,
                         transcript_suffix=self.transcript_suffix,
-                        ipa_labels_path=self.ipa_labels_path,
-                        ipa_label_filename=self.ipa_label_filename,
-                        ipa_tokenizer=self.tokenizer,
                     ),
                     max_token_limit=self.max_token_limit,
                     sp_model=self.sp_model,
@@ -1132,9 +1040,6 @@ class LibriSpeechRNNTModule(LightningModule):
                         self.librispeech_path,
                         url=subset,
                         transcript_suffix=self.transcript_suffix,
-                        ipa_labels_path=self.ipa_labels_path,
-                        ipa_label_filename=self.ipa_label_filename,
-                        ipa_tokenizer=self.tokenizer,
                     ),
                     max_token_limit=self.max_token_limit,
                     sp_model=self.sp_model,
@@ -1163,9 +1068,6 @@ class LibriSpeechRNNTModule(LightningModule):
                     self.librispeech_path,
                     url=subset,
                     transcript_suffix=self.transcript_suffix,
-                    ipa_labels_path=self.ipa_labels_path,
-                    ipa_label_filename=self.ipa_label_filename,
-                    ipa_tokenizer=self.tokenizer,
                 )
                 for subset in self.test_subsets
             ]

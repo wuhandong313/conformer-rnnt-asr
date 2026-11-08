@@ -1,91 +1,29 @@
-# 分支文件布局
+# 当前文件布局
 
-训练、评估、推理入口及共享运行模块保留在根目录，内部网络模块在 `conformer_rnnt/`。
+本分支保留 LibriSpeech 460h、固定 Phone69 的离线五帧融合与多阶段压缩实验。训练集为 train-clean-100 + train-clean-360；100h 独立实验、九帧、IPA、Word-BPE 和旧 keep-rate/diff5 实验已清理。
 
 | 目录 | 内容 |
 | --- | --- |
-| artifacts/logs/ | 小型运行、训练、评估日志 |
-| artifacts/evaluations/ | 逐句指标、评估 CSV/JSON 及可复现实验快照 |
-| artifacts/training/ | 损失曲线数据 |
-| artifacts/figures/ | 图表 |
-| artifacts/checkpoints/ | 最优 checkpoint 的路径记录，不含大模型 |
-| assets/tokenizers/ | 小型词表模型 |
-| assets/statistics/ | 特征统计文件 |
-| scripts/diagnostics/ | 性能探测与调试工具 |
-| scripts/server/ | 服务器辅助脚本 |
-| papers/ | 参考论文 |
-| docs/ | 研究计划与报告 |
-| tests/ | 验证脚本与测试 |
+| conformer_rnnt/ | 编码器、预测器、Joiner、模型工厂和 Lightning 数据/训练模块 |
+| conformer_rnnt/compression/ | 峰谷检测、五帧融合、平滑及多阶段压缩 |
+| configs/ | 当前 460h 训练配方和固定 Phone69 词表 |
+| scripts/server/ | 当前实验的训练、续训和状态辅助脚本 |
+| scripts/evaluation/ | 本地 CPU 批量评测、计算量测量和核验 |
+| scripts/diagnostics/ | 当前压缩方法的诊断工具 |
+| tests/ | 当前方法、Phone69、指标与恢复逻辑的回归测试 |
+| assets/statistics/ | 特征归一化统计量 |
+| artifacts/evaluations/ | 逐句结果、日志、配置及执行快照 |
+| artifacts/analysis/ | 帧保留率等分析结果 |
+| artifacts/runs/ | 当前实验的启动、续训、完成及溯源记录 |
+| artifacts/research/ | 计算量、机制分析与实验台账 |
+| artifacts/recoveries/ | 当前实验重启恢复证据 |
+| docs/ | 方法说明、实验历史和研究计划 |
+| papers/ | 参考论文、稿件及权威评测归档 |
+| speech_rate_analysis/ | test-clean 的原始语速及十档句子 ID |
+| output/ | 本地模型、数据与运行工作文件，Git 忽略 |
 
-仅创建本分支实际需要的目录。服务器统一使用 `/test21/conformer-rnnt-asr`，旧工作树目录仅作兼容链接。运行命令以仓库根目录为工作目录。超过 10 MiB 的文件留在服务器，凭据和运行缓存不入库。
+训练入口为根目录 train.py，评估入口为 eval.py，共享工具为 common.py。train.py 接受一个 YAML 路径；当前配方显式设置 model.sequence_mode: offline、tokenizer.type: phone69。
 
-## 本次文件迁移
+当前结果入口见 [460h 结果](phone69_460h_results.md)。E01–E10 指标以 [权威归档](../papers/phone69_460h_cpu_authoritative_20261108/README.md) 为准。归档中的冻结源码和历史输入保持原字节，用于复现当次结果，不作为当前开发入口。
 
-| 原路径 | 新路径 |
-| --- | --- |
-| `ArtNet_camera_ready_20260611.pdf` | `papers/artnet/ArtNet_camera_ready_20260611.pdf` |
-| `baseline_vs_bigdec_curves.png` | `artifacts/figures/baseline_vs_bigdec_curves.png` |
-| `bench.log` | `artifacts/logs/bench.log` |
-| `bench_rnnt.py` | `scripts/diagnostics/bench_rnnt.py` |
-| `best_ckpt.txt` | `artifacts/checkpoints/best_ckpt.txt` |
-| `best_ckpt_server_lstm_word_bigdec.txt` | `artifacts/checkpoints/best_ckpt_server_lstm_word_bigdec.txt` |
-| `best_ckpt_server_lstm_word_cosd_learned_b14000.txt` | `artifacts/checkpoints/best_ckpt_server_lstm_word_cosd_learned_b14000.txt` |
-| `best_ckpt_word_960h.txt` | `artifacts/checkpoints/best_ckpt_word_960h.txt` |
-| `chain_watcher.log` | `artifacts/logs/chain_watcher.log` |
-| `chain_watcher.sh` | `scripts/server/chain_watcher.sh` |
-| `dbg2_chunk.log` | `artifacts/logs/dbg2_chunk.log` |
-| `dbg2_chunk.py` | `scripts/diagnostics/dbg2_chunk.py` |
-| `dbg3_group.log` | `artifacts/logs/dbg3_group.log` |
-| `dbg3_group.py` | `scripts/diagnostics/dbg3_group.py` |
-| `dbg_guard_crash.log` | `artifacts/logs/dbg_guard_crash.log` |
-| `dbg_guard_crash.py` | `scripts/diagnostics/dbg_guard_crash.py` |
-| `dbg_rnnt.log` | `artifacts/logs/dbg_rnnt.log` |
-| `dbg_rnnt2.log` | `artifacts/logs/dbg_rnnt2.log` |
-| `dbg_rnnt3.log` | `artifacts/logs/dbg_rnnt3.log` |
-| `dbg_rnnt4.log` | `artifacts/logs/dbg_rnnt4.log` |
-| `env_rebuild.log` | `artifacts/logs/env_rebuild.log` |
-| `eval_per_sample_server_lstm_word_bigdec.csv` | `artifacts/evaluations/eval_per_sample_server_lstm_word_bigdec.csv` |
-| `eval_per_sample_server_lstm_word_cosd_learned_b14000.csv` | `artifacts/evaluations/eval_per_sample_server_lstm_word_cosd_learned_b14000.csv` |
-| `eval_per_sample_word960.csv` | `artifacts/evaluations/eval_per_sample_word960.csv` |
-| `eval_per_sample_word960_r2.csv` | `artifacts/evaluations/eval_per_sample_word960_r2.csv` |
-| `eval_probe_bigdec.csv` | `artifacts/evaluations/eval_probe_bigdec.csv` |
-| `eval_probe_bigdec_ep4.csv` | `artifacts/evaluations/eval_probe_bigdec_ep4.csv` |
-| `eval_probe_now.log` | `artifacts/logs/eval_probe_now.log` |
-| `global_stats.json` | `assets/statistics/global_stats.json` |
-| `lstm_naive.beam20.log` | `artifacts/logs/lstm_naive.beam20.log` |
-| `lstm_naive.train.log` | `artifacts/logs/lstm_naive.train.log` |
-| `pipeline.log` | `artifacts/logs/pipeline.log` |
-| `pipeline_server_lstm_word_bigdec.log` | `artifacts/logs/pipeline_server_lstm_word_bigdec.log` |
-| `pipeline_server_lstm_word_cosd_learned.log` | `artifacts/logs/pipeline_server_lstm_word_cosd_learned.log` |
-| `pipeline_server_lstm_word_cosd_learned_b10000.log` | `artifacts/logs/pipeline_server_lstm_word_cosd_learned_b10000.log` |
-| `pipeline_server_lstm_word_cosd_learned_b14000.log` | `artifacts/logs/pipeline_server_lstm_word_cosd_learned_b14000.log` |
-| `pipeline_word_960h.log` | `artifacts/logs/pipeline_word_960h.log` |
-| `probe_word960.sh` | `scripts/server/probe_word960.sh` |
-| `rebuild_and_resume.sh` | `scripts/server/rebuild_and_resume.sh` |
-| `remote_soak_restart.sh` | `scripts/server/remote_soak_restart.sh` |
-| `server_lstm_word_bigdec.beam20.log` | `artifacts/logs/server_lstm_word_bigdec.beam20.log` |
-| `server_lstm_word_cosd_learned.train.log` | `artifacts/logs/server_lstm_word_cosd_learned.train.log` |
-| `server_lstm_word_cosd_learned_b10000.train.log` | `artifacts/logs/server_lstm_word_cosd_learned_b10000.train.log` |
-| `server_lstm_word_cosd_learned_b14000.beam20.log` | `artifacts/logs/server_lstm_word_cosd_learned_b14000.beam20.log` |
-| `spm_bpe_4000_word.model` | `assets/tokenizers/spm_bpe_4000_word.model` |
-| `spm_bpe_4000_word_960h.model` | `assets/tokenizers/spm_bpe_4000_word_960h.model` |
-| `tb_read.py` | `scripts/diagnostics/tb_read.py` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code/conformer_rnnt/metrics.py` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code/conformer_rnnt/metrics.py` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code/eval.py` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code/eval.py` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code/scripts/lstm_repro_pipeline.sh` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code/scripts/lstm_repro_pipeline.sh` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code/scripts/word_960h_pipeline.sh` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code/scripts/word_960h_pipeline.sh` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code_before/eval.py` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code_before/eval.py` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code_before/scripts/lstm_repro_pipeline.sh` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code_before/scripts/lstm_repro_pipeline.sh` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code_before/scripts/word_960h_pipeline.sh` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/code_before/scripts/word_960h_pipeline.sh` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/config.yaml` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/config.yaml` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/eval.log` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/eval.log` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/exit_code` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/exit_code` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/manifest.json` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/manifest.json` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/per_sample_wer.csv` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/per_sample_wer.csv` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/pid` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/pid` |
-| `wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/run.sh` | `artifacts/evaluations/wer_eval_runs/best_ep11_step227500_beam20_5a0ff5e8/run.sh` |
-| `word960_loss.csv` | `artifacts/training/word960_loss.csv` |
-| `word960_loss.png` | `artifacts/figures/word960_loss.png` |
-| `word_960h.beam20.log` | `artifacts/logs/word_960h.beam20.log` |
-| `word_bigdec.evalprobe.log` | `artifacts/logs/word_bigdec.evalprobe.log` |
-| `word_bigdec.evalprobe_ep4.log` | `artifacts/logs/word_bigdec.evalprobe_ep4.log` |
+软件测试仅在本地运行。服务器代码与配置通过 Git 同步，数据集、checkpoint 和超过 10 MiB 的文件保留在 Git 外。

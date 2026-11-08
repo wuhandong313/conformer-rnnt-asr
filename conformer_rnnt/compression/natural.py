@@ -55,8 +55,8 @@ class NaturalPeakCompression(torch.nn.Module):
         if execution_backend == "batched":
             if not isinstance(self.detector, CosineDiffPeaksDetector) or self.detector.preprocess != "none":
                 raise ValueError("Batched backend requires cosine_diff without distance-curve smoothing")
-            if not isinstance(self.mixer, LearnedWeightMixer) or self.mixer.weight_predictor_mode not in {"five_frames", "nine_frames"}:
-                raise ValueError("Batched backend requires a five_frames or nine_frames learned mixer")
+            if not isinstance(self.mixer, LearnedWeightMixer) or self.mixer.weight_predictor_mode != "five_frames":
+                raise ValueError("Batched backend requires a five_frames learned mixer")
             expected = 5 if self.mixer.weight_predictor_mode == "five_frames" else 9
             if self.mixer.window_size != expected or self.neighborhood_radius:
                 raise ValueError("Batched backend requires matching window and no neighborhood retention")

@@ -81,17 +81,14 @@ def post_process_hypos(
 
     Args:
         hypos: List of Hypothesis objects from RNNT beam search.
-        sp_model: Fixed phone tokenizer or word SentencePiece decoder.
+        sp_model: Fixed Phone69 tokenizer.
 
     Returns:
         List of (decoded_text, score, token_ids) tuples.
     """
     tokens_idx = 0
     score_idx = 3
-    if hasattr(sp_model, "non_emitting_ids"):
-        post_process_remove_list = sp_model.non_emitting_ids
-    else:
-        post_process_remove_list = [sp_model.unk_id(), sp_model.eos_id(), sp_model.pad_id()]
+    post_process_remove_list = sp_model.non_emitting_ids
     filtered_hypo_tokens = [
         [
             token_index
@@ -101,10 +98,7 @@ def post_process_hypos(
         for h in hypos
     ]
     hypos_str = [sp_model.decode(s) for s in filtered_hypo_tokens]
-    hypos_ids = (
-        filtered_hypo_tokens if hasattr(sp_model, "non_emitting_ids")
-        else [h[tokens_idx][1:] for h in hypos]
-    )
+    hypos_ids = filtered_hypo_tokens
     hypos_score = [[math.exp(h[score_idx])] for h in hypos]
 
     nbest_batch = list(zip(hypos_str, hypos_score, hypos_ids))
