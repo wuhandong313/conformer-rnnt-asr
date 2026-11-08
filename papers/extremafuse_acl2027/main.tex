@@ -141,7 +141,7 @@ The completed counts also distinguish encoder savings from candidate-scoring wor
 Two comparisons remain open. On test-other we will test whether E06 stays within a prespecified acceptable PER increase over E05 and report the corresponding full-corpus MAC ratio. We will also compare E06 with independently trained uniform pooling at the same two sites and report realized frame counts, PER and major MACs. The empty entries in Table~\ref{tab:systems} are reserved for these measurements.
 % FILL independent quality: verify held-out use and phone-label coverage; fix the allowable loss in percentage points before scoring. Report E06-minus-E05 PER, its paired interval and whether its upper endpoint satisfies the margin.
 % FILL trained pooling: compare both stages' retained fractions, paired PER and full-corpus MACs with E06. If pooling matches E06, say so when interpreting the contribution of adaptive fusion.
-% FILL optional budget curve: independently train fixed-stride candidates with fewer encoder layers; freeze the candidate grid, training protocol and dev-clean computation budgets before test evaluation. Report actual layer counts, parameters, PER intervals and full-corpus MACs. Do not truncate trained checkpoints or interpolate quality between observed points.
+% FILL fixed-stride curve: strides 1, 2 and 8 are authorized for fresh serial training with the same 128-dimensional per-frame projection and ten encoder layers as stride4. Stacking changes the encoder width to 128, 256 and 1024. Report actual batch budgets, updates, parameters, PER intervals and full-corpus MACs; freeze dev selection before independent test evaluation. Do not interpolate quality between observed points.
 
 \section{Analysis}
 \label{sec:analysis}

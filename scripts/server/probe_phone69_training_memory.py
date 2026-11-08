@@ -91,9 +91,12 @@ def select_batches(datasets, samples, model, cfg):
                     m['num_layers'] * t1**2 if 'stages' in comp else
                     m['num_layers_block1'] * t1**2 + m['num_layers_block2'] * t2**2),
                 'joint_elements': b * t2 * (u + 1) * (m['num_symbols'] + 1),
+                'encoder_activation_elements': b * t1 * (
+                    m.get('time_reduction_input_dim', 128) * stride + m.get('ffn_dim', 512)),
             })
     selected = {}
-    for key in ('attention_elements', 'joint_elements', 'utterances', 'max_feature_frames'):
+    for key in ('attention_elements', 'joint_elements', 'encoder_activation_elements',
+                'utterances', 'max_feature_frames', 'max_target_phones'):
         record = max(records, key=lambda row: row[key])
         selected[(record['dataset_index'], record['batch_index'])] = record
     for dataset_index in range(len(datasets)):
@@ -111,7 +114,11 @@ def main():
     parser.add_argument('--metadata-only', action='store_true')
     parser.add_argument('--guard-ratio', type=float, help='Override only the RNNT frame estimate')
     parser.add_argument('--keep-cache', action='store_true', help='Keep allocator cache between different batch shapes')
+    parser.add_argument('--rounds', type=int, default=1, help='Repeat selected real batches to check steady-state memory')
+    parser.add_argument('--random-batches', type=int, default=0, help='Additional deterministic training batch shapes')
     args = parser.parse_args()
+    if args.rounds < 1 or args.random_batches < 0:
+        parser.error('rounds must be positive and random-batches nonnegative')
     os.chdir(REPO)
 
     import torch
@@ -138,6 +145,7 @@ def main():
         'pid': os.getpid(), 'budget': cfg['data']['max_token_limit'],
         'rnnt_frames_per_char': cfg['data']['rnnt_frames_per_char'], 'results': [],
         'keep_allocator_cache': args.keep_cache,
+        'rounds': args.rounds, 'random_batches': args.random_batches,
         'source_sha256': {
             str(p.relative_to(REPO)): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in sorted((REPO / 'conformer_rnnt').rglob('*.py'))
@@ -153,7 +161,18 @@ def main():
         print(json.dumps(report), flush=True)
         return
     selected = select_batches(datasets, samples, model, cfg)
-    worst_joint = max(selected, key=lambda row: row['joint_elements'])
+    if args.random_batches:
+        import random
+        randomizer = random.Random(cfg['seed'])
+        selected_keys = {(r['dataset_index'], r['batch_index']) for r in selected}
+        for index, dataset in enumerate(datasets):
+            if dataset.base_dataset._url in model.val_subsets:
+                continue
+            for batch_index in randomizer.sample(range(len(dataset)), min(args.random_batches, len(dataset))):
+                if (index, batch_index) not in selected_keys:
+                    selected.append(dict(dataset_index=index, subset=dataset.base_dataset._url,
+                                         batch_index=batch_index, selection='deterministic_random'))
+    worst_joint = max(selected, key=lambda row: row.get('joint_elements', 0))
     if worst_joint['joint_elements'] >= cfg['data']['rnnt_numel_limit']:
         report.update(status='unsafe_joint', selected_batches=selected,
                       error='Actual audio-duration joint upper bound exceeds RNNT element limit')
@@ -161,7 +180,12 @@ def main():
         raise SystemExit(2)
     report.update(status='running', selected_batches=selected,
                   batches_per_subset={ds.base_dataset._url: len(ds) for ds in datasets},
+                  utterances_per_subset={ds.base_dataset._url: sum(map(len, ds.batches)) for ds in datasets},
+                  batch_structure_sha256=hashlib.sha256(json.dumps(
+                      [ds.batches for ds in datasets], separators=(',', ':')).encode()).hexdigest(),
                   parameters=sum(p.numel() for p in model.parameters()))
+    for dataset in datasets:
+        assert sum(map(len, dataset.batches)) == len(dataset.base_dataset), 'Batching omitted utterances'
     save_json(output, report)
     print(json.dumps({'selected_batches': selected}), flush=True)
     model.cuda().train()
@@ -169,7 +193,8 @@ def main():
     total_memory = torch.cuda.get_device_properties(0).total_memory
     report['gpu_total_GiB'] = total_memory / 1024**3
     try:
-        for record in selected:
+        for iteration in range(args.rounds * len(selected)):
+            record = selected[iteration % len(selected)]
             model.optimizer.zero_grad(set_to_none=True)
             gc.collect()
             if not args.keep_cache:
@@ -193,6 +218,7 @@ def main():
             model.optimizer.step()
             torch.cuda.synchronize()
             result = dict(record, phones=int(batch.target_lengths.sum()),
+                          round=iteration // len(selected) + 1,
                           feature_mode='validation_with_backward_stress' if validation_features else 'training',
                           peak_allocated_GiB=torch.cuda.max_memory_allocated() / 1024**3,
                           peak_reserved_GiB=torch.cuda.max_memory_reserved() / 1024**3,

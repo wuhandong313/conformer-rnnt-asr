@@ -1,0 +1,67 @@
+{
+  "status": "passed",
+  "location": "local_development_machine",
+  "regression_tests": 73,
+  "models": [
+    {
+      "stride": 1,
+      "projection": 128,
+      "internal_dim": 128,
+      "layers": 10,
+      "parameters": 4215622,
+      "output_shape": [
+        2,
+        19,
+        3,
+        70
+      ],
+      "lengths": [
+        19,
+        17
+      ],
+      "finite_forward_backward": true,
+      "config": "configs/server_phone69_460h_offline_native_stride1_none_proj128_s42_e50.yaml",
+      "config_sha256": "e981c670f539b23a63b257a3714868646dd8e9905cfa1dd9ea1f9ac20ae844d7"
+    },
+    {
+      "stride": 2,
+      "projection": 128,
+      "internal_dim": 256,
+      "layers": 10,
+      "parameters": 10378310,
+      "output_shape": [
+        2,
+        10,
+        3,
+        70
+      ],
+      "lengths": [
+        10,
+        9
+      ],
+      "finite_forward_backward": true,
+      "config": "configs/server_phone69_460h_offline_native_stride2_none_proj128_s42_e50.yaml",
+      "config_sha256": "6a8dcfd68b3540fb44fa08dba314b588b56c4be1ea771ae3eccd421032aeebe0"
+    },
+    {
+      "stride": 8,
+      "projection": 128,
+      "internal_dim": 1024,
+      "layers": 10,
+      "parameters": 95523398,
+      "output_shape": [
+        2,
+        3,
+        3,
+        70
+      ],
+      "lengths": [
+        3,
+        3
+      ],
+      "finite_forward_backward": true,
+      "config": "configs/server_phone69_460h_offline_native_stride8_none_proj128_s42_e50.yaml",
+      "config_sha256": "90cca428498888b8b30a8424f930818035a096a88471c7e9d465347e633ff693"
+    }
+  ]
+}

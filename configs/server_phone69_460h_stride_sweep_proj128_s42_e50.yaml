@@ -1,0 +1,20 @@
+# Authorized fixed-stride family: projection 128, ten layers, no adaptive compression.
+# Each fresh run tunes its own token budget immediately before serial training.
+runtime_dir: output/phone69_460h_stride_sweep_proj128_20261108
+batch_search:
+  initial: 7000
+  minimum: 1000
+  maximum: 100000
+  quantum: 100
+  growth: 1.4
+  max_reserved_fraction: 0.96
+experiments:
+  - name: stride1_proj128
+    stride: 1
+    config: configs/server_phone69_460h_offline_native_stride1_none_proj128_s42_e50.yaml
+  - name: stride2_proj128
+    stride: 2
+    config: configs/server_phone69_460h_offline_native_stride2_none_proj128_s42_e50.yaml
+  - name: stride8_proj128
+    stride: 8
+    config: configs/server_phone69_460h_offline_native_stride8_none_proj128_s42_e50.yaml
