@@ -74,8 +74,10 @@ def placement_options_from_config(model_config: Dict[str, Any]) -> Dict[str, Any
         return {}
     if model_config.get("sequence_mode") != "offline":
         raise ValueError("compression.stages requires sequence_mode: offline")
-    if set(compression) != {"stages"}:
+    if set(compression) - {"stages", "execution_backend"}:
         raise ValueError("compression.stages cannot be mixed with single-stage/rate/context options")
+    if compression.get("execution_backend", "reference") not in ("reference", "batched"):
+        raise ValueError("Unknown compression execution backend")
     if any(key in model_config for key in (
         "num_layers_block1", "num_layers_block2", "left_context_length", "right_context_length",
     )):
@@ -90,8 +92,14 @@ def placement_options_from_config(model_config: Dict[str, Any]) -> Dict[str, Any
 class CompressionSchedule(torch.nn.Module):
     """Own trainable modules and expose per-stage observed lengths to the runner."""
 
-    def __init__(self, stages: List[dict], num_layers: int, input_dim: int, hidden_dim: int):
+    def __init__(
+        self, stages: List[dict], num_layers: int, input_dim: int, hidden_dim: int,
+        *, execution_backend: str = "reference",
+    ):
         super().__init__()
+        if execution_backend not in ("reference", "batched"):
+            raise ValueError(f"Unknown compression execution backend: {execution_backend}")
+        self._execution_backend = execution_backend
         self.definitions = []
         modules = []
         for stage in normalize_compression_stages(stages, num_layers):
@@ -105,6 +113,7 @@ class CompressionSchedule(torch.nn.Module):
                 window_size=stage.get("window_size", 5),
                 weight_predictor_mode=stage.get("weight_predictor_mode", "five_frames"),
                 neighborhood_radius=stage["neighborhood_radius"],
+                execution_backend=execution_backend,
             ))
         self.stages = torch.nn.ModuleList(modules)
         self._index = {stage["after_layer"]: i for i, stage in enumerate(self.definitions)}
@@ -112,6 +121,11 @@ class CompressionSchedule(torch.nn.Module):
         # Opt-in index traces are observations, never an input to the selector.
         self.record_indices = False
         self.last_indices = None
+
+    @property
+    def execution_backend(self) -> str:
+        """Backend chosen for all stages at construction time."""
+        return self._execution_backend
 
     def start_batch(self, lengths):
         self.last_lengths = {"input": lengths.tolist(), "stages": []}

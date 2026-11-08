@@ -132,8 +132,6 @@ def conformer_rnnt_model(
     All parameters are keyword-only to prevent positional confusion.
     """
     if compression_stages is not None:
-        if compression_execution_backend != "reference":
-            raise ValueError("Batched backend is not implemented for staged compression")
         if (sequence_mode != "offline" or right_context_length != 0
                 or compression_right_context_length is not None or compression_keep_rate is not None):
             raise ValueError("Staged compression is offline, without context partitions or a target rate")
@@ -146,6 +144,7 @@ def conformer_rnnt_model(
             num_heads=num_heads, ffn_dim=ffn_dim, num_layers=encoder_num_layers,
             compression_stages=compression_stages, dropout=dropout,
             depthwise_conv_kernel_size=depthwise_conv_kernel_size,
+            compression_execution_backend=compression_execution_backend,
         )
     else:
         if encoder_num_layers is not None:

@@ -12,9 +12,51 @@ model:
     execution_backend: batched
 ```
 
-缺省为 `reference`，现有配置及运行中的实验不变。当前只支持非流式、未经平滑的 cosine_diff、单个压缩层、five_frames 或 nine_frames 的 learned 融合，且不支持 neighborhood_radius。暂不支持 staged、其他探测器、其他融合方法；会明确报错，不静默更换算法。两种后端共享模型参数及 checkpoint 的计算定义；配置、代码和实际后端仍应通过实验配置与代码指纹记录。
+缺省为 `reference`。单压缩层支持非流式 cosine_diff 的 five_frames 或 nine_frames learned 融合；多阶段支持现有 placement 配方中的未经平滑的 cosine_diff、five_frames learned 融合。不支持 hard 融合、neighborhood_radius 或其他探测器的 batched 执行；不支持的组合会明确报错。
+
+多阶段配置示例（合并到独立实验配方的 `model` 节中）：
+
+```yaml
+model:
+  sequence_mode: offline
+  num_layers: 10
+  compression:
+    execution_backend: batched
+    stages:
+      - after_layer: 0
+        detector:
+          type: cosine_diff
+        mixer:
+          type: learned
+        window_size: 5
+        weight_predictor_mode: five_frames
+      - after_layer: 5
+        detector:
+          type: cosine_diff
+        mixer:
+          type: learned
+        window_size: 5
+        weight_predictor_mode: five_frames
+      - after_layer: 8
+        detector:
+          type: cosine_diff
+        mixer:
+          type: learned
+        window_size: 5
+        weight_predictor_mode: five_frames
+```
+
+`execution_backend` 只放在 `compression` 顶层，应用到所有压缩位置，并在模型构造时确定。切换时用新配置构建模型后载入兼容 checkpoint；调度器的 `execution_backend` 是只读属性。每个阶段独立检测当前序列，并把自己的输出长度传给后续编码层和压缩阶段；Mel 端使用输入特征维度，后续阶段使用编码器维度。两种后端共享融合参数、state_dict 键和 checkpoint 的计算定义，不改变峰谷索引规则、五帧融合、层位置或保留帧策略。执行后端仍记录在配置与 Lightning 超参数中；切换后端需要记录新的代码和配置指纹。
 
 GPU 实现使用排序和一次观测 batch 最大保留帧数来构建变长输出，同时保留输入/输出长度记录。仍有按 batch 的 CPU/GPU 同步；不是零同步实现。批量窗口可能增加临时显存，正式使用前必须在最大压力批次测量。
+
+## 2026-11-07 多阶段接入
+
+模型工厂、多阶段编码器和调度器已传递同一个后端选项；省略选项保持原来的 reference 构建与计算路径。多阶段回归检查覆盖每阶段索引和长度、padding、输出与梯度、RNN-T loss，以及双向 checkpoint 兼容。测试位于 `tests/test_staged_batched_cosine.py`，有本地 CUDA 时同时检查 CUDA 路径。
+
+本地 CPU 完整回归 97 项通过，其中新增 8 项多阶段检查。正式 80/128 维、10 层 `[0,5,8]` 配方的参数量仍为 4,269,973；测试输入下的阶段索引和长度一致，最终输出最大绝对差约 `1.91e-6`，参数梯度整体相对 L2 差约 `4.41e-7`。正式深层梯度测试沿用 `rtol=5e-4`，近零元素使用 `atol=2e-5`，并额外要求每个参数张量的相对 L2 差不超过 `1e-5`；小模型测试维持原有容差。
+
+测试要求每阶段索引与长度精确一致、浮点输出和梯度在误差范围内一致，不承诺逐位相同或后续训练轨迹完全一致。全为空序列或单帧的阶段会跳过融合网络，保持参数梯度为 `None`，避免 Adam 因零梯度继续更新已有动量。本机没有 CUDA，多阶段 CUDA 数值、峰值显存和速度仍需未来在获授权的独立实验中测量；已有单层基准不能替代多阶段验证。软件回归测试在本地运行；当前训练不作为测试场地。
 
 ## 2026-10-29 验证状态
 

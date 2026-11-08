@@ -83,6 +83,14 @@ def batched_natural_cosine_fusion(
     length_cpu = lengths.detach().cpu()
     if torch.any(length_cpu < 0) or torch.any(length_cpu > time):
         raise ValueError('Sequence length exceeds available frames')
+    if torch.all(length_cpu <= 1):
+        # The reference bypasses its mixer for every empty/singleton sequence.
+        # Do not evaluate the MLP here: zero parameter gradients would still
+        # advance optimizer moments, whereas the reference leaves grads None.
+        width = int(length_cpu.max().item())
+        frame_mask = torch.arange(time, device=input.device)[None, :] < lengths.to(input.device)[:, None]
+        output = input[:, :width].masked_fill(~frame_mask[:, :width, None], 0.0)
+        return output, lengths.clone(), frame_mask
     with torch.no_grad():
         detection_input = input
         if feature_smoothing_alpha > 0:

@@ -22,6 +22,7 @@ class StagedConformerEncoder(torch.nn.Module):
         time_reduction_stride: int, num_heads: int, ffn_dim: int, num_layers: int,
         compression_stages: List[dict], dropout: float = 0.1,
         depthwise_conv_kernel_size: int = 31,
+        compression_execution_backend: str = "reference",
     ) -> None:
         super().__init__()
         self.sequence_mode = "offline"
@@ -29,7 +30,10 @@ class StagedConformerEncoder(torch.nn.Module):
         dim = time_reduction_input_dim * time_reduction_stride
         self.input_linear = torch.nn.Linear(input_dim, time_reduction_input_dim, bias=False)
         self.time_reduction = TimeReduction(time_reduction_stride, pad_to_stride=True)
-        self.compression = CompressionSchedule(compression_stages, num_layers, input_dim, dim)
+        self.compression = CompressionSchedule(
+            compression_stages, num_layers, input_dim, dim,
+            execution_backend=compression_execution_backend,
+        )
         self.block_ends = [
             stage["after_layer"] for stage in self.compression.definitions if stage["after_layer"] > 0
         ] + [num_layers]
