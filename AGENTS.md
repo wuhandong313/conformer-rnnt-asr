@@ -28,7 +28,9 @@ Keep training options in YAML: `train.py` accepts one configuration path. Keep m
 
 ## Testing Guidelines
 
-No coverage threshold is configured. Add focused regression tests as `tests/test_<feature>.py` and run them with `python -m unittest discover -s tests`. For compression changes, verify tensor shapes, sequence lengths, preserved right-context frames, and legacy behavior. Run a small evaluation when assets are available; fixed Phone69 configs report corpus PER and mean utterance RTF. The archived corpus RTF protocol is documented in the authoritative evaluation archive.
+No coverage threshold is configured. Add focused regression tests as `tests/test_<feature>.py` and run them with `python -m unittest discover -s tests`. For compression changes, verify tensor shapes, sequence lengths, preserved right-context frames, and legacy behavior. Run a small evaluation when assets are available; fixed Phone69 configs report corpus PER.
+
+For the current Phone69 study and manuscript, compare corpus PER with major MACs per input-audio second (GMAC/audio-s). Report encoder/compression and predictor/joiner components, the counted operator scope, and actual beam-search settings. Use a computation budget for budget-matched comparisons. Do not use RTF, repeated timing, or device-specific speedup claims as study outcomes. Preserve historical evaluation archives, including their timing fields. Keep pilot counts separate from full-corpus results; pending full counts stay unreported.
 
 Run unit, regression, smoke, and other software tests on the local development machine. Do not run tests on the training server; reserve it for explicitly authorized training or evaluation jobs.
 
