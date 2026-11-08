@@ -38,52 +38,12 @@
     "E03",
     "E04",
     "E05",
-    "E06",
-    "E07",
-    "E08",
-    "E09",
-    "E10"
+    "E06"
   ],
   "pending_full_counts": [],
   "models": [
     {
       "id": "E01",
-      "name": "stride4_none",
-      "per_percent": 6.128883786629141,
-      "projection": 32,
-      "backbone": 128,
-      "count_status": "complete",
-      "encoder_compression_gmac_per_audio_second": 0.11424077874736349,
-      "predictor_joiner_gmac_per_audio_second": 0.1297962920280251,
-      "total_gmac_per_audio_second": 0.24403707077538858,
-      "components_macs": {
-        "encoder_weights": 1857470048000,
-        "attention_products": 343827950080,
-        "projections": 20968537088,
-        "fusion_mlp": 0,
-        "detector_dots": 0,
-        "fusion_weighted_sum": 0,
-        "predictor": 2216306737152,
-        "joiner": 308553118720
-      },
-      "total_major_macs": 4747126391040,
-      "source": "artifacts/research/phone69_460h_compute_20261108/full/E01.json",
-      "source_sha256": "7bae630a1858a54454ce6b23003db1b218163c6e5baddfbef79e6b5eed717ad6",
-      "config_sha256": "c781d6b13c3a89ae314562a1b0ea18fda549cf4c771f0fdbd963dc2a18932d83",
-      "checkpoint_sha256": "856b24c15f7450c4334810728f3681596ee43653ac855e73efddd51cbd47fd3b",
-      "provenance": {
-        "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
-        "counter_sha256": "a8e121caf614f1686f832318738d8a149521a07fd2ff9f8af9f62962dabc3e5d",
-        "index_sha256": "67d5c7848b418cb40229d47d7d3138f619ed00a6ae608650ef48abfe0c9c48bb",
-        "subset": "test-clean",
-        "sample_per_quartile": null,
-        "torch": "2.8.0",
-        "torchaudio": "2.8.0"
-      },
-      "total_ratio_to_E09": 0.26326246941359444
-    },
-    {
-      "id": "E02",
       "name": "stride1_cosd_learned_five_frames",
       "per_percent": 5.514143781444586,
       "projection": 128,
@@ -116,82 +76,11 @@
         "torch": "2.8.0",
         "torchaudio": "2.8.0"
       },
-      "total_ratio_to_E09": 0.5246838189958071
+      "archive_id": "E02",
+      "total_ratio_to_baseline": 0.5246838189958071
     },
     {
-      "id": "E03",
-      "name": "stride2_cosd_learned_five_frames",
-      "per_percent": 6.713468731318412,
-      "projection": 64,
-      "backbone": 128,
-      "count_status": "complete",
-      "encoder_compression_gmac_per_audio_second": 0.12418051717185556,
-      "predictor_joiner_gmac_per_audio_second": 0.11075105795603382,
-      "total_gmac_per_audio_second": 0.23493157512788937,
-      "components_macs": {
-        "encoder_weights": 1932537152000,
-        "attention_products": 451865710592,
-        "projections": 22775625728,
-        "fusion_mlp": 8066132640,
-        "detector_dots": 124370688,
-        "fusion_weighted_sum": 250112640,
-        "predictor": 1899818385408,
-        "joiner": 254564423680
-      },
-      "total_major_macs": 4570001913376,
-      "source": "artifacts/research/phone69_460h_compute_20261108/full/E03.json",
-      "source_sha256": "2b300ce50946a6eaae45a134b88db335436833eea5c18b6335a3db36d46fa664",
-      "config_sha256": "696e16cdb7e91d6089d8b1da227ef1e65235f3ba49cc5ccec233737ab7b1e9d2",
-      "checkpoint_sha256": "dd2d95921a78963e99b94a5aac23c8e302580c9896d6fb25ce7d855e7480d04c",
-      "provenance": {
-        "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
-        "counter_sha256": "a8e121caf614f1686f832318738d8a149521a07fd2ff9f8af9f62962dabc3e5d",
-        "index_sha256": "67d5c7848b418cb40229d47d7d3138f619ed00a6ae608650ef48abfe0c9c48bb",
-        "subset": "test-clean",
-        "sample_per_quartile": null,
-        "torch": "2.8.0",
-        "torchaudio": "2.8.0"
-      },
-      "total_ratio_to_E09": 0.25343963691614285
-    },
-    {
-      "id": "E04",
-      "name": "stride4_cosd_learned_five_frames",
-      "per_percent": 7.608068859345159,
-      "projection": 32,
-      "backbone": 128,
-      "count_status": "complete",
-      "encoder_compression_gmac_per_audio_second": 0.05640585023494915,
-      "predictor_joiner_gmac_per_audio_second": 0.07657456414878193,
-      "total_gmac_per_audio_second": 0.13298041438373107,
-      "components_macs": {
-        "encoder_weights": 967872505600,
-        "attention_products": 113733466624,
-        "projections": 11399756800,
-        "fusion_mlp": 4040589600,
-        "detector_dots": 62100608,
-        "fusion_weighted_sum": 125289600,
-        "predictor": 1338980401152,
-        "joiner": 150584824320
-      },
-      "total_major_macs": 2586798934304,
-      "source": "artifacts/research/phone69_460h_compute_20261108/full/E04.json",
-      "source_sha256": "54e228a997d81b4bdfee8159d4418d4b8425967b4798c8b94a499d96aabed17b",
-      "config_sha256": "752ea4b568f2e61dd839ff378218b623910e4c2f6e7b35bed43314b2dfa909b9",
-      "checkpoint_sha256": "e00b5dd7bf64eb3eafb23c2c6f8a8a11578bef3b90c1c49cf7ca795ab10ef494",
-      "provenance": {
-        "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
-        "counter_sha256": "a8e121caf614f1686f832318738d8a149521a07fd2ff9f8af9f62962dabc3e5d",
-        "index_sha256": "67d5c7848b418cb40229d47d7d3138f619ed00a6ae608650ef48abfe0c9c48bb",
-        "subset": "test-clean",
-        "sample_per_quartile": null,
-        "torch": "2.8.0",
-        "torchaudio": "2.8.0"
-      },
-      "total_ratio_to_E09": 0.14345669763642643
-    },
-    {
-      "id": "E05",
+      "id": "E02",
       "name": "placement_mel_stride1",
       "per_percent": 5.578157155478434,
       "projection": 128,
@@ -224,10 +113,11 @@
         "torch": "2.8.0",
         "torchaudio": "2.8.0"
       },
-      "total_ratio_to_E09": 0.4121700457647226
+      "archive_id": "E05",
+      "total_ratio_to_baseline": 0.4121700457647226
     },
     {
-      "id": "E06",
+      "id": "E03",
       "name": "placement_layer5_stride1",
       "per_percent": 4.780899678875058,
       "projection": 128,
@@ -260,10 +150,11 @@
         "torch": "2.8.0",
         "torchaudio": "2.8.0"
       },
-      "total_ratio_to_E09": 0.6743669779050843
+      "archive_id": "E06",
+      "total_ratio_to_baseline": 0.6743669779050843
     },
     {
-      "id": "E07",
+      "id": "E04",
       "name": "placement_layer7_stride1",
       "per_percent": 4.8602551012310675,
       "projection": 128,
@@ -272,7 +163,6 @@
       "encoder_compression_gmac_per_audio_second": 0.5222799229140473,
       "predictor_joiner_gmac_per_audio_second": 0.18133936925795036,
       "total_gmac_per_audio_second": 0.7036192921719977,
-      "total_ratio_to_E09": 0.7590508761463418,
       "components_macs": {
         "encoder_weights": 6027097148800,
         "attention_products": 4072776845568,
@@ -296,46 +186,12 @@
         "sample_per_quartile": null,
         "torch": "2.8.0",
         "torchaudio": "2.8.0"
-      }
-    },
-    {
-      "id": "E08",
-      "name": "placement_layers2_5_n3_stride1",
-      "per_percent": 5.4210334192135345,
-      "projection": 128,
-      "backbone": 128,
-      "count_status": "complete",
-      "encoder_compression_gmac_per_audio_second": 0.3838753080597401,
-      "predictor_joiner_gmac_per_audio_second": 0.17847109286587454,
-      "total_gmac_per_audio_second": 0.5623464009256146,
-      "total_ratio_to_E09": 0.6066484149442389,
-      "components_macs": {
-        "encoder_weights": 4733802483200,
-        "attention_products": 2675197166080,
-        "projections": 42932432896,
-        "fusion_mlp": 14482716480,
-        "detector_dots": 463117312,
-        "fusion_weighted_sum": 449076480,
-        "predictor": 3036643393536,
-        "joiner": 435062082560
       },
-      "total_major_macs": 10939032468544,
-      "source": "artifacts/research/phone69_460h_compute_20261108/full/E08.json",
-      "source_sha256": "dc9a64598b8b19686c27378f3eb46290b566dabd21457617e13cfc53d536cc0d",
-      "config_sha256": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
-      "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
-      "provenance": {
-        "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
-        "counter_sha256": "a8e121caf614f1686f832318738d8a149521a07fd2ff9f8af9f62962dabc3e5d",
-        "index_sha256": "67d5c7848b418cb40229d47d7d3138f619ed00a6ae608650ef48abfe0c9c48bb",
-        "subset": "test-clean",
-        "sample_per_quartile": null,
-        "torch": "2.8.0",
-        "torchaudio": "2.8.0"
-      }
+      "archive_id": "E07",
+      "total_ratio_to_baseline": 0.7590508761463418
     },
     {
-      "id": "E09",
+      "id": "E05",
       "name": "dim512_stride4_none",
       "per_percent": 5.742687397829894,
       "projection": 128,
@@ -344,7 +200,6 @@
       "encoder_compression_gmac_per_audio_second": 0.8020664161454215,
       "predictor_joiner_gmac_per_audio_second": 0.12490608897074791,
       "total_gmac_per_audio_second": 0.9269725051161695,
-      "total_ratio_to_E09": 1.0,
       "components_macs": {
         "encoder_weights": 14142995471360,
         "attention_products": 1375311800320,
@@ -368,10 +223,12 @@
         "sample_per_quartile": null,
         "torch": "2.8.0",
         "torchaudio": "2.8.0"
-      }
+      },
+      "archive_id": "E09",
+      "total_ratio_to_baseline": 1.0
     },
     {
-      "id": "E10",
+      "id": "E06",
       "name": "placement_mel_layer5_stride1",
       "per_percent": 5.688196674478767,
       "projection": 128,
@@ -380,7 +237,6 @@
       "encoder_compression_gmac_per_audio_second": 0.13207142737416297,
       "predictor_joiner_gmac_per_audio_second": 0.10044591944951493,
       "total_gmac_per_audio_second": 0.23251734682367792,
-      "total_ratio_to_E09": 0.2508352141410478,
       "components_macs": {
         "encoder_weights": 2041762016000,
         "attention_products": 492434327040,
@@ -404,49 +260,44 @@
         "sample_per_quartile": null,
         "torch": "2.8.0",
         "torchaudio": "2.8.0"
-      }
+      },
+      "archive_id": "E10",
+      "total_ratio_to_baseline": 0.2508352141410478
     }
   ],
   "paired_per_differences": [
     {
-      "label": "E10 - E09",
+      "label": "E06 - E05",
       "delta_per_pp": -0.054490723351126584,
       "ci95_pp": [
         -0.19161846545928124,
         0.07612272467397013
       ],
       "source": "artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
-      "source_sha256": "bb1773ffd9dc37765ce4a175df79b5720a9841f4024a7c565137788b48398614"
+      "source_sha256": "bb1773ffd9dc37765ce4a175df79b5720a9841f4024a7c565137788b48398614",
+      "archive_label": "E10 - E09"
     },
     {
-      "label": "E10 - E01",
-      "delta_per_pp": -0.44068711215037326,
-      "ci95_pp": [
-        -0.5857711811954497,
-        -0.3027164905190273
-      ],
-      "source": "artifacts/research/phone69_460h_summary_20261107/acl_original_baseline_pilot.json",
-      "source_sha256": "afbd34ab471adc4825c11544e4bc98576a11b72cf1fbd713d05994e1f782aef3"
-    },
-    {
-      "label": "E06 - E09",
+      "label": "E03 - E05",
       "delta_per_pp": -0.9617877189548362,
       "ci95_pp": [
         -1.1570149846061084,
         -0.7809082811459181
       ],
       "source": "artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
-      "source_sha256": "bb1773ffd9dc37765ce4a175df79b5720a9841f4024a7c565137788b48398614"
+      "source_sha256": "bb1773ffd9dc37765ce4a175df79b5720a9841f4024a7c565137788b48398614",
+      "archive_label": "E06 - E09"
     },
     {
-      "label": "E10 - E05",
+      "label": "E06 - E02",
       "delta_per_pp": 0.11003951900033329,
       "ci95_pp": [
         -0.011147021916636099,
         0.23179342598809047
       ],
       "source": "artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
-      "source_sha256": "6b5154f55308fbfc8edb0674436efd5712bcafb7f9a6486fad9cea7f6f62a20d"
+      "source_sha256": "6b5154f55308fbfc8edb0674436efd5712bcafb7f9a6486fad9cea7f6f62a20d",
+      "archive_label": "E10 - E05"
     }
   ],
   "bootstrap": {
@@ -456,5 +307,24 @@
     "seed": 42
   },
   "full_verification_source": "artifacts/research/phone69_460h_compute_20261108/full/verification.json",
-  "full_verification_sha256": "ecac4ae6a88405e2ec9671d070ed6205b4198341b8b1bb11aca51f171e628c10"
+  "full_verification_sha256": "ecac4ae6a88405e2ec9671d070ed6205b4198341b8b1bb11aca51f171e628c10",
+  "baseline_id": "E05",
+  "two_stage_id": "E06",
+  "id_namespace": "paper_ids_20261108_v2",
+  "archive_id_policy": "Paper IDs are consecutive; archive_id and all source paths retain the immutable original experiment IDs.",
+  "paper_to_archive_ids": {
+    "E01": "E02",
+    "E02": "E05",
+    "E03": "E06",
+    "E04": "E07",
+    "E05": "E09",
+    "E06": "E10"
+  },
+  "excluded_archive_ids": [
+    "E01",
+    "E03",
+    "E04",
+    "E08"
+  ],
+  "previously_excluded_three_stage_archive_id": "E11"
 }

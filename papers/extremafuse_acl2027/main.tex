@@ -33,7 +33,7 @@ A stride-four encoder represents every four input frames with one time step, whe
 
 We propose ExtremaFuse, a local operation on a sequence of frame vectors. Peaks and valleys in adjacent-frame distance determine where to emit a vector. The five frames around each selected position determine its value through learned weights. The operator can act on acoustic features or intermediate encoder states and takes no phone boundaries as input.
 
-We ask two questions. First, within the computation budget of a fixed-stride recognizer, what phone error rate can the adaptive system achieve? We compare systems that match the per-frame projection or the encoder width and count major multiply--accumulate operations along the actual decoding path. Second, what does an additional round of compression cost after the Mel sequence has already been shortened? We count the steps and phone errors, inspect which input frames contribute to an output, and test a length-matched replacement in the same trained model. A breakdown by speaking rate reveals which edit types account for the difference in aggregate error.
+We ask two questions. First, within the computation budget of a fixed-stride recognizer, what phone error rate can the adaptive system achieve? We compare systems with the same per-frame projection width and count major multiply--accumulate operations along the actual decoding path. Second, what does an additional round of compression cost after the Mel sequence has already been shortened? We count the steps and phone errors, inspect which input frames contribute to an output, and test a length-matched replacement in the same trained model. A breakdown by speaking rate reveals which edit types account for the difference in aggregate error.
 
 \section{Related Work}
 \label{sec:related}
@@ -85,40 +85,41 @@ Overlapping windows allow one input to contribute to more than one output. The c
 \cmidrule(lr){5-6}\cmidrule(l){7-8}
 System & proj. & width & (M) & PER (\%) & GMAC/s & PER (\%) & GMAC/s\\
 \midrule
-Fixed stride 4 (E09) & 128 & 512 & 29.58 & 5.7427 & 0.92697 & -- & --\\
-ExtremaFuse, Mel + layer 5 (E10) & 128 & 128 & 4.25 & 5.6882 & 0.23252 & -- & --\\
-ExtremaFuse, Mel only (E05) & 128 & 128 & 4.23 & 5.5782 & 0.38207 & -- & --\\
-Fixed stride 4 (E01) & 32 & 128 & 4.21 & 6.1289 & 0.24404 & -- & --\\
-ExtremaFuse, layer 5 (E06) & 128 & 128 & 4.24 & 4.7809 & 0.62512 & -- & --\\
+Fixed stride 4 (E05) & 128 & 512 & 29.58 & 5.7427 & 0.92697 & -- & --\\
+ExtremaFuse, Mel + layer 5 (E06) & 128 & 128 & 4.25 & 5.6882 & 0.23252 & -- & --\\
+ExtremaFuse, Mel only (E02) & 128 & 128 & 4.23 & 5.5782 & 0.38207 & -- & --\\
+ExtremaFuse, layer 2 (E01) & 128 & 128 & 4.24 & 5.5141 & 0.48637 & -- & --\\
+ExtremaFuse, layer 5 (E03) & 128 & 128 & 4.24 & 4.7809 & 0.62512 & -- & --\\
+ExtremaFuse, layer 7 (E04) & 128 & 128 & 4.24 & 4.8603 & 0.70362 & -- & --\\
 Uniform pooling, Mel + layer 5 & 128 & 128 & -- & -- & -- & -- & --\\
 \bottomrule
 \end{tabular}
-\caption{Phone recognition quality and major MACs per second of input audio (GMAC/s), including encoder, compression, predictor and joiner operations. E09 matches E10's input projection and E01 matches its encoder width. Both metrics are lower-is-better. Dashes mark the planned pooling control and test-other measurements.}
+\caption{Phone recognition quality and major MACs per second of input audio (GMAC/s), including encoder, compression, predictor and joiner operations. All six systems use a 128-dimensional per-frame input projection. Both metrics are lower-is-better. Dashes mark the planned pooling control and test-other measurements.}
 \label{tab:systems}
 \end{table*}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/quality_compute.png}
-\caption{Test-clean PER and full-corpus computation including the decoder for E01--E10 (left). The horizontal line marks E09's PER. Paired PER differences in percentage points (right) use 10,000 paired speaker resamples.}
+\caption{Test-clean PER and full-corpus computation including the decoder for the six retained systems (left). The horizontal line marks E05's PER; the dotted line joins observed nondominated points without estimating intermediate performance. Paired PER differences in percentage points (right) use 10,000 paired speaker resamples.}
 \label{fig:operating}
 \end{figure*}
 
 \subsection{Task and systems}
-We train on LibriSpeech train-clean-100 and train-clean-360 (460 hours) and recognize sequences from a 69-phone ARPABET inventory with vowel stress \citep{panayotov-etal-2015-librispeech}. We evaluate ExtremaFuse in a ten-layer offline Conformer with a transducer objective \citep{gulati20_interspeech,graves-2012-rnnt}. In the two-stage system (E10), fusion first shortens the 80-dimensional Mel sequence before its input projection. A second module acts after layer~5, so the final five encoder layers receive the twice-compressed sequence.
+We train on LibriSpeech train-clean-100 and train-clean-360 (460 hours) and recognize sequences from a 69-phone ARPABET inventory with vowel stress \citep{panayotov-etal-2015-librispeech}. We evaluate ExtremaFuse in a ten-layer offline Conformer with a transducer objective \citep{gulati20_interspeech,graves-2012-rnnt}. In the two-stage system (E06), fusion first shortens the 80-dimensional Mel sequence before its input projection. A second module acts after layer~5, so the final five encoder layers receive the twice-compressed sequence.
 
-Four-frame stacking couples the input projection and encoder width in our baselines. E09 matches E10's 128-dimensional per-frame projection and stacks four projected vectors, giving it a 512-dimensional encoder. E01 uses a 32-dimensional projection to match E10's 128-dimensional encoder and approximate its parameter count (Table~\ref{tab:systems}). We train with seed 42 and select checkpoints by dev-clean validation loss. Batch budgets and update counts differ across runs. Appendix~\ref{app:configs} records the updates at selection and at the end of training.
+Four-frame stacking couples the input projection and encoder width in the baseline. E05 matches the adaptive systems' 128-dimensional per-frame projection and stacks four projected vectors, giving it a 512-dimensional encoder. The adaptive systems use stride one and a 128-dimensional encoder (Table~\ref{tab:systems}). We train with seed 42 and select checkpoints by dev-clean validation loss. Batch budgets and update counts differ across runs. Appendix~\ref{app:configs} records the updates at selection and at the end of training.
 
 \subsection{Uniform pooling control}
-Uniform pooling tests whether comparable compression at the same sites suffices. The planned control uses E10's backbone and replaces both fusion modules with means over contiguous, disjoint segments of as nearly equal length as possible. At each site, its output length depends only on its input length and a retention ratio calibrated from E10 on dev-clean. The rest of the recognizer will be trained from scratch with these two ratios fixed.
-% FILL after control training: record frozen ratios, realized per-stage frame totals, optimizer steps and any difference from E10's training schedule.
+Uniform pooling tests whether comparable compression at the same sites suffices. The planned control uses E06's backbone and replaces both fusion modules with means over contiguous, disjoint segments of as nearly equal length as possible. At each site, its output length depends only on its input length and a retention ratio calibrated from E06 on dev-clean. The rest of the recognizer will be trained from scratch with these two ratios fixed.
+% FILL after control training: record frozen ratios, realized per-stage frame totals, optimizer steps and any difference from E06's training schedule.
 
 \subsection{Quality, cost, and uncertainty}
 Corpus phone error rate (PER) divides total substitutions, deletions and insertions by the number of reference phones. We use the same 2,620 test-clean utterances for every system (189,023 phones, 40 speakers). Paired intervals resample speakers jointly across systems and recompute corpus PER on each of 10,000 draws. Test-clean informed the choice of configurations, so comparisons on this split are exploratory.
 
 We measure computation by major multiply--accumulate operations (MACs) per second of input audio. For utterance counts $C_i$ and actual audio durations $d_i$, the reported value is $\sum_i C_i/(10^9\sum_i d_i)$. One MAC denotes one multiply--accumulate. We use FP32, batch size one and beam width 20. Counts follow each layer's actual sequence length and the hypotheses expanded by beam search, with every output checked against the archived prediction.
 
-The scope includes linear and convolution operations, both attention matrix products, fusion networks, adjacent-frame dot products, weighted fusion, predictor gates and joiner projections. We separate encoder and compression costs from predictor and joiner costs. Feature extraction, normalization, softmax, activations, extrema comparisons, sorting and memory access are outside this major-MAC scope. For the position study, a candidate meets the computation budget when its count divided by E09's count on the same split and decoding protocol is at most one.
+The scope includes linear and convolution operations, both attention matrix products, fusion networks, adjacent-frame dot products, weighted fusion, predictor gates and joiner projections. We separate encoder and compression costs from predictor and joiner costs. Feature extraction, normalization, softmax, activations, extrema comparisons, sorting and memory access are outside this major-MAC scope. For the position study, a candidate meets the computation budget when its count divided by E05's count on the same split and decoding protocol is at most one.
 
 \begin{figure*}[t]
 \centering
@@ -130,23 +131,24 @@ The scope includes linear and convolution operations, both attention matrix prod
 \section{Results}
 \label{sec:results}
 \subsection{Recognition and computation}
-The two-stage system (E10) has a test-clean PER of 5.6882\%, compared with 5.7427\% for E09. E10 makes 103 fewer errors, a difference of $-0.054$ percentage points with a paired 95\% interval of $[-0.192,+0.076]$. The interval leaves the quality ordering uncertain. E10 uses 0.23252 GMAC per second of input audio, compared with 0.92697 for E09, a reduction of 74.92\%. Their respective encoder costs, including compression and projections, are 0.13207 and 0.80207. Predictor and joiner costs are 0.10045 and 0.12491. The systems also differ in encoder width.
+The two-stage system (E06) has a test-clean PER of 5.6882\%, compared with 5.7427\% for E05. E06 makes 103 fewer errors, a difference of $-0.054$ percentage points with a paired 95\% interval of $[-0.192,+0.076]$. The interval leaves the quality ordering uncertain. E06 uses 0.23252 GMAC per second of input audio, compared with 0.92697 for E05, a reduction of 74.92\%. Their respective encoder costs, including compression and projections, are 0.13207 and 0.80207. Predictor and joiner costs are 0.10045 and 0.12491. The systems also differ in encoder width.
 
-Matching the encoder width gives a second comparison. Relative to E01, E10's PER difference is $-0.441$ percentage points, with a paired 95\% interval of $[-0.586,-0.303]$. The input projections and training budgets differ. E06 provides a higher-quality operating point at 4.7809\% PER. Its full-corpus count is 0.62512 GMAC per audio second, compared with 0.24404 for E01 (Figure~\ref{fig:operating}).
+E03 provides a higher-quality operating point at 4.7809\% PER. Relative to E05, its PER difference is $-0.962$ percentage points, with a paired 95\% interval of $[-1.157,-0.781]$. Its full-corpus count is 0.62512 GMAC per audio second, or 67.44\% of the baseline count (Figure~\ref{fig:operating}).
 
-The completed counts also distinguish encoder savings from candidate-scoring work. Moving single-stage fusion from layer~5 (E06) to layer~2 (E02) reduces encoder and compression MACs from 0.43193 to 0.29744 GMAC per audio second, a 31.14\% reduction. Predictor and joiner costs are 0.19319 and 0.18893, respectively, so the total falls by 22.20\%, from 0.62512 to 0.48637. PER increases from 4.7809\% to 5.5141\%. E04 uses 0.13298 GMAC per audio second at 7.6081\% PER. All nine alternatives fall below E09's major-MAC budget. Mel-only fusion (E05), the direct front-end replacement, uses 0.38207 total GMAC per audio second at 5.5782\% PER.
+The completed counts also distinguish encoder savings from candidate-scoring work. Moving single-stage fusion from layer~5 (E03) to layer~2 (E01) reduces encoder and compression MACs from 0.43193 to 0.29744 GMAC per audio second, a 31.14\% reduction. Predictor and joiner costs are 0.19319 and 0.18893, respectively, so the total falls by 22.20\%, from 0.62512 to 0.48637. PER increases from 4.7809\% to 5.5141\%. Layer-7 fusion (E04) uses 0.70362 GMAC per audio second at 4.8603\% PER; its point estimate improves neither metric over layer~5. All five adaptive systems fall below E05's major-MAC budget. Mel-only fusion (E02), the direct front-end replacement, uses 0.38207 total GMAC per audio second at 5.5782\% PER. These are discrete trained systems; connecting the observed nondominated points does not establish performance between them or a multi-budget curve for fixed stride.
 
 \subsection{Independent evaluation and pooling}
-Two comparisons remain open. On test-other we will test whether E10 stays within a prespecified acceptable PER increase over E09 and report the corresponding full-corpus MAC ratio. We will also compare E10 with independently trained uniform pooling at the same two sites and report realized frame counts, PER and major MACs. The empty entries in Table~\ref{tab:systems} are reserved for these measurements.
-% FILL independent quality: verify held-out use and phone-label coverage; fix the allowable loss in percentage points before scoring. Report E10-minus-E09 PER, its paired interval and whether its upper endpoint satisfies the margin.
-% FILL trained pooling: compare both stages' retained fractions, paired PER and full-corpus MACs with E10. If pooling matches E10, say so when interpreting the contribution of adaptive fusion.
+Two comparisons remain open. On test-other we will test whether E06 stays within a prespecified acceptable PER increase over E05 and report the corresponding full-corpus MAC ratio. We will also compare E06 with independently trained uniform pooling at the same two sites and report realized frame counts, PER and major MACs. The empty entries in Table~\ref{tab:systems} are reserved for these measurements.
+% FILL independent quality: verify held-out use and phone-label coverage; fix the allowable loss in percentage points before scoring. Report E06-minus-E05 PER, its paired interval and whether its upper endpoint satisfies the margin.
+% FILL trained pooling: compare both stages' retained fractions, paired PER and full-corpus MACs with E06. If pooling matches E06, say so when interpreting the contribution of adaptive fusion.
+% FILL optional budget curve: independently train fixed-stride candidates with fewer encoder layers; freeze the candidate grid, training protocol and dev-clean computation budgets before test evaluation. Report actual layer counts, parameters, PER intervals and full-corpus MACs. Do not truncate trained checkpoints or interpolate quality between observed points.
 
 \section{Analysis}
 \label{sec:analysis}
 \subsection{The cost of the second fusion stage}
-To examine the second compression itself, the relevant reference is the Mel-only system (E05). Across test-clean, both E05 and E10 produce 764,950 Mel-stage outputs. E10 reduces this to 307,404 steps after layer~5, removing a further 59.81\%. The final sequence retains 15.79\% of the original Mel frames. Computation including the decoder falls from 0.38207 to 0.23252 GMAC per audio second, a reduction of 39.14\%.
+To examine the second compression itself, the relevant reference is the Mel-only system (E02). Across test-clean, both E02 and E06 produce 764,950 Mel-stage outputs. E06 reduces this to 307,404 steps after layer~5, removing a further 59.81\%. The final sequence retains 15.79\% of the original Mel frames. Computation including the decoder falls from 0.38207 to 0.23252 GMAC per audio second, a reduction of 39.14\%.
 
-E10 makes 208 more errors than E05. PER increases from 5.5782\% to 5.6882\%, a difference of $+0.110$ percentage points (paired 95\% interval $[-0.011,+0.232]$). These are separately trained systems. To test how much earlier the additional reduction can occur under the same computation budget, Appendix~\ref{app:placement} reserves one paired comparison with the second stage after layer~2.
+E06 makes 208 more errors than E02. PER increases from 5.5782\% to 5.6882\%, a difference of $+0.110$ percentage points (paired 95\% interval $[-0.011,+0.232]$). These are separately trained systems. To test how much earlier the additional reduction can occur under the same computation budget, Appendix~\ref{app:placement} reserves one paired comparison with the second stage after layer~2.
 
 \subsection{Window coverage and a matched-length intervention}
 \label{sec:weights}
@@ -160,10 +162,10 @@ When the neighbors receiving high weights resemble the center, the fused vector 
 
 On this sample the second stage emits 40.19\% as many vectors as it receives. Its windows cover 98.24\% of the input positions, and 97.03\% receive a weight of at least 0.05 in at least one output. The effective number of inputs per output, $1/\sum_j\alpha_{cj}^2$, averages 3.89. Figure~\ref{fig:weights} shows how a frame between two centers can contribute to both. Coverage measures participation in fusion. Phone errors quantify which distinctions survive recognition.
 
-Could an ordinary mean produce a similar result once the encoder has supplied context? We freeze E10, keep its Mel module, and replace only the layer-5 module with means over equally spaced segments. For every utterance we use exactly the number of outputs that E10 selected. Reference-transcript negative log-likelihood changes from 0.1423 to 0.1435 nats per phone (difference $+0.00117$, paired 95\% interval $[-0.00241,+0.00499]$). Thus the frozen model is also compatible with simple local averaging on this sample. The independently trained two-site control in Table~\ref{tab:systems} tests whether adaptive fusion improves recognition or decoding cost at a similar frame budget.
+Could an ordinary mean produce a similar result once the encoder has supplied context? We freeze E06, keep its Mel module, and replace only the layer-5 module with means over equally spaced segments. For every utterance we use exactly the number of outputs that E06 selected. Reference-transcript negative log-likelihood changes from 0.1423 to 0.1435 nats per phone (difference $+0.00117$, paired 95\% interval $[-0.00241,+0.00499]$). Thus the frozen model is also compatible with simple local averaging on this sample. The independently trained two-site control in Table~\ref{tab:systems} tests whether adaptive fusion improves recognition or decoding cost at a similar frame budget.
 
 \subsection{Speaking rate and the error profile}
-The small aggregate PER difference hides a change in error type. Across test-clean, E10 makes 832 fewer deletions than E09, alongside 235 more substitutions and 494 more insertions. To locate these changes, we group utterances by reference phones per minute of audio, including pauses. The slow and fast groups each contain three deciles and the middle group contains four.
+The small aggregate PER difference hides a change in error type. Across test-clean, E06 makes 832 fewer deletions than E05, alongside 235 more substitutions and 494 more insertions. To locate these changes, we group utterances by reference phones per minute of audio, including pauses. The slow and fast groups each contain three deciles and the middle group contains four.
 
 \begin{table}[t]
 \centering
@@ -177,16 +179,16 @@ Middle & 83,207 & $+95$ & $-326$ & $+279$ & $+0.058$\\
 Fast   & 69,192 & $+85$ & $-504$ & $+255$ & $-0.237$\\
 \bottomrule
 \end{tabular}
-\caption{E10 minus E09 on test-clean by speaking rate. S, D and I count substitutions, deletions and insertions. PER differences are in percentage points.}
+\caption{E06 minus E05 on test-clean by speaking rate. S, D and I count substitutions, deletions and insertions. PER differences are in percentage points.}
 \label{tab:rate}
 \end{table}
 
-The fast group accounts for 164 fewer errors, while the slow and middle groups contribute 13 and 48 additional errors (Table~\ref{tab:rate}). E10 retains similar proportions of the original Mel frames across the three groups (15.74\%, 15.77\% and 15.84\%). The fast-group PER difference is $-0.237$ percentage points (95\% interval $[-0.447,-0.010]$). Testing whether the benefit is larger in fast speech requires comparing groups directly. The fast-minus-slow difference is $-0.273$ percentage points with an interval of $[-0.697,+0.154]$, leaving the rate dependence uncertain.
+The fast group accounts for 164 fewer errors, while the slow and middle groups contribute 13 and 48 additional errors (Table~\ref{tab:rate}). E06 retains similar proportions of the original Mel frames across the three groups (15.74\%, 15.77\% and 15.84\%). The fast-group PER difference is $-0.237$ percentage points (95\% interval $[-0.447,-0.010]$). Testing whether the benefit is larger in fast speech requires comparing groups directly. The fast-minus-slow difference is $-0.273$ percentage points with an interval of $[-0.697,+0.154]$, leaving the rate dependence uncertain.
 % FILL held-out rate analysis: freeze thresholds on dev-clean, then report the same edit counts and fast-minus-slow interval on test-other.
 
 \section{Conclusion}
 \label{sec:conclusion}
-On LibriSpeech test-clean, applying ExtremaFuse at the Mel input and inside the encoder gives a phone error rate close to the stride-four baseline. The second stage cuts the remaining sequence by more than half. Its overlapping windows still assign weight to most input positions, and the frozen model tolerates replacing them with length-matched averages on the diagnostic sample. The completed counts show that moving fusion earlier reduces encoder work while candidate scoring limits the total reduction. E10 uses 25.08\% of E09's major MACs on this split. An independently trained pooling control is needed to test the contribution of adaptive fusion at a comparable frame budget.
+On LibriSpeech test-clean, applying ExtremaFuse at the Mel input and inside the encoder gives a phone error rate close to the stride-four baseline. The second stage cuts the remaining sequence by more than half. Its overlapping windows still assign weight to most input positions, and the frozen model tolerates replacing them with length-matched averages on the diagnostic sample. The completed counts show that moving fusion earlier reduces encoder work while candidate scoring limits the total reduction. E06 uses 25.08\% of E05's major MACs on this split. An independently trained pooling control is needed to test the contribution of adaptive fusion at a comparable frame budget.
 % FILL final conclusion: incorporate the held-out quality margin and trained pooling outcome, including a tie or a reversal.
 
 \section*{Limitations}
@@ -203,7 +205,7 @@ The evaluation uses English audiobook recordings and stressed phone labels. Appl
 \appendix
 \section{Configurations and Reproducibility}
 \label{app:configs}
-Table~\ref{tab:configs} gives the configurations behind Figure~\ref{fig:operating}. For E09 the validation loss selected an earlier checkpoint, at 23,150 of 117,500 updates. E10 was resumed with an increased phone-token batch budget and selected at 89,901 of 90,986 updates. Test scores throughout the paper correspond to the selected checkpoints.
+Table~\ref{tab:configs} gives the configurations behind Figure~\ref{fig:operating}. For E05 the validation loss selected an earlier checkpoint, at 23,150 of 117,500 updates. E06 was resumed with an increased phone-token batch budget and selected at 89,901 of 90,986 updates. Test scores throughout the paper correspond to the selected checkpoints.
 
 \begin{table*}[t]
 \centering
@@ -212,19 +214,15 @@ Table~\ref{tab:configs} gives the configurations behind Figure~\ref{fig:operatin
 \toprule
 ID & Compression site(s) & Stride & Proj./width & Selected step & Final step & PER (\%) & GMAC/s\\
 \midrule
-E01 & Fixed stride & 4 & 32/128 & 46,858 & 56,900 & 6.1289 & 0.24404\\
-E02 & Layer 2 & 1 & 128/128 & 69,137 & 126,550 & 5.5141 & 0.48637\\
-E03 & Layer 2 & 2 & 64/128 & 24,540 & 59,850 & 6.7135 & 0.23493\\
-E04 & Layer 2 & 4 & 32/128 & 43,524 & 48,550 & 7.6081 & 0.13298\\
-E05 & Mel & 1 & 128/128 & 121,688 & 126,550 & 5.5782 & 0.38207\\
-E06 & Layer 5 & 1 & 128/128 & 151,700 & 165,000 & 4.7809 & 0.62512\\
-E07 & Layer 7 & 1 & 128/128 & 118,826 & 126,550 & 4.8603 & 0.70362\\
-E08 & Keep at 2, fuse at 5 & 1 & 128/128 & 73,182 & 141,382 & 5.4210 & 0.56235\\
-E09 & Fixed stride & 4 & 128/512 & 23,150 & 117,500 & 5.7427 & 0.92697\\
-E10 & Mel + layer 5 & 1 & 128/128 & 89,901 & 90,986 & 5.6882 & 0.23252\\
+E01 & Layer 2 & 1 & 128/128 & 69,137 & 126,550 & 5.5141 & 0.48637\\
+E02 & Mel & 1 & 128/128 & 121,688 & 126,550 & 5.5782 & 0.38207\\
+E03 & Layer 5 & 1 & 128/128 & 151,700 & 165,000 & 4.7809 & 0.62512\\
+E04 & Layer 7 & 1 & 128/128 & 118,826 & 126,550 & 4.8603 & 0.70362\\
+E05 & Fixed stride & 4 & 128/512 & 23,150 & 117,500 & 5.7427 & 0.92697\\
+E06 & Mel + layer 5 & 1 & 128/128 & 89,901 & 90,986 & 5.6882 & 0.23252\\
 \bottomrule
 \end{tabular}
-\caption{Full test-clean PER and major MACs per second of input audio, including the decoder. For E08 the first stage keeps the union of each selected center and its immediate neighbors. The second applies learned five-frame fusion. Stride is the fixed stacking factor.}
+\caption{Full test-clean PER and major MACs per second of input audio, including the decoder. All adaptive configurations use learned five-frame fusion. Stride is the fixed stacking factor.}
 \label{tab:configs}
 \end{table*}
 
@@ -235,28 +233,28 @@ All systems use 16 kHz audio, 80 Mel bins and a 10 ms frame hop. Training uses A
 \label{app:diagnostics}
 \subsection{Testing early placements under the computation budget}
 \label{app:placement}
-The stride-one, layer-2-only system (E02) uses 0.48637 GMAC per audio second on test-clean. This is 52.47\% of E09's total. Table~\ref{tab:early} reserves two early placements for distinct questions. A layer-1-only run would test a new one-stage candidate against both E02 and E09. A Mel-plus-layer-2 run could be compared with E02 to examine the addition of Mel fusion, and with E10 to examine moving the second module forward. In the latter comparison, layers~3 through~5 would also process the shortened sequence.
+The stride-one, layer-2-only system (E01) uses 0.48637 GMAC per audio second on test-clean. This is 52.47\% of E05's total. Table~\ref{tab:early} reserves two early placements for distinct questions. A layer-1-only run would test a new one-stage candidate against both E01 and E05. A Mel-plus-layer-2 run could be compared with E01 to examine the addition of Mel fusion, and with E06 to examine moving the second module forward. In the latter comparison, layers~3 through~5 would also process the shortened sequence.
 
 \begin{table}[t]
 \centering
 \small
 \begin{tabular}{@{}lrrr@{}}
 \toprule
-Fusion site(s) & PER (\%) & GMAC/s & Ratio/E09\\
+Fusion site(s) & PER (\%) & GMAC/s & Ratio/E05\\
 \midrule
-Layer 2 (E02) & 5.5141 & 0.48637 & 0.525\\
+Layer 2 (E01) & 5.5141 & 0.48637 & 0.525\\
 Mel + layer 5 & 5.6882 & 0.23252 & 0.251\\
 \midrule
 Layer 1 only & -- & -- & --\\
 Mel + layer 2 & -- & -- & --\\
 \bottomrule
 \end{tabular}
-\caption{Early-placement comparisons on test-clean. E02 and E10 are measured on the full corpus. Dashes reserve optional experiments. A major-MAC ratio of 1 is the baseline computation budget.}
+\caption{Early-placement comparisons on test-clean. E01 and E06 are measured on the full corpus. Dashes reserve optional experiments. A major-MAC ratio of 1 is the baseline computation budget.}
 \label{tab:early}
 \end{table}
 
-Both proposed runs use stride one and a 128-dimensional projection and encoder. Each would follow the corresponding reference training recipe, with the actual updates recorded. We would report stage input and output counts, paired PER and full-corpus major MACs, including any over-budget result. Candidate selection would use the E09-relative computation budget on dev-clean before confirmation on test-other.
-% FILL optional early placement only: for the single-stage question compare layer 1 with E02 and E09. For the two-stage question compare Mel + layer 2 with E02 and E10. Record held-out results only for frozen comparisons.
+Both proposed runs use stride one and a 128-dimensional projection and encoder. Each would follow the corresponding reference training recipe, with the actual updates recorded. We would report stage input and output counts, paired PER and full-corpus major MACs, including any over-budget result. Candidate selection would use the E05-relative computation budget on dev-clean before confirmation on test-other.
+% FILL optional early placement only: for the single-stage question compare layer 1 with E01 and E05. For the two-stage question compare Mel + layer 2 with E01 and E06. Record held-out results only for frozen comparisons.
 
 \subsection{Selection of the illustrated excerpt}
 For the weight diagnostic we select ten utterances per test-clean speaking-rate decile using a deterministic hash of the utterance identifier. Figure~\ref{fig:weights} shows a 0.64-second window centered at the midpoint of the lowest-hash eligible utterance in decile five (at least 200 raw frames). The choice therefore does not use recognition errors or the appearance of the weights.
