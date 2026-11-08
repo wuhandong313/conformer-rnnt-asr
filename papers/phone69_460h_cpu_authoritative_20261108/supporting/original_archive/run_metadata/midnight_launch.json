@@ -1,0 +1,7 @@
+{
+  "thread_id": "01a1b5b0-9a06-7061-be9b-be41fa45be78",
+  "automation_id": "11-8-460h-cpu",
+  "scheduled": "2026-11-08T00:00:00+08:00",
+  "idle_sleep_assertion_pid": 30340,
+  "idle_sleep_assertion_until": "2026-11-08T00:15:00+08:00"
+}

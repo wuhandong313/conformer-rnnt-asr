@@ -1,0 +1,230 @@
+{
+  "schema": 1,
+  "status": "passed",
+  "verified_at": "2026-11-08T10:24:45+08:00",
+  "original_archive": "supporting/original_archive",
+  "original_files": 96,
+  "original_checksum_entries": 95,
+  "original_checksums_passed": true,
+  "authoritative_summary_metrics_equal_original": true,
+  "canonical_path_fields_updated": [
+    "config",
+    "training_config",
+    "csv",
+    "log"
+  ],
+  "models": [
+    {
+      "id": "E01",
+      "metrics_equal_original": true,
+      "result": "supporting/original_archive/E01/result.json",
+      "csv": "supporting/original_archive/E01/attempt_01/utterances.csv",
+      "csv_sha256": "b92d9efcc2cc9c32243fce3393c2f8f4d949a5e0a4fb04ffc4df6af8ad538cfa"
+    },
+    {
+      "id": "E02",
+      "metrics_equal_original": true,
+      "result": "supporting/original_archive/E02/result.json",
+      "csv": "supporting/original_archive/E02/attempt_01/utterances.csv",
+      "csv_sha256": "be5e3a989315c38b57aabc3bf05a50d4c60a6eceebe0794a5781c3d5f02a149b"
+    },
+    {
+      "id": "E03",
+      "metrics_equal_original": true,
+      "result": "supporting/original_archive/E03/result.json",
+      "csv": "supporting/original_archive/E03/attempt_01/utterances.csv",
+      "csv_sha256": "92111e45f0b5ce2286a2ff56b48ad09b8c947a4a69344b6a07ea540b05f5cad5"
+    },
+    {
+      "id": "E04",
+      "metrics_equal_original": true,
+      "result": "supporting/original_archive/E04/result.json",
+      "csv": "supporting/original_archive/E04/attempt_01/utterances.csv",
+      "csv_sha256": "c74df09bfb115507e10e48d3ca6cd0af65a6f3e46af92883b557be99c52885cc"
+    },
+    {
+      "id": "E05",
+      "metrics_equal_original": true,
+      "result": "supporting/original_archive/E05/result.json",
+      "csv": "supporting/original_archive/E05/attempt_01/utterances.csv",
+      "csv_sha256": "92fcc23ff24851c8517ae2a1fab350ca690d764a8ea3cbfe0430020388336fb9"
+    },
+    {
+      "id": "E06",
+      "metrics_equal_original": true,
+      "result": "supporting/original_archive/E06/result.json",
+      "csv": "supporting/original_archive/E06/attempt_01/utterances.csv",
+      "csv_sha256": "df7729151cefd0405d7c89f786fb1825b11c6ee042a49e7d4b939d4b7db4697d"
+    },
+    {
+      "id": "E07",
+      "metrics_equal_original": true,
+      "result": "supporting/original_archive/E07/result.json",
+      "csv": "supporting/original_archive/E07/attempt_01/utterances.csv",
+      "csv_sha256": "ca61d07a5fa41a42ce836526af75167329f08da342187f8639e16a7ff9d5c457"
+    },
+    {
+      "id": "E08",
+      "metrics_equal_original": true,
+      "result": "supporting/original_archive/E08/result.json",
+      "csv": "supporting/original_archive/E08/attempt_01/utterances.csv",
+      "csv_sha256": "0b270c3a9996f067629312d5d9f3e983f49e547c3b36b54b944dc0163dc44041"
+    },
+    {
+      "id": "E09",
+      "metrics_equal_original": true,
+      "result": "supporting/original_archive/E09/result.json",
+      "csv": "supporting/original_archive/E09/attempt_01/utterances.csv",
+      "csv_sha256": "ddb61d71075f1b9a00ebee4c335bf9920e32a65c6532c51b865a52eeab8524f8"
+    },
+    {
+      "id": "E10",
+      "metrics_equal_original": true,
+      "result": "supporting/original_archive/E10/result.json",
+      "csv": "supporting/original_archive/E10/attempt_01/utterances.csv",
+      "csv_sha256": "41ab794a0046c1a9006663775fa035f9b3b509e1f1654873054a89dee95da39f"
+    }
+  ],
+  "authoritative_files": {
+    "README.md": "14efa2208c2839c04f2e3b58fffabfb0ffd058b13dc06b4cfebab9a3c65a4071",
+    "AUTHORITATIVE.json": "dec0469d8aaf6165d938a56c380bfc3cf04f3ef09c4992d7f6910e4d1f2dd860",
+    "summary.csv": "97f9822d06e8970d0aaec933bd34fca18307bf5f499c9a1c6d31c5e23c6c6b86",
+    "summary.json": "335c989c69da333dc96019f77594f932acbdaa0a573259b7ab0240850ff06663"
+  },
+  "supplementary_documents": [
+    {
+      "kind": "research_plan",
+      "path": "supporting/research/phone69_acl_2027_plan_20261107.md",
+      "source_path": "docs/research/phone69_acl_2027_plan_20261107.md",
+      "source_sha256": "160fae19186f68f65af7499b11ce64fe225a3d82489da54d6bd3afe45065dd8b",
+      "archived_sha256": "56782a62a77a1b10a95962d0be270ba379533677cf67038c38f015adf3d66c74",
+      "document_date": "2026-11-07",
+      "status": "historical_research_plan",
+      "content_changes": "relative Markdown link targets rebased to the new folder; prose and numerical values preserved",
+      "relative_links_rebased": 24,
+      "metric_authority": "summary.csv",
+      "link_rewrites": [
+        {
+          "source": "../../conformer_rnnt/compression/detectors.py",
+          "archived": "../../../../conformer_rnnt/compression/detectors.py",
+          "target_exists": true
+        },
+        {
+          "source": "../../conformer_rnnt/compression/mixers.py",
+          "archived": "../../../../conformer_rnnt/compression/mixers.py",
+          "target_exists": true
+        },
+        {
+          "source": "../../conformer_rnnt/compression/natural.py",
+          "archived": "../../../../conformer_rnnt/compression/natural.py",
+          "target_exists": true
+        },
+        {
+          "source": "../../configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
+          "archived": "../../../../configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
+          "target_exists": true
+        },
+        {
+          "source": "../experiments/phone69_460h_results_20261107.md",
+          "archived": "../../../../docs/experiments/phone69_460h_results_20261107.md",
+          "target_exists": true
+        },
+        {
+          "source": "../../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
+          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
+          "target_exists": true
+        },
+        {
+          "source": "../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_rtf_retest.json",
+          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_rtf_retest.json",
+          "target_exists": true
+        },
+        {
+          "source": "../../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
+          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
+          "target_exists": true
+        },
+        {
+          "source": "../../artifacts/research/phone69_460h_summary_20261107/acl_original_baseline_pilot.json",
+          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/acl_original_baseline_pilot.json",
+          "target_exists": true
+        },
+        {
+          "source": "../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_compute.json",
+          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_compute.json",
+          "target_exists": true
+        },
+        {
+          "source": "../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
+          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
+          "target_exists": true
+        },
+        {
+          "source": "../../conformer_rnnt/staged_encoder.py",
+          "archived": "../../../../conformer_rnnt/staged_encoder.py",
+          "target_exists": true
+        },
+        {
+          "source": "../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
+          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
+          "target_exists": true
+        },
+        {
+          "source": "../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_fusion_example_20261107.png",
+          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_fusion_example_20261107.png",
+          "target_exists": true
+        },
+        {
+          "source": "../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
+          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
+          "target_exists": true
+        },
+        {
+          "source": "../../speech_rate_analysis/README.md",
+          "archived": "../../../../speech_rate_analysis/README.md",
+          "target_exists": true
+        },
+        {
+          "source": "../../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
+          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
+          "target_exists": true
+        },
+        {
+          "source": "../../artifacts/research/phone69_460h_summary_20261107/acl_speech_rate_e09_test_clean_pilot.png",
+          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/acl_speech_rate_e09_test_clean_pilot.png",
+          "target_exists": true
+        },
+        {
+          "source": "../experiments/phone69_460h_results_20261107.md",
+          "archived": "../../../../docs/experiments/phone69_460h_results_20261107.md",
+          "target_exists": true
+        },
+        {
+          "source": "../experiments/phone69_460h_rigor_review_20261107.md",
+          "archived": "../../../../docs/experiments/phone69_460h_rigor_review_20261107.md",
+          "target_exists": true
+        },
+        {
+          "source": "../phone69_tokenizer.md",
+          "archived": "../../../../docs/phone69_tokenizer.md",
+          "target_exists": true
+        },
+        {
+          "source": "../experiments/phone69_460h_rigor_review_20261107.md",
+          "archived": "../../../../docs/experiments/phone69_460h_rigor_review_20261107.md",
+          "target_exists": true
+        },
+        {
+          "source": "../phone69_tokenizer.md",
+          "archived": "../../../../docs/phone69_tokenizer.md",
+          "target_exists": true
+        },
+        {
+          "source": "../../artifacts/evaluations/phone69_460h_cpu_serial_20261108/manifest.json",
+          "archived": "../../../../artifacts/evaluations/phone69_460h_cpu_serial_20261108/manifest.json",
+          "target_exists": true
+        }
+      ]
+    }
+  ]
+}

@@ -76,3 +76,9 @@ remote-access.md
 /artifacts/runs/*/source_snapshot/
 /artifacts/runs/phone69_460h_hard_centers_20261030/
 /artifacts/runs/phone69_460h_stride1_five_frames_dim32_20261101/
+
+# Preserve completed CPU evaluation logs; runtime locks and libraries stay local.
+!/artifacts/evaluations/phone69_460h_cpu_serial_20261108/E*/attempt_*/run.log
+!/papers/phone69_460h_cpu_authoritative_20261108/supporting/**/run.log
+/artifacts/evaluations/phone69_460h_cpu_serial_20261108/batch.lock
+/artifacts/evaluations/phone69_460h_cpu_serial_20261108/runtime_lib/

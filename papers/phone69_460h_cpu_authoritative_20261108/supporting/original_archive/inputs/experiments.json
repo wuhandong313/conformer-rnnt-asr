@@ -1,0 +1,2623 @@
+{
+  "schema": 1,
+  "date": "2026-11-07",
+  "timezone": "Asia/Shanghai",
+  "scope": "New phone69 LibriSpeech 460h experiments within the user-selected paper scope; excluded runs omitted; resumed stages are one experiment.",
+  "code_head_at_summary": "91bc5af5675bef3efbb13ba729dbe7f48ad12fc7",
+  "status_observed_local": "2026-11-07T14:09:11.934929+08:00",
+  "server_clock_utc": "2026-11-07T05:20:51Z",
+  "counts": {
+    "experiments": 11,
+    "full_test_clean_results": 10,
+    "trained_awaiting_full_evaluation": 0,
+    "training": 1,
+    "interrupted_with_full_evaluation": 0
+  },
+  "common": {
+    "train_subset": [
+      "train-clean-100",
+      "train-clean-360"
+    ],
+    "val_subset": "dev-clean",
+    "test_subset": "test-clean",
+    "test_utterances": 2620,
+    "test_reference_phones": 189023,
+    "tokenizer": {
+      "type": "phone69",
+      "vocab_path": "configs/phone69_vocab.json"
+    },
+    "vocab_sha256": "381f0fa6dd78e828ccf68c0f4b5d3988aabb3976753d4ae62ffea7f0359876e6",
+    "evaluation_global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457",
+    "repository_assets_stats_sha256": "be2f80418ef66bad30dcd5556e194f95234d75c5d2b94a92d7a766d31900df87",
+    "seed": 42,
+    "target_epochs": 50,
+    "training": {
+      "learning_rate": 0.0005,
+      "adam_betas": [
+        0.9,
+        0.999
+      ],
+      "adam_eps": 1e-08,
+      "warmup_steps": 10000,
+      "rnnt_loss_reduction": "sum",
+      "rnnt_loss_clamp": 1.0,
+      "rnnt_loss_chunk": "batch",
+      "gradient_clip_val": 10.0,
+      "epochs": 50
+    },
+    "trainer": {
+      "accelerator": "cuda",
+      "strategy": "auto",
+      "devices": 1,
+      "num_nodes": 1,
+      "log_every_n_steps": 10,
+      "val_check_interval": 200,
+      "num_sanity_val_steps": 0,
+      "fast_dev_run": false,
+      "matmul_precision": "high",
+      "accumulate_grad_batches": 1,
+      "checkpoint": {
+        "save_top_k": 2,
+        "save_weights_only": true,
+        "save_last": true,
+        "save_on_validation_end": true,
+        "val_checkpoint_interval": 200,
+        "train_checkpoint_interval": 500
+      }
+    },
+    "decoding": {
+      "beam_width": 20
+    }
+  },
+  "experiments": [
+    {
+      "id": "E01",
+      "name": "stride4_none",
+      "label": "stride4 无动态压缩",
+      "training_config_path": "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+      "training_config_sha256": "017cdecbc2e7f088d764bfcf31a2cd071a2b53ccef8b432e33c1b29361418ee2",
+      "server_config_path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50",
+      "configuration": {
+        "paths": {
+          "dataset_path": "/test21/librispeech",
+          "global_stats_path": "/test21/librispeech/global_stats.json",
+          "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50",
+          "from_checkpoint": null
+        },
+        "tokenizer": {
+          "type": "phone69",
+          "vocab_path": "configs/phone69_vocab.json"
+        },
+        "model": {
+          "sequence_mode": "offline",
+          "input_dim": 80,
+          "encoding_dim": 256,
+          "num_symbols": 69,
+          "time_reduction_input_dim": 32,
+          "time_reduction_stride": 4,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "num_layers_block1": 2,
+          "num_layers_block2": 8,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "compression": {
+            "filter": "none"
+          },
+          "predictor": {
+            "symbol_embedding_dim": 128,
+            "num_lstm_layers": 2,
+            "lstm_hidden_dim": 128,
+            "lstm_layer_norm": true,
+            "lstm_layer_norm_epsilon": 0.001,
+            "lstm_dropout": 0.3
+          },
+          "joiner": {
+            "activation": "relu"
+          }
+        },
+        "training": {
+          "learning_rate": 0.0005,
+          "adam_betas": [
+            0.9,
+            0.999
+          ],
+          "adam_eps": 1e-08,
+          "warmup_steps": 10000,
+          "rnnt_loss_reduction": "sum",
+          "rnnt_loss_clamp": 1.0,
+          "rnnt_loss_chunk": "batch",
+          "gradient_clip_val": 10.0,
+          "epochs": 50
+        },
+        "data": {
+          "sample_rate": 16000,
+          "n_fft": 400,
+          "n_mels": 80,
+          "hop_length": 160,
+          "spec_augment": {
+            "freq_mask_param": 27,
+            "time_mask_param": 100,
+            "time_mask_prob": 0.2
+          },
+          "transcript_suffix": "-ph",
+          "strip_spaces": false,
+          "max_token_limit": 23500,
+          "rnnt_numel_limit": 1900000000,
+          "rnnt_frames_per_char": 3.0,
+          "num_workers": 20,
+          "prefetch_factor": 2,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean"
+        },
+        "trainer": {
+          "accelerator": "cuda",
+          "strategy": "auto",
+          "devices": 1,
+          "num_nodes": 1,
+          "log_every_n_steps": 10,
+          "val_check_interval": 200,
+          "num_sanity_val_steps": 0,
+          "fast_dev_run": false,
+          "matmul_precision": "high",
+          "accumulate_grad_batches": 1,
+          "checkpoint": {
+            "save_top_k": 2,
+            "save_weights_only": true,
+            "save_last": true,
+            "save_on_validation_end": true,
+            "val_checkpoint_interval": 200,
+            "train_checkpoint_interval": 500
+          }
+        },
+        "decoding": {
+          "beam_width": 20
+        },
+        "debug": false,
+        "seed": 42
+      },
+      "training_run_sha256": "4e1dd05d3a30960430abbbaca67c3d1a4ed1e36ab43a5f27c5f3aaba9a12d2bf",
+      "training": {
+        "status": "trained",
+        "target_epochs": 50,
+        "reported_epoch": 50,
+        "global_step": 56900,
+        "completed_epochs_at_last_boundary": 50,
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/epoch-boundary-epoch=50-step=56900-c0dcc6788e76.ckpt",
+        "training_complete_marker": true,
+        "code_commit_recorded": "389b1b17fd0214c1134eeb6f442bfc8ad178ce81",
+        "phone_token_budget": 23500,
+        "rnnt_frames_per_char": 3.0,
+        "resume_checkpoint": null,
+        "error": null
+      },
+      "stride": 4,
+      "input_projection_dim": 32,
+      "backbone_dim": 128,
+      "best_checkpoint": {
+        "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50/checkpoints/val-none-epoch=41-step=46858.ckpt",
+        "sha256": "856b24c15f7450c4334810728f3681596ee43653ac855e73efddd51cbd47fd3b",
+        "audit_path": "artifacts/runs/phone69_460h_provenance_20261029/checkpoint_audit.json",
+        "dev_loss": 11.577190399169922,
+        "dev_loss_source": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_stride4_none_s42_e50/lightning_logs/version_0/metrics.csv",
+        "epoch_zero_based": 41,
+        "global_step": 46858
+      },
+      "evaluation": {
+        "utterances": 2620,
+        "phone_errors": 11585,
+        "reference_phones": 189023,
+        "corpus_per": 0.061288837866291405,
+        "mean_utterance_rtf": 0.04847569005032297,
+        "median_utterance_rtf": 0.04462270899498952,
+        "csv_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/stride4_none.csv",
+        "csv_sha256": "dbad31d07361d7123a9c989f3fecc22986cf392b1e19380a3bb494d499617117",
+        "checks": {
+          "idx_contiguous": true,
+          "counts_match": true,
+          "per_consistent": true,
+          "rtf_finite_nonnegative": true,
+          "csv_hash_matches_summary": true,
+          "reference_order_matches": true
+        },
+        "summary_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/summary.json",
+        "evaluation_date": "2026-10-29",
+        "environment": {
+          "accelerator": "cpu",
+          "threads": 4,
+          "interop_threads": 1,
+          "workers": 0,
+          "torch": "2.8.0",
+          "torchaudio": "2.8.0",
+          "beam_width": 20
+        },
+        "config_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+        "config_sha256": "c781d6b13c3a89ae314562a1b0ea18fda549cf4c771f0fdbd963dc2a18932d83",
+        "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
+      },
+      "frame_retention": {
+        "overall_retention": 0.25049891179198436,
+        "frame_totals": {
+          "input_mel_frames": 1947238,
+          "encoder_input_frames": 487781,
+          "encoder_output_frames": 487781
+        },
+        "stages": {},
+        "source": "artifacts/analysis/phone69_460h_testclean_frame_retention_cpu_20261027/compression_summary.json",
+        "date": "2026-10-27",
+        "checkpoint_sha256": "856b24c15f7450c4334810728f3681596ee43653ac855e73efddd51cbd47fd3b",
+        "device": "cpu"
+      },
+      "notes": [],
+      "parameters": 4207942,
+      "parameters_source": "artifacts/runs/phone69_460h_native_offline_five_frames_20261018/dimension_audit.json"
+    },
+    {
+      "id": "E02",
+      "name": "stride1_cosd_learned_five_frames",
+      "label": "stride1 第2层五帧融合",
+      "training_config_path": "configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+      "training_config_sha256": "876c0fd72f69a6653954d9b6b4738a58aa0a2ebfbcf2f1dcf7550bb5528f0c5b",
+      "server_config_path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50",
+      "configuration": {
+        "paths": {
+          "dataset_path": "/test21/librispeech",
+          "global_stats_path": "/test21/librispeech/global_stats.json",
+          "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50",
+          "from_checkpoint": null
+        },
+        "tokenizer": {
+          "type": "phone69",
+          "vocab_path": "configs/phone69_vocab.json"
+        },
+        "model": {
+          "sequence_mode": "offline",
+          "input_dim": 80,
+          "encoding_dim": 256,
+          "num_symbols": 69,
+          "time_reduction_input_dim": 128,
+          "time_reduction_stride": 1,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "num_layers_block1": 2,
+          "num_layers_block2": 8,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "compression": {
+            "detector": {
+              "type": "cosine_diff"
+            },
+            "mixer": {
+              "type": "learned"
+            },
+            "weight_predictor_mode": "five_frames"
+          },
+          "predictor": {
+            "symbol_embedding_dim": 128,
+            "num_lstm_layers": 2,
+            "lstm_hidden_dim": 128,
+            "lstm_layer_norm": true,
+            "lstm_layer_norm_epsilon": 0.001,
+            "lstm_dropout": 0.3
+          },
+          "joiner": {
+            "activation": "relu"
+          }
+        },
+        "training": {
+          "learning_rate": 0.0005,
+          "adam_betas": [
+            0.9,
+            0.999
+          ],
+          "adam_eps": 1e-08,
+          "warmup_steps": 10000,
+          "rnnt_loss_reduction": "sum",
+          "rnnt_loss_clamp": 1.0,
+          "rnnt_loss_chunk": "batch",
+          "gradient_clip_val": 10.0,
+          "epochs": 50
+        },
+        "data": {
+          "sample_rate": 16000,
+          "n_fft": 400,
+          "n_mels": 80,
+          "hop_length": 160,
+          "spec_augment": {
+            "freq_mask_param": 27,
+            "time_mask_param": 100,
+            "time_mask_prob": 0.2
+          },
+          "transcript_suffix": "-ph",
+          "strip_spaces": false,
+          "max_token_limit": 6500,
+          "rnnt_numel_limit": 1900000000,
+          "rnnt_frames_per_char": 3.5,
+          "num_workers": 20,
+          "prefetch_factor": 2,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean"
+        },
+        "trainer": {
+          "accelerator": "cuda",
+          "strategy": "auto",
+          "devices": 1,
+          "num_nodes": 1,
+          "log_every_n_steps": 10,
+          "val_check_interval": 200,
+          "num_sanity_val_steps": 0,
+          "fast_dev_run": false,
+          "matmul_precision": "high",
+          "accumulate_grad_batches": 1,
+          "checkpoint": {
+            "save_top_k": 2,
+            "save_weights_only": true,
+            "save_last": true,
+            "save_on_validation_end": true,
+            "val_checkpoint_interval": 200,
+            "train_checkpoint_interval": 500
+          }
+        },
+        "decoding": {
+          "beam_width": 20
+        },
+        "debug": false,
+        "seed": 42
+      },
+      "training_run_sha256": "dca8e186dc26a4f7fba4360f888455e2b2f9a85757ff497661b9da45e9580569",
+      "training": {
+        "status": "trained",
+        "target_epochs": 50,
+        "reported_epoch": 50,
+        "global_step": 126550,
+        "completed_epochs_at_last_boundary": 50,
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=50-step=126550-0f0ade74c8c5.ckpt",
+        "training_complete_marker": true,
+        "code_commit_recorded": "2193b1e7b5dc708b6bb450d8fa7250691ea335a3",
+        "phone_token_budget": 6500,
+        "rnnt_frames_per_char": 3.5,
+        "resume_checkpoint": null,
+        "error": null
+      },
+      "stride": 1,
+      "input_projection_dim": 128,
+      "backbone_dim": 128,
+      "best_checkpoint": {
+        "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=27-step=69137.ckpt",
+        "sha256": "c314db27cc84ebc90c128ad84751d7f4c7b6620ffbc6687c9b579a76d5e91317",
+        "audit_path": "artifacts/runs/phone69_460h_provenance_20261029/checkpoint_audit.json",
+        "dev_loss": 10.759432792663574,
+        "dev_loss_source": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/lightning_logs/version_0/metrics.csv",
+        "epoch_zero_based": 27,
+        "global_step": 69137
+      },
+      "evaluation": {
+        "utterances": 2620,
+        "phone_errors": 10423,
+        "reference_phones": 189023,
+        "corpus_per": 0.05514143781444586,
+        "mean_utterance_rtf": 0.06332696403276698,
+        "median_utterance_rtf": 0.05963942002758931,
+        "csv_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/stride1_cosd_learned_five_frames.csv",
+        "csv_sha256": "e8fc8d1ea2324ff74d3e773c37d2db13ebf8a454af4357609394c030e62dcd2b",
+        "checks": {
+          "idx_contiguous": true,
+          "counts_match": true,
+          "per_consistent": true,
+          "rtf_finite_nonnegative": true,
+          "csv_hash_matches_summary": true,
+          "reference_order_matches": true
+        },
+        "summary_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/summary.json",
+        "evaluation_date": "2026-10-29",
+        "environment": {
+          "accelerator": "cpu",
+          "threads": 4,
+          "interop_threads": 1,
+          "workers": 0,
+          "torch": "2.8.0",
+          "torchaudio": "2.8.0",
+          "beam_width": 20
+        },
+        "config_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+        "config_sha256": "733b2b28c723c90328f688b1063c425daa8cf424ca617519997ca6891baa5e0f",
+        "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
+      },
+      "frame_retention": {
+        "overall_retention": 0.40712896934016285,
+        "frame_totals": {
+          "input_mel_frames": 1947238,
+          "encoder_input_frames": 1947238,
+          "encoder_output_frames": 792777
+        },
+        "stages": {
+          "after_layer_2": {
+            "input_frames": 1947238,
+            "output_frames": 792777,
+            "candidate_frames": 792777,
+            "retention": 0.40712896934016285,
+            "reduction": 0.5928710306598372
+          }
+        },
+        "source": "artifacts/analysis/phone69_460h_testclean_frame_retention_cpu_20261027/compression_summary.json",
+        "date": "2026-10-27",
+        "checkpoint_sha256": "c314db27cc84ebc90c128ad84751d7f4c7b6620ffbc6687c9b579a76d5e91317",
+        "device": "cpu"
+      },
+      "notes": [],
+      "parameters": 4236299,
+      "parameters_source": "artifacts/runs/phone69_460h_native_offline_five_frames_20261018/dimension_audit.json"
+    },
+    {
+      "id": "E03",
+      "name": "stride2_cosd_learned_five_frames",
+      "label": "stride2 第2层五帧融合",
+      "training_config_path": "configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+      "training_config_sha256": "44b72b2a6f7a7d05635a76fb4c0cb859a37b7190e3fe2d91daf790d4da3bc819",
+      "server_config_path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50",
+      "configuration": {
+        "paths": {
+          "dataset_path": "/test21/librispeech",
+          "global_stats_path": "/test21/librispeech/global_stats.json",
+          "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50",
+          "from_checkpoint": null
+        },
+        "tokenizer": {
+          "type": "phone69",
+          "vocab_path": "configs/phone69_vocab.json"
+        },
+        "model": {
+          "sequence_mode": "offline",
+          "input_dim": 80,
+          "encoding_dim": 256,
+          "num_symbols": 69,
+          "time_reduction_input_dim": 64,
+          "time_reduction_stride": 2,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "num_layers_block1": 2,
+          "num_layers_block2": 8,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "compression": {
+            "detector": {
+              "type": "cosine_diff"
+            },
+            "mixer": {
+              "type": "learned"
+            },
+            "weight_predictor_mode": "five_frames"
+          },
+          "predictor": {
+            "symbol_embedding_dim": 128,
+            "num_lstm_layers": 2,
+            "lstm_hidden_dim": 128,
+            "lstm_layer_norm": true,
+            "lstm_layer_norm_epsilon": 0.001,
+            "lstm_dropout": 0.3
+          },
+          "joiner": {
+            "activation": "relu"
+          }
+        },
+        "training": {
+          "learning_rate": 0.0005,
+          "adam_betas": [
+            0.9,
+            0.999
+          ],
+          "adam_eps": 1e-08,
+          "warmup_steps": 10000,
+          "rnnt_loss_reduction": "sum",
+          "rnnt_loss_clamp": 1.0,
+          "rnnt_loss_chunk": "batch",
+          "gradient_clip_val": 10.0,
+          "epochs": 50
+        },
+        "data": {
+          "sample_rate": 16000,
+          "n_fft": 400,
+          "n_mels": 80,
+          "hop_length": 160,
+          "spec_augment": {
+            "freq_mask_param": 27,
+            "time_mask_param": 100,
+            "time_mask_prob": 0.2
+          },
+          "transcript_suffix": "-ph",
+          "strip_spaces": false,
+          "max_token_limit": 16000,
+          "rnnt_numel_limit": 1900000000,
+          "rnnt_frames_per_char": 3.5,
+          "num_workers": 20,
+          "prefetch_factor": 2,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean"
+        },
+        "trainer": {
+          "accelerator": "cuda",
+          "strategy": "auto",
+          "devices": 1,
+          "num_nodes": 1,
+          "log_every_n_steps": 10,
+          "val_check_interval": 200,
+          "num_sanity_val_steps": 0,
+          "fast_dev_run": false,
+          "matmul_precision": "high",
+          "accumulate_grad_batches": 1,
+          "checkpoint": {
+            "save_top_k": 2,
+            "save_weights_only": true,
+            "save_last": true,
+            "save_on_validation_end": true,
+            "val_checkpoint_interval": 200,
+            "train_checkpoint_interval": 500
+          }
+        },
+        "decoding": {
+          "beam_width": 20
+        },
+        "debug": false,
+        "seed": 42
+      },
+      "training_run_sha256": "e10c1a77224ec60fbe00bda216ed4a275c4a685090a35dcffe2e9069024ee6e5",
+      "training": {
+        "status": "trained",
+        "target_epochs": 50,
+        "reported_epoch": 50,
+        "global_step": 59850,
+        "completed_epochs_at_last_boundary": 50,
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=50-step=59850-cc8f0280231e.ckpt",
+        "training_complete_marker": true,
+        "code_commit_recorded": "f4ac5b01de85a7df213a65af16419e3b1e92416e",
+        "phone_token_budget": 16000,
+        "rnnt_frames_per_char": 3.5,
+        "resume_checkpoint": null,
+        "error": null
+      },
+      "stride": 2,
+      "input_projection_dim": 64,
+      "backbone_dim": 128,
+      "best_checkpoint": {
+        "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=20-step=24540.ckpt",
+        "sha256": "dd2d95921a78963e99b94a5aac23c8e302580c9896d6fb25ce7d855e7480d04c",
+        "audit_path": "artifacts/runs/phone69_460h_provenance_20261029/checkpoint_audit.json",
+        "dev_loss": 13.057820320129395,
+        "dev_loss_source": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/lightning_logs/version_0/metrics.csv",
+        "epoch_zero_based": 20,
+        "global_step": 24540
+      },
+      "evaluation": {
+        "utterances": 2620,
+        "phone_errors": 12690,
+        "reference_phones": 189023,
+        "corpus_per": 0.06713468731318412,
+        "mean_utterance_rtf": 0.03205764085276981,
+        "median_utterance_rtf": 0.03163509162823409,
+        "csv_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/stride2_cosd_learned_five_frames.csv",
+        "csv_sha256": "74e4f168fba2a754339f930e83ba73ff6bd9cc98de72f1c2dbb5b84112982079",
+        "checks": {
+          "idx_contiguous": true,
+          "counts_match": true,
+          "per_consistent": true,
+          "rtf_finite_nonnegative": true,
+          "csv_hash_matches_summary": true,
+          "reference_order_matches": true
+        },
+        "summary_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/summary.json",
+        "evaluation_date": "2026-10-29",
+        "environment": {
+          "accelerator": "cpu",
+          "threads": 4,
+          "interop_threads": 1,
+          "workers": 0,
+          "torch": "2.8.0",
+          "torchaudio": "2.8.0",
+          "beam_width": 20
+        },
+        "config_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+        "config_sha256": "696e16cdb7e91d6089d8b1da227ef1e65235f3ba49cc5ccec233737ab7b1e9d2",
+        "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
+      },
+      "frame_retention": {
+        "overall_retention": 0.20069863057315027,
+        "frame_totals": {
+          "input_mel_frames": 1947238,
+          "encoder_input_frames": 974266,
+          "encoder_output_frames": 390808
+        },
+        "stages": {
+          "after_layer_2": {
+            "input_frames": 974266,
+            "output_frames": 390808,
+            "candidate_frames": 390808,
+            "retention": 0.4011306973660171,
+            "reduction": 0.5988693026339829
+          }
+        },
+        "source": "artifacts/analysis/phone69_460h_testclean_frame_retention_cpu_20261027/compression_summary.json",
+        "date": "2026-10-27",
+        "checkpoint_sha256": "dd2d95921a78963e99b94a5aac23c8e302580c9896d6fb25ce7d855e7480d04c",
+        "device": "cpu"
+      },
+      "notes": [],
+      "parameters": 4231179,
+      "parameters_source": "artifacts/runs/phone69_460h_native_offline_five_frames_20261018/dimension_audit.json"
+    },
+    {
+      "id": "E04",
+      "name": "stride4_cosd_learned_five_frames",
+      "label": "stride4 第2层五帧融合",
+      "training_config_path": "configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+      "training_config_sha256": "9ddbd72852149149a7f256404bbed833098406a5adf4c06110566866bb6c7b78",
+      "server_config_path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50",
+      "configuration": {
+        "paths": {
+          "dataset_path": "/test21/librispeech",
+          "global_stats_path": "/test21/librispeech/global_stats.json",
+          "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50",
+          "from_checkpoint": null
+        },
+        "tokenizer": {
+          "type": "phone69",
+          "vocab_path": "configs/phone69_vocab.json"
+        },
+        "model": {
+          "sequence_mode": "offline",
+          "input_dim": 80,
+          "encoding_dim": 256,
+          "num_symbols": 69,
+          "time_reduction_input_dim": 32,
+          "time_reduction_stride": 4,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "num_layers_block1": 2,
+          "num_layers_block2": 8,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "compression": {
+            "detector": {
+              "type": "cosine_diff"
+            },
+            "mixer": {
+              "type": "learned"
+            },
+            "weight_predictor_mode": "five_frames"
+          },
+          "predictor": {
+            "symbol_embedding_dim": 128,
+            "num_lstm_layers": 2,
+            "lstm_hidden_dim": 128,
+            "lstm_layer_norm": true,
+            "lstm_layer_norm_epsilon": 0.001,
+            "lstm_dropout": 0.3
+          },
+          "joiner": {
+            "activation": "relu"
+          }
+        },
+        "training": {
+          "learning_rate": 0.0005,
+          "adam_betas": [
+            0.9,
+            0.999
+          ],
+          "adam_eps": 1e-08,
+          "warmup_steps": 10000,
+          "rnnt_loss_reduction": "sum",
+          "rnnt_loss_clamp": 1.0,
+          "rnnt_loss_chunk": "batch",
+          "gradient_clip_val": 10.0,
+          "epochs": 50
+        },
+        "data": {
+          "sample_rate": 16000,
+          "n_fft": 400,
+          "n_mels": 80,
+          "hop_length": 160,
+          "spec_augment": {
+            "freq_mask_param": 27,
+            "time_mask_param": 100,
+            "time_mask_prob": 0.2
+          },
+          "transcript_suffix": "-ph",
+          "strip_spaces": false,
+          "max_token_limit": 32600,
+          "rnnt_numel_limit": 1900000000,
+          "rnnt_frames_per_char": 3.0,
+          "num_workers": 20,
+          "prefetch_factor": 2,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean"
+        },
+        "trainer": {
+          "accelerator": "cuda",
+          "strategy": "auto",
+          "devices": 1,
+          "num_nodes": 1,
+          "log_every_n_steps": 10,
+          "val_check_interval": 200,
+          "num_sanity_val_steps": 0,
+          "fast_dev_run": false,
+          "matmul_precision": "high",
+          "accumulate_grad_batches": 1,
+          "checkpoint": {
+            "save_top_k": 2,
+            "save_weights_only": true,
+            "save_last": true,
+            "save_on_validation_end": true,
+            "val_checkpoint_interval": 200,
+            "train_checkpoint_interval": 500
+          }
+        },
+        "decoding": {
+          "beam_width": 20
+        },
+        "debug": false,
+        "seed": 42
+      },
+      "training_run_sha256": "447c53c21a51d69f502a93bc2f87c5eae050207708793c8f1d2f994d6faed870",
+      "training": {
+        "status": "trained",
+        "target_epochs": 50,
+        "reported_epoch": 50,
+        "global_step": 48550,
+        "completed_epochs_at_last_boundary": 50,
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/epoch-boundary-epoch=50-step=48550-e45fcb2eff9a.ckpt",
+        "training_complete_marker": true,
+        "code_commit_recorded": "f4ac5b01de85a7df213a65af16419e3b1e92416e",
+        "phone_token_budget": 32600,
+        "rnnt_frames_per_char": 3.0,
+        "resume_checkpoint": null,
+        "error": null
+      },
+      "stride": 4,
+      "input_projection_dim": 32,
+      "backbone_dim": 128,
+      "best_checkpoint": {
+        "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/checkpoints/val-none-epoch=44-step=43524.ckpt",
+        "sha256": "e00b5dd7bf64eb3eafb23c2c6f8a8a11578bef3b90c1c49cf7ca795ab10ef494",
+        "audit_path": "artifacts/runs/phone69_460h_provenance_20261029/checkpoint_audit.json",
+        "dev_loss": 12.173319816589355,
+        "dev_loss_source": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/lightning_logs/version_0/metrics.csv",
+        "epoch_zero_based": 44,
+        "global_step": 43524
+      },
+      "evaluation": {
+        "utterances": 2620,
+        "phone_errors": 14381,
+        "reference_phones": 189023,
+        "corpus_per": 0.07608068859345159,
+        "mean_utterance_rtf": 0.021368055674919995,
+        "median_utterance_rtf": 0.02116997910060405,
+        "csv_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/stride4_cosd_learned_five_frames.csv",
+        "csv_sha256": "ad5ee7d632c63f3516ab18c8f86d66ee1dfcbeec584cdc1d0a64910753715768",
+        "checks": {
+          "idx_contiguous": true,
+          "counts_match": true,
+          "per_consistent": true,
+          "rtf_finite_nonnegative": true,
+          "csv_hash_matches_summary": true,
+          "reference_order_matches": true
+        },
+        "summary_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/summary.json",
+        "evaluation_date": "2026-10-29",
+        "environment": {
+          "accelerator": "cpu",
+          "threads": 4,
+          "interop_threads": 1,
+          "workers": 0,
+          "torch": "2.8.0",
+          "torchaudio": "2.8.0",
+          "beam_width": 20
+        },
+        "config_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+        "config_sha256": "752ea4b568f2e61dd839ff378218b623910e4c2f6e7b35bed43314b2dfa909b9",
+        "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
+      },
+      "frame_retention": {
+        "overall_retention": 0.10053470608112619,
+        "frame_totals": {
+          "input_mel_frames": 1947238,
+          "encoder_input_frames": 487781,
+          "encoder_output_frames": 195765
+        },
+        "stages": {
+          "after_layer_2": {
+            "input_frames": 487781,
+            "output_frames": 195765,
+            "candidate_frames": 195765,
+            "retention": 0.4013378954899842,
+            "reduction": 0.5986621045100158
+          }
+        },
+        "source": "artifacts/analysis/phone69_460h_testclean_frame_retention_cpu_20261027/compression_summary.json",
+        "date": "2026-10-27",
+        "checkpoint_sha256": "e00b5dd7bf64eb3eafb23c2c6f8a8a11578bef3b90c1c49cf7ca795ab10ef494",
+        "device": "cpu"
+      },
+      "notes": [],
+      "parameters": 4228619,
+      "parameters_source": "artifacts/runs/phone69_460h_native_offline_five_frames_20261018/dimension_audit.json"
+    },
+    {
+      "id": "E05",
+      "name": "placement_mel_stride1",
+      "label": "Mel 端五帧融合",
+      "training_config_path": "configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+      "training_config_sha256": "173391aa2e55ef15f01865c8bd6792e53f52d0475912dacad83a7297542f4354",
+      "server_config_path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50",
+      "configuration": {
+        "paths": {
+          "dataset_path": "/test21/librispeech",
+          "global_stats_path": "/test21/librispeech/global_stats.json",
+          "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50",
+          "from_checkpoint": null
+        },
+        "tokenizer": {
+          "type": "phone69",
+          "vocab_path": "configs/phone69_vocab.json"
+        },
+        "model": {
+          "sequence_mode": "offline",
+          "input_dim": 80,
+          "encoding_dim": 256,
+          "num_symbols": 69,
+          "time_reduction_input_dim": 128,
+          "time_reduction_stride": 1,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "compression": {
+            "stages": [
+              {
+                "after_layer": 0,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames"
+              }
+            ]
+          },
+          "predictor": {
+            "symbol_embedding_dim": 128,
+            "num_lstm_layers": 2,
+            "lstm_hidden_dim": 128,
+            "lstm_layer_norm": true,
+            "lstm_layer_norm_epsilon": 0.001,
+            "lstm_dropout": 0.3
+          },
+          "joiner": {
+            "activation": "relu"
+          },
+          "num_layers": 10
+        },
+        "training": {
+          "learning_rate": 0.0005,
+          "adam_betas": [
+            0.9,
+            0.999
+          ],
+          "adam_eps": 1e-08,
+          "warmup_steps": 10000,
+          "rnnt_loss_reduction": "sum",
+          "rnnt_loss_clamp": 1.0,
+          "rnnt_loss_chunk": "batch",
+          "gradient_clip_val": 10.0,
+          "epochs": 50
+        },
+        "data": {
+          "sample_rate": 16000,
+          "n_fft": 400,
+          "n_mels": 80,
+          "hop_length": 160,
+          "spec_augment": {
+            "freq_mask_param": 27,
+            "time_mask_param": 100,
+            "time_mask_prob": 0.2
+          },
+          "transcript_suffix": "-ph",
+          "strip_spaces": false,
+          "max_token_limit": 6500,
+          "rnnt_numel_limit": 1900000000,
+          "rnnt_frames_per_char": 3.5,
+          "num_workers": 20,
+          "prefetch_factor": 2,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean"
+        },
+        "trainer": {
+          "accelerator": "cuda",
+          "strategy": "auto",
+          "devices": 1,
+          "num_nodes": 1,
+          "log_every_n_steps": 10,
+          "val_check_interval": 200,
+          "num_sanity_val_steps": 0,
+          "fast_dev_run": false,
+          "matmul_precision": "high",
+          "accumulate_grad_batches": 1,
+          "checkpoint": {
+            "save_top_k": 2,
+            "save_weights_only": true,
+            "save_last": true,
+            "save_on_validation_end": true,
+            "val_checkpoint_interval": 200,
+            "train_checkpoint_interval": 500
+          }
+        },
+        "decoding": {
+          "beam_width": 20
+        },
+        "debug": false,
+        "seed": 42
+      },
+      "training_run_sha256": "b924e2557dfd5bd042c1844955dc4af7b5da8a525a777bfd11d08a0b61035329",
+      "training": {
+        "status": "trained",
+        "target_epochs": 50,
+        "reported_epoch": 50,
+        "global_step": 126550,
+        "completed_epochs_at_last_boundary": 50,
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=126550-25cdcfcd406b.ckpt",
+        "training_complete_marker": true,
+        "code_commit_recorded": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
+        "phone_token_budget": 6500,
+        "rnnt_frames_per_char": 3.5,
+        "resume_checkpoint": null,
+        "error": null
+      },
+      "stride": 1,
+      "input_projection_dim": 128,
+      "backbone_dim": 128,
+      "best_checkpoint": {
+        "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/checkpoints/val-none-epoch=48-step=121688.ckpt",
+        "sha256": "5630172734bcc316161794fe7168045376a6b47c94dc8fe8f30285ed5142e6a0",
+        "audit_path": "artifacts/runs/phone69_460h_provenance_20261029/checkpoint_audit.json",
+        "dev_loss": 10.3214693069458,
+        "dev_loss_source": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_mel_stride1_s42_e50/lightning_logs/version_0/metrics.csv",
+        "epoch_zero_based": 48,
+        "global_step": 121688
+      },
+      "evaluation": {
+        "utterances": 2620,
+        "phone_errors": 10544,
+        "reference_phones": 189023,
+        "corpus_per": 0.05578157155478434,
+        "mean_utterance_rtf": 0.061335748484191176,
+        "median_utterance_rtf": 0.05899310187259067,
+        "csv_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_mel_stride1.csv",
+        "csv_sha256": "a31722534d72d80a2681a7cc9301e03820ed6c55cf1cc37ca0c10fdbcbdb4283",
+        "checks": {
+          "idx_contiguous": true,
+          "counts_match": true,
+          "per_consistent": true,
+          "rtf_finite_nonnegative": true,
+          "csv_hash_matches_summary": true,
+          "reference_order_matches": true
+        },
+        "summary_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/summary.json",
+        "evaluation_date": "2026-10-29",
+        "environment": {
+          "accelerator": "cpu",
+          "threads": 4,
+          "interop_threads": 1,
+          "workers": 0,
+          "torch": "2.8.0",
+          "torchaudio": "2.8.0",
+          "beam_width": 20
+        },
+        "config_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+        "config_sha256": "584a45b39917382123fd4116356f77ebc13eb94f1beb0c3652c3fd611b5e01a3",
+        "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
+      },
+      "frame_retention": {
+        "overall_retention": 0.3928317955997161,
+        "frame_totals": {
+          "input_mel_frames": 1947238,
+          "encoder_input_frames": 764937,
+          "encoder_output_frames": 764937
+        },
+        "stages": {
+          "after_layer_0": {
+            "input_frames": 1947238,
+            "output_frames": 764937,
+            "candidate_frames": 764937,
+            "retention": 0.3928317955997161,
+            "reduction": 0.607168204400284
+          }
+        },
+        "source": "artifacts/analysis/phone69_460h_testclean_frame_retention_cpu_20261027/compression_summary.json",
+        "date": "2026-10-27",
+        "checkpoint_sha256": "5630172734bcc316161794fe7168045376a6b47c94dc8fe8f30285ed5142e6a0",
+        "device": "cpu"
+      },
+      "notes": [],
+      "parameters": 4228619,
+      "parameters_source": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_mel_b6500.json"
+    },
+    {
+      "id": "E06",
+      "name": "placement_layer5_stride1",
+      "label": "第5层五帧融合",
+      "training_config_path": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "training_config_sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+      "server_config_path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50",
+      "configuration": {
+        "paths": {
+          "dataset_path": "/test21/librispeech",
+          "global_stats_path": "/test21/librispeech/global_stats.json",
+          "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50",
+          "from_checkpoint": null
+        },
+        "tokenizer": {
+          "type": "phone69",
+          "vocab_path": "configs/phone69_vocab.json"
+        },
+        "model": {
+          "sequence_mode": "offline",
+          "input_dim": 80,
+          "encoding_dim": 256,
+          "num_symbols": 69,
+          "time_reduction_input_dim": 128,
+          "time_reduction_stride": 1,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "compression": {
+            "stages": [
+              {
+                "after_layer": 5,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames"
+              }
+            ]
+          },
+          "predictor": {
+            "symbol_embedding_dim": 128,
+            "num_lstm_layers": 2,
+            "lstm_hidden_dim": 128,
+            "lstm_layer_norm": true,
+            "lstm_layer_norm_epsilon": 0.001,
+            "lstm_dropout": 0.3
+          },
+          "joiner": {
+            "activation": "relu"
+          },
+          "num_layers": 10
+        },
+        "training": {
+          "learning_rate": 0.0005,
+          "adam_betas": [
+            0.9,
+            0.999
+          ],
+          "adam_eps": 1e-08,
+          "warmup_steps": 10000,
+          "rnnt_loss_reduction": "sum",
+          "rnnt_loss_clamp": 1.0,
+          "rnnt_loss_chunk": "batch",
+          "gradient_clip_val": 10.0,
+          "epochs": 50
+        },
+        "data": {
+          "sample_rate": 16000,
+          "n_fft": 400,
+          "n_mels": 80,
+          "hop_length": 160,
+          "spec_augment": {
+            "freq_mask_param": 27,
+            "time_mask_param": 100,
+            "time_mask_prob": 0.2
+          },
+          "transcript_suffix": "-ph",
+          "strip_spaces": false,
+          "max_token_limit": 5000,
+          "rnnt_numel_limit": 1900000000,
+          "rnnt_frames_per_char": 3.5,
+          "num_workers": 20,
+          "prefetch_factor": 2,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean"
+        },
+        "trainer": {
+          "accelerator": "cuda",
+          "strategy": "auto",
+          "devices": 1,
+          "num_nodes": 1,
+          "log_every_n_steps": 10,
+          "val_check_interval": 200,
+          "num_sanity_val_steps": 0,
+          "fast_dev_run": false,
+          "matmul_precision": "high",
+          "accumulate_grad_batches": 1,
+          "checkpoint": {
+            "save_top_k": 2,
+            "save_weights_only": true,
+            "save_last": true,
+            "save_on_validation_end": true,
+            "val_checkpoint_interval": 200,
+            "train_checkpoint_interval": 500
+          }
+        },
+        "decoding": {
+          "beam_width": 20
+        },
+        "debug": false,
+        "seed": 42
+      },
+      "training_run_sha256": "43ba7c3abf032dda9899e23871745751acde9da56a7071aa4e0f8f30302f08cd",
+      "training": {
+        "status": "trained",
+        "target_epochs": 50,
+        "reported_epoch": 50,
+        "global_step": 165000,
+        "completed_epochs_at_last_boundary": 50,
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=165000-03d646231711.ckpt",
+        "training_complete_marker": true,
+        "code_commit_recorded": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
+        "phone_token_budget": 5000,
+        "rnnt_frames_per_char": 3.5,
+        "resume_checkpoint": null,
+        "error": null
+      },
+      "stride": 1,
+      "input_projection_dim": 128,
+      "backbone_dim": 128,
+      "best_checkpoint": {
+        "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/val-none-epoch=45-step=151700.ckpt",
+        "sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c",
+        "audit_path": "artifacts/runs/phone69_460h_provenance_20261029/checkpoint_audit.json",
+        "dev_loss": 8.934511184692383,
+        "dev_loss_source": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layer5_stride1_s42_e50/lightning_logs/version_0/metrics.csv",
+        "epoch_zero_based": 45,
+        "global_step": 151700
+      },
+      "evaluation": {
+        "utterances": 2620,
+        "phone_errors": 9037,
+        "reference_phones": 189023,
+        "corpus_per": 0.04780899678875058,
+        "mean_utterance_rtf": 0.0721518493270629,
+        "median_utterance_rtf": 0.06764670317539584,
+        "csv_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_layer5_stride1.csv",
+        "csv_sha256": "547788f8e1e57ccfd8da90be7b53f44a77c4db88a8d512e9084560cb5380dec3",
+        "checks": {
+          "idx_contiguous": true,
+          "counts_match": true,
+          "per_consistent": true,
+          "rtf_finite_nonnegative": true,
+          "csv_hash_matches_summary": true,
+          "reference_order_matches": true
+        },
+        "summary_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/summary.json",
+        "evaluation_date": "2026-10-29",
+        "environment": {
+          "accelerator": "cpu",
+          "threads": 4,
+          "interop_threads": 1,
+          "workers": 0,
+          "torch": "2.8.0",
+          "torchaudio": "2.8.0",
+          "beam_width": 20
+        },
+        "config_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+        "config_sha256": "99742e054c65ff6a2e7b2a0a2a175a697bafda81599e49135c75a0ac5c610c6d",
+        "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
+      },
+      "frame_retention": {
+        "overall_retention": 0.3943549786928973,
+        "frame_totals": {
+          "input_mel_frames": 1947238,
+          "encoder_input_frames": 1947238,
+          "encoder_output_frames": 767903
+        },
+        "stages": {
+          "after_layer_5": {
+            "input_frames": 1947238,
+            "output_frames": 767903,
+            "candidate_frames": 767903,
+            "retention": 0.3943549786928973,
+            "reduction": 0.6056450213071027
+          }
+        },
+        "source": "artifacts/analysis/phone69_460h_testclean_frame_retention_cpu_20261027/compression_summary.json",
+        "date": "2026-10-27",
+        "checkpoint_sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c",
+        "device": "cpu"
+      },
+      "notes": [],
+      "parameters": 4236299,
+      "parameters_source": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layer5_b5000.json"
+    },
+    {
+      "id": "E07",
+      "name": "placement_layer7_stride1",
+      "label": "第7层五帧融合",
+      "training_config_path": "configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+      "training_config_sha256": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca",
+      "server_config_path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50",
+      "configuration": {
+        "paths": {
+          "dataset_path": "/test21/librispeech",
+          "global_stats_path": "/test21/librispeech/global_stats.json",
+          "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50",
+          "from_checkpoint": null
+        },
+        "tokenizer": {
+          "type": "phone69",
+          "vocab_path": "configs/phone69_vocab.json"
+        },
+        "model": {
+          "sequence_mode": "offline",
+          "input_dim": 80,
+          "encoding_dim": 256,
+          "num_symbols": 69,
+          "time_reduction_input_dim": 128,
+          "time_reduction_stride": 1,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "compression": {
+            "stages": [
+              {
+                "after_layer": 7,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames"
+              }
+            ]
+          },
+          "predictor": {
+            "symbol_embedding_dim": 128,
+            "num_lstm_layers": 2,
+            "lstm_hidden_dim": 128,
+            "lstm_layer_norm": true,
+            "lstm_layer_norm_epsilon": 0.001,
+            "lstm_dropout": 0.3
+          },
+          "joiner": {
+            "activation": "relu"
+          },
+          "num_layers": 10
+        },
+        "training": {
+          "learning_rate": 0.0005,
+          "adam_betas": [
+            0.9,
+            0.999
+          ],
+          "adam_eps": 1e-08,
+          "warmup_steps": 10000,
+          "rnnt_loss_reduction": "sum",
+          "rnnt_loss_clamp": 1.0,
+          "rnnt_loss_chunk": "batch",
+          "gradient_clip_val": 10.0,
+          "epochs": 50
+        },
+        "data": {
+          "sample_rate": 16000,
+          "n_fft": 400,
+          "n_mels": 80,
+          "hop_length": 160,
+          "spec_augment": {
+            "freq_mask_param": 27,
+            "time_mask_param": 100,
+            "time_mask_prob": 0.2
+          },
+          "transcript_suffix": "-ph",
+          "strip_spaces": false,
+          "max_token_limit": 6500,
+          "rnnt_numel_limit": 1900000000,
+          "rnnt_frames_per_char": 3.5,
+          "num_workers": 20,
+          "prefetch_factor": 2,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean"
+        },
+        "trainer": {
+          "accelerator": "cuda",
+          "strategy": "auto",
+          "devices": 1,
+          "num_nodes": 1,
+          "log_every_n_steps": 10,
+          "val_check_interval": 200,
+          "num_sanity_val_steps": 0,
+          "fast_dev_run": false,
+          "matmul_precision": "high",
+          "accumulate_grad_batches": 1,
+          "checkpoint": {
+            "save_top_k": 2,
+            "save_weights_only": true,
+            "save_last": true,
+            "save_on_validation_end": true,
+            "val_checkpoint_interval": 200,
+            "train_checkpoint_interval": 500
+          }
+        },
+        "decoding": {
+          "beam_width": 20
+        },
+        "debug": false,
+        "seed": 42
+      },
+      "training_run_sha256": "608693e0a570cff8ff921c82e734d4dff5a036da072318a242de39925a8c1765",
+      "training": {
+        "status": "trained",
+        "target_epochs": 50,
+        "reported_epoch": 50,
+        "global_step": 126550,
+        "completed_epochs_at_last_boundary": 50,
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=126550-5c4a663a9583.ckpt",
+        "training_complete_marker": false,
+        "code_commit_recorded": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
+        "phone_token_budget": 6500,
+        "rnnt_frames_per_char": 3.5,
+        "resume_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/epoch-boundary-epoch=29-step=73399-0a09ed6bd960.ckpt",
+        "error": null
+      },
+      "stride": 1,
+      "input_projection_dim": 128,
+      "backbone_dim": 128,
+      "best_checkpoint": {
+        "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/val-none-epoch=46-step=118826.ckpt",
+        "sha256": "c452301ca02f49a42b544cfdb7db26d893069fcff73adfbe890ed3798c9d165b",
+        "audit_path": "artifacts/runs/phone69_460h_provenance_20261029/checkpoint_audit.json",
+        "dev_loss": 8.765523910522461,
+        "dev_loss_source": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layer7_stride1_s42_e50/lightning_logs/version_1/metrics.csv",
+        "epoch_zero_based": 46,
+        "global_step": 118826
+      },
+      "evaluation": {
+        "utterances": 2620,
+        "phone_errors": 9187,
+        "reference_phones": 189023,
+        "corpus_per": 0.048602551012310674,
+        "mean_utterance_rtf": 0.07100382479721083,
+        "median_utterance_rtf": 0.06678879686394229,
+        "csv_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_layer7_stride1.csv",
+        "csv_sha256": "1050146c8178108c4e63534ed20a00ef7aa7059af614f579b34075b985413ec2",
+        "checks": {
+          "idx_contiguous": true,
+          "counts_match": true,
+          "per_consistent": true,
+          "rtf_finite_nonnegative": true,
+          "csv_hash_matches_summary": true,
+          "reference_order_matches": true
+        },
+        "summary_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/summary.json",
+        "evaluation_date": "2026-10-29",
+        "environment": {
+          "accelerator": "cpu",
+          "threads": 4,
+          "interop_threads": 1,
+          "workers": 0,
+          "torch": "2.8.0",
+          "torchaudio": "2.8.0",
+          "beam_width": 20
+        },
+        "config_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+        "config_sha256": "8d94308e6d24536f29985588c6f1d7409486d453c451128afea8112edb7d1605",
+        "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
+      },
+      "frame_retention": null,
+      "notes": [
+        "Resumed from completed epoch 29 / step 73399 without changing the 6500 budget; run and final boundary show 50 epochs despite absent TRAINING_COMPLETE marker."
+      ],
+      "parameters": 4236299,
+      "parameters_source": "artifacts/runs/phone69_460h_placement_layer7_stride1_20261027/probe_layer7_b6500.json"
+    },
+    {
+      "id": "E08",
+      "name": "placement_layers2_5_n3_stride1",
+      "label": "第2层邻域3帧＋第5层五帧融合",
+      "training_config_path": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+      "training_config_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
+      "server_config_path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
+      "configuration": {
+        "paths": {
+          "dataset_path": "/test21/librispeech",
+          "global_stats_path": "/test21/librispeech/global_stats.json",
+          "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
+          "from_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=03-step=12414-ffc3c9aa1e56.ckpt"
+        },
+        "tokenizer": {
+          "type": "phone69",
+          "vocab_path": "configs/phone69_vocab.json"
+        },
+        "model": {
+          "sequence_mode": "offline",
+          "input_dim": 80,
+          "encoding_dim": 256,
+          "num_symbols": 69,
+          "time_reduction_input_dim": 128,
+          "time_reduction_stride": 1,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "compression": {
+            "stages": [
+              {
+                "after_layer": 2,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "hard"
+                },
+                "neighborhood_radius": 1
+              },
+              {
+                "after_layer": 5,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames"
+              }
+            ]
+          },
+          "predictor": {
+            "symbol_embedding_dim": 128,
+            "num_lstm_layers": 2,
+            "lstm_hidden_dim": 128,
+            "lstm_layer_norm": true,
+            "lstm_layer_norm_epsilon": 0.001,
+            "lstm_dropout": 0.3
+          },
+          "joiner": {
+            "activation": "relu"
+          },
+          "num_layers": 10
+        },
+        "training": {
+          "learning_rate": 0.0005,
+          "adam_betas": [
+            0.9,
+            0.999
+          ],
+          "adam_eps": 1e-08,
+          "warmup_steps": 10000,
+          "rnnt_loss_reduction": "sum",
+          "rnnt_loss_clamp": 1.0,
+          "rnnt_loss_chunk": "batch",
+          "gradient_clip_val": 10.0,
+          "epochs": 50
+        },
+        "data": {
+          "sample_rate": 16000,
+          "n_fft": 400,
+          "n_mels": 80,
+          "hop_length": 160,
+          "spec_augment": {
+            "freq_mask_param": 27,
+            "time_mask_param": 100,
+            "time_mask_prob": 0.2
+          },
+          "transcript_suffix": "-ph",
+          "strip_spaces": false,
+          "max_token_limit": 6000,
+          "rnnt_numel_limit": 1900000000,
+          "rnnt_frames_per_char": 3.5,
+          "num_workers": 20,
+          "prefetch_factor": 2,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean"
+        },
+        "trainer": {
+          "accelerator": "cuda",
+          "strategy": "auto",
+          "devices": 1,
+          "num_nodes": 1,
+          "log_every_n_steps": 10,
+          "val_check_interval": 200,
+          "num_sanity_val_steps": 0,
+          "fast_dev_run": false,
+          "matmul_precision": "high",
+          "accumulate_grad_batches": 1,
+          "checkpoint": {
+            "save_top_k": 2,
+            "save_weights_only": true,
+            "save_last": true,
+            "save_on_validation_end": true,
+            "val_checkpoint_interval": 200,
+            "train_checkpoint_interval": 500
+          }
+        },
+        "decoding": {
+          "beam_width": 20
+        },
+        "debug": false,
+        "seed": 42
+      },
+      "training_run_sha256": "adc04feb84d104fb187241d09b3a7e2a9aaefae5b1ea3065136069838a66980f",
+      "training": {
+        "status": "trained",
+        "target_epochs": 50,
+        "reported_epoch": 50,
+        "global_step": 141382,
+        "completed_epochs_at_last_boundary": 50,
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=141382-e74a7a871dc9.ckpt",
+        "training_complete_marker": true,
+        "code_commit_recorded": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
+        "phone_token_budget": 6000,
+        "rnnt_frames_per_char": 3.5,
+        "resume_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=03-step=12414-ffc3c9aa1e56.ckpt",
+        "error": null
+      },
+      "stride": 1,
+      "input_projection_dim": 128,
+      "backbone_dim": 128,
+      "best_checkpoint": {
+        "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
+        "sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
+        "audit_path": "artifacts/runs/phone69_460h_provenance_20261029/checkpoint_audit.json",
+        "dev_loss": 9.96010684967041,
+        "dev_loss_source": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_1/metrics.csv",
+        "epoch_zero_based": 25,
+        "global_step": 73182
+      },
+      "evaluation": {
+        "utterances": 2620,
+        "phone_errors": 10247,
+        "reference_phones": 189023,
+        "corpus_per": 0.05421033419213535,
+        "mean_utterance_rtf": 0.05846543485277441,
+        "median_utterance_rtf": 0.056947177894089915,
+        "csv_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_layers2_5_n3_stride1.csv",
+        "csv_sha256": "7c82581af996bcdb9a738454e289c736c60a1ecd64bdf5bed104b895d58bd88a",
+        "checks": {
+          "idx_contiguous": true,
+          "counts_match": true,
+          "per_consistent": true,
+          "rtf_finite_nonnegative": true,
+          "csv_hash_matches_summary": true,
+          "reference_order_matches": true
+        },
+        "summary_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/summary.json",
+        "evaluation_date": "2026-10-29",
+        "environment": {
+          "accelerator": "cpu",
+          "threads": 4,
+          "interop_threads": 1,
+          "workers": 0,
+          "torch": "2.8.0",
+          "torchaudio": "2.8.0",
+          "beam_width": 20
+        },
+        "config_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+        "config_sha256": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
+        "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
+      },
+      "frame_retention": {
+        "overall_retention": 0.3603468091727873,
+        "frame_totals": {
+          "input_mel_frames": 1947238,
+          "encoder_input_frames": 1947238,
+          "encoder_output_frames": 701681
+        },
+        "stages": {
+          "after_layer_2": {
+            "input_frames": 1947238,
+            "output_frames": 1676099,
+            "candidate_frames": 745507,
+            "retention": 0.8607571339507548,
+            "reduction": 0.13924286604924518
+          },
+          "after_layer_5": {
+            "input_frames": 1676099,
+            "output_frames": 701681,
+            "candidate_frames": 701681,
+            "retention": 0.41863935244875156,
+            "reduction": 0.5813606475512485
+          }
+        },
+        "source": "artifacts/analysis/phone69_460h_testclean_frame_retention_cpu_20261027/compression_summary.json",
+        "date": "2026-10-27",
+        "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
+        "device": "cpu"
+      },
+      "notes": [
+        "4000 budget for first 3 completed epochs; resumed at step 12414 with budget 6000. Overlapping metrics versions are not independent runs."
+      ],
+      "parameters": 4236299,
+      "parameters_source": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6000_user_override.json",
+      "config_chain": [
+        "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch4000_before6000.yaml",
+        "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml"
+      ]
+    },
+    {
+      "id": "E09",
+      "name": "dim512_stride4_none",
+      "label": "stride4 无动态压缩 512维主干",
+      "training_config_path": "configs/server_phone69_460h_offline_native_stride4_none_dim512_s42_e50.yaml",
+      "training_config_sha256": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351",
+      "server_config_path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride4_none_dim512_s42_e50.yaml",
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50",
+      "configuration": {
+        "paths": {
+          "dataset_path": "/test21/librispeech",
+          "global_stats_path": "/test21/librispeech/global_stats.json",
+          "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50",
+          "from_checkpoint": null
+        },
+        "tokenizer": {
+          "type": "phone69",
+          "vocab_path": "configs/phone69_vocab.json"
+        },
+        "model": {
+          "sequence_mode": "offline",
+          "input_dim": 80,
+          "encoding_dim": 256,
+          "num_symbols": 69,
+          "time_reduction_input_dim": 128,
+          "time_reduction_stride": 4,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "num_layers_block1": 2,
+          "num_layers_block2": 8,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "compression": {
+            "filter": "none"
+          },
+          "predictor": {
+            "symbol_embedding_dim": 128,
+            "num_lstm_layers": 2,
+            "lstm_hidden_dim": 128,
+            "lstm_layer_norm": true,
+            "lstm_layer_norm_epsilon": 0.001,
+            "lstm_dropout": 0.3
+          },
+          "joiner": {
+            "activation": "relu"
+          }
+        },
+        "training": {
+          "learning_rate": 0.0005,
+          "adam_betas": [
+            0.9,
+            0.999
+          ],
+          "adam_eps": 1e-08,
+          "warmup_steps": 10000,
+          "rnnt_loss_reduction": "sum",
+          "rnnt_loss_clamp": 1.0,
+          "rnnt_loss_chunk": "batch",
+          "gradient_clip_val": 10.0,
+          "epochs": 50
+        },
+        "data": {
+          "sample_rate": 16000,
+          "n_fft": 400,
+          "n_mels": 80,
+          "hop_length": 160,
+          "spec_augment": {
+            "freq_mask_param": 27,
+            "time_mask_param": 100,
+            "time_mask_prob": 0.2
+          },
+          "transcript_suffix": "-ph",
+          "strip_spaces": false,
+          "max_token_limit": 7000,
+          "rnnt_numel_limit": 1900000000,
+          "rnnt_frames_per_char": 3.0,
+          "num_workers": 20,
+          "prefetch_factor": 2,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean"
+        },
+        "trainer": {
+          "accelerator": "cuda",
+          "strategy": "auto",
+          "devices": 1,
+          "num_nodes": 1,
+          "log_every_n_steps": 10,
+          "val_check_interval": 200,
+          "num_sanity_val_steps": 0,
+          "fast_dev_run": false,
+          "matmul_precision": "high",
+          "accumulate_grad_batches": 1,
+          "checkpoint": {
+            "save_top_k": 2,
+            "save_weights_only": true,
+            "save_last": true,
+            "save_on_validation_end": true,
+            "val_checkpoint_interval": 200,
+            "train_checkpoint_interval": 500
+          }
+        },
+        "decoding": {
+          "beam_width": 20
+        },
+        "debug": false,
+        "seed": 42
+      },
+      "training_run_sha256": "9629a0548edc52add551cc3ba72a3e391415cc463f732e2434b9dcb2dbd4ebc4",
+      "training": {
+        "status": "trained",
+        "target_epochs": 50,
+        "reported_epoch": 50,
+        "global_step": 117500,
+        "completed_epochs_at_last_boundary": 50,
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50/checkpoints/epoch-boundary-epoch=50-step=117500-d250e3acf745.ckpt",
+        "training_complete_marker": true,
+        "code_commit_recorded": "06de63433110081c89e8b823a20b7a694ec76d51",
+        "phone_token_budget": 7000,
+        "rnnt_frames_per_char": 3.0,
+        "resume_checkpoint": null,
+        "error": null
+      },
+      "stride": 4,
+      "input_projection_dim": 128,
+      "backbone_dim": 512,
+      "best_checkpoint": {
+        "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50/checkpoints/val-none-epoch=09-step=23150.ckpt",
+        "sha256": "005b39b31850128e7033f670cd58c6732d3dcc6ff738af1d79befc3d1a8c04a3",
+        "dev_loss": 10.754,
+        "audit_path": "artifacts/evaluations/phone69_460h_dim512_local_cpu_20261104/summary.json",
+        "epoch_zero_based": 9,
+        "global_step": 23150
+      },
+      "evaluation": {
+        "utterances": 2620,
+        "phone_errors": 10855,
+        "reference_phones": 189023,
+        "corpus_per": 0.05742687397829894,
+        "mean_utterance_rtf": 0.07211698728705879,
+        "median_utterance_rtf": 0.06645172627065538,
+        "csv_path": "artifacts/evaluations/phone69_460h_dim512_local_cpu_20261104/full/dim512.csv",
+        "csv_sha256": "64d60ee1399d304202409633495f926fbbe770c3de8fe999e2337c9a61ee428f",
+        "checks": {
+          "idx_contiguous": true,
+          "counts_match": true,
+          "per_consistent": true,
+          "rtf_finite_nonnegative": true,
+          "csv_hash_matches_summary": true,
+          "reference_order_matches": true
+        },
+        "summary_path": "artifacts/evaluations/phone69_460h_dim512_local_cpu_20261104/summary.json",
+        "environment": {
+          "python": "/opt/anaconda3/envs/emformer/bin/python",
+          "torch": "2.10.0",
+          "torchaudio": "2.10.0",
+          "pytorch_lightning": "2.6.1",
+          "threads": 4,
+          "accelerator": "cpu",
+          "beam_width": 20,
+          "metric": "per"
+        },
+        "evaluation_date": "2026-11-04",
+        "config_path": "artifacts/evaluations/phone69_460h_dim512_local_cpu_20261104/configs_cpu/dim512.yaml",
+        "config_sha256": "773e1ca8b7b335463b2475935cdd235bc1d7ac1e8ed17b9e5c73df7cb8a1ced7",
+        "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
+      },
+      "frame_retention": null,
+      "notes": [
+        "512-wide trunk, FFN still 512; 50 epochs completed but dev loss degraded after checkpoint epoch 9. This is not a parameter-matched baseline."
+      ],
+      "parameters": 29584966,
+      "parameters_source": "artifacts/runs/phone69_460h_stride4_dim512_20261103/memory_probe.json"
+    },
+    {
+      "id": "E10",
+      "name": "placement_mel_layer5_stride1",
+      "label": "Mel＋第5层双阶段五帧融合",
+      "training_config_path": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml",
+      "training_config_sha256": "2b9909965c50808e96ee5546a3f53eede597e415449ae79bb845b60ab1728192",
+      "server_config_path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml",
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_resume_b11050",
+      "configuration": {
+        "paths": {
+          "dataset_path": "/test21/librispeech",
+          "global_stats_path": "/test21/librispeech/global_stats.json",
+          "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_resume_b11050",
+          "from_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_bridge_b6500_e16/checkpoints/epoch-boundary-before-b11050.ckpt"
+        },
+        "tokenizer": {
+          "type": "phone69",
+          "vocab_path": "configs/phone69_vocab.json"
+        },
+        "model": {
+          "sequence_mode": "offline",
+          "input_dim": 80,
+          "encoding_dim": 256,
+          "num_symbols": 69,
+          "time_reduction_input_dim": 128,
+          "time_reduction_stride": 1,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "compression": {
+            "stages": [
+              {
+                "after_layer": 0,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames"
+              },
+              {
+                "after_layer": 5,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames"
+              }
+            ]
+          },
+          "predictor": {
+            "symbol_embedding_dim": 128,
+            "num_lstm_layers": 2,
+            "lstm_hidden_dim": 128,
+            "lstm_layer_norm": true,
+            "lstm_layer_norm_epsilon": 0.001,
+            "lstm_dropout": 0.3
+          },
+          "joiner": {
+            "activation": "relu"
+          },
+          "num_layers": 10
+        },
+        "training": {
+          "learning_rate": 0.0005,
+          "adam_betas": [
+            0.9,
+            0.999
+          ],
+          "adam_eps": 1e-08,
+          "warmup_steps": 10000,
+          "rnnt_loss_reduction": "sum",
+          "rnnt_loss_clamp": 1.0,
+          "rnnt_loss_chunk": "batch",
+          "gradient_clip_val": 10.0,
+          "epochs": 50
+        },
+        "data": {
+          "sample_rate": 16000,
+          "n_fft": 400,
+          "n_mels": 80,
+          "hop_length": 160,
+          "spec_augment": {
+            "freq_mask_param": 27,
+            "time_mask_param": 100,
+            "time_mask_prob": 0.2
+          },
+          "transcript_suffix": "-ph",
+          "strip_spaces": false,
+          "max_token_limit": 11050,
+          "rnnt_numel_limit": 1900000000,
+          "rnnt_frames_per_char": 3.5,
+          "num_workers": 20,
+          "prefetch_factor": 2,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean"
+        },
+        "trainer": {
+          "accelerator": "cuda",
+          "strategy": "auto",
+          "devices": 1,
+          "num_nodes": 1,
+          "log_every_n_steps": 10,
+          "val_check_interval": 200,
+          "num_sanity_val_steps": 0,
+          "fast_dev_run": false,
+          "matmul_precision": "high",
+          "accumulate_grad_batches": 1,
+          "checkpoint": {
+            "save_top_k": 2,
+            "save_weights_only": true,
+            "save_last": true,
+            "save_on_validation_end": true,
+            "val_checkpoint_interval": 200,
+            "train_checkpoint_interval": 500
+          }
+        },
+        "decoding": {
+          "beam_width": 20
+        },
+        "debug": false,
+        "seed": 42
+      },
+      "training_run_sha256": "27798d8579e49b891b96c3f09671aa65ad07e76afd088a85024051c3ddcd17d8",
+      "training": {
+        "status": "trained",
+        "target_epochs": 50,
+        "reported_epoch": 50,
+        "global_step": 90986,
+        "completed_epochs_at_last_boundary": 50,
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_resume_b11050/checkpoints/epoch-boundary-epoch=50-step=90986-15e8878e93b7.ckpt",
+        "training_complete_marker": false,
+        "code_commit_recorded": "a05b80c3aacff5417b25bedca818c8054e1cb67d",
+        "phone_token_budget": 11050,
+        "rnnt_frames_per_char": 3.5,
+        "resume_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_bridge_b6500_e16/checkpoints/epoch-boundary-before-b11050.ckpt",
+        "error": null
+      },
+      "stride": 1,
+      "input_projection_dim": 128,
+      "backbone_dim": 128,
+      "best_checkpoint": {
+        "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_resume_b11050/checkpoints/val-none-epoch=49-step=89901.ckpt",
+        "sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+        "dev_loss": 10.211566925048828,
+        "audit_path": "artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/summary.json",
+        "epoch_zero_based": 49,
+        "global_step": 89901
+      },
+      "evaluation": {
+        "utterances": 2620,
+        "phone_errors": 10752,
+        "reference_phones": 189023,
+        "corpus_per": 0.05688196674478767,
+        "mean_utterance_rtf": 0.06777837188808325,
+        "median_utterance_rtf": 0.0649441553314313,
+        "csv_path": "artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/full/mel_layer5.csv",
+        "csv_sha256": "cbc2f8ea09e34af7aa7138132b2d2e290eac928d1b1bafad017da2b15a1a394c",
+        "checks": {
+          "idx_contiguous": true,
+          "counts_match": true,
+          "per_consistent": true,
+          "rtf_finite_nonnegative": true,
+          "csv_hash_matches_summary": true,
+          "reference_order_matches": true
+        },
+        "summary_path": "artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/summary.json",
+        "environment": {
+          "python": "/opt/anaconda3/envs/aligner/bin/python",
+          "accelerator": "cpu",
+          "threads": 4,
+          "interop_threads": 1,
+          "workers": 0,
+          "beam_width": 20,
+          "metric": "per",
+          "python_version": "3.12.9",
+          "torch": "2.8.0",
+          "torchaudio": "2.8.0",
+          "pytorch_lightning": "2.6.1",
+          "cpu": "Apple M4"
+        },
+        "evaluation_date": "2026-11-07",
+        "config_path": "artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/configs_cpu/mel_layer5.yaml",
+        "config_sha256": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4",
+        "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457",
+        "rtf_retest": {
+          "utterances": 2620,
+          "phone_errors": 10752,
+          "reference_phones": 189023,
+          "corpus_per": 0.05688196674478767,
+          "mean_utterance_rtf": 0.03786553141825142,
+          "median_utterance_rtf": 0.03591182710915035,
+          "csv_path": "output/phone69_460h/mel_layer5_rtf_retest_20261107/mel_layer5.csv",
+          "csv_sha256": "1e13f0a14979358a5a98e6047d905b92c9340e17261a530139bb66740a9bb68a",
+          "checks": {
+            "idx_contiguous": true,
+            "counts_match": true,
+            "per_consistent": true,
+            "rtf_finite_nonnegative": true,
+            "csv_hash_matches_summary": true,
+            "reference_order_matches": true
+          },
+          "summary_path": "artifacts/research/phone69_460h_summary_20261107/mel_layer5_rtf_retest.json",
+          "corpus_rtf": 0.03783870083132286,
+          "hypothesis_changes": 0
+        }
+      },
+      "frame_retention": {
+        "overall_retention": 0.15786668090906197,
+        "frame_totals": {
+          "input_mel_frames": 1947238,
+          "after_mel_frames": 764950,
+          "encoder_output_frames": 307404
+        },
+        "conditional_layer5_retention": 0.40186155957905745,
+        "source": "artifacts/research/phone69_460h_summary_20261107/mel_layer5_compute.json",
+        "date": "2026-11-07",
+        "checkpoint_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+        "device": "cpu"
+      },
+      "notes": [
+        "6500 to 11050 phone-token budget after epoch 16, including a mid-epoch bridge with non-resumable dataloader warning. The three directories form one training trajectory.",
+        "First mean utterance RTF 0.06777837188808325 under background load; later one-pass retest 0.03786553141825142 with identical hypotheses. Mel baseline was not retimed alongside it."
+      ],
+      "parameters": 4249296,
+      "parameters_source": "artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/summary.json",
+      "config_chain": [
+        "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
+        "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_bridge_e16.yaml",
+        "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml"
+      ]
+    },
+    {
+      "id": "E11",
+      "name": "placement_mel_layer5_layer8_stride1",
+      "label": "Mel＋第5层＋第8层三阶段五帧融合",
+      "training_config_path": "configs/server_phone69_460h_placement_mel_layer5_layer8_stride1_s42_b11050_e50.yaml",
+      "training_config_sha256": "04e89690cd2297d4fbe79202b5c7ddbc3ed0c435cebf27c7c32e043c5d609250",
+      "server_config_path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_mel_layer5_layer8_stride1_s42_b11050_e50.yaml",
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_layer8_stride1_s42_b11050_e50",
+      "configuration": {
+        "paths": {
+          "dataset_path": "/test21/librispeech",
+          "global_stats_path": "/test21/librispeech/global_stats.json",
+          "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_layer8_stride1_s42_b11050_e50",
+          "from_checkpoint": null
+        },
+        "tokenizer": {
+          "type": "phone69",
+          "vocab_path": "configs/phone69_vocab.json"
+        },
+        "model": {
+          "sequence_mode": "offline",
+          "input_dim": 80,
+          "encoding_dim": 256,
+          "num_symbols": 69,
+          "time_reduction_input_dim": 128,
+          "time_reduction_stride": 1,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "compression": {
+            "stages": [
+              {
+                "after_layer": 0,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames"
+              },
+              {
+                "after_layer": 5,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames"
+              },
+              {
+                "after_layer": 8,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames"
+              }
+            ]
+          },
+          "predictor": {
+            "symbol_embedding_dim": 128,
+            "num_lstm_layers": 2,
+            "lstm_hidden_dim": 128,
+            "lstm_layer_norm": true,
+            "lstm_layer_norm_epsilon": 0.001,
+            "lstm_dropout": 0.3
+          },
+          "joiner": {
+            "activation": "relu"
+          },
+          "num_layers": 10
+        },
+        "training": {
+          "learning_rate": 0.0005,
+          "adam_betas": [
+            0.9,
+            0.999
+          ],
+          "adam_eps": 1e-08,
+          "warmup_steps": 10000,
+          "rnnt_loss_reduction": "sum",
+          "rnnt_loss_clamp": 1.0,
+          "rnnt_loss_chunk": "batch",
+          "gradient_clip_val": 10.0,
+          "epochs": 50
+        },
+        "data": {
+          "sample_rate": 16000,
+          "n_fft": 400,
+          "n_mels": 80,
+          "hop_length": 160,
+          "spec_augment": {
+            "freq_mask_param": 27,
+            "time_mask_param": 100,
+            "time_mask_prob": 0.2
+          },
+          "transcript_suffix": "-ph",
+          "strip_spaces": false,
+          "max_token_limit": 11050,
+          "rnnt_numel_limit": 1900000000,
+          "rnnt_frames_per_char": 3.5,
+          "num_workers": 20,
+          "prefetch_factor": 2,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean"
+        },
+        "trainer": {
+          "accelerator": "cuda",
+          "strategy": "auto",
+          "devices": 1,
+          "num_nodes": 1,
+          "log_every_n_steps": 10,
+          "val_check_interval": 200,
+          "num_sanity_val_steps": 0,
+          "fast_dev_run": false,
+          "matmul_precision": "high",
+          "accumulate_grad_batches": 1,
+          "checkpoint": {
+            "save_top_k": 2,
+            "save_weights_only": true,
+            "save_last": true,
+            "save_on_validation_end": true,
+            "val_checkpoint_interval": 200,
+            "train_checkpoint_interval": 500
+          }
+        },
+        "decoding": {
+          "beam_width": 20
+        },
+        "debug": false,
+        "seed": 42
+      },
+      "training_run_sha256": "d139992d058fa7af21f00026aad5144ab6bd0d376b80ba1958c3b2c786cdcadb",
+      "training": {
+        "status": "training",
+        "target_epochs": 50,
+        "reported_epoch": 5,
+        "global_step": 6400,
+        "completed_epochs_at_last_boundary": 4,
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_layer8_stride1_s42_b11050_e50/checkpoints/epoch-boundary-epoch=04-step=5940-921b935683b2.ckpt",
+        "training_complete_marker": false,
+        "code_commit_recorded": "91bc5af5675bef3efbb13ba729dbe7f48ad12fc7",
+        "phone_token_budget": 11050,
+        "rnnt_frames_per_char": 3.5,
+        "resume_checkpoint": null,
+        "error": null
+      },
+      "stride": 1,
+      "input_projection_dim": 128,
+      "backbone_dim": 128,
+      "best_checkpoint": {
+        "server_path": null
+      },
+      "evaluation": null,
+      "frame_retention": null,
+      "notes": [
+        "Fresh initialization with constant 11050 budget; no full test-clean result yet. Progress is a time-bounded server snapshot."
+      ],
+      "parameters": 4269973,
+      "parameters_source": "artifacts/runs/phone69_460h_mel_layer5_layer8_20261107/plan.json"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "artifacts/research/phone69_460h_summary_20261107/server_inventory.json",
+      "bytes": 127372,
+      "sha256": "68e2dc5f0be9466563ef313b2efcf5f8bbd7309fe9b1d0851433d6802753b671"
+    },
+    {
+      "path": "artifacts/research/phone69_460h_summary_20261107/server_details.json",
+      "bytes": 7613,
+      "sha256": "f30170840edbfdee3dbf5b84c5146d1e4f4606aa92f01bd7ea55591e732c6024"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/summary.json",
+      "bytes": 3772,
+      "sha256": "fdb97b69925ee670150f9f41e3e082559fccd98cca4012e1517621581f43cb12"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_provenance_20261029/checkpoint_audit.json",
+      "bytes": 57388,
+      "sha256": "fb6c40cfcff201f8fae5c55bd5c54395599f9c32783dec35ab363cbfe7f6499b"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_native_offline_five_frames_20261018/dimension_audit.json",
+      "bytes": 2850,
+      "sha256": "234ca7b0728c7d60d813395e80f5c709037bade8f666a9fbc066941c97b0fbe6"
+    },
+    {
+      "path": "artifacts/analysis/phone69_460h_testclean_frame_retention_cpu_20261027/compression_summary.json",
+      "bytes": 14550,
+      "sha256": "892e64e50b46dcfde93e465f1cfe72bc315286cb59f88f7cd99188c2f301f678"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_dim512_local_cpu_20261104/summary.json",
+      "bytes": 3912,
+      "sha256": "35a8eef29445abe01af3d9478d02f7a5a22d920d72085d106a9314806c1e6d89"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/summary.json",
+      "bytes": 3430,
+      "sha256": "fb74f512a50249e7d91678924e5e89dbf9bc4162aeecb0d7c391b383f18140db"
+    },
+    {
+      "path": "artifacts/research/phone69_460h_summary_20261107/mel_layer5_rtf_retest.json",
+      "bytes": 3375,
+      "sha256": "14eeda7952f29824db8f1a00924a8e1d73bec1fa18f1957620dce547cbd8b223"
+    },
+    {
+      "path": "artifacts/research/phone69_460h_summary_20261107/mel_layer5_compute.json",
+      "bytes": 4054,
+      "sha256": "50b32c39b5f0c83cf1a43faf73a0a261a39ef3501cfb65d1bad27f224a46dbc0"
+    },
+    {
+      "path": "configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+      "bytes": 2092,
+      "sha256": "876c0fd72f69a6653954d9b6b4738a58aa0a2ebfbcf2f1dcf7550bb5528f0c5b"
+    },
+    {
+      "path": "configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+      "bytes": 1981,
+      "sha256": "017cdecbc2e7f088d764bfcf31a2cd071a2b53ccef8b432e33c1b29361418ee2"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/stride4_none.csv",
+      "bytes": 1200250,
+      "sha256": "dbad31d07361d7123a9c989f3fecc22986cf392b1e19380a3bb494d499617117"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_stride4_none_s42_e50/lightning_logs/version_0/metrics.csv",
+      "bytes": 276245,
+      "sha256": "9ce9106062f09581d7e781f18b67e938437651c49ab2836cc95fc90729462679"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+      "bytes": 2154,
+      "sha256": "c781d6b13c3a89ae314562a1b0ea18fda549cf4c771f0fdbd963dc2a18932d83"
+    },
+    {
+      "path": "output/local_cpu_20261029/assets/global_stats.json",
+      "bytes": 3888,
+      "sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/stride1_cosd_learned_five_frames.csv",
+      "bytes": 1200471,
+      "sha256": "e8fc8d1ea2324ff74d3e773c37d2db13ebf8a454af4357609394c030e62dcd2b"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50/lightning_logs/version_0/metrics.csv",
+      "bytes": 951870,
+      "sha256": "f768a6e572f4c2e946b69e581e1cf0291ffe7dd3edb79eb1870a60693d4f5b3b"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+      "bytes": 2265,
+      "sha256": "733b2b28c723c90328f688b1063c425daa8cf424ca617519997ca6891baa5e0f"
+    },
+    {
+      "path": "configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+      "bytes": 2092,
+      "sha256": "44b72b2a6f7a7d05635a76fb4c0cb859a37b7190e3fe2d91daf790d4da3bc819"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/stride2_cosd_learned_five_frames.csv",
+      "bytes": 1203294,
+      "sha256": "74e4f168fba2a754339f930e83ba73ff6bd9cc98de72f1c2dbb5b84112982079"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50/lightning_logs/version_0/metrics.csv",
+      "bytes": 313585,
+      "sha256": "bf89de91001da537cd9cf1f1f874d79e94ca6dc319f8c1ef801bb375a76423ab"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+      "bytes": 2265,
+      "sha256": "696e16cdb7e91d6089d8b1da227ef1e65235f3ba49cc5ccec233737ab7b1e9d2"
+    },
+    {
+      "path": "configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+      "bytes": 2092,
+      "sha256": "9ddbd72852149149a7f256404bbed833098406a5adf4c06110566866bb6c7b78"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/stride4_cosd_learned_five_frames.csv",
+      "bytes": 1194873,
+      "sha256": "ad5ee7d632c63f3516ab18c8f86d66ee1dfcbeec584cdc1d0a64910753715768"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50/lightning_logs/version_0/metrics.csv",
+      "bytes": 224169,
+      "sha256": "97a49a3701cb2555f96b8538d8e9ec36d25fdbbae20582624ab704eb14f91441"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+      "bytes": 2265,
+      "sha256": "752ea4b568f2e61dd839ff378218b623910e4c2f6e7b35bed43314b2dfa909b9"
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+      "bytes": 2177,
+      "sha256": "173391aa2e55ef15f01865c8bd6792e53f52d0475912dacad83a7297542f4354"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_mel_stride1.csv",
+      "bytes": 1202928,
+      "sha256": "a31722534d72d80a2681a7cc9301e03820ed6c55cf1cc37ca0c10fdbcbdb4283"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_mel_stride1_s42_e50/lightning_logs/version_0/metrics.csv",
+      "bytes": 949401,
+      "sha256": "6c0882fb2f5b3bcf8b56dfd727645718dcec2aa9dffce6f6c86e81336e6cd49f"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+      "bytes": 2287,
+      "sha256": "584a45b39917382123fd4116356f77ebc13eb94f1beb0c3652c3fd611b5e01a3"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_mel_b6500.json",
+      "bytes": 85409,
+      "sha256": "5884cb703f4e4ff8a4a43ad68573ae605c2e27969fbc91ede7fb508363fd89f8"
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "bytes": 2180,
+      "sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_layer5_stride1.csv",
+      "bytes": 1201611,
+      "sha256": "547788f8e1e57ccfd8da90be7b53f44a77c4db88a8d512e9084560cb5380dec3"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layer5_stride1_s42_e50/lightning_logs/version_0/metrics.csv",
+      "bytes": 1450139,
+      "sha256": "ecd890ab695a164626ab88b82d1ffff423613d9caa09935d84dcf7d3229084ec"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "bytes": 2290,
+      "sha256": "99742e054c65ff6a2e7b2a0a2a175a697bafda81599e49135c75a0ac5c610c6d"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layer5_b5000.json",
+      "bytes": 69374,
+      "sha256": "37de094e33dcb82d13d0900a89453716f3befd979c625099ce60f4e365e2040f"
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+      "bytes": 2042,
+      "sha256": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_layer7_stride1.csv",
+      "bytes": 1202615,
+      "sha256": "1050146c8178108c4e63534ed20a00ef7aa7059af614f579b34075b985413ec2"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layer7_stride1_s42_e50/lightning_logs/version_0/metrics.csv",
+      "bytes": 543226,
+      "sha256": "fc4409c7073d61d8dc4d98c28cc26b9d955af6b21649035a15e7c8951f7dfeb4"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layer7_stride1_s42_e50/lightning_logs/version_1/metrics.csv",
+      "bytes": 398620,
+      "sha256": "1196ab519713e1fb3ad32506a0a9e1ab3c7512992c7cbcbda3832a6c91ac2f8f"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+      "bytes": 2290,
+      "sha256": "8d94308e6d24536f29985588c6f1d7409486d453c451128afea8112edb7d1605"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_placement_layer7_stride1_20261027/probe_layer7_b6500.json",
+      "bytes": 86419,
+      "sha256": "ccbf0b1a35a3a93a9808dbba307e12f8c7eff35e2602073d5c770ca279a1e3ea"
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+      "bytes": 2548,
+      "sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_layers2_5_n3_stride1.csv",
+      "bytes": 1201297,
+      "sha256": "7c82581af996bcdb9a738454e289c736c60a1ecd64bdf5bed104b895d58bd88a"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_0/metrics.csv",
+      "bytes": 147003,
+      "sha256": "eac203600dbd193d60573a27141c0e6930144274db422dbd2419c14082273929"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_1/metrics.csv",
+      "bytes": 1009665,
+      "sha256": "682aa05660b2b0c43b6bee2d6b236054c73086fdc06384ccbd84eeee186cee7b"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+      "bytes": 2420,
+      "sha256": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6000_user_override.json",
+      "bytes": 119594,
+      "sha256": "f0bcc9a170c23ce7a3a094ff12c0b0c91cd996d0b7d7d6489c0b8463b314b673"
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch4000_before6000.yaml",
+      "bytes": 2310,
+      "sha256": "e60e15d89be9e141bfc3ab5812e3a3454ea888bd48893ef25443eccd8ab19e61"
+    },
+    {
+      "path": "configs/server_phone69_460h_offline_native_stride4_none_dim512_s42_e50.yaml",
+      "bytes": 2078,
+      "sha256": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_dim512_local_cpu_20261104/full/dim512.csv",
+      "bytes": 1199291,
+      "sha256": "64d60ee1399d304202409633495f926fbbe770c3de8fe999e2337c9a61ee428f"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_dim512_local_cpu_20261104/configs_cpu/dim512.yaml",
+      "bytes": 2299,
+      "sha256": "773e1ca8b7b335463b2475935cdd235bc1d7ac1e8ed17b9e5c73df7cb8a1ced7"
+    },
+    {
+      "path": "output/local_cpu_20261104/assets/global_stats.json",
+      "bytes": 3888,
+      "sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_stride4_dim512_20261103/memory_probe.json",
+      "bytes": 6393,
+      "sha256": "6799f59fd9f36d623dc23b00d4a0b9e762001aef4da972e66387c2a845d60321"
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml",
+      "bytes": 2535,
+      "sha256": "2b9909965c50808e96ee5546a3f53eede597e415449ae79bb845b60ab1728192"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/full/mel_layer5.csv",
+      "bytes": 1203118,
+      "sha256": "cbc2f8ea09e34af7aa7138132b2d2e290eac928d1b1bafad017da2b15a1a394c"
+    },
+    {
+      "path": "artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/configs_cpu/mel_layer5.yaml",
+      "bytes": 2396,
+      "sha256": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4"
+    },
+    {
+      "path": "output/phone69_460h/mel_layer5_rtf_retest_20261107/mel_layer5.csv",
+      "bytes": 1364838,
+      "sha256": "1e13f0a14979358a5a98e6047d905b92c9340e17261a530139bb66740a9bb68a"
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
+      "bytes": 2372,
+      "sha256": "681154e65a68ec870b479b8fbca1ca39502ee89e617ddbae3e0d9df618dab0b0"
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_bridge_e16.yaml",
+      "bytes": 2496,
+      "sha256": "3062283086c34045913f53eb4448b0f73ee5a8ad27839e6f719412333d28d95e"
+    },
+    {
+      "path": "configs/server_phone69_460h_placement_mel_layer5_layer8_stride1_s42_b11050_e50.yaml",
+      "bytes": 2534,
+      "sha256": "04e89690cd2297d4fbe79202b5c7ddbc3ed0c435cebf27c7c32e043c5d609250"
+    },
+    {
+      "path": "artifacts/runs/phone69_460h_mel_layer5_layer8_20261107/plan.json",
+      "bytes": 1722,
+      "sha256": "ae0f2cc6f22fb8e20a0dbdbeb74d9a9edee71894ac9f612b9ac70628e924ee5d"
+    },
+    {
+      "path": "configs/phone69_vocab.json",
+      "bytes": 1054,
+      "sha256": "381f0fa6dd78e828ccf68c0f4b5d3988aabb3976753d4ae62ffea7f0359876e6"
+    },
+    {
+      "path": "assets/statistics/global_stats.json",
+      "bytes": 3905,
+      "sha256": "be2f80418ef66bad30dcd5556e194f95234d75c5d2b94a92d7a766d31900df87"
+    }
+  ],
+  "verification": {
+    "full_result_csvs": 10,
+    "rows_checked": 26200,
+    "retest_csvs": 1,
+    "retest_rows_checked": 2620,
+    "same_reference_sequence": true,
+    "same_global_stats_file_hash": true,
+    "selected_config_hashes_match_server_run": true,
+    "evaluation_model_sections_match_training_configs": true,
+    "no_new_training_or_model_evaluation": true
+  }
+}

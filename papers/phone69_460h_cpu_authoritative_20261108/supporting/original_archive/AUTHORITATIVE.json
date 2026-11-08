@@ -1,0 +1,550 @@
+{
+  "schema": 1,
+  "status": "authoritative",
+  "title": "460h Phone69 本地 CPU 串行评测权威结果（2026-11-08）",
+  "designated_by": "user",
+  "designation": "把这个结果保存在新建文件夹，paper里面，作为权威结果",
+  "archived_at": "2026-11-08T10:05:24+08:00",
+  "canonical_directory": "papers/phone69_460h_cpu_authoritative_20261108",
+  "source_directory": "artifacts/evaluations/phone69_460h_cpu_serial_20261108",
+  "scope": {
+    "training_hours": 460,
+    "tokenizer": "phone69",
+    "subset": "test-clean",
+    "model_ids": [
+      "E01",
+      "E02",
+      "E03",
+      "E04",
+      "E05",
+      "E06",
+      "E07",
+      "E08",
+      "E09",
+      "E10"
+    ],
+    "utterances_per_model": 2620,
+    "reference_phones_per_model": 189023,
+    "audio_seconds_per_model": 19452.480625
+  },
+  "primary_baseline": {
+    "id": "E09",
+    "input_projection_dim": 128,
+    "time_reduction_stride": 4
+  },
+  "protocol": {
+    "device": "cpu",
+    "threads": 4,
+    "interop_threads": 1,
+    "data_workers": 0,
+    "openmp_max_active_levels": 1,
+    "batch": 1,
+    "beam": 20,
+    "dtype": "float32",
+    "warmup_utterances": 10,
+    "subset": "test-clean",
+    "expected_phones": 189023,
+    "timing": "model(batch) on monotonic wall clock; corpus RTF uses FLAC duration"
+  },
+  "runtime": {
+    "python": "/opt/anaconda3/envs/aligner/bin/python",
+    "python_version": "3.12.9",
+    "machine": "arm64",
+    "os": "macOS-27.3-arm64-arm-64bit",
+    "torch": "2.8.0",
+    "torchaudio": "2.8.0",
+    "openmp": {
+      "path": "/opt/anaconda3/envs/aligner/lib/libomp.dylib",
+      "sha256": "ce4985af1eb24c5cf570933a9234a54353c4b649cd1985fbe4300d67be97d76b"
+    },
+    "model_source": "snapshot"
+  },
+  "batch_finished_at": "2026-11-08T02:08:37+08:00",
+  "completed": 10,
+  "total": 10,
+  "failures": {},
+  "retries": 0,
+  "changed_predictions": 0,
+  "original_verification": {
+    "status": "passed",
+    "verified_at": "2026-11-08T02:10:09+08:00",
+    "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
+    "summary_csv_sha256": "d3a754bcc62cd757ba6df960bf93927ee526850110636efab45e1c5e15d87555",
+    "summary_json_sha256": "6ad101139b17150b045b8423997f02f3336fdeb0fb769eaf11e7a1075c96f7c7",
+    "verification_sha256": "167bae65d0be993cc52f894bedb10f60c1352f7e87ecf883d84a0206d7a027e7"
+  },
+  "archive_verification": {
+    "copies_verified": true,
+    "models_with_rechecked_inputs": 10,
+    "checksum_manifest": "SHA256SUMS"
+  },
+  "entrypoints": {
+    "summary_csv": "summary.csv",
+    "summary_json": "summary.json",
+    "frozen_manifest": "manifest.json",
+    "original_verification": "verification.json",
+    "external_input_references": "input_references.json"
+  },
+  "copied_files": [
+    {
+      "path": "E01/attempt_01/run.log",
+      "sha256": "0563009376bce1acc8929d8a490b79e18ae449885c546a78278da31672d8eeca",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E01/attempt_01/run.log"
+    },
+    {
+      "path": "E01/attempt_01/utterances.csv",
+      "sha256": "b92d9efcc2cc9c32243fce3393c2f8f4d949a5e0a4fb04ffc4df6af8ad538cfa",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E01/attempt_01/utterances.csv"
+    },
+    {
+      "path": "E01/config.yaml",
+      "sha256": "c781d6b13c3a89ae314562a1b0ea18fda549cf4c771f0fdbd963dc2a18932d83",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E01/config.yaml"
+    },
+    {
+      "path": "E01/progress.json",
+      "sha256": "3297446bc3417ea3b19d84d7fdc6167dc078b9f3b7863095869233dd2bcb4a12",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E01/progress.json"
+    },
+    {
+      "path": "E01/result.json",
+      "sha256": "3ec80ed70144b9289fb7c3e0b6daeaed95849d642580c2222715eed792bb77fd",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E01/result.json"
+    },
+    {
+      "path": "E01/training_config.yaml",
+      "sha256": "017cdecbc2e7f088d764bfcf31a2cd071a2b53ccef8b432e33c1b29361418ee2",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E01/training_config.yaml"
+    },
+    {
+      "path": "E02/attempt_01/run.log",
+      "sha256": "0563009376bce1acc8929d8a490b79e18ae449885c546a78278da31672d8eeca",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E02/attempt_01/run.log"
+    },
+    {
+      "path": "E02/attempt_01/utterances.csv",
+      "sha256": "be5e3a989315c38b57aabc3bf05a50d4c60a6eceebe0794a5781c3d5f02a149b",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E02/attempt_01/utterances.csv"
+    },
+    {
+      "path": "E02/config.yaml",
+      "sha256": "733b2b28c723c90328f688b1063c425daa8cf424ca617519997ca6891baa5e0f",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E02/config.yaml"
+    },
+    {
+      "path": "E02/progress.json",
+      "sha256": "dedaa82b443043f1fee6c8165afcf4fd76d193862077929072f97430a7347154",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E02/progress.json"
+    },
+    {
+      "path": "E02/result.json",
+      "sha256": "7a40d860f78f6f017d0a2e7169fc9eb87eb8b4dba304fa669c47c93382d46c8e",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E02/result.json"
+    },
+    {
+      "path": "E02/training_config.yaml",
+      "sha256": "876c0fd72f69a6653954d9b6b4738a58aa0a2ebfbcf2f1dcf7550bb5528f0c5b",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E02/training_config.yaml"
+    },
+    {
+      "path": "E03/attempt_01/run.log",
+      "sha256": "0563009376bce1acc8929d8a490b79e18ae449885c546a78278da31672d8eeca",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E03/attempt_01/run.log"
+    },
+    {
+      "path": "E03/attempt_01/utterances.csv",
+      "sha256": "92111e45f0b5ce2286a2ff56b48ad09b8c947a4a69344b6a07ea540b05f5cad5",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E03/attempt_01/utterances.csv"
+    },
+    {
+      "path": "E03/config.yaml",
+      "sha256": "696e16cdb7e91d6089d8b1da227ef1e65235f3ba49cc5ccec233737ab7b1e9d2",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E03/config.yaml"
+    },
+    {
+      "path": "E03/progress.json",
+      "sha256": "0c46d3ff51b03c7b71b4807cb383c435e79f01c66f183e9dd666e5d5819c59e1",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E03/progress.json"
+    },
+    {
+      "path": "E03/result.json",
+      "sha256": "886bcc1b7c16fa3f229edab3d75581d1f2ce3c63911c07b409dd1448e36f8d48",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E03/result.json"
+    },
+    {
+      "path": "E03/training_config.yaml",
+      "sha256": "44b72b2a6f7a7d05635a76fb4c0cb859a37b7190e3fe2d91daf790d4da3bc819",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E03/training_config.yaml"
+    },
+    {
+      "path": "E04/attempt_01/run.log",
+      "sha256": "0563009376bce1acc8929d8a490b79e18ae449885c546a78278da31672d8eeca",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E04/attempt_01/run.log"
+    },
+    {
+      "path": "E04/attempt_01/utterances.csv",
+      "sha256": "c74df09bfb115507e10e48d3ca6cd0af65a6f3e46af92883b557be99c52885cc",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E04/attempt_01/utterances.csv"
+    },
+    {
+      "path": "E04/config.yaml",
+      "sha256": "752ea4b568f2e61dd839ff378218b623910e4c2f6e7b35bed43314b2dfa909b9",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E04/config.yaml"
+    },
+    {
+      "path": "E04/progress.json",
+      "sha256": "40ff7fcf1884b584d3090e03e7980d290f710c208de0df092f0bf81c62deb0a7",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E04/progress.json"
+    },
+    {
+      "path": "E04/result.json",
+      "sha256": "5ee23304b9ec32fe0d0d66959687a8af3d130529a3549b98543030b392405815",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E04/result.json"
+    },
+    {
+      "path": "E04/training_config.yaml",
+      "sha256": "9ddbd72852149149a7f256404bbed833098406a5adf4c06110566866bb6c7b78",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E04/training_config.yaml"
+    },
+    {
+      "path": "E05/attempt_01/run.log",
+      "sha256": "0563009376bce1acc8929d8a490b79e18ae449885c546a78278da31672d8eeca",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E05/attempt_01/run.log"
+    },
+    {
+      "path": "E05/attempt_01/utterances.csv",
+      "sha256": "92fcc23ff24851c8517ae2a1fab350ca690d764a8ea3cbfe0430020388336fb9",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E05/attempt_01/utterances.csv"
+    },
+    {
+      "path": "E05/config.yaml",
+      "sha256": "584a45b39917382123fd4116356f77ebc13eb94f1beb0c3652c3fd611b5e01a3",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E05/config.yaml"
+    },
+    {
+      "path": "E05/progress.json",
+      "sha256": "dab86534dd6c16a63704ac10cda6225ba0d28f161f821c20a2660930eded71f1",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E05/progress.json"
+    },
+    {
+      "path": "E05/result.json",
+      "sha256": "f9c9108d601c42df5976329bdda0a9afbaaa7ea44fd831e9ab15d07b45c51022",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E05/result.json"
+    },
+    {
+      "path": "E05/training_config.yaml",
+      "sha256": "173391aa2e55ef15f01865c8bd6792e53f52d0475912dacad83a7297542f4354",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E05/training_config.yaml"
+    },
+    {
+      "path": "E06/attempt_01/run.log",
+      "sha256": "0563009376bce1acc8929d8a490b79e18ae449885c546a78278da31672d8eeca",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E06/attempt_01/run.log"
+    },
+    {
+      "path": "E06/attempt_01/utterances.csv",
+      "sha256": "df7729151cefd0405d7c89f786fb1825b11c6ee042a49e7d4b939d4b7db4697d",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E06/attempt_01/utterances.csv"
+    },
+    {
+      "path": "E06/config.yaml",
+      "sha256": "99742e054c65ff6a2e7b2a0a2a175a697bafda81599e49135c75a0ac5c610c6d",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E06/config.yaml"
+    },
+    {
+      "path": "E06/progress.json",
+      "sha256": "962b0e85df50eb6a3de89f81453e1202f3284ae3e17efddc41fc9ac2de9c6670",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E06/progress.json"
+    },
+    {
+      "path": "E06/result.json",
+      "sha256": "6b159a3898cd1c18bc44763741fa3704c89e2c2abfae022559ee827005397650",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E06/result.json"
+    },
+    {
+      "path": "E06/training_config.yaml",
+      "sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E06/training_config.yaml"
+    },
+    {
+      "path": "E07/attempt_01/run.log",
+      "sha256": "0563009376bce1acc8929d8a490b79e18ae449885c546a78278da31672d8eeca",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E07/attempt_01/run.log"
+    },
+    {
+      "path": "E07/attempt_01/utterances.csv",
+      "sha256": "ca61d07a5fa41a42ce836526af75167329f08da342187f8639e16a7ff9d5c457",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E07/attempt_01/utterances.csv"
+    },
+    {
+      "path": "E07/config.yaml",
+      "sha256": "8d94308e6d24536f29985588c6f1d7409486d453c451128afea8112edb7d1605",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E07/config.yaml"
+    },
+    {
+      "path": "E07/progress.json",
+      "sha256": "0339e75ad496111eaa4da016adbd788828eebf4edb358c565fd8b01fcfc6b72c",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E07/progress.json"
+    },
+    {
+      "path": "E07/result.json",
+      "sha256": "2a5a69925e7a51d0c65c85603e83f9d5354fccaf83b282abaecb92f3460e30b2",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E07/result.json"
+    },
+    {
+      "path": "E07/training_config.yaml",
+      "sha256": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E07/training_config.yaml"
+    },
+    {
+      "path": "E08/attempt_01/run.log",
+      "sha256": "0563009376bce1acc8929d8a490b79e18ae449885c546a78278da31672d8eeca",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E08/attempt_01/run.log"
+    },
+    {
+      "path": "E08/attempt_01/utterances.csv",
+      "sha256": "0b270c3a9996f067629312d5d9f3e983f49e547c3b36b54b944dc0163dc44041",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E08/attempt_01/utterances.csv"
+    },
+    {
+      "path": "E08/config.yaml",
+      "sha256": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E08/config.yaml"
+    },
+    {
+      "path": "E08/progress.json",
+      "sha256": "aa3b58e90bb9d88fd68a86e879efc7f390f01d862a74b433dd968582a15a3700",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E08/progress.json"
+    },
+    {
+      "path": "E08/result.json",
+      "sha256": "2de7f6ec7bc98cce0260278a249d4cc3fae2c291d5e91acd5aaf0a78508c98cd",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E08/result.json"
+    },
+    {
+      "path": "E08/training_config.yaml",
+      "sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E08/training_config.yaml"
+    },
+    {
+      "path": "E09/attempt_01/run.log",
+      "sha256": "0563009376bce1acc8929d8a490b79e18ae449885c546a78278da31672d8eeca",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E09/attempt_01/run.log"
+    },
+    {
+      "path": "E09/attempt_01/utterances.csv",
+      "sha256": "ddb61d71075f1b9a00ebee4c335bf9920e32a65c6532c51b865a52eeab8524f8",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E09/attempt_01/utterances.csv"
+    },
+    {
+      "path": "E09/config.yaml",
+      "sha256": "773e1ca8b7b335463b2475935cdd235bc1d7ac1e8ed17b9e5c73df7cb8a1ced7",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E09/config.yaml"
+    },
+    {
+      "path": "E09/progress.json",
+      "sha256": "b4c8ad5adce1f97b2c077f74128448fbfb24aae24f60c8e57487e61bffdaa75d",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E09/progress.json"
+    },
+    {
+      "path": "E09/result.json",
+      "sha256": "d97fab3b5f83bd9b4dc601c57399b036083592ee95974d9f9319fe1874310ef9",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E09/result.json"
+    },
+    {
+      "path": "E09/training_config.yaml",
+      "sha256": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E09/training_config.yaml"
+    },
+    {
+      "path": "E10/attempt_01/run.log",
+      "sha256": "0563009376bce1acc8929d8a490b79e18ae449885c546a78278da31672d8eeca",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E10/attempt_01/run.log"
+    },
+    {
+      "path": "E10/attempt_01/utterances.csv",
+      "sha256": "41ab794a0046c1a9006663775fa035f9b3b509e1f1654873054a89dee95da39f",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E10/attempt_01/utterances.csv"
+    },
+    {
+      "path": "E10/config.yaml",
+      "sha256": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E10/config.yaml"
+    },
+    {
+      "path": "E10/progress.json",
+      "sha256": "baf4aff34d682e0756531740df578adee9c5cb6ed488d2f99e5486ea546ec185",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E10/progress.json"
+    },
+    {
+      "path": "E10/result.json",
+      "sha256": "51cf1c85692a34752d279580b91038f36c2095a5174ecb479a5086b5e697a449",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E10/result.json"
+    },
+    {
+      "path": "E10/training_config.yaml",
+      "sha256": "2b9909965c50808e96ee5546a3f53eede597e415449ae79bb845b60ab1728192",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/E10/training_config.yaml"
+    },
+    {
+      "path": "inputs/experiments.json",
+      "sha256": "9c1a003cc1940dae389f562328756e691cbbf56d3ff6694ce201b7b23af365ab",
+      "source": "artifacts/research/phone69_460h_summary_20261107/experiments.json"
+    },
+    {
+      "path": "inputs/global_stats.json",
+      "sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457",
+      "source": "output/local_cpu_20261029/assets/global_stats.json"
+    },
+    {
+      "path": "inputs/phone69_vocab.json",
+      "sha256": "381f0fa6dd78e828ccf68c0f4b5d3988aabb3976753d4ae62ffea7f0359876e6",
+      "source": "output/local_cpu_20261029/code/five_frames/configs/phone69_vocab.json"
+    },
+    {
+      "path": "manifest.json",
+      "sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/manifest.json"
+    },
+    {
+      "path": "model_source/common.py",
+      "sha256": "b2c0f0a35e57f96c09d9440ffec59e4b8576616e153f931e0d0c7b0b1ad34f51",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/common.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/__init__.py",
+      "sha256": "53467afcb57ca9fa24a0ac716cae00b38c0a18af4c5f356920922667be4b4ca0",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/__init__.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/checkpoint_utils.py",
+      "sha256": "2b6be42fa3204a1c6bbe4234db6351d81785acd3c0ea17634fe88f30522d54af",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/checkpoint_utils.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/compression/__init__.py",
+      "sha256": "5f912b187342ecfa0de09028c21c7a103124c5ca1cd8e844fbebd89be15fd145",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/compression/__init__.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/compression/batched_cosine.py",
+      "sha256": "6a9f052a89fbc236e6496d4963150c61b5328b5f8371fe1b9632dabfd51092c3",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/compression/batched_cosine.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/compression/core.py",
+      "sha256": "4c8435d13986cbbb9c102a25861fd58d8823881840b77081ef99ba158a3f9a12",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/compression/core.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/compression/detectors.py",
+      "sha256": "a3cb19db86f0747b7fc8a2366daf6e9fc9ac07741ca69bbfbdda86da3d544014",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/compression/detectors.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/compression/feature_smoothing.py",
+      "sha256": "e6c9151b8f8b3b1af70850ef80986d77355b9544124b25b3309769ed18edc8e9",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/compression/feature_smoothing.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/compression/mixers.py",
+      "sha256": "8fef25607c3de380204598780786700307e13d5973c52c48789e4138a11753ad",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/compression/mixers.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/compression/natural.py",
+      "sha256": "73a5a898f8a4ae7dfd32d1fb037f296e25bb6a61be8cdfb6240028001f236554",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/compression/natural.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/compression/stages.py",
+      "sha256": "ad9ae1867efd0851e99bd29fb05e7939bbdca02aeeeab93c98ec58f3d77eae19",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/compression/stages.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/encoder.py",
+      "sha256": "d3b0c397a8923093b38b196f3cead5e2f79970428934c07199669dec6c94523f",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/encoder.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/joiner.py",
+      "sha256": "56a409bcc92c1ee3d21b2fbe2e9e62b9836268a871013940c568377414fc0889",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/joiner.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/lightning_module.py",
+      "sha256": "2ce7b337309a70a1b1ecf455cdb9e711c91c0ae189be323215c1a4b95d24a3cc",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/lightning_module.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/metrics.py",
+      "sha256": "911529445ec324a7422f2f7592cca4af1177f5c7e397319a4a58b7706f5b593b",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/metrics.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/model.py",
+      "sha256": "584fafa227b354648f6e4ef2d47fd689dfd4b349158acf2898485779c96de709",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/model.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/predictor.py",
+      "sha256": "da238c0e54bd16a1f01f252ef935410877792a7dbf6ccc37c8613342393fdaf1",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/predictor.py"
+    },
+    {
+      "path": "model_source/conformer_rnnt/staged_encoder.py",
+      "sha256": "3ffdbfca4de4afa8fb44aa008947092a48cfc7e52f1af013bff027de16c746b7",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/staged_encoder.py"
+    },
+    {
+      "path": "model_source/ipa_features.py",
+      "sha256": "105e295d1ababfb67ad08137b5b081e7fda1cb1be63f7d26a484193bcaa672cf",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/ipa_features.py"
+    },
+    {
+      "path": "model_source/ipa_labels.py",
+      "sha256": "2ae1b6c36315b1bf6f3e83f73218f656ef40037408e017fbbfcd65dfa76ec583",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/ipa_labels.py"
+    },
+    {
+      "path": "model_source/ipa_tokenizer.py",
+      "sha256": "9ba06bc69404fcd2ee9023c7b63ad3cf4fc73ae25eb0e9171878f1b066cfec21",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/ipa_tokenizer.py"
+    },
+    {
+      "path": "model_source/phone69_tokenizer.py",
+      "sha256": "7ab6be6d5a928625f734b051f3674c398ad9c6e271b71429f4445a6bb0a0188a",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/phone69_tokenizer.py"
+    },
+    {
+      "path": "model_source/scripts/evaluation/run_phone69_460h_cpu_batch.py",
+      "sha256": "a574056ea61062f1f2855979235f19bce1eb02b1cdc812429e9e94aa168fbef2",
+      "source": "scripts/evaluation/run_phone69_460h_cpu_batch.py"
+    },
+    {
+      "path": "run_metadata/midnight_launch.json",
+      "sha256": "361d6775959c824c5c1213c5ac7cc9347b06ca9ce750497930ba0d7e819b3d70",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/midnight_launch.json"
+    },
+    {
+      "path": "run_metadata/progress.json",
+      "sha256": "fc640b8c2ae0b314aa79874a49cea3f6c896f2764325dbaab87038b4e16fcf39",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/progress.json"
+    },
+    {
+      "path": "summary.csv",
+      "sha256": "d3a754bcc62cd757ba6df960bf93927ee526850110636efab45e1c5e15d87555",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/summary.csv"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "6ad101139b17150b045b8423997f02f3336fdeb0fb769eaf11e7a1075c96f7c7",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/summary.json"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "167bae65d0be993cc52f894bedb10f60c1352f7e87ecf883d84a0206d7a027e7",
+      "source": "artifacts/evaluations/phone69_460h_cpu_serial_20261108/verification.json"
+    }
+  ]
+}

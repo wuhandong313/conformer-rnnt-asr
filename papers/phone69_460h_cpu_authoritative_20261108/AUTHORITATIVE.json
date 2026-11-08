@@ -1,0 +1,206 @@
+{
+  "status": "authoritative",
+  "title": "460h Phone69 本地 CPU 串行评测权威结果（2026-11-08）",
+  "designated_by": "user",
+  "designation": "把这个结果保存在新建文件夹，paper里面，作为权威结果",
+  "archived_at": "2026-11-08T10:05:24+08:00",
+  "canonical_directory": "papers/phone69_460h_cpu_authoritative_20261108",
+  "source_directory": "artifacts/evaluations/phone69_460h_cpu_serial_20261108",
+  "scope": {
+    "training_hours": 460,
+    "tokenizer": "phone69",
+    "subset": "test-clean",
+    "model_ids": [
+      "E01",
+      "E02",
+      "E03",
+      "E04",
+      "E05",
+      "E06",
+      "E07",
+      "E08",
+      "E09",
+      "E10"
+    ],
+    "utterances_per_model": 2620,
+    "reference_phones_per_model": 189023,
+    "audio_seconds_per_model": 19452.480625
+  },
+  "primary_baseline": {
+    "id": "E09",
+    "input_projection_dim": 128,
+    "time_reduction_stride": 4
+  },
+  "protocol": {
+    "device": "cpu",
+    "threads": 4,
+    "interop_threads": 1,
+    "data_workers": 0,
+    "openmp_max_active_levels": 1,
+    "batch": 1,
+    "beam": 20,
+    "dtype": "float32",
+    "warmup_utterances": 10,
+    "subset": "test-clean",
+    "expected_phones": 189023,
+    "timing": "model(batch) on monotonic wall clock; corpus RTF uses FLAC duration"
+  },
+  "runtime": {
+    "python": "/opt/anaconda3/envs/aligner/bin/python",
+    "python_version": "3.12.9",
+    "machine": "arm64",
+    "os": "macOS-27.3-arm64-arm-64bit",
+    "torch": "2.8.0",
+    "torchaudio": "2.8.0",
+    "openmp": {
+      "path": "/opt/anaconda3/envs/aligner/lib/libomp.dylib",
+      "sha256": "ce4985af1eb24c5cf570933a9234a54353c4b649cd1985fbe4300d67be97d76b"
+    },
+    "model_source": "snapshot"
+  },
+  "batch_finished_at": "2026-11-08T02:08:37+08:00",
+  "completed": 10,
+  "total": 10,
+  "failures": {},
+  "retries": 0,
+  "changed_predictions": 0,
+  "original_verification": {
+    "status": "passed",
+    "verified_at": "2026-11-08T02:10:09+08:00",
+    "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
+    "summary_csv_sha256": "d3a754bcc62cd757ba6df960bf93927ee526850110636efab45e1c5e15d87555",
+    "summary_json_sha256": "6ad101139b17150b045b8423997f02f3336fdeb0fb769eaf11e7a1075c96f7c7",
+    "verification_sha256": "167bae65d0be993cc52f894bedb10f60c1352f7e87ecf883d84a0206d7a027e7"
+  },
+  "schema": 2,
+  "reorganized_at": "2026-11-08T10:20:51+08:00",
+  "layout": {
+    "authoritative": [
+      "README.md",
+      "AUTHORITATIVE.json",
+      "summary.csv",
+      "summary.json"
+    ],
+    "supporting_archive": "supporting/original_archive",
+    "verification": "supporting/verification",
+    "supporting_research": "supporting/research"
+  },
+  "entrypoints": {
+    "summary_csv": "summary.csv",
+    "summary_json": "summary.json",
+    "frozen_manifest": "supporting/original_archive/manifest.json",
+    "original_verification": "supporting/original_archive/verification.json",
+    "external_input_references": "supporting/original_archive/input_references.json",
+    "original_checksums": "supporting/original_archive/SHA256SUMS",
+    "archive_verification": "supporting/verification/archive_verification.json",
+    "archive_checksums": "supporting/verification/SHA256SUMS",
+    "research_plan": "supporting/research/phone69_acl_2027_plan_20261107.md"
+  },
+  "models": [
+    {
+      "id": "E01",
+      "result": "supporting/original_archive/E01/result.json",
+      "csv": "supporting/original_archive/E01/attempt_01/utterances.csv",
+      "log": "supporting/original_archive/E01/attempt_01/run.log",
+      "config": "supporting/original_archive/E01/config.yaml",
+      "training_config": "supporting/original_archive/E01/training_config.yaml"
+    },
+    {
+      "id": "E02",
+      "result": "supporting/original_archive/E02/result.json",
+      "csv": "supporting/original_archive/E02/attempt_01/utterances.csv",
+      "log": "supporting/original_archive/E02/attempt_01/run.log",
+      "config": "supporting/original_archive/E02/config.yaml",
+      "training_config": "supporting/original_archive/E02/training_config.yaml"
+    },
+    {
+      "id": "E03",
+      "result": "supporting/original_archive/E03/result.json",
+      "csv": "supporting/original_archive/E03/attempt_01/utterances.csv",
+      "log": "supporting/original_archive/E03/attempt_01/run.log",
+      "config": "supporting/original_archive/E03/config.yaml",
+      "training_config": "supporting/original_archive/E03/training_config.yaml"
+    },
+    {
+      "id": "E04",
+      "result": "supporting/original_archive/E04/result.json",
+      "csv": "supporting/original_archive/E04/attempt_01/utterances.csv",
+      "log": "supporting/original_archive/E04/attempt_01/run.log",
+      "config": "supporting/original_archive/E04/config.yaml",
+      "training_config": "supporting/original_archive/E04/training_config.yaml"
+    },
+    {
+      "id": "E05",
+      "result": "supporting/original_archive/E05/result.json",
+      "csv": "supporting/original_archive/E05/attempt_01/utterances.csv",
+      "log": "supporting/original_archive/E05/attempt_01/run.log",
+      "config": "supporting/original_archive/E05/config.yaml",
+      "training_config": "supporting/original_archive/E05/training_config.yaml"
+    },
+    {
+      "id": "E06",
+      "result": "supporting/original_archive/E06/result.json",
+      "csv": "supporting/original_archive/E06/attempt_01/utterances.csv",
+      "log": "supporting/original_archive/E06/attempt_01/run.log",
+      "config": "supporting/original_archive/E06/config.yaml",
+      "training_config": "supporting/original_archive/E06/training_config.yaml"
+    },
+    {
+      "id": "E07",
+      "result": "supporting/original_archive/E07/result.json",
+      "csv": "supporting/original_archive/E07/attempt_01/utterances.csv",
+      "log": "supporting/original_archive/E07/attempt_01/run.log",
+      "config": "supporting/original_archive/E07/config.yaml",
+      "training_config": "supporting/original_archive/E07/training_config.yaml"
+    },
+    {
+      "id": "E08",
+      "result": "supporting/original_archive/E08/result.json",
+      "csv": "supporting/original_archive/E08/attempt_01/utterances.csv",
+      "log": "supporting/original_archive/E08/attempt_01/run.log",
+      "config": "supporting/original_archive/E08/config.yaml",
+      "training_config": "supporting/original_archive/E08/training_config.yaml"
+    },
+    {
+      "id": "E09",
+      "result": "supporting/original_archive/E09/result.json",
+      "csv": "supporting/original_archive/E09/attempt_01/utterances.csv",
+      "log": "supporting/original_archive/E09/attempt_01/run.log",
+      "config": "supporting/original_archive/E09/config.yaml",
+      "training_config": "supporting/original_archive/E09/training_config.yaml"
+    },
+    {
+      "id": "E10",
+      "result": "supporting/original_archive/E10/result.json",
+      "csv": "supporting/original_archive/E10/attempt_01/utterances.csv",
+      "log": "supporting/original_archive/E10/attempt_01/run.log",
+      "config": "supporting/original_archive/E10/config.yaml",
+      "training_config": "supporting/original_archive/E10/training_config.yaml"
+    }
+  ],
+  "summary_derivation": {
+    "original_csv": "supporting/original_archive/summary.csv",
+    "original_json": "supporting/original_archive/summary.json",
+    "changes": [
+      "config",
+      "training_config",
+      "csv",
+      "log"
+    ],
+    "metrics_unchanged": true
+  },
+  "supplementary_documents": [
+    {
+      "kind": "research_plan",
+      "path": "supporting/research/phone69_acl_2027_plan_20261107.md",
+      "source_path": "docs/research/phone69_acl_2027_plan_20261107.md",
+      "source_sha256": "160fae19186f68f65af7499b11ce64fe225a3d82489da54d6bd3afe45065dd8b",
+      "archived_sha256": "56782a62a77a1b10a95962d0be270ba379533677cf67038c38f015adf3d66c74",
+      "document_date": "2026-11-07",
+      "status": "historical_research_plan",
+      "content_changes": "relative Markdown link targets rebased to the new folder; prose and numerical values preserved",
+      "relative_links_rebased": 24,
+      "metric_authority": "summary.csv"
+    }
+  ]
+}
