@@ -31,4 +31,31 @@ GPU锁为 `/tmp/phone69_460h_serial.lock`。等待空闲GPU，不中断其他任
 
 ## 论文报告
 
-待训练完成，按最佳 dev-clean checkpoint，使用相同完整音频、FP32、batch1、beam20统计 PER 与分项主要 MAC。当前没有这三组的 PER、GMAC 或最佳 checkpoint。最大可用 batch 是性能设置，会使更新次数和 warm-up 的数据暴露量不同；论文如实记录各组 token 预算、实际更新、轮次及 checkpoint 选择，避免声称训练暴露完全一致。[曲线设计](../papers/extremafuse_acl2027/compute_quality_curve_plan.md)
+待训练完成，按最佳 dev-clean checkpoint，使用相同完整音频、FP32、batch1、beam20统计 PER 与总主要 MAC。当前没有这三组的 PER、含解码端的总 GMAC 或最佳 checkpoint；权重无关的编码器主要 MAC 已单独精确计算，见下节。最大可用 batch 是性能设置，会使更新次数和 warm-up 的数据暴露量不同；论文如实记录各组 token 预算、实际更新、轮次及 checkpoint 选择，避免声称训练暴露完全一致。[曲线设计](../papers/extremafuse_acl2027/compute_quality_curve_plan.md)
+
+## 编码器固定形状计算量
+
+使用冻结 test-clean 清单的2,620条真实音频长度，共19,452.480625秒、1,947,238个Mel帧，逐句解析统计后以总MAC／总音频时长归一化。包括输入投影、10层Conformer、输出投影，不含特征提取、归一化、softmax、激活、比较、访存和解码端。这里是batch1前向推理计算量，不是训练前反向总量。[完整结果与来源哈希](../artifacts/runs/phone69_460h_stride_sweep_proj128_20261108/encoder_compute.json)
+
+| Stride | 主干宽度 | 编码器 GMAC／音频秒 | 相对stride4 |
+| --- | ---: | ---: | ---: |
+| 1 | 128 | 0.66752 | 83.23% |
+| 2 | 256 | 0.64177 | 80.02% |
+| 4 | 512 | 0.80207 | 100.00% |
+| 8 | 1024 | 1.23010 | 153.37% |
+
+固定Mel帧数T时，这些固定stride、无自适应压缩模型的编码器主要MAC与输入内容和权重无关，无需等待训练或checkpoint。令D=128s、L=ceil(T/s)，则总主要MAC为
+
+```
+C(T,s) = 80*128*T
+       + 10 * [L*(4*D*512 + 7*D^2 + 31*D) + 2*D*L^2]
+       + 256*D*L
+```
+
+全局注意力含L²项，故每秒计算量仍随句长变化；表中数值只对应上述共同语料的长度分布。忽略首尾帧及ceil取整、以每秒100个Mel帧近似，长度为d秒时，GMAC／音频秒约为 `0.2704128 + 0.114688*s + 0.0256*d/s`。增大stride会降低注意力项，同时增大主干矩阵运算项，因此不保证单调降低。当前语料上stride2的编码器最省，stride8比stride4多约53.37%；识别质量及解码端成本仍待评测。
+
+随机初始化的四组实际模型各用101／1001帧、全零／随机输入做前向mock，共16次，现有执行计数hook与独立公式分项完全一致，且相同形状的不同内容计数相同。stride4还与已有全量计数的2,620条记录逐句精确一致。复现命令：
+
+```sh
+python scripts/evaluation/estimate_phone69_stride_encoder_compute.py --out /tmp/phone69-stride-encoder.json --verify-mock
+```

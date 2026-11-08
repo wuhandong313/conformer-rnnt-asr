@@ -1,0 +1,428 @@
+{
+  "status": "verified",
+  "method": "exact structural major-MAC count from frozen corpus lengths",
+  "scope": "encoder forward including input/output projections; no predictor/joiner, training or feature extraction",
+  "checkpoint_required": false,
+  "batch_size": 1,
+  "subset": "test-clean",
+  "normalization": "sum(utterance encoder MACs) / sum(actual FLAC seconds) / 1e9",
+  "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
+  "baseline_source_sha256": "32e164529117f2e88ccb54a2b23b2e077c99f9d36e068e785fbb5b9f1fa27b92",
+  "script_sha256": "a7cdca1cebdaa357567745260ee25d8b2854bc2c9323662a868921fb058a41e0",
+  "encoder_source_sha256": "d3b0c397a8923093b38b196f3cead5e2f79970428934c07199669dec6c94523f",
+  "stride4_archived_utterances_exactly_matched": 2620,
+  "models": [
+    {
+      "stride": 1,
+      "input_projection": 128,
+      "encoder_width": 128,
+      "encoder_layers": 10,
+      "config": "configs/server_phone69_460h_offline_native_stride1_none_proj128_s42_e50.yaml",
+      "config_sha256": "e981c670f539b23a63b257a3714868646dd8e9905cfa1dd9ea1f9ac20ae844d7",
+      "utterances": 2620,
+      "input_mel_frames": 1947238,
+      "output_frames": 1947238,
+      "audio_seconds": 19452.480625,
+      "components_macs": {
+        "encoder_weights": 7415082304000,
+        "attention_products": 5486135915520,
+        "projections": 83746811904
+      },
+      "total_macs": 12984965031424,
+      "encoder_gmac_per_audio_second": 0.6675223217925195,
+      "examples": [
+        {
+          "audio_seconds": 1,
+          "mel_frames": 101,
+          "encoder_frames": 101,
+          "total_gmac": 0.415066368,
+          "gmac_per_audio_second": 0.415066368
+        },
+        {
+          "audio_seconds": 5,
+          "mel_frames": 501,
+          "encoder_frames": 501,
+          "total_gmac": 2.571917568,
+          "gmac_per_audio_second": 0.5143835136
+        },
+        {
+          "audio_seconds": 10,
+          "mel_frames": 1001,
+          "encoder_frames": 1001,
+          "total_gmac": 6.419981568,
+          "gmac_per_audio_second": 0.6419981567999999
+        },
+        {
+          "audio_seconds": 20,
+          "mel_frames": 2001,
+          "encoder_frames": 2001,
+          "total_gmac": 17.956109568,
+          "gmac_per_audio_second": 0.8978054783999999
+        },
+        {
+          "audio_seconds": 30,
+          "mel_frames": 3001,
+          "encoder_frames": 3001,
+          "total_gmac": 34.612237568,
+          "gmac_per_audio_second": 1.1537412522666666
+        }
+      ],
+      "mock_forward_verification": [
+        {
+          "mel_frames": 101,
+          "content": "zeros",
+          "encoder_steps": 101,
+          "components_macs": {
+            "encoder_weights": 384608000,
+            "attention_products": 26114560,
+            "projections": 4343808
+          },
+          "observed_exact_match": true
+        },
+        {
+          "mel_frames": 101,
+          "content": "random",
+          "encoder_steps": 101,
+          "components_macs": {
+            "encoder_weights": 384608000,
+            "attention_products": 26114560,
+            "projections": 4343808
+          },
+          "observed_exact_match": true
+        },
+        {
+          "mel_frames": 1001,
+          "content": "zeros",
+          "encoder_steps": 1001,
+          "components_macs": {
+            "encoder_weights": 3811808000,
+            "attention_products": 2565122560,
+            "projections": 43051008
+          },
+          "observed_exact_match": true
+        },
+        {
+          "mel_frames": 1001,
+          "content": "random",
+          "encoder_steps": 1001,
+          "components_macs": {
+            "encoder_weights": 3811808000,
+            "attention_products": 2565122560,
+            "projections": 43051008
+          },
+          "observed_exact_match": true
+        }
+      ],
+      "encoder_ratio_to_stride4": 0.8322531754920056
+    },
+    {
+      "stride": 2,
+      "input_projection": 128,
+      "encoder_width": 256,
+      "encoder_layers": 10,
+      "config": "configs/server_phone69_460h_offline_native_stride2_none_proj128_s42_e50.yaml",
+      "config_sha256": "6a8dcfd68b3540fb44fa08dba314b588b56c4be1ea771ae3eccd421032aeebe0",
+      "utterances": 2620,
+      "input_mel_frames": 1947238,
+      "output_frames": 974266,
+      "audio_seconds": 19452.480625,
+      "components_macs": {
+        "encoder_weights": 9654742236160,
+        "attention_products": 2745557995520,
+        "projections": 83789213696
+      },
+      "total_macs": 12484089445376,
+      "encoder_gmac_per_audio_second": 0.6417736475897916,
+      "examples": [
+        {
+          "audio_seconds": 1,
+          "mel_frames": 101,
+          "encoder_frames": 51,
+          "total_gmac": 0.523091456,
+          "gmac_per_audio_second": 0.523091456
+        },
+        {
+          "audio_seconds": 5,
+          "mel_frames": 501,
+          "encoder_frames": 251,
+          "total_gmac": 2.831494656,
+          "gmac_per_audio_second": 0.5662989312
+        },
+        {
+          "audio_seconds": 10,
+          "mel_frames": 1001,
+          "encoder_frames": 501,
+          "total_gmac": 6.292998656,
+          "gmac_per_audio_second": 0.6292998656
+        },
+        {
+          "audio_seconds": 20,
+          "mel_frames": 2001,
+          "encoder_frames": 1001,
+          "total_gmac": 15.136006656,
+          "gmac_per_audio_second": 0.7568003327999999
+        },
+        {
+          "audio_seconds": 30,
+          "mel_frames": 3001,
+          "encoder_frames": 1501,
+          "total_gmac": 26.539014656,
+          "gmac_per_audio_second": 0.8846338218666666
+        }
+      ],
+      "mock_forward_verification": [
+        {
+          "mel_frames": 101,
+          "content": "zeros",
+          "encoder_steps": 51,
+          "components_macs": {
+            "encoder_weights": 505397760,
+            "attention_products": 13317120,
+            "projections": 4376576
+          },
+          "observed_exact_match": true
+        },
+        {
+          "mel_frames": 101,
+          "content": "random",
+          "encoder_steps": 51,
+          "components_macs": {
+            "encoder_weights": 505397760,
+            "attention_products": 13317120,
+            "projections": 4376576
+          },
+          "observed_exact_match": true
+        },
+        {
+          "mel_frames": 1001,
+          "content": "zeros",
+          "encoder_steps": 501,
+          "components_macs": {
+            "encoder_weights": 4964789760,
+            "attention_products": 1285125120,
+            "projections": 43083776
+          },
+          "observed_exact_match": true
+        },
+        {
+          "mel_frames": 1001,
+          "content": "random",
+          "encoder_steps": 501,
+          "components_macs": {
+            "encoder_weights": 4964789760,
+            "attention_products": 1285125120,
+            "projections": 43083776
+          },
+          "observed_exact_match": true
+        }
+      ],
+      "encoder_ratio_to_stride4": 0.8001502552295278
+    },
+    {
+      "stride": 4,
+      "input_projection": 128,
+      "encoder_width": 512,
+      "encoder_layers": 10,
+      "config": "configs/server_phone69_460h_offline_native_stride4_none_dim512_s42_e50.yaml",
+      "config_sha256": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351",
+      "utterances": 2620,
+      "input_mel_frames": 1947238,
+      "output_frames": 487781,
+      "audio_seconds": 19452.480625,
+      "components_macs": {
+        "encoder_weights": 14142995471360,
+        "attention_products": 1375311800320,
+        "projections": 83874148352
+      },
+      "total_macs": 15602181420032,
+      "encoder_gmac_per_audio_second": 0.8020664161454215,
+      "examples": [
+        {
+          "audio_seconds": 1,
+          "mel_frames": 101,
+          "encoder_frames": 26,
+          "total_gmac": 0.765222912,
+          "gmac_per_audio_second": 0.765222912
+        },
+        {
+          "audio_seconds": 5,
+          "mel_frames": 501,
+          "encoder_frames": 126,
+          "total_gmac": 3.837530112,
+          "gmac_per_audio_second": 0.7675060224
+        },
+        {
+          "audio_seconds": 10,
+          "mel_frames": 1001,
+          "encoder_frames": 251,
+          "total_gmac": 7.965914112,
+          "gmac_per_audio_second": 0.7965914112
+        },
+        {
+          "audio_seconds": 20,
+          "mel_frames": 2001,
+          "encoder_frames": 501,
+          "total_gmac": 17.182682112,
+          "gmac_per_audio_second": 0.8591341055999999
+        },
+        {
+          "audio_seconds": 30,
+          "mel_frames": 3001,
+          "encoder_frames": 751,
+          "total_gmac": 27.679450112,
+          "gmac_per_audio_second": 0.9226483370666667
+        }
+      ],
+      "mock_forward_verification": [
+        {
+          "mel_frames": 101,
+          "content": "zeros",
+          "encoder_steps": 26,
+          "components_macs": {
+            "encoder_weights": 753858560,
+            "attention_products": 6922240,
+            "projections": 4442112
+          },
+          "observed_exact_match": true
+        },
+        {
+          "mel_frames": 101,
+          "content": "random",
+          "encoder_steps": 26,
+          "components_macs": {
+            "encoder_weights": 753858560,
+            "attention_products": 6922240,
+            "projections": 4442112
+          },
+          "observed_exact_match": true
+        },
+        {
+          "mel_frames": 1001,
+          "content": "zeros",
+          "encoder_steps": 251,
+          "components_macs": {
+            "encoder_weights": 7277634560,
+            "attention_products": 645130240,
+            "projections": 43149312
+          },
+          "observed_exact_match": true
+        },
+        {
+          "mel_frames": 1001,
+          "content": "random",
+          "encoder_steps": 251,
+          "components_macs": {
+            "encoder_weights": 7277634560,
+            "attention_products": 645130240,
+            "projections": 43149312
+          },
+          "observed_exact_match": true
+        }
+      ],
+      "encoder_ratio_to_stride4": 1.0
+    },
+    {
+      "stride": 8,
+      "input_projection": 128,
+      "encoder_width": 1024,
+      "encoder_layers": 10,
+      "config": "configs/server_phone69_460h_offline_native_stride8_none_proj128_s42_e50.yaml",
+      "config_sha256": "90cca428498888b8b30a8424f930818035a096a88471c7e9d465347e633ff693",
+      "utterances": 2620,
+      "input_mel_frames": 1947238,
+      "output_frames": 244529,
+      "audio_seconds": 19452.480625,
+      "components_macs": {
+        "encoder_weights": 23154274949120,
+        "attention_products": 690088529920,
+        "projections": 84041527296
+      },
+      "total_macs": 23928405006336,
+      "encoder_gmac_per_audio_second": 1.2300953008318958,
+      "examples": [
+        {
+          "audio_seconds": 1,
+          "mel_frames": 101,
+          "encoder_frames": 13,
+          "total_gmac": 1.238863872,
+          "gmac_per_audio_second": 1.238863872
+        },
+        {
+          "audio_seconds": 5,
+          "mel_frames": 501,
+          "encoder_frames": 63,
+          "total_gmac": 6.068355072,
+          "gmac_per_audio_second": 1.2136710144
+        },
+        {
+          "audio_seconds": 10,
+          "mel_frames": 1001,
+          "encoder_frames": 126,
+          "total_gmac": 12.299270144,
+          "gmac_per_audio_second": 1.2299270143999999
+        },
+        {
+          "audio_seconds": 20,
+          "mel_frames": 2001,
+          "encoder_frames": 251,
+          "total_gmac": 25.143558144,
+          "gmac_per_audio_second": 1.2571779072
+        },
+        {
+          "audio_seconds": 30,
+          "mel_frames": 3001,
+          "encoder_frames": 376,
+          "total_gmac": 38.627846144,
+          "gmac_per_audio_second": 1.2875948714666667
+        }
+      ],
+      "mock_forward_verification": [
+        {
+          "mel_frames": 101,
+          "content": "zeros",
+          "encoder_steps": 13,
+          "components_macs": {
+            "encoder_weights": 1230960640,
+            "attention_products": 3461120,
+            "projections": 4442112
+          },
+          "observed_exact_match": true
+        },
+        {
+          "mel_frames": 101,
+          "content": "random",
+          "encoder_steps": 13,
+          "components_macs": {
+            "encoder_weights": 1230960640,
+            "attention_products": 3461120,
+            "projections": 4442112
+          },
+          "observed_exact_match": true
+        },
+        {
+          "mel_frames": 1001,
+          "content": "zeros",
+          "encoder_steps": 126,
+          "components_macs": {
+            "encoder_weights": 11930849280,
+            "attention_products": 325140480,
+            "projections": 43280384
+          },
+          "observed_exact_match": true
+        },
+        {
+          "mel_frames": 1001,
+          "content": "random",
+          "encoder_steps": 126,
+          "components_macs": {
+            "encoder_weights": 11930849280,
+            "attention_products": 325140480,
+            "projections": 43280384
+          },
+          "observed_exact_match": true
+        }
+      ],
+      "encoder_ratio_to_stride4": 1.5336576573589749
+    }
+  ]
+}
