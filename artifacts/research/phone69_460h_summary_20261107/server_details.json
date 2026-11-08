@@ -1,0 +1,142 @@
+{
+  "observed_local_utc": "2026-11-07T06:10:36.514577+00:00",
+  "config_checks": [
+    {
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50",
+      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+      "matches_run": true,
+      "local_path_exists": true,
+      "local_sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+      "matches_local": true
+    },
+    {
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50",
+      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+      "sha256": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca",
+      "matches_run": true,
+      "local_path_exists": true,
+      "local_sha256": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca",
+      "matches_local": true
+    },
+    {
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
+      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+      "sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
+      "matches_run": true,
+      "local_path_exists": true,
+      "local_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
+      "matches_local": true
+    },
+    {
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_layer8_stride1_s42_b11050_e50",
+      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_mel_layer5_layer8_stride1_s42_b11050_e50.yaml",
+      "sha256": "04e89690cd2297d4fbe79202b5c7ddbc3ed0c435cebf27c7c32e043c5d609250",
+      "matches_run": true,
+      "local_path_exists": true,
+      "local_sha256": "04e89690cd2297d4fbe79202b5c7ddbc3ed0c435cebf27c7c32e043c5d609250",
+      "matches_local": true
+    },
+    {
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50",
+      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
+      "sha256": "681154e65a68ec870b479b8fbca1ca39502ee89e617ddbae3e0d9df618dab0b0",
+      "matches_run": true,
+      "local_path_exists": true,
+      "local_sha256": "681154e65a68ec870b479b8fbca1ca39502ee89e617ddbae3e0d9df618dab0b0",
+      "matches_local": true
+    },
+    {
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_bridge_b6500_e16",
+      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_mel_layer5_stride1_s42_bridge_e16.yaml",
+      "sha256": "3062283086c34045913f53eb4448b0f73ee5a8ad27839e6f719412333d28d95e",
+      "matches_run": true,
+      "local_path_exists": true,
+      "local_sha256": "3062283086c34045913f53eb4448b0f73ee5a8ad27839e6f719412333d28d95e",
+      "matches_local": true
+    },
+    {
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_resume_b11050",
+      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml",
+      "sha256": "2b9909965c50808e96ee5546a3f53eede597e415449ae79bb845b60ab1728192",
+      "matches_run": true,
+      "local_path_exists": true,
+      "local_sha256": "2b9909965c50808e96ee5546a3f53eede597e415449ae79bb845b60ab1728192",
+      "matches_local": true
+    },
+    {
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50",
+      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+      "sha256": "173391aa2e55ef15f01865c8bd6792e53f52d0475912dacad83a7297542f4354",
+      "matches_run": true,
+      "local_path_exists": true,
+      "local_sha256": "173391aa2e55ef15f01865c8bd6792e53f52d0475912dacad83a7297542f4354",
+      "matches_local": true
+    },
+    {
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_cosd_learned_five_frames_s42_e50",
+      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride1_cosd_learned_s42_e50.yaml",
+      "sha256": "876c0fd72f69a6653954d9b6b4738a58aa0a2ebfbcf2f1dcf7550bb5528f0c5b",
+      "matches_run": true,
+      "local_path_exists": true,
+      "local_sha256": "876c0fd72f69a6653954d9b6b4738a58aa0a2ebfbcf2f1dcf7550bb5528f0c5b",
+      "matches_local": true
+    },
+    {
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_cosd_learned_five_frames_s42_e50",
+      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml",
+      "sha256": "44b72b2a6f7a7d05635a76fb4c0cb859a37b7190e3fe2d91daf790d4da3bc819",
+      "matches_run": true,
+      "local_path_exists": true,
+      "local_sha256": "44b72b2a6f7a7d05635a76fb4c0cb859a37b7190e3fe2d91daf790d4da3bc819",
+      "matches_local": true
+    },
+    {
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_cosd_learned_five_frames_s42_e50",
+      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride4_cosd_learned_s42_e50.yaml",
+      "sha256": "9ddbd72852149149a7f256404bbed833098406a5adf4c06110566866bb6c7b78",
+      "matches_run": true,
+      "local_path_exists": true,
+      "local_sha256": "9ddbd72852149149a7f256404bbed833098406a5adf4c06110566866bb6c7b78",
+      "matches_local": true
+    },
+    {
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50",
+      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride4_none_dim512_s42_e50.yaml",
+      "sha256": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351",
+      "matches_run": true,
+      "local_path_exists": true,
+      "local_sha256": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351",
+      "matches_local": true
+    },
+    {
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_s42_e50",
+      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride4_none_s42_e50.yaml",
+      "sha256": "017cdecbc2e7f088d764bfcf31a2cd071a2b53ccef8b432e33c1b29361418ee2",
+      "matches_run": true,
+      "local_path_exists": true,
+      "local_sha256": "017cdecbc2e7f088d764bfcf31a2cd071a2b53ccef8b432e33c1b29361418ee2",
+      "matches_local": true
+    }
+  ],
+  "evaluation_directories": [
+    "phone69_460h_dim512_local_cpu_20261104",
+    "phone69_460h_five_frames_20261020",
+    "phone69_460h_five_frames_20261021_post_restart",
+    "phone69_460h_local_cpu_20261029_preparation",
+    "phone69_460h_mel_layer5_local_cpu_20261107",
+    "phone69_460h_placement_stride1_layers2_5_n3_testclean_cpu_monotonic_20261027",
+    "phone69_460h_placement_stride1_testclean_cpu_20261025",
+    "phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025",
+    "phone69_460h_testclean_20261017"
+  ],
+  "supplementary_records": {},
+  "root_result_paths": [
+    "eval_deciles_460h_作废_旧方法",
+    "eval.py"
+  ],
+  "additional_run_directories": [
+    "phone69_460h_mel_layer5_layer8_20261107"
+  ],
+  "scope_filter": "Requested new 460h experiments only; excluded runs omitted from the paper summary."
+}

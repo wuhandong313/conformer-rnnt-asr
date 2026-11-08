@@ -1,0 +1,42 @@
+{
+  "E05": {
+    "id": "E05",
+    "name": "placement_mel_stride1",
+    "corpus_PER": 0.05578157155478434,
+    "corpus_RTF": 0.04794957906043417,
+    "historical_mean_utterance_RTF": 0.04543661110201094,
+    "csv_sha256": "92fcc23ff24851c8517ae2a1fab350ca690d764a8ea3cbfe0430020388336fb9",
+    "config_sha256": "584a45b39917382123fd4116356f77ebc13eb94f1beb0c3652c3fd611b5e01a3",
+    "checkpoint_sha256": "5630172734bcc316161794fe7168045376a6b47c94dc8fe8f30285ed5142e6a0"
+  },
+  "E06": {
+    "id": "E06",
+    "name": "placement_layer5_stride1",
+    "corpus_PER": 0.04780899678875058,
+    "corpus_RTF": 0.0506192070940565,
+    "historical_mean_utterance_RTF": 0.04798653610691499,
+    "csv_sha256": "df7729151cefd0405d7c89f786fb1825b11c6ee042a49e7d4b939d4b7db4697d",
+    "config_sha256": "99742e054c65ff6a2e7b2a0a2a175a697bafda81599e49135c75a0ac5c610c6d",
+    "checkpoint_sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c"
+  },
+  "E09": {
+    "id": "E09",
+    "name": "dim512_stride4_none",
+    "corpus_PER": 0.05742687397829894,
+    "corpus_RTF": 0.03971206789036439,
+    "historical_mean_utterance_RTF": 0.04299666252751934,
+    "csv_sha256": "ddb61d71075f1b9a00ebee4c335bf9920e32a65c6532c51b865a52eeab8524f8",
+    "config_sha256": "773e1ca8b7b335463b2475935cdd235bc1d7ac1e8ed17b9e5c73df7cb8a1ced7",
+    "checkpoint_sha256": "005b39b31850128e7033f670cd58c6732d3dcc6ff738af1d79befc3d1a8c04a3"
+  },
+  "E10": {
+    "id": "E10",
+    "name": "placement_mel_layer5_stride1",
+    "corpus_PER": 0.05688196674478767,
+    "corpus_RTF": 0.024495745174710832,
+    "historical_mean_utterance_RTF": 0.024751885487973163,
+    "csv_sha256": "41ab794a0046c1a9006663775fa035f9b3b509e1f1654873054a89dee95da39f",
+    "config_sha256": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4",
+    "checkpoint_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c"
+  }
+}

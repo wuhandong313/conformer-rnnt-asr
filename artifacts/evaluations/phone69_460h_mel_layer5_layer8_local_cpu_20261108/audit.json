@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "checked_at": "2026-11-08T10:42:43+08:00",
+  "independent_read_only_review": true,
+  "utterances": 2620,
+  "reference_phones": 189023,
+  "phone_errors": 13348,
+  "all_per_utterance_edit_distances_recomputed": true,
+  "reference_order_matches_E10": true,
+  "audio_and_chapter_hashes_verified": true,
+  "chapter_label_files": 87,
+  "source_files_match_training_commit": 22,
+  "checkpoint_config_runtime_hashes_verified": true,
+  "corpus_PER": 0.07061574517386773,
+  "corpus_RTF": 0.01923581512612354,
+  "single_openmp_runtime": true,
+  "threads": 4,
+  "interop_threads": 1
+}

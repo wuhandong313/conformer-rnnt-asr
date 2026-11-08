@@ -1,0 +1,157 @@
+{
+  "id": "mel_layer5_layer8",
+  "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261108/models/mel_layer5_layer8/val-none-epoch=47-step=59949.ckpt",
+  "checkpoint_sha256": "8cd027fec53d5863bf95d93005fc5dcc516b5d79bd074999ec8d77e9e8100978",
+  "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/config.yaml",
+  "config_sha256": "395664ece5870461b8057776a9bf17954a062c45a96d848561579b0ef669a697",
+  "training_config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/training_config.yaml",
+  "training_config_sha256": "080e72f17b0ddea84ddba1619d0b9421c8c7e28d528c0bbce9770c10b65faa88",
+  "training_commit": "eedae42d4c22fd11b643cc82e88adec31085cd86",
+  "expected_parameters": 4269973,
+  "manifest_sha256": "3b99163ddb63668ffad44794f27189bd1a4f3abc3a75fe0b14a6840a19f005c3",
+  "runner_sha256": "136caf76b7cbd0ec4c1aafb43287257de23ad0e46121e38645b3f67425452a49",
+  "started": "2026-11-08T10:34:43+08:00",
+  "finished": "2026-11-08T10:41:11+08:00",
+  "utterances": 2620,
+  "reference_phones": 189023,
+  "phone_errors": 13348,
+  "corpus_PER": 0.07061574517386773,
+  "audio_seconds": 19452.48062500003,
+  "decode_wall_seconds": 374.18432104700065,
+  "decode_cpu_seconds": 420.26448399999947,
+  "corpus_RTF": 0.01923581512612354,
+  "cpu_seconds_per_audio_second": 0.021604673054390913,
+  "historical_mean_utterance_RTF": 0.020405406876499884,
+  "comparison_changed_predictions": 2166,
+  "parameters": 4269973,
+  "checkpoint_global_step": 59949,
+  "checkpoint_epoch": 47,
+  "offline_native_definition": {
+    "version": 2,
+    "sequence_mode": "offline",
+    "tail_alignment": "zero_pad_ceil",
+    "stride": 1,
+    "input_dim": 80,
+    "input_projection": 128,
+    "encoding_dim": 256,
+    "num_heads": 8,
+    "ffn_dim": 512,
+    "depthwise_conv_kernel_size": 31,
+    "dropout": 0.1,
+    "num_layers": 10,
+    "layers": [
+      5,
+      3,
+      2
+    ],
+    "compression_stages": [
+      {
+        "after_layer": 0,
+        "detector": {
+          "type": "cosine_diff",
+          "preprocess": "none"
+        },
+        "mixer": {
+          "type": "learned"
+        },
+        "neighborhood_radius": 0,
+        "window_size": 5,
+        "weight_predictor_mode": "five_frames",
+        "feature_dim": 80,
+        "input_domain": "model_mel_input"
+      },
+      {
+        "after_layer": 5,
+        "detector": {
+          "type": "cosine_diff",
+          "preprocess": "none"
+        },
+        "mixer": {
+          "type": "learned"
+        },
+        "neighborhood_radius": 0,
+        "window_size": 5,
+        "weight_predictor_mode": "five_frames",
+        "feature_dim": 128,
+        "input_domain": "encoder"
+      },
+      {
+        "after_layer": 8,
+        "detector": {
+          "type": "cosine_diff",
+          "preprocess": "none"
+        },
+        "mixer": {
+          "type": "learned"
+        },
+        "neighborhood_radius": 0,
+        "window_size": 5,
+        "weight_predictor_mode": "five_frames",
+        "feature_dim": 128,
+        "input_domain": "encoder"
+      }
+    ],
+    "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+  },
+  "protocol": {
+    "device": "cpu",
+    "threads": 4,
+    "interop_threads": 1,
+    "data_workers": 0,
+    "openmp_max_active_levels": 1,
+    "batch": 1,
+    "beam": 20,
+    "dtype": "float32",
+    "warmup_utterances": 10,
+    "subset": "test-clean",
+    "expected_phones": 189023,
+    "timing": "model(batch) on monotonic wall clock; corpus RTF uses FLAC duration",
+    "expected_utterances": 2620,
+    "expected_audio_seconds": 19452.480625
+  },
+  "runtime": {
+    "python": "/opt/anaconda3/envs/aligner/bin/python",
+    "python_version": "3.12.9",
+    "machine": "arm64",
+    "os": "macOS-27.3-arm64-arm-64bit",
+    "torch": "2.8.0",
+    "torchaudio": "2.8.0",
+    "openmp": {
+      "path": "/opt/anaconda3/envs/aligner/lib/libomp.dylib",
+      "sha256": "ce4985af1eb24c5cf570933a9234a54353c4b649cd1985fbe4300d67be97d76b"
+    },
+    "model_source": "training_commit_snapshot"
+  },
+  "threads": 4,
+  "interop_threads": 1,
+  "data_workers": 0,
+  "threadpools": [
+    {
+      "user_api": "openmp",
+      "internal_api": "openmp",
+      "num_threads": 4,
+      "prefix": "libomp",
+      "filepath": "/opt/anaconda3/envs/aligner/lib/libomp.dylib",
+      "version": null
+    },
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 4,
+      "prefix": "libopenblas",
+      "filepath": "/opt/anaconda3/envs/aligner/lib/libopenblas.0.dylib",
+      "version": "0.3.30",
+      "threading_layer": "openmp",
+      "architecture": "VORTEX"
+    }
+  ],
+  "inputs": {
+    "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457",
+    "vocabulary_sha256": "381f0fa6dd78e828ccf68c0f4b5d3988aabb3976753d4ae62ffea7f0359876e6"
+  },
+  "csv": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/utterances.csv",
+  "csv_sha256": "5a3ee0fb26b3de9156083164dd75c6795b90207016f95fe899ef2e219f85ca68",
+  "reference_csv": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_cpu_serial_20261108/E10/attempt_01/utterances.csv",
+  "reference_csv_sha256": "41ab794a0046c1a9006663775fa035f9b3b509e1f1654873054a89dee95da39f",
+  "source": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/phone69_460h/mel_layer5_layer8_local_eval_20261108/model_source"
+}

@@ -1,5 +1,9 @@
 # Frozen evaluation evidence must retain its original bytes across checkouts.
 artifacts/evaluations/phone69_460h_cpu_serial_20261108/** -text
+artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/** -text
+artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/utterances.csv whitespace=cr-at-eol
 papers/phone69_460h_cpu_authoritative_20261108/** -text
+# Preserve the upstream ACL bibliography style verbatim.
+papers/extremafuse_acl2027/acl_natbib.bst -text -whitespace
 docs/research/phone69_acl_2027_plan_20261107.md -text
 papers/phone69_acl_2027_plan_20261107.md -text

@@ -1,0 +1,71 @@
+{
+  "source_path": "output/phone69_460h/mel_layer5_rtf_retest_20261107/summary.json",
+  "source_sha256": "2dc08d072f08932364cd1df0ec252fd2f667ad8b2af2e67c4319da98704d94c4",
+  "omitted_fields": [
+    "load_samples"
+  ],
+  "record": {
+    "status": "complete",
+    "completed_utc": "2026-11-07T04:07:09.403945+00:00",
+    "protocol": {
+      "protocol": "Mel+layer5 only; full test-clean, batch=1; first 10 utterances warm up the model and are then included again in the timed full pass. Original Mel is not rerun, per user instruction.",
+      "timing_scope": "model(batch), including encoder, predictor, joiner and beam search; excludes audio I/O, feature extraction, text scoring and load monitoring",
+      "accelerator": "cpu",
+      "threads": 4,
+      "interop_threads": 1,
+      "beam_width": 20,
+      "precision": "float32, no autocast",
+      "context": "torch.no_grad()",
+      "python": "/opt/anaconda3/envs/aligner/bin/python",
+      "python_version": "3.12.9",
+      "torch": "2.8.0",
+      "torchaudio": "2.8.0",
+      "logical_cpu_count": 10,
+      "code_commit": "6f715bb005c5288598086389f7da2d301610b0f4",
+      "checkpoint_sha256": {
+        "mel_layer5": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c"
+      },
+      "config_sha256": {
+        "mel_layer5": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4"
+      },
+      "configs": {
+        "mel_layer5": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/configs_cpu/mel_layer5.yaml"
+      },
+      "checkpoints": {
+        "mel_layer5": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261107/models/mel_layer5/val-none-epoch=49-step=89901.ckpt"
+      },
+      "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457",
+      "benchmark_sha256": "975b17f6bf18324c479a677ee25e615b1e8908d576e996fb4b83a1fcec6cc5d7",
+      "notes": [
+        "User stopped gaming before requesting this retest; background processes are not stopped by this script.",
+        "One full pass; comparisons to prior runs are across different times and are not simultaneous paired measurements.",
+        "Audio duration follows the existing evaluation convention: Mel frames * hop_length / sample_rate."
+      ]
+    },
+    "audio_seconds": 19472.379999999986,
+    "results": {
+      "mel_layer5": {
+        "utterances": 2620,
+        "mean_utterance_rtf": 0.03786553141825142,
+        "corpus_rtf": 0.03783870083132286,
+        "median_utterance_rtf": 0.03591182710915035,
+        "p90_utterance_rtf": 0.05033436290239934,
+        "decode_seconds": 736.8095612938341,
+        "cpu_seconds": 785.3398429999972,
+        "phone_errors": 10752,
+        "reference_phones": 189023,
+        "corpus_per": 0.05688196674478767,
+        "hypothesis_changes_from_previous": 0
+      }
+    },
+    "comparison_to_previous": {
+      "old_two_stage_mean_rtf": 0.06777837188808325,
+      "old_mel_mean_rtf": 0.061335748484191176,
+      "ratio_to_previous_two_stage": 0.55866687799429,
+      "ratio_to_previous_mel": 0.617348485247734
+    },
+    "reference_sequence_sha256": "35917247762dd3406c2a407c2e9f8d2756c42c2116045f857499a05027100e0c",
+    "csv_sha256": "1e13f0a14979358a5a98e6047d905b92c9340e17261a530139bb66740a9bb68a",
+    "process_wall_seconds": 754.5515042500047
+  }
+}

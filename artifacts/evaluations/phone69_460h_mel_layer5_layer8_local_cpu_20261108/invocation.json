@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "/opt/anaconda3/envs/aligner/bin/python",
+    "-u",
+    "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/run_eval.py"
+  ],
+  "cwd": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr",
+  "environment": {
+    "OMP_NUM_THREADS": "4",
+    "MKL_NUM_THREADS": "4",
+    "OPENBLAS_NUM_THREADS": "4",
+    "VECLIB_MAXIMUM_THREADS": "4",
+    "NUMEXPR_NUM_THREADS": "4",
+    "BLIS_NUM_THREADS": "4",
+    "OMP_MAX_ACTIVE_LEVELS": "1",
+    "DYLD_LIBRARY_PATH": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/phone69_460h/mel_layer5_layer8_local_eval_20261108/runtime_lib"
+  },
+  "log": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/phone69_460h/mel_layer5_layer8_local_eval_20261108/run.log",
+  "pre_decode_attempt_preserved": "output/phone69_460h/mel_layer5_layer8_local_eval_20261108/attempt_01_runtime_failure"
+}

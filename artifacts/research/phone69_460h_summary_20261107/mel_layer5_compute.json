@@ -1,0 +1,90 @@
+{
+  "source_path": "output/phone69_460h/mel_layer5_compute_20261107/summary.json",
+  "source_sha256": "42f5bcf829799dc7545db032d6b0002e8119960dcc744d6bbcf5c54745cbb211",
+  "omitted_fields": [],
+  "record": {
+    "status": "complete",
+    "scope": "forward encoder major dense/conv/attention-matmul MAC estimate on unpadded single utterances; excludes frontend, detector, weighted fusion, normalization, activations, softmax, other scalar ops, predictor, joiner and decoding",
+    "mac_convention": "one multiply-accumulate = 1 MAC; often reported as 2 FLOPs",
+    "dataset": "LibriSpeech test-clean phone69",
+    "utterances": 2620,
+    "input_sequence_sha256": "abc793e082b60912bf193ab34f0959ba374aff7ff5e8ef1553f6f7b10dc5bf9d",
+    "paths": {
+      "mel_config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
+      "mel_ckpt": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/models/placement_mel_stride1/val-none-epoch=48-step=121688.ckpt",
+      "two_config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/configs_cpu/mel_layer5.yaml",
+      "two_ckpt": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261107/models/mel_layer5/val-none-epoch=49-step=89901.ckpt",
+      "ref": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/full/mel_layer5.csv"
+    },
+    "config_sha256": {
+      "mel": "584a45b39917382123fd4116356f77ebc13eb94f1beb0c3652c3fd611b5e01a3",
+      "two_stage": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4"
+    },
+    "environment": {
+      "torch": "2.8.0",
+      "device": "cpu",
+      "threads": 4,
+      "interop_threads": 1,
+      "dyld_library_path": "/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torch/lib"
+    },
+    "checkpoint_sha256": {
+      "mel": "5630172734bcc316161794fe7168045376a6b47c94dc8fe8f30285ed5142e6a0",
+      "two_stage": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c"
+    },
+    "parameter_counts": {
+      "mel": 4228619,
+      "two_stage": 4249296
+    },
+    "frame_sums": {
+      "raw": 1947238,
+      "mel_baseline": 764950,
+      "mel_two_stage": 764950,
+      "layer5_two_stage": 307404
+    },
+    "frame_square_sums": {
+      "mel_baseline": 330921258,
+      "mel_two_stage": 330921258,
+      "layer5_two_stage": 53793060
+    },
+    "historical_mel_frame_sum": {
+      "previous": 764937,
+      "local_difference": 13,
+      "note": "Current local models have identical Mel stage lengths on every utterance; estimates use the paired local counts. The cause of differences from the historical record has not been isolated."
+    },
+    "retentions": {
+      "mel": 0.3928384717225116,
+      "layer5_conditional": 0.40186155957905745,
+      "overall_two_stage": 0.15786668090906197
+    },
+    "formula": {
+      "linear_macs_per_frame_per_layer": 380800,
+      "attention_macs_per_frame_squared_per_layer": 256
+    },
+    "components_macs": {
+      "mel": {
+        "conformer_linear_conv": 2912929600000,
+        "conformer_attention_matmul": 847158420480,
+        "input_output_projection": 32898969600,
+        "compression_fusion_mlp": 9913752000
+      },
+      "two_stage": {
+        "conformer_linear_conv": 2041762016000,
+        "conformer_attention_matmul": 492434327040,
+        "input_output_projection": 17906102272,
+        "compression_fusion_mlp": 16258570560
+      }
+    },
+    "totals_macs": {
+      "mel": 3802900742080,
+      "two_stage": 2568361015872
+    },
+    "encoder_major_macs_ratio_two_over_mel": 0.6753689328392075,
+    "linear_conv_ratio_two_over_mel": 0.7009307797895288,
+    "attention_quadratic_ratio_two_over_mel": 0.5812777340523708,
+    "mean_utterance_macs": {
+      "mel": 1451488832.8549619,
+      "two_stage": 980290464.0732825
+    },
+    "elapsed_seconds": 137.4
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "rule": "minimum dev-clean validation loss across original completed epoch1-5 and continued epoch6-50; no test-clean selection",
+  "original_phase_best_loss": 34.73215866088867,
+  "current_phase_best_loss": 12.734419822692871,
+  "selected_server_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_layer8_stride1_s42_b11050_to_b25000_e50/checkpoints/val-none-epoch=47-step=59949.ckpt",
+  "checkpoint_sha256": "8cd027fec53d5863bf95d93005fc5dcc516b5d79bd074999ec8d77e9e8100978",
+  "source_config_sha256": "080e72f17b0ddea84ddba1619d0b9421c8c7e28d528c0bbce9770c10b65faa88",
+  "training_commit": "eedae42d4c22fd11b643cc82e88adec31085cd86",
+  "seed": 42,
+  "training_budgets": [
+    {
+      "epochs": "1-5",
+      "phone_token_limit": 11050
+    },
+    {
+      "epochs": "6-50",
+      "phone_token_limit": 25000
+    }
+  ],
+  "comparison_note": "Mel+layer5 used 6500 for first16 epochs then11050; single seed; budget schedules differ"
+}

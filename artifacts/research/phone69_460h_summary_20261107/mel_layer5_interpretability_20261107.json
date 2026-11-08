@@ -1,0 +1,3777 @@
+{
+  "scope": "Exploratory E10 encoder feature diagnostic, no decoder, no new PER/RTF. 100 existing test-clean utterances. Selection independent of model predictions.",
+  "sampling": "In each original PPM decile, take the 10 smallest SHA-256 digests of UTF-8 phone69-fusion-20261107|<utterance_id>; process by dataset idx.",
+  "stage_geometry_definitions": {
+    "window_coverage": "Distinct valid stage input frames within +/-2 of at least one actual selected center, divided by stage input frames.",
+    "weight_ge_005_input_coverage": "Distinct input frames with normalized weight >=0.05 in at least one output; the 0.05 threshold is descriptive.",
+    "effective_inputs_per_output": "Mean inverse Simpson count 1/sum_j w_j^2 across output rows. This describes weight concentration only.",
+    "adjacent_cosine": "Mean cosine of consecutive normalized frame vectors across all valid adjacent pairs.",
+    "half_utterance_shift_cosine": "Mean within-utterance cosine after circular shift by floor(T/2); a descriptive far-pair comparison.",
+    "cross_check": "Captured trained inputs/selected indices, reran actual MLP and valid-window renormalization, compared reconstruction to every output with torch.allclose(atol=1e-5, rtol=1e-5) and checked the weighted triangle-inequality bound."
+  },
+  "runtime": {
+    "torch": "2.8.0",
+    "python": "3.12.9",
+    "cpu_threads": 4,
+    "inter_op": 1
+  },
+  "source": {
+    "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/configs_cpu/mel_layer5.yaml",
+    "config_sha256": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4",
+    "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261107/models/mel_layer5/val-none-epoch=49-step=89901.ckpt",
+    "checkpoint_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+    "scores": "artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/full/mel_layer5.csv",
+    "scores_sha256": "cbc2f8ea09e34af7aa7138132b2d2e290eac928d1b1bafad017da2b15a1a394c",
+    "counts": "output/phone69_460h/mel_layer5_compute_20261107/frame_lengths.csv",
+    "counts_sha256": "6159b8935239aba0bbfacaae78acc7b8460f05f6104d55650975ef52e90cb4e2"
+  },
+  "sample_stage_counts_matching_archive": 100,
+  "utterances": 100,
+  "speakers": 37,
+  "summary": {
+    "Mel": {
+      "n": 77983,
+      "k": 30750,
+      "retention_pct": 39.43167100521909,
+      "window_coverage_pct": 97.84440198504802,
+      "weight_ge_005_input_coverage_pct": 94.55650590513316,
+      "effective_inputs_per_output": 3.4320644760441974,
+      "mean_max_weight_per_output": 0.4005403510588941,
+      "adjacent_cosine": 0.8910291990043346,
+      "half_utterance_shift_cosine": 0.11360843688989232,
+      "max_abs_output_reconstruction_error": 0.0
+    },
+    "L5": {
+      "n": 30750,
+      "k": 12357,
+      "retention_pct": 40.18536585365854,
+      "window_coverage_pct": 98.23739837398374,
+      "weight_ge_005_input_coverage_pct": 97.02764227642277,
+      "effective_inputs_per_output": 3.8904645341860973,
+      "mean_max_weight_per_output": 0.3672120016090228,
+      "adjacent_cosine": 0.8774222561663555,
+      "half_utterance_shift_cosine": 0.14280034203662317,
+      "max_abs_output_reconstruction_error": 0.0
+    }
+  },
+  "rows": [
+    {
+      "idx": 10,
+      "uid": "1089-134686-0010",
+      "decile": 4,
+      "Mel": {
+        "frames": 441,
+        "centres": 152,
+        "support_frames": 413,
+        "frames_with_weight_ge_005": 395,
+        "sum_effective_weights": 508.86247634887695,
+        "sum_top_weight": 61.10919854044914,
+        "adjacent_cosine_sum": 395.48515524622053,
+        "far_cosine_sum": 8.59731637313962,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 152,
+        "centres": 57,
+        "support_frames": 148,
+        "frames_with_weight_ge_005": 147,
+        "sum_effective_weights": 190.8758246898651,
+        "sum_top_weight": 25.389462158083916,
+        "adjacent_cosine_sum": 129.9210535287857,
+        "far_cosine_sum": 17.632259557023644,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 82,
+      "uid": "1188-133604-0018",
+      "decile": 10,
+      "Mel": {
+        "frames": 1155,
+        "centres": 453,
+        "support_frames": 1128,
+        "frames_with_weight_ge_005": 1096,
+        "sum_effective_weights": 1547.8875735998154,
+        "sum_top_weight": 180.36705714464188,
+        "adjacent_cosine_sum": 1009.367569224909,
+        "far_cosine_sum": 286.71527779567987,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 453,
+        "centres": 194,
+        "support_frames": 447,
+        "frames_with_weight_ge_005": 445,
+        "sum_effective_weights": 727.4459306001663,
+        "sum_top_weight": 73.38322457671165,
+        "adjacent_cosine_sum": 390.40763533115387,
+        "far_cosine_sum": 90.56642608903348,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 85,
+      "uid": "1188-133604-0021",
+      "decile": 9,
+      "Mel": {
+        "frames": 1403,
+        "centres": 540,
+        "support_frames": 1372,
+        "frames_with_weight_ge_005": 1327,
+        "sum_effective_weights": 1861.682171702385,
+        "sum_top_weight": 212.64377446472645,
+        "adjacent_cosine_sum": 1232.4354985915124,
+        "far_cosine_sum": 116.77575416117907,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 540,
+        "centres": 214,
+        "support_frames": 533,
+        "frames_with_weight_ge_005": 526,
+        "sum_effective_weights": 800.4891537427902,
+        "sum_top_weight": 81.40771822631359,
+        "adjacent_cosine_sum": 468.7789618372917,
+        "far_cosine_sum": 62.50438328832388,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 126,
+      "uid": "121-123852-0002",
+      "decile": 1,
+      "Mel": {
+        "frames": 1729,
+        "centres": 676,
+        "support_frames": 1671,
+        "frames_with_weight_ge_005": 1562,
+        "sum_effective_weights": 2115.8387472629547,
+        "sum_top_weight": 308.21837152540684,
+        "adjacent_cosine_sum": 1615.5211051423103,
+        "far_cosine_sum": 393.15305765671656,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 676,
+        "centres": 244,
+        "support_frames": 656,
+        "frames_with_weight_ge_005": 649,
+        "sum_effective_weights": 1006.7540740966797,
+        "sum_top_weight": 84.61421847343445,
+        "adjacent_cosine_sum": 616.1142637133598,
+        "far_cosine_sum": 138.02990527823567,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 136,
+      "uid": "121-127105-0002",
+      "decile": 6,
+      "Mel": {
+        "frames": 750,
+        "centres": 270,
+        "support_frames": 709,
+        "frames_with_weight_ge_005": 658,
+        "sum_effective_weights": 909.5129579305649,
+        "sum_top_weight": 111.23704952001572,
+        "adjacent_cosine_sum": 667.6851666383445,
+        "far_cosine_sum": 125.19236261211336,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 270,
+        "centres": 114,
+        "support_frames": 265,
+        "frames_with_weight_ge_005": 263,
+        "sum_effective_weights": 443.87731862068176,
+        "sum_top_weight": 41.11776275932789,
+        "adjacent_cosine_sum": 230.73233169317245,
+        "far_cosine_sum": 25.421560164541006,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 179,
+      "uid": "1221-135766-0008",
+      "decile": 8,
+      "Mel": {
+        "frames": 1079,
+        "centres": 425,
+        "support_frames": 1066,
+        "frames_with_weight_ge_005": 1044,
+        "sum_effective_weights": 1596.8110028505325,
+        "sum_top_weight": 148.6124655455351,
+        "adjacent_cosine_sum": 934.6788475140929,
+        "far_cosine_sum": 271.09277366800234,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 425,
+        "centres": 171,
+        "support_frames": 416,
+        "frames_with_weight_ge_005": 413,
+        "sum_effective_weights": 680.5033456087112,
+        "sum_top_weight": 59.76035748422146,
+        "adjacent_cosine_sum": 365.58905708789825,
+        "far_cosine_sum": 42.72658242098987,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 206,
+      "uid": "1221-135767-0019",
+      "decile": 1,
+      "Mel": {
+        "frames": 379,
+        "centres": 154,
+        "support_frames": 371,
+        "frames_with_weight_ge_005": 359,
+        "sum_effective_weights": 573.287665605545,
+        "sum_top_weight": 54.16995760798454,
+        "adjacent_cosine_sum": 327.43985553085804,
+        "far_cosine_sum": 2.2588550578802824,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 154,
+        "centres": 61,
+        "support_frames": 151,
+        "frames_with_weight_ge_005": 151,
+        "sum_effective_weights": 247.9974023103714,
+        "sum_top_weight": 21.867451414465904,
+        "adjacent_cosine_sum": 138.4190309047699,
+        "far_cosine_sum": 25.558101849630475,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 229,
+      "uid": "1284-1180-0017",
+      "decile": 7,
+      "Mel": {
+        "frames": 1069,
+        "centres": 425,
+        "support_frames": 1056,
+        "frames_with_weight_ge_005": 1017,
+        "sum_effective_weights": 1526.774643778801,
+        "sum_top_weight": 160.9455218166113,
+        "adjacent_cosine_sum": 957.0965853147209,
+        "far_cosine_sum": 233.40993017004803,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 425,
+        "centres": 164,
+        "support_frames": 414,
+        "frames_with_weight_ge_005": 406,
+        "sum_effective_weights": 616.4691679477692,
+        "sum_top_weight": 62.36124311387539,
+        "adjacent_cosine_sum": 370.17954885959625,
+        "far_cosine_sum": 50.502653965726495,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 269,
+      "uid": "1284-134647-0002",
+      "decile": 8,
+      "Mel": {
+        "frames": 1512,
+        "centres": 604,
+        "support_frames": 1483,
+        "frames_with_weight_ge_005": 1456,
+        "sum_effective_weights": 2168.828051805496,
+        "sum_top_weight": 228.07666435837746,
+        "adjacent_cosine_sum": 1310.3814437072724,
+        "far_cosine_sum": 299.7351597985253,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 604,
+        "centres": 259,
+        "support_frames": 600,
+        "frames_with_weight_ge_005": 597,
+        "sum_effective_weights": 1017.0071383714676,
+        "sum_top_weight": 93.67158636450768,
+        "adjacent_cosine_sum": 525.4393307566643,
+        "far_cosine_sum": 91.53290207311511,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 294,
+      "uid": "1320-122617-0002",
+      "decile": 9,
+      "Mel": {
+        "frames": 1359,
+        "centres": 521,
+        "support_frames": 1337,
+        "frames_with_weight_ge_005": 1299,
+        "sum_effective_weights": 1857.1671644449234,
+        "sum_top_weight": 195.00774808228016,
+        "adjacent_cosine_sum": 1217.9470647787675,
+        "far_cosine_sum": 97.041620623786,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 521,
+        "centres": 204,
+        "support_frames": 512,
+        "frames_with_weight_ge_005": 505,
+        "sum_effective_weights": 746.0530623197556,
+        "sum_top_weight": 79.53088514506817,
+        "adjacent_cosine_sum": 447.0543238520622,
+        "far_cosine_sum": 59.98666602745652,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 320,
+      "uid": "1320-122617-0028",
+      "decile": 9,
+      "Mel": {
+        "frames": 1600,
+        "centres": 614,
+        "support_frames": 1563,
+        "frames_with_weight_ge_005": 1523,
+        "sum_effective_weights": 2143.4450359344482,
+        "sum_top_weight": 238.01841884851456,
+        "adjacent_cosine_sum": 1424.5202358271927,
+        "far_cosine_sum": 260.14073436148465,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 614,
+        "centres": 250,
+        "support_frames": 610,
+        "frames_with_weight_ge_005": 601,
+        "sum_effective_weights": 991.0180820226669,
+        "sum_top_weight": 88.15227523446083,
+        "adjacent_cosine_sum": 529.3857279419899,
+        "far_cosine_sum": 62.21952475421131,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 328,
+      "uid": "1320-122617-0036",
+      "decile": 8,
+      "Mel": {
+        "frames": 1238,
+        "centres": 483,
+        "support_frames": 1218,
+        "frames_with_weight_ge_005": 1183,
+        "sum_effective_weights": 1664.3511159420013,
+        "sum_top_weight": 192.32724997401237,
+        "adjacent_cosine_sum": 1106.1905120704323,
+        "far_cosine_sum": 102.76343122404069,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 483,
+        "centres": 190,
+        "support_frames": 475,
+        "frames_with_weight_ge_005": 464,
+        "sum_effective_weights": 728.4583692550659,
+        "sum_top_weight": 70.39812961220741,
+        "adjacent_cosine_sum": 418.4461889266968,
+        "far_cosine_sum": 62.15757801942527,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 352,
+      "uid": "1580-141083-0018",
+      "decile": 4,
+      "Mel": {
+        "frames": 268,
+        "centres": 107,
+        "support_frames": 262,
+        "frames_with_weight_ge_005": 253,
+        "sum_effective_weights": 359.09443485736847,
+        "sum_top_weight": 42.28686134517193,
+        "adjacent_cosine_sum": 242.54525762796402,
+        "far_cosine_sum": 20.831416126340628,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 107,
+        "centres": 39,
+        "support_frames": 104,
+        "frames_with_weight_ge_005": 102,
+        "sum_effective_weights": 125.41831231117249,
+        "sum_top_weight": 18.03929978609085,
+        "adjacent_cosine_sum": 93.57295608520508,
+        "far_cosine_sum": 20.451727519743145,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 369,
+      "uid": "1580-141083-0035",
+      "decile": 4,
+      "Mel": {
+        "frames": 499,
+        "centres": 191,
+        "support_frames": 488,
+        "frames_with_weight_ge_005": 474,
+        "sum_effective_weights": 655.2411419153214,
+        "sum_top_weight": 73.93514707684517,
+        "adjacent_cosine_sum": 448.34831084124744,
+        "far_cosine_sum": 23.608746936544776,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 191,
+        "centres": 71,
+        "support_frames": 187,
+        "frames_with_weight_ge_005": 184,
+        "sum_effective_weights": 258.9681042432785,
+        "sum_top_weight": 28.52373458445072,
+        "adjacent_cosine_sum": 166.7076445221901,
+        "far_cosine_sum": 15.724832126870751,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 375,
+      "uid": "1580-141083-0041",
+      "decile": 6,
+      "Mel": {
+        "frames": 358,
+        "centres": 148,
+        "support_frames": 354,
+        "frames_with_weight_ge_005": 346,
+        "sum_effective_weights": 490.3040156364441,
+        "sum_top_weight": 60.81825725734234,
+        "adjacent_cosine_sum": 319.095104791224,
+        "far_cosine_sum": 3.4964886605739594,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 148,
+        "centres": 59,
+        "support_frames": 147,
+        "frames_with_weight_ge_005": 145,
+        "sum_effective_weights": 210.12320458889008,
+        "sum_top_weight": 24.403922215104103,
+        "adjacent_cosine_sum": 129.39595305919647,
+        "far_cosine_sum": 30.253745082765818,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 376,
+      "uid": "1580-141083-0042",
+      "decile": 8,
+      "Mel": {
+        "frames": 587,
+        "centres": 242,
+        "support_frames": 575,
+        "frames_with_weight_ge_005": 558,
+        "sum_effective_weights": 826.9723011255264,
+        "sum_top_weight": 95.45677331089973,
+        "adjacent_cosine_sum": 518.2476247623563,
+        "far_cosine_sum": -4.741286488249898,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 242,
+        "centres": 97,
+        "support_frames": 235,
+        "frames_with_weight_ge_005": 229,
+        "sum_effective_weights": 349.37530839443207,
+        "sum_top_weight": 39.26812790334225,
+        "adjacent_cosine_sum": 211.3365570306778,
+        "far_cosine_sum": 26.134162137284875,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 380,
+      "uid": "1580-141083-0046",
+      "decile": 6,
+      "Mel": {
+        "frames": 354,
+        "centres": 142,
+        "support_frames": 349,
+        "frames_with_weight_ge_005": 341,
+        "sum_effective_weights": 481.90647149086,
+        "sum_top_weight": 56.38218542933464,
+        "adjacent_cosine_sum": 313.0022989362478,
+        "far_cosine_sum": -4.92173620313406,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 142,
+        "centres": 62,
+        "support_frames": 142,
+        "frames_with_weight_ge_005": 141,
+        "sum_effective_weights": 222.9430272579193,
+        "sum_top_weight": 25.305670395493507,
+        "adjacent_cosine_sum": 122.55945587158203,
+        "far_cosine_sum": 13.145333904772997,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 423,
+      "uid": "1580-141084-0035",
+      "decile": 9,
+      "Mel": {
+        "frames": 264,
+        "centres": 102,
+        "support_frames": 258,
+        "frames_with_weight_ge_005": 245,
+        "sum_effective_weights": 347.5950860977173,
+        "sum_top_weight": 40.70579218864441,
+        "adjacent_cosine_sum": 230.50613282620907,
+        "far_cosine_sum": 8.70153134688735,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 102,
+        "centres": 41,
+        "support_frames": 102,
+        "frames_with_weight_ge_005": 96,
+        "sum_effective_weights": 126.00198364257812,
+        "sum_top_weight": 19.19184699654579,
+        "adjacent_cosine_sum": 85.93217241764069,
+        "far_cosine_sum": 8.93911425024271,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 476,
+      "uid": "1995-1836-0010",
+      "decile": 9,
+      "Mel": {
+        "frames": 2446,
+        "centres": 965,
+        "support_frames": 2398,
+        "frames_with_weight_ge_005": 2285,
+        "sum_effective_weights": 3391.476253628731,
+        "sum_top_weight": 381.8850898593664,
+        "adjacent_cosine_sum": 2137.824576161802,
+        "far_cosine_sum": 284.09091889858246,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 965,
+        "centres": 398,
+        "support_frames": 951,
+        "frames_with_weight_ge_005": 942,
+        "sum_effective_weights": 1658.8150959014893,
+        "sum_top_weight": 130.13877457380295,
+        "adjacent_cosine_sum": 834.1496097445488,
+        "far_cosine_sum": 110.24248429946601,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 484,
+      "uid": "1995-1837-0003",
+      "decile": 10,
+      "Mel": {
+        "frames": 737,
+        "centres": 287,
+        "support_frames": 720,
+        "frames_with_weight_ge_005": 705,
+        "sum_effective_weights": 1075.8745708465576,
+        "sum_top_weight": 101.11502367258072,
+        "adjacent_cosine_sum": 638.0623127482831,
+        "far_cosine_sum": 340.93371081352234,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 287,
+        "centres": 114,
+        "support_frames": 277,
+        "frames_with_weight_ge_005": 274,
+        "sum_effective_weights": 457.2876273393631,
+        "sum_top_weight": 39.773401871323586,
+        "adjacent_cosine_sum": 244.11512982845306,
+        "far_cosine_sum": 37.56355771049857,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 488,
+      "uid": "1995-1837-0007",
+      "decile": 3,
+      "Mel": {
+        "frames": 881,
+        "centres": 352,
+        "support_frames": 860,
+        "frames_with_weight_ge_005": 845,
+        "sum_effective_weights": 1275.2617087364197,
+        "sum_top_weight": 130.3765260875225,
+        "adjacent_cosine_sum": 766.4731941074133,
+        "far_cosine_sum": 36.980119837448,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 352,
+        "centres": 134,
+        "support_frames": 343,
+        "frames_with_weight_ge_005": 341,
+        "sum_effective_weights": 546.3999962806702,
+        "sum_top_weight": 47.04748223721981,
+        "adjacent_cosine_sum": 308.50648152828217,
+        "far_cosine_sum": 57.72511415556073,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 530,
+      "uid": "2094-142345-0019",
+      "decile": 2,
+      "Mel": {
+        "frames": 267,
+        "centres": 105,
+        "support_frames": 263,
+        "frames_with_weight_ge_005": 258,
+        "sum_effective_weights": 378.75817131996155,
+        "sum_top_weight": 38.01572123169899,
+        "adjacent_cosine_sum": 241.73183591663837,
+        "far_cosine_sum": -49.77354479115456,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 105,
+        "centres": 43,
+        "support_frames": 103,
+        "frames_with_weight_ge_005": 100,
+        "sum_effective_weights": 152.40671360492706,
+        "sum_top_weight": 18.180578291416168,
+        "adjacent_cosine_sum": 92.38971483707428,
+        "far_cosine_sum": 5.980336418375373,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 535,
+      "uid": "2094-142345-0024",
+      "decile": 1,
+      "Mel": {
+        "frames": 528,
+        "centres": 206,
+        "support_frames": 517,
+        "frames_with_weight_ge_005": 497,
+        "sum_effective_weights": 732.5277645587921,
+        "sum_top_weight": 75.57031817734241,
+        "adjacent_cosine_sum": 477.61512300372124,
+        "far_cosine_sum": 46.23899583891034,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 206,
+        "centres": 82,
+        "support_frames": 203,
+        "frames_with_weight_ge_005": 200,
+        "sum_effective_weights": 320.02306735515594,
+        "sum_top_weight": 30.971606001257896,
+        "adjacent_cosine_sum": 186.80462229251862,
+        "far_cosine_sum": 40.29575973004103,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 551,
+      "uid": "2094-142345-0040",
+      "decile": 5,
+      "Mel": {
+        "frames": 239,
+        "centres": 97,
+        "support_frames": 235,
+        "frames_with_weight_ge_005": 231,
+        "sum_effective_weights": 336.96721136569977,
+        "sum_top_weight": 37.50165265798569,
+        "adjacent_cosine_sum": 206.27223439514637,
+        "far_cosine_sum": -36.444137384183705,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 97,
+        "centres": 37,
+        "support_frames": 94,
+        "frames_with_weight_ge_005": 93,
+        "sum_effective_weights": 134.0393968820572,
+        "sum_top_weight": 15.12327629327774,
+        "adjacent_cosine_sum": 85.82947218418121,
+        "far_cosine_sum": 13.082496263086796,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 608,
+      "uid": "2300-131720-0036",
+      "decile": 8,
+      "Mel": {
+        "frames": 709,
+        "centres": 263,
+        "support_frames": 639,
+        "frames_with_weight_ge_005": 622,
+        "sum_effective_weights": 897.5124680995941,
+        "sum_top_weight": 107.29381681978703,
+        "adjacent_cosine_sum": 641.7211201936007,
+        "far_cosine_sum": 21.53892123932019,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 263,
+        "centres": 110,
+        "support_frames": 258,
+        "frames_with_weight_ge_005": 254,
+        "sum_effective_weights": 417.3950501680374,
+        "sum_top_weight": 40.88379420340061,
+        "adjacent_cosine_sum": 226.26816320419312,
+        "far_cosine_sum": 15.62362168263644,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 613,
+      "uid": "2300-131720-0041",
+      "decile": 5,
+      "Mel": {
+        "frames": 376,
+        "centres": 131,
+        "support_frames": 325,
+        "frames_with_weight_ge_005": 312,
+        "sum_effective_weights": 439.4799507856369,
+        "sum_top_weight": 54.47829496860504,
+        "adjacent_cosine_sum": 348.7466943114996,
+        "far_cosine_sum": 6.727350642904639,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 131,
+        "centres": 52,
+        "support_frames": 129,
+        "frames_with_weight_ge_005": 128,
+        "sum_effective_weights": 208.47941052913666,
+        "sum_top_weight": 17.76840664446354,
+        "adjacent_cosine_sum": 112.50260245800018,
+        "far_cosine_sum": 19.730611468665302,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 617,
+      "uid": "237-126133-0003",
+      "decile": 8,
+      "Mel": {
+        "frames": 657,
+        "centres": 254,
+        "support_frames": 639,
+        "frames_with_weight_ge_005": 618,
+        "sum_effective_weights": 879.4099721908569,
+        "sum_top_weight": 100.18118089437485,
+        "adjacent_cosine_sum": 572.4128810018301,
+        "far_cosine_sum": 78.67647323198617,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 254,
+        "centres": 99,
+        "support_frames": 249,
+        "frames_with_weight_ge_005": 248,
+        "sum_effective_weights": 368.86501705646515,
+        "sum_top_weight": 37.73294775187969,
+        "adjacent_cosine_sum": 217.95500701665878,
+        "far_cosine_sum": 13.663733625784516,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 625,
+      "uid": "237-126133-0011",
+      "decile": 3,
+      "Mel": {
+        "frames": 672,
+        "centres": 267,
+        "support_frames": 662,
+        "frames_with_weight_ge_005": 628,
+        "sum_effective_weights": 821.236151099205,
+        "sum_top_weight": 123.12228368222713,
+        "adjacent_cosine_sum": 587.2203768063337,
+        "far_cosine_sum": 58.37827895767987,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 267,
+        "centres": 104,
+        "support_frames": 260,
+        "frames_with_weight_ge_005": 256,
+        "sum_effective_weights": 395.5544376373291,
+        "sum_top_weight": 39.03588217496872,
+        "adjacent_cosine_sum": 234.22506082057953,
+        "far_cosine_sum": 35.425651425495744,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 635,
+      "uid": "237-126133-0021",
+      "decile": 7,
+      "Mel": {
+        "frames": 437,
+        "centres": 170,
+        "support_frames": 429,
+        "frames_with_weight_ge_005": 410,
+        "sum_effective_weights": 528.9509185552597,
+        "sum_top_weight": 76.43551668524742,
+        "adjacent_cosine_sum": 378.4743552096188,
+        "far_cosine_sum": 38.60782027244568,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 170,
+        "centres": 68,
+        "support_frames": 170,
+        "frames_with_weight_ge_005": 168,
+        "sum_effective_weights": 250.58508574962616,
+        "sum_top_weight": 26.49813947081566,
+        "adjacent_cosine_sum": 146.88774132728577,
+        "far_cosine_sum": 27.57284680334851,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 665,
+      "uid": "237-134500-0006",
+      "decile": 6,
+      "Mel": {
+        "frames": 423,
+        "centres": 159,
+        "support_frames": 403,
+        "frames_with_weight_ge_005": 393,
+        "sum_effective_weights": 551.838522195816,
+        "sum_top_weight": 61.04286929965019,
+        "adjacent_cosine_sum": 374.7224995717406,
+        "far_cosine_sum": 26.599785047583282,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 159,
+        "centres": 61,
+        "support_frames": 153,
+        "frames_with_weight_ge_005": 151,
+        "sum_effective_weights": 240.6776704788208,
+        "sum_top_weight": 22.0137972086668,
+        "adjacent_cosine_sum": 135.98247480392456,
+        "far_cosine_sum": 18.23611679021269,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 668,
+      "uid": "237-134500-0009",
+      "decile": 8,
+      "Mel": {
+        "frames": 223,
+        "centres": 92,
+        "support_frames": 221,
+        "frames_with_weight_ge_005": 214,
+        "sum_effective_weights": 315.18571722507477,
+        "sum_top_weight": 36.754857927560806,
+        "adjacent_cosine_sum": 188.33977852016687,
+        "far_cosine_sum": 35.740112577565014,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 92,
+        "centres": 35,
+        "support_frames": 88,
+        "frames_with_weight_ge_005": 86,
+        "sum_effective_weights": 130.40463733673096,
+        "sum_top_weight": 13.288613021373749,
+        "adjacent_cosine_sum": 77.33735698461533,
+        "far_cosine_sum": 15.382044523954391,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 672,
+      "uid": "237-134500-0013",
+      "decile": 6,
+      "Mel": {
+        "frames": 1057,
+        "centres": 395,
+        "support_frames": 1027,
+        "frames_with_weight_ge_005": 1003,
+        "sum_effective_weights": 1390.864344716072,
+        "sum_top_weight": 149.93977436423302,
+        "adjacent_cosine_sum": 910.1815234050155,
+        "far_cosine_sum": 180.76290161442012,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 395,
+        "centres": 156,
+        "support_frames": 389,
+        "frames_with_weight_ge_005": 379,
+        "sum_effective_weights": 582.1833659410477,
+        "sum_top_weight": 60.033358067274094,
+        "adjacent_cosine_sum": 339.9814795255661,
+        "far_cosine_sum": 49.96424872474745,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 673,
+      "uid": "237-134500-0014",
+      "decile": 3,
+      "Mel": {
+        "frames": 426,
+        "centres": 176,
+        "support_frames": 421,
+        "frames_with_weight_ge_005": 415,
+        "sum_effective_weights": 611.9373956918716,
+        "sum_top_weight": 67.98884266614914,
+        "adjacent_cosine_sum": 369.66794119775295,
+        "far_cosine_sum": -4.359139833599329,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 176,
+        "centres": 66,
+        "support_frames": 172,
+        "frames_with_weight_ge_005": 172,
+        "sum_effective_weights": 262.60856449604034,
+        "sum_top_weight": 23.474369302392006,
+        "adjacent_cosine_sum": 154.7388641834259,
+        "far_cosine_sum": 16.81542143598199,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 700,
+      "uid": "237-134500-0041",
+      "decile": 2,
+      "Mel": {
+        "frames": 893,
+        "centres": 361,
+        "support_frames": 879,
+        "frames_with_weight_ge_005": 854,
+        "sum_effective_weights": 1197.5509301424026,
+        "sum_top_weight": 149.13376140594482,
+        "adjacent_cosine_sum": 767.5191880045459,
+        "far_cosine_sum": 28.02733565121889,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 361,
+        "centres": 143,
+        "support_frames": 350,
+        "frames_with_weight_ge_005": 347,
+        "sum_effective_weights": 535.1306083202362,
+        "sum_top_weight": 56.33510848879814,
+        "adjacent_cosine_sum": 321.294036924839,
+        "far_cosine_sum": 90.39210626855493,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 714,
+      "uid": "260-123286-0012",
+      "decile": 4,
+      "Mel": {
+        "frames": 244,
+        "centres": 97,
+        "support_frames": 235,
+        "frames_with_weight_ge_005": 219,
+        "sum_effective_weights": 324.8814557790756,
+        "sum_top_weight": 41.22861650586128,
+        "adjacent_cosine_sum": 220.1257937848568,
+        "far_cosine_sum": -74.45758232288063,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 97,
+        "centres": 41,
+        "support_frames": 96,
+        "frames_with_weight_ge_005": 96,
+        "sum_effective_weights": 148.84212827682495,
+        "sum_top_weight": 16.801447421312332,
+        "adjacent_cosine_sum": 85.39874219894409,
+        "far_cosine_sum": 10.51261153910309,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 784,
+      "uid": "2830-3979-0000",
+      "decile": 10,
+      "Mel": {
+        "frames": 613,
+        "centres": 244,
+        "support_frames": 598,
+        "frames_with_weight_ge_005": 581,
+        "sum_effective_weights": 799.8990837335587,
+        "sum_top_weight": 104.38911782205105,
+        "adjacent_cosine_sum": 534.7360655087978,
+        "far_cosine_sum": 16.157681313343346,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 244,
+        "centres": 100,
+        "support_frames": 241,
+        "frames_with_weight_ge_005": 236,
+        "sum_effective_weights": 348.8597149848938,
+        "sum_top_weight": 40.3432420194149,
+        "adjacent_cosine_sum": 207.83893185853958,
+        "far_cosine_sum": 25.130967376753688,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 788,
+      "uid": "2830-3979-0004",
+      "decile": 3,
+      "Mel": {
+        "frames": 195,
+        "centres": 81,
+        "support_frames": 192,
+        "frames_with_weight_ge_005": 185,
+        "sum_effective_weights": 249.88096582889557,
+        "sum_top_weight": 36.92352315783501,
+        "adjacent_cosine_sum": 177.30660665035248,
+        "far_cosine_sum": -45.02824375871569,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 81,
+        "centres": 32,
+        "support_frames": 80,
+        "frames_with_weight_ge_005": 77,
+        "sum_effective_weights": 118.37697422504425,
+        "sum_top_weight": 12.72498519718647,
+        "adjacent_cosine_sum": 71.93926185369492,
+        "far_cosine_sum": 10.040023846551776,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 851,
+      "uid": "2830-3980-0054",
+      "decile": 7,
+      "Mel": {
+        "frames": 1009,
+        "centres": 396,
+        "support_frames": 996,
+        "frames_with_weight_ge_005": 971,
+        "sum_effective_weights": 1433.020574092865,
+        "sum_top_weight": 145.55898103117943,
+        "adjacent_cosine_sum": 906.347652843222,
+        "far_cosine_sum": 137.1311872084625,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 396,
+        "centres": 157,
+        "support_frames": 390,
+        "frames_with_weight_ge_005": 381,
+        "sum_effective_weights": 629.4152109622955,
+        "sum_top_weight": 54.804098799824715,
+        "adjacent_cosine_sum": 347.018095433712,
+        "far_cosine_sum": 40.855162769556046,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 885,
+      "uid": "2961-960-0011",
+      "decile": 4,
+      "Mel": {
+        "frames": 2088,
+        "centres": 858,
+        "support_frames": 2058,
+        "frames_with_weight_ge_005": 2020,
+        "sum_effective_weights": 3183.0020179748535,
+        "sum_top_weight": 299.910456225276,
+        "adjacent_cosine_sum": 1869.562524754554,
+        "far_cosine_sum": 504.7527311742306,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 858,
+        "centres": 361,
+        "support_frames": 852,
+        "frames_with_weight_ge_005": 845,
+        "sum_effective_weights": 1419.3427730798721,
+        "sum_top_weight": 132.1961563974619,
+        "adjacent_cosine_sum": 759.5503968000412,
+        "far_cosine_sum": 125.0196506776847,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 914,
+      "uid": "2961-961-0017",
+      "decile": 3,
+      "Mel": {
+        "frames": 974,
+        "centres": 381,
+        "support_frames": 952,
+        "frames_with_weight_ge_005": 912,
+        "sum_effective_weights": 1292.3792097568512,
+        "sum_top_weight": 155.25706399977207,
+        "adjacent_cosine_sum": 884.0190228745341,
+        "far_cosine_sum": 79.66891978122294,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 381,
+        "centres": 153,
+        "support_frames": 374,
+        "frames_with_weight_ge_005": 368,
+        "sum_effective_weights": 614.0220770835876,
+        "sum_top_weight": 54.68409779667854,
+        "adjacent_cosine_sum": 336.1853189468384,
+        "far_cosine_sum": 94.11988181062043,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 918,
+      "uid": "2961-961-0021",
+      "decile": 5,
+      "Mel": {
+        "frames": 495,
+        "centres": 202,
+        "support_frames": 492,
+        "frames_with_weight_ge_005": 475,
+        "sum_effective_weights": 660.1442656517029,
+        "sum_top_weight": 86.06388327479362,
+        "adjacent_cosine_sum": 448.1712869592011,
+        "far_cosine_sum": 46.00380522524938,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 202,
+        "centres": 81,
+        "support_frames": 195,
+        "frames_with_weight_ge_005": 192,
+        "sum_effective_weights": 288.70056450366974,
+        "sum_top_weight": 33.442826732993126,
+        "adjacent_cosine_sum": 177.41496205329895,
+        "far_cosine_sum": 32.306214448064566,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 944,
+      "uid": "3570-5695-0001",
+      "decile": 10,
+      "Mel": {
+        "frames": 1472,
+        "centres": 558,
+        "support_frames": 1430,
+        "frames_with_weight_ge_005": 1380,
+        "sum_effective_weights": 1967.2974096536636,
+        "sum_top_weight": 216.6444490402937,
+        "adjacent_cosine_sum": 1256.4655890446156,
+        "far_cosine_sum": 72.66989506594837,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 558,
+        "centres": 236,
+        "support_frames": 549,
+        "frames_with_weight_ge_005": 540,
+        "sum_effective_weights": 840.2355668544769,
+        "sum_top_weight": 93.50565111637115,
+        "adjacent_cosine_sum": 467.41327250003815,
+        "far_cosine_sum": 85.67131577478722,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 961,
+      "uid": "3570-5696-0002",
+      "decile": 10,
+      "Mel": {
+        "frames": 752,
+        "centres": 277,
+        "support_frames": 730,
+        "frames_with_weight_ge_005": 703,
+        "sum_effective_weights": 977.5908435583115,
+        "sum_top_weight": 107.61079585552216,
+        "adjacent_cosine_sum": 620.219525044784,
+        "far_cosine_sum": 47.27038404531777,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 277,
+        "centres": 116,
+        "support_frames": 273,
+        "frames_with_weight_ge_005": 265,
+        "sum_effective_weights": 419.01334857940674,
+        "sum_top_weight": 44.26712408661842,
+        "adjacent_cosine_sum": 227.67599469423294,
+        "far_cosine_sum": 38.806295598857105,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1043,
+      "uid": "3729-6852-0016",
+      "decile": 3,
+      "Mel": {
+        "frames": 420,
+        "centres": 172,
+        "support_frames": 413,
+        "frames_with_weight_ge_005": 405,
+        "sum_effective_weights": 610.2228653430939,
+        "sum_top_weight": 64.94958768785,
+        "adjacent_cosine_sum": 385.36878921091557,
+        "far_cosine_sum": 128.89010094478726,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 172,
+        "centres": 70,
+        "support_frames": 166,
+        "frames_with_weight_ge_005": 164,
+        "sum_effective_weights": 297.0726866722107,
+        "sum_top_weight": 23.328976422548294,
+        "adjacent_cosine_sum": 152.55026054382324,
+        "far_cosine_sum": 29.425854235887527,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1064,
+      "uid": "3729-6852-0037",
+      "decile": 9,
+      "Mel": {
+        "frames": 590,
+        "centres": 227,
+        "support_frames": 584,
+        "frames_with_weight_ge_005": 571,
+        "sum_effective_weights": 829.0761301517487,
+        "sum_top_weight": 82.1285209953785,
+        "adjacent_cosine_sum": 531.8249605298042,
+        "far_cosine_sum": 169.85271498933434,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 227,
+        "centres": 91,
+        "support_frames": 225,
+        "frames_with_weight_ge_005": 223,
+        "sum_effective_weights": 343.3824038505554,
+        "sum_top_weight": 34.61372138559818,
+        "adjacent_cosine_sum": 194.07541424036026,
+        "far_cosine_sum": 24.54531126189977,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1105,
+      "uid": "4077-13754-0009",
+      "decile": 7,
+      "Mel": {
+        "frames": 766,
+        "centres": 301,
+        "support_frames": 742,
+        "frames_with_weight_ge_005": 722,
+        "sum_effective_weights": 1015.9990062713623,
+        "sum_top_weight": 122.44565936923027,
+        "adjacent_cosine_sum": 681.3483456037939,
+        "far_cosine_sum": 96.20353121310472,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 301,
+        "centres": 131,
+        "support_frames": 296,
+        "frames_with_weight_ge_005": 292,
+        "sum_effective_weights": 502.91917169094086,
+        "sum_top_weight": 48.505242362618446,
+        "adjacent_cosine_sum": 262.54205548763275,
+        "far_cosine_sum": 67.04019381431863,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1122,
+      "uid": "4446-2271-0009",
+      "decile": 10,
+      "Mel": {
+        "frames": 783,
+        "centres": 322,
+        "support_frames": 782,
+        "frames_with_weight_ge_005": 766,
+        "sum_effective_weights": 1105.0139772891998,
+        "sum_top_weight": 129.48034113645554,
+        "adjacent_cosine_sum": 715.7374865338206,
+        "far_cosine_sum": 172.1805754089728,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 322,
+        "centres": 125,
+        "support_frames": 313,
+        "frames_with_weight_ge_005": 309,
+        "sum_effective_weights": 501.30919313430786,
+        "sum_top_weight": 42.858438953757286,
+        "adjacent_cosine_sum": 273.93184465169907,
+        "far_cosine_sum": 32.72639425471425,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1192,
+      "uid": "4446-2275-0017",
+      "decile": 5,
+      "Mel": {
+        "frames": 248,
+        "centres": 101,
+        "support_frames": 246,
+        "frames_with_weight_ge_005": 240,
+        "sum_effective_weights": 325.91927313804626,
+        "sum_top_weight": 43.42010226845741,
+        "adjacent_cosine_sum": 220.84758165478706,
+        "far_cosine_sum": 72.46395626664162,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 101,
+        "centres": 41,
+        "support_frames": 101,
+        "frames_with_weight_ge_005": 95,
+        "sum_effective_weights": 136.03123795986176,
+        "sum_top_weight": 18.26973257958889,
+        "adjacent_cosine_sum": 88.41064912080765,
+        "far_cosine_sum": 27.07605547271669,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1201,
+      "uid": "4446-2275-0026",
+      "decile": 7,
+      "Mel": {
+        "frames": 550,
+        "centres": 219,
+        "support_frames": 537,
+        "frames_with_weight_ge_005": 521,
+        "sum_effective_weights": 717.5425759553909,
+        "sum_top_weight": 91.53572289645672,
+        "adjacent_cosine_sum": 487.87928362190723,
+        "far_cosine_sum": 175.40973998606205,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 219,
+        "centres": 84,
+        "support_frames": 210,
+        "frames_with_weight_ge_005": 205,
+        "sum_effective_weights": 316.83318507671356,
+        "sum_top_weight": 31.712605133652687,
+        "adjacent_cosine_sum": 189.0270945429802,
+        "far_cosine_sum": 44.22522286185995,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1206,
+      "uid": "4446-2275-0031",
+      "decile": 2,
+      "Mel": {
+        "frames": 306,
+        "centres": 125,
+        "support_frames": 296,
+        "frames_with_weight_ge_005": 285,
+        "sum_effective_weights": 396.0061421394348,
+        "sum_top_weight": 54.12293817102909,
+        "adjacent_cosine_sum": 275.0576374642551,
+        "far_cosine_sum": 112.44810246676207,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 125,
+        "centres": 49,
+        "support_frames": 120,
+        "frames_with_weight_ge_005": 114,
+        "sum_effective_weights": 178.03755223751068,
+        "sum_top_weight": 19.849646747112274,
+        "adjacent_cosine_sum": 111.11072552204132,
+        "far_cosine_sum": 43.444377690088004,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1207,
+      "uid": "4446-2275-0032",
+      "decile": 3,
+      "Mel": {
+        "frames": 325,
+        "centres": 125,
+        "support_frames": 318,
+        "frames_with_weight_ge_005": 302,
+        "sum_effective_weights": 402.58998358249664,
+        "sum_top_weight": 53.20102924108505,
+        "adjacent_cosine_sum": 293.6061752848327,
+        "far_cosine_sum": 40.33821082301438,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 125,
+        "centres": 54,
+        "support_frames": 120,
+        "frames_with_weight_ge_005": 117,
+        "sum_effective_weights": 180.31174194812775,
+        "sum_top_weight": 24.080695942044258,
+        "adjacent_cosine_sum": 109.0514885187149,
+        "far_cosine_sum": 32.39397696591914,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1215,
+      "uid": "4446-2275-0040",
+      "decile": 9,
+      "Mel": {
+        "frames": 697,
+        "centres": 281,
+        "support_frames": 688,
+        "frames_with_weight_ge_005": 670,
+        "sum_effective_weights": 965.9979205131531,
+        "sum_top_weight": 110.79622873663902,
+        "adjacent_cosine_sum": 613.9002071563154,
+        "far_cosine_sum": 112.56920210737735,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 281,
+        "centres": 117,
+        "support_frames": 274,
+        "frames_with_weight_ge_005": 270,
+        "sum_effective_weights": 436.6970328092575,
+        "sum_top_weight": 44.51386916637421,
+        "adjacent_cosine_sum": 240.69372427463531,
+        "far_cosine_sum": 25.71889625210315,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1227,
+      "uid": "4507-16021-0006",
+      "decile": 1,
+      "Mel": {
+        "frames": 212,
+        "centres": 98,
+        "support_frames": 210,
+        "frames_with_weight_ge_005": 210,
+        "sum_effective_weights": 348.30251479148865,
+        "sum_top_weight": 36.865052580833435,
+        "adjacent_cosine_sum": 197.99974062293768,
+        "far_cosine_sum": 55.919997818768024,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 98,
+        "centres": 36,
+        "support_frames": 93,
+        "frames_with_weight_ge_005": 93,
+        "sum_effective_weights": 144.08350920677185,
+        "sum_top_weight": 13.473213702440262,
+        "adjacent_cosine_sum": 89.7636626958847,
+        "far_cosine_sum": 14.993793688714504,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1370,
+      "uid": "4992-41797-0005",
+      "decile": 4,
+      "Mel": {
+        "frames": 385,
+        "centres": 151,
+        "support_frames": 373,
+        "frames_with_weight_ge_005": 356,
+        "sum_effective_weights": 485.0735763311386,
+        "sum_top_weight": 66.65479810535908,
+        "adjacent_cosine_sum": 359.3944777548313,
+        "far_cosine_sum": -51.30744312796742,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 151,
+        "centres": 59,
+        "support_frames": 148,
+        "frames_with_weight_ge_005": 148,
+        "sum_effective_weights": 235.03478336334229,
+        "sum_top_weight": 21.465661495923996,
+        "adjacent_cosine_sum": 134.8526166677475,
+        "far_cosine_sum": 12.827727232128382,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1378,
+      "uid": "4992-41797-0013",
+      "decile": 9,
+      "Mel": {
+        "frames": 981,
+        "centres": 373,
+        "support_frames": 958,
+        "frames_with_weight_ge_005": 924,
+        "sum_effective_weights": 1250.9217460155487,
+        "sum_top_weight": 156.3425469994545,
+        "adjacent_cosine_sum": 882.262262172997,
+        "far_cosine_sum": 56.33400076627731,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 373,
+        "centres": 154,
+        "support_frames": 364,
+        "frames_with_weight_ge_005": 358,
+        "sum_effective_weights": 616.3862247467041,
+        "sum_top_weight": 53.503587424755096,
+        "adjacent_cosine_sum": 320.4609079360962,
+        "far_cosine_sum": 43.94977708160877,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1401,
+      "uid": "4992-41806-0013",
+      "decile": 7,
+      "Mel": {
+        "frames": 603,
+        "centres": 241,
+        "support_frames": 595,
+        "frames_with_weight_ge_005": 567,
+        "sum_effective_weights": 764.0599925518036,
+        "sum_top_weight": 107.50878754258156,
+        "adjacent_cosine_sum": 556.9926744401455,
+        "far_cosine_sum": 178.34775240020826,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 241,
+        "centres": 92,
+        "support_frames": 235,
+        "frames_with_weight_ge_005": 232,
+        "sum_effective_weights": 384.15314078330994,
+        "sum_top_weight": 29.9155625551939,
+        "adjacent_cosine_sum": 210.0351164340973,
+        "far_cosine_sum": 29.430161672178656,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1425,
+      "uid": "5105-28240-0008",
+      "decile": 5,
+      "Mel": {
+        "frames": 1149,
+        "centres": 458,
+        "support_frames": 1127,
+        "frames_with_weight_ge_005": 1106,
+        "sum_effective_weights": 1679.2508788108826,
+        "sum_top_weight": 165.13880886137486,
+        "adjacent_cosine_sum": 999.2711138296872,
+        "far_cosine_sum": 87.06200199946761,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 458,
+        "centres": 185,
+        "support_frames": 458,
+        "frames_with_weight_ge_005": 452,
+        "sum_effective_weights": 734.6547268629074,
+        "sum_top_weight": 66.77700465917587,
+        "adjacent_cosine_sum": 402.98406332731247,
+        "far_cosine_sum": 39.604262536391616,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1502,
+      "uid": "5142-33396-0040",
+      "decile": 7,
+      "Mel": {
+        "frames": 282,
+        "centres": 112,
+        "support_frames": 275,
+        "frames_with_weight_ge_005": 269,
+        "sum_effective_weights": 370.9127643108368,
+        "sum_top_weight": 46.70006686449051,
+        "adjacent_cosine_sum": 264.2465187907219,
+        "far_cosine_sum": 52.914318058639765,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 112,
+        "centres": 44,
+        "support_frames": 112,
+        "frames_with_weight_ge_005": 111,
+        "sum_effective_weights": 181.532128572464,
+        "sum_top_weight": 14.542840048670769,
+        "adjacent_cosine_sum": 99.37307947874069,
+        "far_cosine_sum": 11.902957122772932,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1505,
+      "uid": "5142-33396-0043",
+      "decile": 8,
+      "Mel": {
+        "frames": 378,
+        "centres": 155,
+        "support_frames": 372,
+        "frames_with_weight_ge_005": 357,
+        "sum_effective_weights": 522.5987215042114,
+        "sum_top_weight": 62.21679463982582,
+        "adjacent_cosine_sum": 350.4668901450932,
+        "far_cosine_sum": 44.24258087016642,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 155,
+        "centres": 60,
+        "support_frames": 151,
+        "frames_with_weight_ge_005": 151,
+        "sum_effective_weights": 248.84317064285278,
+        "sum_top_weight": 20.54146732389927,
+        "adjacent_cosine_sum": 136.10898166894913,
+        "far_cosine_sum": 14.898590250872076,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1516,
+      "uid": "5142-33396-0054",
+      "decile": 9,
+      "Mel": {
+        "frames": 575,
+        "centres": 214,
+        "support_frames": 568,
+        "frames_with_weight_ge_005": 553,
+        "sum_effective_weights": 720.4709700345993,
+        "sum_top_weight": 87.13564878702164,
+        "adjacent_cosine_sum": 534.5252095609903,
+        "far_cosine_sum": 100.28769447281957,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 214,
+        "centres": 91,
+        "support_frames": 213,
+        "frames_with_weight_ge_005": 208,
+        "sum_effective_weights": 325.82416546344757,
+        "sum_top_weight": 36.25735980272293,
+        "adjacent_cosine_sum": 183.8149579167366,
+        "far_cosine_sum": 1.2405119854956865,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1569,
+      "uid": "5639-40744-0005",
+      "decile": 8,
+      "Mel": {
+        "frames": 565,
+        "centres": 231,
+        "support_frames": 555,
+        "frames_with_weight_ge_005": 521,
+        "sum_effective_weights": 699.3127340078354,
+        "sum_top_weight": 110.81950315833092,
+        "adjacent_cosine_sum": 526.1782765388489,
+        "far_cosine_sum": 123.71917831664905,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 231,
+        "centres": 89,
+        "support_frames": 225,
+        "frames_with_weight_ge_005": 221,
+        "sum_effective_weights": 328.1533570289612,
+        "sum_top_weight": 34.775709211826324,
+        "adjacent_cosine_sum": 202.25137269496918,
+        "far_cosine_sum": 38.65738111920655,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1619,
+      "uid": "5683-32865-0013",
+      "decile": 1,
+      "Mel": {
+        "frames": 710,
+        "centres": 280,
+        "support_frames": 694,
+        "frames_with_weight_ge_005": 650,
+        "sum_effective_weights": 820.0646985769272,
+        "sum_top_weight": 136.8699558377266,
+        "adjacent_cosine_sum": 653.6905980054289,
+        "far_cosine_sum": -69.87138455733657,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 280,
+        "centres": 125,
+        "support_frames": 279,
+        "frames_with_weight_ge_005": 275,
+        "sum_effective_weights": 491.2266318798065,
+        "sum_top_weight": 46.32786664366722,
+        "adjacent_cosine_sum": 254.13688880205154,
+        "far_cosine_sum": 42.81074241362512,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1650,
+      "uid": "5683-32866-0026",
+      "decile": 3,
+      "Mel": {
+        "frames": 235,
+        "centres": 93,
+        "support_frames": 227,
+        "frames_with_weight_ge_005": 219,
+        "sum_effective_weights": 320.63328647613525,
+        "sum_top_weight": 36.20937380194664,
+        "adjacent_cosine_sum": 206.75901121785864,
+        "far_cosine_sum": -45.22043752018362,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 93,
+        "centres": 34,
+        "support_frames": 92,
+        "frames_with_weight_ge_005": 90,
+        "sum_effective_weights": 141.07410407066345,
+        "sum_top_weight": 11.706360504031181,
+        "adjacent_cosine_sum": 81.23767268657684,
+        "far_cosine_sum": 10.128300471231341,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1651,
+      "uid": "5683-32866-0027",
+      "decile": 4,
+      "Mel": {
+        "frames": 476,
+        "centres": 182,
+        "support_frames": 465,
+        "frames_with_weight_ge_005": 449,
+        "sum_effective_weights": 629.142814040184,
+        "sum_top_weight": 70.78201906383038,
+        "adjacent_cosine_sum": 424.88181688822806,
+        "far_cosine_sum": -29.00655079446733,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 182,
+        "centres": 71,
+        "support_frames": 177,
+        "frames_with_weight_ge_005": 174,
+        "sum_effective_weights": 295.2922681570053,
+        "sum_top_weight": 24.048528611660004,
+        "adjacent_cosine_sum": 161.0820341706276,
+        "far_cosine_sum": 25.200242841616273,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1693,
+      "uid": "61-70968-0012",
+      "decile": 4,
+      "Mel": {
+        "frames": 262,
+        "centres": 98,
+        "support_frames": 260,
+        "frames_with_weight_ge_005": 256,
+        "sum_effective_weights": 359.53748869895935,
+        "sum_top_weight": 35.59173867106438,
+        "adjacent_cosine_sum": 232.0868968963623,
+        "far_cosine_sum": 63.96277319639921,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 98,
+        "centres": 39,
+        "support_frames": 97,
+        "frames_with_weight_ge_005": 95,
+        "sum_effective_weights": 156.69753074645996,
+        "sum_top_weight": 13.654320403933525,
+        "adjacent_cosine_sum": 82.69196712970734,
+        "far_cosine_sum": 9.325518285855651,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1723,
+      "uid": "61-70968-0042",
+      "decile": 10,
+      "Mel": {
+        "frames": 279,
+        "centres": 111,
+        "support_frames": 274,
+        "frames_with_weight_ge_005": 268,
+        "sum_effective_weights": 399.49452781677246,
+        "sum_top_weight": 41.1747120320797,
+        "adjacent_cosine_sum": 239.9935776591301,
+        "far_cosine_sum": 54.017468818929046,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 111,
+        "centres": 42,
+        "support_frames": 107,
+        "frames_with_weight_ge_005": 102,
+        "sum_effective_weights": 160.71455645561218,
+        "sum_top_weight": 14.83845567703247,
+        "adjacent_cosine_sum": 93.39628541469574,
+        "far_cosine_sum": 13.988355604931712,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1736,
+      "uid": "61-70968-0055",
+      "decile": 9,
+      "Mel": {
+        "frames": 397,
+        "centres": 156,
+        "support_frames": 389,
+        "frames_with_weight_ge_005": 384,
+        "sum_effective_weights": 568.2899241447449,
+        "sum_top_weight": 56.977513909339905,
+        "adjacent_cosine_sum": 342.0394579693675,
+        "far_cosine_sum": 4.928320194594562,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 156,
+        "centres": 61,
+        "support_frames": 152,
+        "frames_with_weight_ge_005": 150,
+        "sum_effective_weights": 226.88633275032043,
+        "sum_top_weight": 23.15484642982483,
+        "adjacent_cosine_sum": 134.12282222509384,
+        "far_cosine_sum": 14.564922120422125,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1813,
+      "uid": "672-122797-0028",
+      "decile": 1,
+      "Mel": {
+        "frames": 262,
+        "centres": 101,
+        "support_frames": 255,
+        "frames_with_weight_ge_005": 248,
+        "sum_effective_weights": 371.5940053462982,
+        "sum_top_weight": 35.84286308288574,
+        "adjacent_cosine_sum": 232.90403309464455,
+        "far_cosine_sum": 18.574802309274673,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 101,
+        "centres": 36,
+        "support_frames": 98,
+        "frames_with_weight_ge_005": 98,
+        "sum_effective_weights": 143.59571826457977,
+        "sum_top_weight": 13.349303290247917,
+        "adjacent_cosine_sum": 90.09188455343246,
+        "far_cosine_sum": 23.44027553871274,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1835,
+      "uid": "672-122797-0050",
+      "decile": 2,
+      "Mel": {
+        "frames": 486,
+        "centres": 198,
+        "support_frames": 476,
+        "frames_with_weight_ge_005": 458,
+        "sum_effective_weights": 715.263632774353,
+        "sum_top_weight": 72.72623211145401,
+        "adjacent_cosine_sum": 425.59568221867085,
+        "far_cosine_sum": 109.7252445910126,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 198,
+        "centres": 79,
+        "support_frames": 194,
+        "frames_with_weight_ge_005": 194,
+        "sum_effective_weights": 320.2799804210663,
+        "sum_top_weight": 27.89651918411255,
+        "adjacent_cosine_sum": 176.76281398534775,
+        "far_cosine_sum": 35.5395868755877,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1839,
+      "uid": "672-122797-0054",
+      "decile": 1,
+      "Mel": {
+        "frames": 426,
+        "centres": 168,
+        "support_frames": 416,
+        "frames_with_weight_ge_005": 402,
+        "sum_effective_weights": 610.249427318573,
+        "sum_top_weight": 61.05520702898502,
+        "adjacent_cosine_sum": 380.4569189697504,
+        "far_cosine_sum": -18.912437176331878,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 168,
+        "centres": 62,
+        "support_frames": 163,
+        "frames_with_weight_ge_005": 163,
+        "sum_effective_weights": 246.29840469360352,
+        "sum_top_weight": 23.337948232889175,
+        "adjacent_cosine_sum": 153.59847325086594,
+        "far_cosine_sum": 18.302160758525133,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1849,
+      "uid": "672-122797-0064",
+      "decile": 1,
+      "Mel": {
+        "frames": 1528,
+        "centres": 604,
+        "support_frames": 1502,
+        "frames_with_weight_ge_005": 1474,
+        "sum_effective_weights": 2192.520494222641,
+        "sum_top_weight": 217.57719568908215,
+        "adjacent_cosine_sum": 1362.0151705406606,
+        "far_cosine_sum": -10.161661075428128,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 604,
+        "centres": 233,
+        "support_frames": 590,
+        "frames_with_weight_ge_005": 585,
+        "sum_effective_weights": 895.4691081047058,
+        "sum_top_weight": 89.4035776257515,
+        "adjacent_cosine_sum": 545.2268060445786,
+        "far_cosine_sum": 103.10847083944827,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1852,
+      "uid": "672-122797-0067",
+      "decile": 2,
+      "Mel": {
+        "frames": 1304,
+        "centres": 509,
+        "support_frames": 1274,
+        "frames_with_weight_ge_005": 1241,
+        "sum_effective_weights": 1845.5406136512756,
+        "sum_top_weight": 184.98378486931324,
+        "adjacent_cosine_sum": 1164.9669402372092,
+        "far_cosine_sum": 198.7896827440709,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 509,
+        "centres": 209,
+        "support_frames": 503,
+        "frames_with_weight_ge_005": 498,
+        "sum_effective_weights": 834.6830543279648,
+        "sum_top_weight": 75.09211356937885,
+        "adjacent_cosine_sum": 454.40106850862503,
+        "far_cosine_sum": 88.25009330408648,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1888,
+      "uid": "6829-68769-0028",
+      "decile": 6,
+      "Mel": {
+        "frames": 330,
+        "centres": 134,
+        "support_frames": 319,
+        "frames_with_weight_ge_005": 312,
+        "sum_effective_weights": 468.30080914497375,
+        "sum_top_weight": 51.976497158408165,
+        "adjacent_cosine_sum": 285.314532533288,
+        "far_cosine_sum": 36.772669330239296,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 134,
+        "centres": 50,
+        "support_frames": 131,
+        "frames_with_weight_ge_005": 128,
+        "sum_effective_weights": 205.6750133037567,
+        "sum_top_weight": 17.20197230577469,
+        "adjacent_cosine_sum": 117.02461844682693,
+        "far_cosine_sum": 24.971178486943245,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1920,
+      "uid": "6829-68771-0006",
+      "decile": 7,
+      "Mel": {
+        "frames": 593,
+        "centres": 242,
+        "support_frames": 584,
+        "frames_with_weight_ge_005": 566,
+        "sum_effective_weights": 828.0723242759705,
+        "sum_top_weight": 97.55439682304859,
+        "adjacent_cosine_sum": 520.9888555295765,
+        "far_cosine_sum": 46.52333133062348,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 242,
+        "centres": 106,
+        "support_frames": 239,
+        "frames_with_weight_ge_005": 238,
+        "sum_effective_weights": 448.1040892601013,
+        "sum_top_weight": 34.60234463214874,
+        "adjacent_cosine_sum": 210.21669679880142,
+        "far_cosine_sum": 32.977357815019786,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 1989,
+      "uid": "6930-76324-0017",
+      "decile": 3,
+      "Mel": {
+        "frames": 542,
+        "centres": 214,
+        "support_frames": 527,
+        "frames_with_weight_ge_005": 515,
+        "sum_effective_weights": 763.34547996521,
+        "sum_top_weight": 79.42766785621643,
+        "adjacent_cosine_sum": 494.3609667867422,
+        "far_cosine_sum": 180.07097816839814,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 214,
+        "centres": 84,
+        "support_frames": 210,
+        "frames_with_weight_ge_005": 208,
+        "sum_effective_weights": 352.64254808425903,
+        "sum_top_weight": 27.864759668707848,
+        "adjacent_cosine_sum": 188.67948138713837,
+        "far_cosine_sum": 18.122788740321994,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2032,
+      "uid": "7021-79730-0003",
+      "decile": 2,
+      "Mel": {
+        "frames": 3289,
+        "centres": 1324,
+        "support_frames": 3232,
+        "frames_with_weight_ge_005": 3046,
+        "sum_effective_weights": 4129.756040096283,
+        "sum_top_weight": 621.9676080197096,
+        "adjacent_cosine_sum": 2966.9300060644746,
+        "far_cosine_sum": 190.252469236264,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 1324,
+        "centres": 533,
+        "support_frames": 1307,
+        "frames_with_weight_ge_005": 1303,
+        "sum_effective_weights": 2076.521468758583,
+        "sum_top_weight": 198.36436523497105,
+        "adjacent_cosine_sum": 1183.1818091869354,
+        "far_cosine_sum": 227.9317119391635,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2047,
+      "uid": "7021-79740-0008",
+      "decile": 4,
+      "Mel": {
+        "frames": 1842,
+        "centres": 736,
+        "support_frames": 1805,
+        "frames_with_weight_ge_005": 1697,
+        "sum_effective_weights": 2275.6492544412613,
+        "sum_top_weight": 351.846344396472,
+        "adjacent_cosine_sum": 1677.7553988974541,
+        "far_cosine_sum": 354.3490375094116,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 736,
+        "centres": 293,
+        "support_frames": 719,
+        "frames_with_weight_ge_005": 710,
+        "sum_effective_weights": 1151.870506644249,
+        "sum_top_weight": 106.65501187741756,
+        "adjacent_cosine_sum": 655.4443653225899,
+        "far_cosine_sum": 145.81198528409004,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2063,
+      "uid": "7021-85628-0003",
+      "decile": 2,
+      "Mel": {
+        "frames": 1530,
+        "centres": 631,
+        "support_frames": 1518,
+        "frames_with_weight_ge_005": 1482,
+        "sum_effective_weights": 2117.4255648851395,
+        "sum_top_weight": 256.58860971033573,
+        "adjacent_cosine_sum": 1390.5313342884183,
+        "far_cosine_sum": 62.186664793640375,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 631,
+        "centres": 243,
+        "support_frames": 623,
+        "frames_with_weight_ge_005": 619,
+        "sum_effective_weights": 976.4607391357422,
+        "sum_top_weight": 87.28967049717903,
+        "adjacent_cosine_sum": 570.379866540432,
+        "far_cosine_sum": 132.35770553536713,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2096,
+      "uid": "7127-75946-0008",
+      "decile": 5,
+      "Mel": {
+        "frames": 447,
+        "centres": 184,
+        "support_frames": 442,
+        "frames_with_weight_ge_005": 427,
+        "sum_effective_weights": 632.2143297195435,
+        "sum_top_weight": 72.05072003602982,
+        "adjacent_cosine_sum": 407.63768804073334,
+        "far_cosine_sum": 40.04568204656243,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 184,
+        "centres": 80,
+        "support_frames": 182,
+        "frames_with_weight_ge_005": 180,
+        "sum_effective_weights": 308.43050813674927,
+        "sum_top_weight": 30.114396050572395,
+        "adjacent_cosine_sum": 161.65390801429749,
+        "far_cosine_sum": 22.138158209621906,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2108,
+      "uid": "7127-75946-0020",
+      "decile": 8,
+      "Mel": {
+        "frames": 653,
+        "centres": 253,
+        "support_frames": 643,
+        "frames_with_weight_ge_005": 628,
+        "sum_effective_weights": 823.3104050159454,
+        "sum_top_weight": 108.51671855151653,
+        "adjacent_cosine_sum": 587.4824896622449,
+        "far_cosine_sum": -77.49427278107032,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 253,
+        "centres": 101,
+        "support_frames": 245,
+        "frames_with_weight_ge_005": 238,
+        "sum_effective_weights": 354.6435378789902,
+        "sum_top_weight": 41.849067360162735,
+        "adjacent_cosine_sum": 218.68752324581146,
+        "far_cosine_sum": 14.56202365620993,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2114,
+      "uid": "7127-75946-0026",
+      "decile": 7,
+      "Mel": {
+        "frames": 2016,
+        "centres": 791,
+        "support_frames": 1980,
+        "frames_with_weight_ge_005": 1921,
+        "sum_effective_weights": 2737.241010427475,
+        "sum_top_weight": 309.8834511041641,
+        "adjacent_cosine_sum": 1776.0952952820808,
+        "far_cosine_sum": -57.075614681467414,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 791,
+        "centres": 322,
+        "support_frames": 781,
+        "frames_with_weight_ge_005": 775,
+        "sum_effective_weights": 1250.18000125885,
+        "sum_top_weight": 118.1495791375637,
+        "adjacent_cosine_sum": 689.6101542115211,
+        "far_cosine_sum": 93.94821118167602,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2166,
+      "uid": "7176-88083-0007",
+      "decile": 6,
+      "Mel": {
+        "frames": 1431,
+        "centres": 584,
+        "support_frames": 1400,
+        "frames_with_weight_ge_005": 1361,
+        "sum_effective_weights": 2059.13944375515,
+        "sum_top_weight": 223.77705371379852,
+        "adjacent_cosine_sum": 1246.986046595499,
+        "far_cosine_sum": 271.5867069591768,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 584,
+        "centres": 245,
+        "support_frames": 582,
+        "frames_with_weight_ge_005": 578,
+        "sum_effective_weights": 987.8271589279175,
+        "sum_top_weight": 85.29710581898689,
+        "adjacent_cosine_sum": 508.1437578201294,
+        "far_cosine_sum": 77.46902531199157,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2188,
+      "uid": "7176-92135-0001",
+      "decile": 6,
+      "Mel": {
+        "frames": 757,
+        "centres": 306,
+        "support_frames": 741,
+        "frames_with_weight_ge_005": 725,
+        "sum_effective_weights": 1088.9551148414612,
+        "sum_top_weight": 117.39008490741253,
+        "adjacent_cosine_sum": 654.0605605300516,
+        "far_cosine_sum": 151.80049946624786,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 306,
+        "centres": 117,
+        "support_frames": 303,
+        "frames_with_weight_ge_005": 297,
+        "sum_effective_weights": 445.2414149045944,
+        "sum_top_weight": 44.04901008307934,
+        "adjacent_cosine_sum": 266.3324738740921,
+        "far_cosine_sum": 64.10059989057481,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2218,
+      "uid": "7176-92135-0031",
+      "decile": 7,
+      "Mel": {
+        "frames": 965,
+        "centres": 403,
+        "support_frames": 949,
+        "frames_with_weight_ge_005": 933,
+        "sum_effective_weights": 1440.6098237037659,
+        "sum_top_weight": 152.46227358281612,
+        "adjacent_cosine_sum": 840.770891405642,
+        "far_cosine_sum": 139.73742000758648,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 403,
+        "centres": 165,
+        "support_frames": 400,
+        "frames_with_weight_ge_005": 396,
+        "sum_effective_weights": 672.0556510686874,
+        "sum_top_weight": 56.495488688349724,
+        "adjacent_cosine_sum": 349.86964267492294,
+        "far_cosine_sum": 57.678011775016785,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2231,
+      "uid": "7176-92135-0044",
+      "decile": 10,
+      "Mel": {
+        "frames": 518,
+        "centres": 208,
+        "support_frames": 513,
+        "frames_with_weight_ge_005": 502,
+        "sum_effective_weights": 730.9296494722366,
+        "sum_top_weight": 81.24317061901093,
+        "adjacent_cosine_sum": 436.78697396442294,
+        "far_cosine_sum": 46.4859775621444,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 208,
+        "centres": 81,
+        "support_frames": 206,
+        "frames_with_weight_ge_005": 205,
+        "sum_effective_weights": 313.5589085817337,
+        "sum_top_weight": 28.795891508460045,
+        "adjacent_cosine_sum": 175.65853810310364,
+        "far_cosine_sum": 13.90725271217525,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2252,
+      "uid": "7729-102255-0019",
+      "decile": 5,
+      "Mel": {
+        "frames": 894,
+        "centres": 346,
+        "support_frames": 874,
+        "frames_with_weight_ge_005": 848,
+        "sum_effective_weights": 1200.223312497139,
+        "sum_top_weight": 136.60535095632076,
+        "adjacent_cosine_sum": 818.602870464325,
+        "far_cosine_sum": 8.940684707835317,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 346,
+        "centres": 138,
+        "support_frames": 335,
+        "frames_with_weight_ge_005": 332,
+        "sum_effective_weights": 542.3617496490479,
+        "sum_top_weight": 49.825603157281876,
+        "adjacent_cosine_sum": 303.5688323378563,
+        "far_cosine_sum": 52.96875963173807,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2331,
+      "uid": "8230-279154-0019",
+      "decile": 5,
+      "Mel": {
+        "frames": 1815,
+        "centres": 679,
+        "support_frames": 1768,
+        "frames_with_weight_ge_005": 1677,
+        "sum_effective_weights": 2290.688306570053,
+        "sum_top_weight": 280.4519843906164,
+        "adjacent_cosine_sum": 1580.6563239004463,
+        "far_cosine_sum": 279.76722712628543,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 679,
+        "centres": 294,
+        "support_frames": 672,
+        "frames_with_weight_ge_005": 667,
+        "sum_effective_weights": 1196.020411491394,
+        "sum_top_weight": 100.62430341541767,
+        "adjacent_cosine_sum": 591.3159121870995,
+        "far_cosine_sum": 121.43992431927472,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2332,
+      "uid": "8230-279154-0020",
+      "decile": 6,
+      "Mel": {
+        "frames": 784,
+        "centres": 308,
+        "support_frames": 772,
+        "frames_with_weight_ge_005": 745,
+        "sum_effective_weights": 1049.2807824611664,
+        "sum_top_weight": 125.90444615483284,
+        "adjacent_cosine_sum": 695.5458730384707,
+        "far_cosine_sum": 82.54979017935693,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 308,
+        "centres": 121,
+        "support_frames": 306,
+        "frames_with_weight_ge_005": 303,
+        "sum_effective_weights": 506.4074227809906,
+        "sum_top_weight": 40.03962501883507,
+        "adjacent_cosine_sum": 271.328642308712,
+        "far_cosine_sum": 19.28563950629905,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2345,
+      "uid": "8230-279154-0033",
+      "decile": 5,
+      "Mel": {
+        "frames": 1170,
+        "centres": 444,
+        "support_frames": 1141,
+        "frames_with_weight_ge_005": 1108,
+        "sum_effective_weights": 1486.481533408165,
+        "sum_top_weight": 183.6796451807022,
+        "adjacent_cosine_sum": 1050.425425096415,
+        "far_cosine_sum": 151.61649253219366,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 444,
+        "centres": 187,
+        "support_frames": 442,
+        "frames_with_weight_ge_005": 435,
+        "sum_effective_weights": 707.9356551170349,
+        "sum_top_weight": 70.74730807542801,
+        "adjacent_cosine_sum": 387.68885511159897,
+        "far_cosine_sum": 61.73238957487047,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2354,
+      "uid": "8230-279154-0042",
+      "decile": 4,
+      "Mel": {
+        "frames": 1877,
+        "centres": 736,
+        "support_frames": 1835,
+        "frames_with_weight_ge_005": 1770,
+        "sum_effective_weights": 2437.616514801979,
+        "sum_top_weight": 310.7117040157318,
+        "adjacent_cosine_sum": 1662.4408088335767,
+        "far_cosine_sum": 173.4865101906471,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 736,
+        "centres": 295,
+        "support_frames": 722,
+        "frames_with_weight_ge_005": 717,
+        "sum_effective_weights": 1179.6748265028,
+        "sum_top_weight": 104.22998547554016,
+        "adjacent_cosine_sum": 646.2983465790749,
+        "far_cosine_sum": 97.96033566258848,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2366,
+      "uid": "8455-210777-0010",
+      "decile": 2,
+      "Mel": {
+        "frames": 311,
+        "centres": 118,
+        "support_frames": 306,
+        "frames_with_weight_ge_005": 285,
+        "sum_effective_weights": 402.0293231010437,
+        "sum_top_weight": 46.229976028203964,
+        "adjacent_cosine_sum": 287.702227383852,
+        "far_cosine_sum": -37.97652802057564,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 118,
+        "centres": 44,
+        "support_frames": 110,
+        "frames_with_weight_ge_005": 107,
+        "sum_effective_weights": 157.47965514659882,
+        "sum_top_weight": 18.43856219947338,
+        "adjacent_cosine_sum": 104.87985104322433,
+        "far_cosine_sum": 23.22153072990477,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2367,
+      "uid": "8455-210777-0011",
+      "decile": 6,
+      "Mel": {
+        "frames": 664,
+        "centres": 266,
+        "support_frames": 651,
+        "frames_with_weight_ge_005": 637,
+        "sum_effective_weights": 949.1977686882019,
+        "sum_top_weight": 99.60997435450554,
+        "adjacent_cosine_sum": 592.35001247935,
+        "far_cosine_sum": 120.6802756395191,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 266,
+        "centres": 104,
+        "support_frames": 255,
+        "frames_with_weight_ge_005": 251,
+        "sum_effective_weights": 376.602285861969,
+        "sum_top_weight": 41.413647055625916,
+        "adjacent_cosine_sum": 233.24343329668045,
+        "far_cosine_sum": 66.85529280081391,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2416,
+      "uid": "8455-210777-0060",
+      "decile": 10,
+      "Mel": {
+        "frames": 708,
+        "centres": 284,
+        "support_frames": 699,
+        "frames_with_weight_ge_005": 686,
+        "sum_effective_weights": 1035.2806704044342,
+        "sum_top_weight": 103.06968572735786,
+        "adjacent_cosine_sum": 634.1881622858346,
+        "far_cosine_sum": 151.61589109525084,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 284,
+        "centres": 113,
+        "support_frames": 280,
+        "frames_with_weight_ge_005": 269,
+        "sum_effective_weights": 413.9835157394409,
+        "sum_top_weight": 44.499913424253464,
+        "adjacent_cosine_sum": 246.6733838915825,
+        "far_cosine_sum": 50.34047778323293,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2431,
+      "uid": "8463-287645-0004",
+      "decile": 1,
+      "Mel": {
+        "frames": 611,
+        "centres": 243,
+        "support_frames": 598,
+        "frames_with_weight_ge_005": 571,
+        "sum_effective_weights": 799.1882625818253,
+        "sum_top_weight": 101.60515972971916,
+        "adjacent_cosine_sum": 566.9417602680624,
+        "far_cosine_sum": -42.78855482209474,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 243,
+        "centres": 97,
+        "support_frames": 235,
+        "frames_with_weight_ge_005": 234,
+        "sum_effective_weights": 405.2631194591522,
+        "sum_top_weight": 33.227993950247765,
+        "adjacent_cosine_sum": 217.73953306674957,
+        "far_cosine_sum": 35.66993254236877,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2452,
+      "uid": "8463-294825-0010",
+      "decile": 5,
+      "Mel": {
+        "frames": 459,
+        "centres": 183,
+        "support_frames": 451,
+        "frames_with_weight_ge_005": 445,
+        "sum_effective_weights": 637.5393784046173,
+        "sum_top_weight": 69.9114757925272,
+        "adjacent_cosine_sum": 419.43367940187454,
+        "far_cosine_sum": 139.15887827705592,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 183,
+        "centres": 74,
+        "support_frames": 177,
+        "frames_with_weight_ge_005": 175,
+        "sum_effective_weights": 297.5253448486328,
+        "sum_top_weight": 25.526184424757957,
+        "adjacent_cosine_sum": 160.8912537097931,
+        "far_cosine_sum": 18.656814055517316,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2460,
+      "uid": "8463-294825-0018",
+      "decile": 3,
+      "Mel": {
+        "frames": 294,
+        "centres": 107,
+        "support_frames": 284,
+        "frames_with_weight_ge_005": 276,
+        "sum_effective_weights": 366.5792932510376,
+        "sum_top_weight": 41.74497479200363,
+        "adjacent_cosine_sum": 268.3400620110333,
+        "far_cosine_sum": 43.70302024111152,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 107,
+        "centres": 41,
+        "support_frames": 103,
+        "frames_with_weight_ge_005": 101,
+        "sum_effective_weights": 159.53319334983826,
+        "sum_top_weight": 15.451989650726318,
+        "adjacent_cosine_sum": 92.38758260011673,
+        "far_cosine_sum": 5.405598211102188,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2522,
+      "uid": "8555-284447-0021",
+      "decile": 10,
+      "Mel": {
+        "frames": 1318,
+        "centres": 540,
+        "support_frames": 1301,
+        "frames_with_weight_ge_005": 1252,
+        "sum_effective_weights": 1872.6818817853928,
+        "sum_top_weight": 213.65025095641613,
+        "adjacent_cosine_sum": 1190.806342644617,
+        "far_cosine_sum": 279.9753095554188,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 540,
+        "centres": 219,
+        "support_frames": 537,
+        "frames_with_weight_ge_005": 536,
+        "sum_effective_weights": 905.9453647136688,
+        "sum_top_weight": 73.01665933430195,
+        "adjacent_cosine_sum": 464.72412967681885,
+        "far_cosine_sum": 48.92384280078113,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2551,
+      "uid": "8555-292519-0004",
+      "decile": 2,
+      "Mel": {
+        "frames": 325,
+        "centres": 135,
+        "support_frames": 317,
+        "frames_with_weight_ge_005": 297,
+        "sum_effective_weights": 406.93656289577484,
+        "sum_top_weight": 65.98744212090969,
+        "adjacent_cosine_sum": 293.73727883398533,
+        "far_cosine_sum": 34.1862446796149,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 135,
+        "centres": 57,
+        "support_frames": 134,
+        "frames_with_weight_ge_005": 133,
+        "sum_effective_weights": 235.151517868042,
+        "sum_top_weight": 19.597561404109,
+        "adjacent_cosine_sum": 121.82878369092941,
+        "far_cosine_sum": 21.38199203275144,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2594,
+      "uid": "908-31957-0000",
+      "decile": 2,
+      "Mel": {
+        "frames": 213,
+        "centres": 87,
+        "support_frames": 210,
+        "frames_with_weight_ge_005": 201,
+        "sum_effective_weights": 297.7812497615814,
+        "sum_top_weight": 34.60161006450653,
+        "adjacent_cosine_sum": 195.90944482013583,
+        "far_cosine_sum": -32.362016677856445,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 87,
+        "centres": 32,
+        "support_frames": 86,
+        "frames_with_weight_ge_005": 85,
+        "sum_effective_weights": 122.27221274375916,
+        "sum_top_weight": 12.28554055094719,
+        "adjacent_cosine_sum": 77.46601742506027,
+        "far_cosine_sum": 8.343144252896309,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    },
+    {
+      "idx": 2600,
+      "uid": "908-31957-0006",
+      "decile": 1,
+      "Mel": {
+        "frames": 590,
+        "centres": 235,
+        "support_frames": 577,
+        "frames_with_weight_ge_005": 559,
+        "sum_effective_weights": 819.4359266757965,
+        "sum_top_weight": 92.17387282848358,
+        "adjacent_cosine_sum": 516.5145890060812,
+        "far_cosine_sum": -3.716190407052636,
+        "max_output_residual": 0.0
+      },
+      "L5": {
+        "frames": 235,
+        "centres": 88,
+        "support_frames": 227,
+        "frames_with_weight_ge_005": 226,
+        "sum_effective_weights": 344.182412147522,
+        "sum_top_weight": 32.73390717804432,
+        "adjacent_cosine_sum": 210.91303902864456,
+        "far_cosine_sum": 40.54298495315015,
+        "max_output_residual": 0.0
+      },
+      "matches_archived_stage_counts": true
+    }
+  ],
+  "existing_full_corpus": {
+    "utterances": 2620,
+    "reference_phones": 189023,
+    "speakers": 40,
+    "models": {
+      "E05": {
+        "csv_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_mel_stride1.csv",
+        "csv_sha256": "a31722534d72d80a2681a7cc9301e03820ed6c55cf1cc37ca0c10fdbcbdb4283",
+        "errors": 10544,
+        "per_percent": 5.578157155478434,
+        "SDI": {
+          "S": 7543,
+          "D": 1701,
+          "I": 1300
+        }
+      },
+      "E06": {
+        "csv_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_layer5_stride1.csv",
+        "csv_sha256": "547788f8e1e57ccfd8da90be7b53f44a77c4db88a8d512e9084560cb5380dec3",
+        "errors": 9037,
+        "per_percent": 4.780899678875057
+      },
+      "E09": {
+        "csv_path": "artifacts/evaluations/phone69_460h_dim512_local_cpu_20261104/full/dim512.csv",
+        "csv_sha256": "64d60ee1399d304202409633495f926fbbe770c3de8fe999e2337c9a61ee428f",
+        "errors": 10855,
+        "per_percent": 5.742687397829894
+      },
+      "E10": {
+        "csv_path": "artifacts/evaluations/phone69_460h_mel_layer5_local_cpu_20261107/full/mel_layer5.csv",
+        "csv_sha256": "cbc2f8ea09e34af7aa7138132b2d2e290eac928d1b1bafad017da2b15a1a394c",
+        "errors": 10752,
+        "per_percent": 5.6881966744787675,
+        "SDI": {
+          "S": 7573,
+          "D": 1796,
+          "I": 1383
+        }
+      }
+    },
+    "comparisons": {
+      "E10_minus_E05": {
+        "delta_per_pp": 0.11003951900033329,
+        "speaker_percentile_95_ci_pp": [
+          -0.011147021916636099,
+          0.23179342598809047
+        ],
+        "net_error_change": 208,
+        "lower_errors_utterances": 853,
+        "same_error_count_utterances": 813,
+        "higher_errors_utterances": 954,
+        "gross_error_decrease": 1927,
+        "gross_error_increase": 2135,
+        "identical_hypotheses": 571
+      },
+      "E10_minus_E06": {
+        "delta_per_pp": 0.9072969956037096,
+        "speaker_percentile_95_ci_pp": [
+          0.7669330063156766,
+          1.0525869536729602
+        ],
+        "net_error_change": 1715,
+        "lower_errors_utterances": 648,
+        "same_error_count_utterances": 777,
+        "higher_errors_utterances": 1195,
+        "gross_error_decrease": 1233,
+        "gross_error_increase": 2948,
+        "identical_hypotheses": 520
+      },
+      "E10_minus_E09": {
+        "delta_per_pp": -0.054490723351126584,
+        "speaker_percentile_95_ci_pp": [
+          -0.19161846545928124,
+          0.07612272467397013
+        ],
+        "net_error_change": -103,
+        "lower_errors_utterances": 890,
+        "same_error_count_utterances": 772,
+        "higher_errors_utterances": 958,
+        "gross_error_decrease": 2204,
+        "gross_error_increase": 2101,
+        "identical_hypotheses": 487
+      }
+    },
+    "bootstrap": "With sorted numeric speaker IDs and NumPy default_rng(42), draw 10000 samples of 40 shared speaker indices with replacement. Recalculate paired corpus PER difference for each. Fixed checkpoints; exploratory speaker-sampling interval.",
+    "counts": {
+      "mel_input": 1947238,
+      "after_mel": 764950,
+      "after_layer5": 307404,
+      "layer5_rate": 0.40186155957905745,
+      "total_rate": 0.15786668090906197,
+      "final_frames_per_reference_phone": 1.626278283595118,
+      "utterances_final_frames_less_than_reference_phones": 1
+    }
+  },
+  "same_length_frozen_model_intervention": {
+    "utterances": 100,
+    "speakers": 37,
+    "reference_phones": 7574,
+    "original_nll_per_phone": 0.14230285133799558,
+    "uniform_same_k_nll_per_phone": 0.14347278293303836,
+    "uniform_minus_original_nll_per_phone": 0.0011699315950427925,
+    "speaker_percentile_95_ci": [
+      -0.0024055689112861614,
+      0.004993340084409472
+    ],
+    "uniform_higher_nll_utterances": 57,
+    "uniform_lower_nll_utterances": 43,
+    "protocol": "Same 100 predetermined E10 inputs and same frozen checkpoint. Two forward scores of the known transcript via the model RNNT loss with the original targets. Only second-stage output replaced in memory by means of K disjoint contiguous bins with edges floor(j*T/K), K set to the native stage output length for that utterance. No beam decoding or timing. Natural logs; total RNNT NLL divided by total reference phones. 10000 paired resamples of 37 speakers in sorted numeric order, default_rng(42). This is a fixed-model intervention on the trained representation; the pooling alternative was not trained.",
+    "rows": [
+      {
+        "idx": 10,
+        "uid": "1089-134686-0010",
+        "reference_phones": 39,
+        "K": 57,
+        "original_nll": 6.100709438323975,
+        "uniform_same_k_nll": 3.47952938079834
+      },
+      {
+        "idx": 82,
+        "uid": "1188-133604-0018",
+        "reference_phones": 137,
+        "K": 194,
+        "original_nll": 16.878494262695312,
+        "uniform_same_k_nll": 15.632841110229492
+      },
+      {
+        "idx": 85,
+        "uid": "1188-133604-0021",
+        "reference_phones": 155,
+        "K": 214,
+        "original_nll": 10.677799224853516,
+        "uniform_same_k_nll": 11.868688583374023
+      },
+      {
+        "idx": 126,
+        "uid": "121-123852-0002",
+        "reference_phones": 114,
+        "K": 244,
+        "original_nll": 16.453495025634766,
+        "uniform_same_k_nll": 14.210395812988281
+      },
+      {
+        "idx": 136,
+        "uid": "121-127105-0002",
+        "reference_phones": 74,
+        "K": 114,
+        "original_nll": 12.976430892944336,
+        "uniform_same_k_nll": 12.312268257141113
+      },
+      {
+        "idx": 179,
+        "uid": "1221-135766-0008",
+        "reference_phones": 114,
+        "K": 171,
+        "original_nll": 5.165621757507324,
+        "uniform_same_k_nll": 5.77849817276001
+      },
+      {
+        "idx": 206,
+        "uid": "1221-135767-0019",
+        "reference_phones": 24,
+        "K": 61,
+        "original_nll": 1.6951416730880737,
+        "uniform_same_k_nll": 3.8374998569488525
+      },
+      {
+        "idx": 229,
+        "uid": "1284-1180-0017",
+        "reference_phones": 111,
+        "K": 164,
+        "original_nll": 21.649085998535156,
+        "uniform_same_k_nll": 19.433475494384766
+      },
+      {
+        "idx": 269,
+        "uid": "1284-134647-0002",
+        "reference_phones": 165,
+        "K": 259,
+        "original_nll": 10.602347373962402,
+        "uniform_same_k_nll": 11.696553230285645
+      },
+      {
+        "idx": 294,
+        "uid": "1320-122617-0002",
+        "reference_phones": 157,
+        "K": 204,
+        "original_nll": 32.69397735595703,
+        "uniform_same_k_nll": 34.37361145019531
+      },
+      {
+        "idx": 320,
+        "uid": "1320-122617-0028",
+        "reference_phones": 180,
+        "K": 250,
+        "original_nll": 25.55324935913086,
+        "uniform_same_k_nll": 21.748310089111328
+      },
+      {
+        "idx": 328,
+        "uid": "1320-122617-0036",
+        "reference_phones": 134,
+        "K": 190,
+        "original_nll": 4.260238170623779,
+        "uniform_same_k_nll": 4.525974273681641
+      },
+      {
+        "idx": 352,
+        "uid": "1580-141083-0018",
+        "reference_phones": 24,
+        "K": 39,
+        "original_nll": 6.071032524108887,
+        "uniform_same_k_nll": 8.844568252563477
+      },
+      {
+        "idx": 369,
+        "uid": "1580-141083-0035",
+        "reference_phones": 46,
+        "K": 71,
+        "original_nll": 30.086299896240234,
+        "uniform_same_k_nll": 26.7193546295166
+      },
+      {
+        "idx": 375,
+        "uid": "1580-141083-0041",
+        "reference_phones": 35,
+        "K": 59,
+        "original_nll": 7.307344913482666,
+        "uniform_same_k_nll": 5.772650241851807
+      },
+      {
+        "idx": 376,
+        "uid": "1580-141083-0042",
+        "reference_phones": 63,
+        "K": 97,
+        "original_nll": 0.2339317947626114,
+        "uniform_same_k_nll": 0.42079392075538635
+      },
+      {
+        "idx": 380,
+        "uid": "1580-141083-0046",
+        "reference_phones": 35,
+        "K": 62,
+        "original_nll": 0.863303542137146,
+        "uniform_same_k_nll": 1.1047451496124268
+      },
+      {
+        "idx": 423,
+        "uid": "1580-141084-0035",
+        "reference_phones": 29,
+        "K": 41,
+        "original_nll": 1.4472811222076416,
+        "uniform_same_k_nll": 2.1874940395355225
+      },
+      {
+        "idx": 476,
+        "uid": "1995-1836-0010",
+        "reference_phones": 284,
+        "K": 398,
+        "original_nll": 15.932393074035645,
+        "uniform_same_k_nll": 17.30454444885254
+      },
+      {
+        "idx": 484,
+        "uid": "1995-1837-0003",
+        "reference_phones": 87,
+        "K": 114,
+        "original_nll": 6.551235198974609,
+        "uniform_same_k_nll": 9.415848731994629
+      },
+      {
+        "idx": 488,
+        "uid": "1995-1837-0007",
+        "reference_phones": 77,
+        "K": 134,
+        "original_nll": 18.12211036682129,
+        "uniform_same_k_nll": 16.576337814331055
+      },
+      {
+        "idx": 530,
+        "uid": "2094-142345-0019",
+        "reference_phones": 20,
+        "K": 43,
+        "original_nll": 12.00479507446289,
+        "uniform_same_k_nll": 8.497567176818848
+      },
+      {
+        "idx": 535,
+        "uid": "2094-142345-0024",
+        "reference_phones": 35,
+        "K": 82,
+        "original_nll": 17.6865291595459,
+        "uniform_same_k_nll": 17.362606048583984
+      },
+      {
+        "idx": 551,
+        "uid": "2094-142345-0040",
+        "reference_phones": 23,
+        "K": 37,
+        "original_nll": 0.23517334461212158,
+        "uniform_same_k_nll": 0.24304862320423126
+      },
+      {
+        "idx": 608,
+        "uid": "2300-131720-0036",
+        "reference_phones": 75,
+        "K": 110,
+        "original_nll": 11.163228988647461,
+        "uniform_same_k_nll": 11.50190258026123
+      },
+      {
+        "idx": 613,
+        "uid": "2300-131720-0041",
+        "reference_phones": 36,
+        "K": 52,
+        "original_nll": 6.2909417152404785,
+        "uniform_same_k_nll": 7.149977207183838
+      },
+      {
+        "idx": 617,
+        "uid": "237-126133-0003",
+        "reference_phones": 70,
+        "K": 99,
+        "original_nll": 6.902248859405518,
+        "uniform_same_k_nll": 6.819045066833496
+      },
+      {
+        "idx": 625,
+        "uid": "237-126133-0011",
+        "reference_phones": 58,
+        "K": 104,
+        "original_nll": 4.506183624267578,
+        "uniform_same_k_nll": 5.776166915893555
+      },
+      {
+        "idx": 635,
+        "uid": "237-126133-0021",
+        "reference_phones": 45,
+        "K": 68,
+        "original_nll": 0.4199615716934204,
+        "uniform_same_k_nll": 0.6109736561775208
+      },
+      {
+        "idx": 665,
+        "uid": "237-134500-0006",
+        "reference_phones": 42,
+        "K": 61,
+        "original_nll": 3.64914608001709,
+        "uniform_same_k_nll": 4.917191982269287
+      },
+      {
+        "idx": 668,
+        "uid": "237-134500-0009",
+        "reference_phones": 24,
+        "K": 35,
+        "original_nll": 7.7126078605651855,
+        "uniform_same_k_nll": 8.077770233154297
+      },
+      {
+        "idx": 672,
+        "uid": "237-134500-0013",
+        "reference_phones": 105,
+        "K": 156,
+        "original_nll": 19.084484100341797,
+        "uniform_same_k_nll": 17.641902923583984
+      },
+      {
+        "idx": 673,
+        "uid": "237-134500-0014",
+        "reference_phones": 37,
+        "K": 66,
+        "original_nll": 24.113157272338867,
+        "uniform_same_k_nll": 22.67742156982422
+      },
+      {
+        "idx": 700,
+        "uid": "237-134500-0041",
+        "reference_phones": 71,
+        "K": 143,
+        "original_nll": 7.257518768310547,
+        "uniform_same_k_nll": 7.6926798820495605
+      },
+      {
+        "idx": 714,
+        "uid": "260-123286-0012",
+        "reference_phones": 22,
+        "K": 41,
+        "original_nll": 5.677561283111572,
+        "uniform_same_k_nll": 5.613929748535156
+      },
+      {
+        "idx": 784,
+        "uid": "2830-3979-0000",
+        "reference_phones": 72,
+        "K": 100,
+        "original_nll": 21.770137786865234,
+        "uniform_same_k_nll": 20.85287857055664
+      },
+      {
+        "idx": 788,
+        "uid": "2830-3979-0004",
+        "reference_phones": 17,
+        "K": 32,
+        "original_nll": 3.8940606117248535,
+        "uniform_same_k_nll": 5.717094421386719
+      },
+      {
+        "idx": 851,
+        "uid": "2830-3980-0054",
+        "reference_phones": 103,
+        "K": 157,
+        "original_nll": 10.109265327453613,
+        "uniform_same_k_nll": 10.678828239440918
+      },
+      {
+        "idx": 885,
+        "uid": "2961-960-0011",
+        "reference_phones": 192,
+        "K": 361,
+        "original_nll": 45.09907531738281,
+        "uniform_same_k_nll": 41.12851333618164
+      },
+      {
+        "idx": 914,
+        "uid": "2961-961-0017",
+        "reference_phones": 85,
+        "K": 153,
+        "original_nll": 24.804079055786133,
+        "uniform_same_k_nll": 23.18332862854004
+      },
+      {
+        "idx": 918,
+        "uid": "2961-961-0021",
+        "reference_phones": 47,
+        "K": 81,
+        "original_nll": 2.833385467529297,
+        "uniform_same_k_nll": 3.929241180419922
+      },
+      {
+        "idx": 944,
+        "uid": "3570-5695-0001",
+        "reference_phones": 184,
+        "K": 236,
+        "original_nll": 18.38558578491211,
+        "uniform_same_k_nll": 18.490629196166992
+      },
+      {
+        "idx": 961,
+        "uid": "3570-5696-0002",
+        "reference_phones": 101,
+        "K": 116,
+        "original_nll": 6.575333595275879,
+        "uniform_same_k_nll": 8.86628532409668
+      },
+      {
+        "idx": 1043,
+        "uid": "3729-6852-0016",
+        "reference_phones": 36,
+        "K": 70,
+        "original_nll": 8.252461433410645,
+        "uniform_same_k_nll": 7.872445106506348
+      },
+      {
+        "idx": 1064,
+        "uid": "3729-6852-0037",
+        "reference_phones": 66,
+        "K": 91,
+        "original_nll": 4.702439785003662,
+        "uniform_same_k_nll": 4.535895347595215
+      },
+      {
+        "idx": 1105,
+        "uid": "4077-13754-0009",
+        "reference_phones": 79,
+        "K": 131,
+        "original_nll": 28.308441162109375,
+        "uniform_same_k_nll": 24.378511428833008
+      },
+      {
+        "idx": 1122,
+        "uid": "4446-2271-0009",
+        "reference_phones": 99,
+        "K": 125,
+        "original_nll": 21.406755447387695,
+        "uniform_same_k_nll": 22.5106258392334
+      },
+      {
+        "idx": 1192,
+        "uid": "4446-2275-0017",
+        "reference_phones": 23,
+        "K": 41,
+        "original_nll": 0.7735001444816589,
+        "uniform_same_k_nll": 1.2749474048614502
+      },
+      {
+        "idx": 1201,
+        "uid": "4446-2275-0026",
+        "reference_phones": 57,
+        "K": 84,
+        "original_nll": 1.6448718309402466,
+        "uniform_same_k_nll": 2.2588820457458496
+      },
+      {
+        "idx": 1206,
+        "uid": "4446-2275-0031",
+        "reference_phones": 23,
+        "K": 49,
+        "original_nll": 1.3225293159484863,
+        "uniform_same_k_nll": 2.030139923095703
+      },
+      {
+        "idx": 1207,
+        "uid": "4446-2275-0032",
+        "reference_phones": 28,
+        "K": 54,
+        "original_nll": 0.6767051219940186,
+        "uniform_same_k_nll": 0.9903507232666016
+      },
+      {
+        "idx": 1215,
+        "uid": "4446-2275-0040",
+        "reference_phones": 80,
+        "K": 117,
+        "original_nll": 5.504836082458496,
+        "uniform_same_k_nll": 6.591432571411133
+      },
+      {
+        "idx": 1227,
+        "uid": "4507-16021-0006",
+        "reference_phones": 11,
+        "K": 36,
+        "original_nll": 0.20689505338668823,
+        "uniform_same_k_nll": 0.18372374773025513
+      },
+      {
+        "idx": 1370,
+        "uid": "4992-41797-0005",
+        "reference_phones": 34,
+        "K": 59,
+        "original_nll": 26.33515167236328,
+        "uniform_same_k_nll": 28.163894653320312
+      },
+      {
+        "idx": 1378,
+        "uid": "4992-41797-0013",
+        "reference_phones": 109,
+        "K": 154,
+        "original_nll": 6.411808967590332,
+        "uniform_same_k_nll": 5.661380290985107
+      },
+      {
+        "idx": 1401,
+        "uid": "4992-41806-0013",
+        "reference_phones": 63,
+        "K": 92,
+        "original_nll": 3.804708242416382,
+        "uniform_same_k_nll": 3.736508369445801
+      },
+      {
+        "idx": 1425,
+        "uid": "5105-28240-0008",
+        "reference_phones": 107,
+        "K": 185,
+        "original_nll": 10.443120002746582,
+        "uniform_same_k_nll": 10.122207641601562
+      },
+      {
+        "idx": 1502,
+        "uid": "5142-33396-0040",
+        "reference_phones": 29,
+        "K": 44,
+        "original_nll": 3.650045394897461,
+        "uniform_same_k_nll": 4.697360038757324
+      },
+      {
+        "idx": 1505,
+        "uid": "5142-33396-0043",
+        "reference_phones": 41,
+        "K": 60,
+        "original_nll": 19.838340759277344,
+        "uniform_same_k_nll": 20.080781936645508
+      },
+      {
+        "idx": 1516,
+        "uid": "5142-33396-0054",
+        "reference_phones": 67,
+        "K": 91,
+        "original_nll": 11.442673683166504,
+        "uniform_same_k_nll": 13.396734237670898
+      },
+      {
+        "idx": 1569,
+        "uid": "5639-40744-0005",
+        "reference_phones": 60,
+        "K": 89,
+        "original_nll": 11.71247673034668,
+        "uniform_same_k_nll": 13.327669143676758
+      },
+      {
+        "idx": 1619,
+        "uid": "5683-32865-0013",
+        "reference_phones": 45,
+        "K": 125,
+        "original_nll": 0.6077383160591125,
+        "uniform_same_k_nll": 0.795041024684906
+      },
+      {
+        "idx": 1650,
+        "uid": "5683-32866-0026",
+        "reference_phones": 19,
+        "K": 34,
+        "original_nll": 8.894872665405273,
+        "uniform_same_k_nll": 9.716495513916016
+      },
+      {
+        "idx": 1651,
+        "uid": "5683-32866-0027",
+        "reference_phones": 43,
+        "K": 71,
+        "original_nll": 2.7305896282196045,
+        "uniform_same_k_nll": 2.1198511123657227
+      },
+      {
+        "idx": 1693,
+        "uid": "61-70968-0012",
+        "reference_phones": 24,
+        "K": 39,
+        "original_nll": 12.793851852416992,
+        "uniform_same_k_nll": 16.150142669677734
+      },
+      {
+        "idx": 1723,
+        "uid": "61-70968-0042",
+        "reference_phones": 35,
+        "K": 42,
+        "original_nll": 16.20644187927246,
+        "uniform_same_k_nll": 19.501272201538086
+      },
+      {
+        "idx": 1736,
+        "uid": "61-70968-0055",
+        "reference_phones": 44,
+        "K": 61,
+        "original_nll": 1.618159294128418,
+        "uniform_same_k_nll": 1.5380340814590454
+      },
+      {
+        "idx": 1813,
+        "uid": "672-122797-0028",
+        "reference_phones": 15,
+        "K": 36,
+        "original_nll": 3.49977445602417,
+        "uniform_same_k_nll": 4.003754615783691
+      },
+      {
+        "idx": 1835,
+        "uid": "672-122797-0050",
+        "reference_phones": 38,
+        "K": 79,
+        "original_nll": 1.3114018440246582,
+        "uniform_same_k_nll": 1.8366916179656982
+      },
+      {
+        "idx": 1839,
+        "uid": "672-122797-0054",
+        "reference_phones": 20,
+        "K": 62,
+        "original_nll": 0.8367972373962402,
+        "uniform_same_k_nll": 0.9179089069366455
+      },
+      {
+        "idx": 1849,
+        "uid": "672-122797-0064",
+        "reference_phones": 106,
+        "K": 233,
+        "original_nll": 17.00287437438965,
+        "uniform_same_k_nll": 16.23575210571289
+      },
+      {
+        "idx": 1852,
+        "uid": "672-122797-0067",
+        "reference_phones": 97,
+        "K": 209,
+        "original_nll": 21.099246978759766,
+        "uniform_same_k_nll": 21.294279098510742
+      },
+      {
+        "idx": 1888,
+        "uid": "6829-68769-0028",
+        "reference_phones": 32,
+        "K": 50,
+        "original_nll": 6.307435512542725,
+        "uniform_same_k_nll": 7.448863983154297
+      },
+      {
+        "idx": 1920,
+        "uid": "6829-68771-0006",
+        "reference_phones": 62,
+        "K": 106,
+        "original_nll": 4.955690860748291,
+        "uniform_same_k_nll": 4.074465751647949
+      },
+      {
+        "idx": 1989,
+        "uid": "6930-76324-0017",
+        "reference_phones": 45,
+        "K": 84,
+        "original_nll": 1.892577052116394,
+        "uniform_same_k_nll": 1.2103513479232788
+      },
+      {
+        "idx": 2032,
+        "uid": "7021-79730-0003",
+        "reference_phones": 266,
+        "K": 533,
+        "original_nll": 33.716094970703125,
+        "uniform_same_k_nll": 34.581581115722656
+      },
+      {
+        "idx": 2047,
+        "uid": "7021-79740-0008",
+        "reference_phones": 162,
+        "K": 293,
+        "original_nll": 9.783561706542969,
+        "uniform_same_k_nll": 10.24614429473877
+      },
+      {
+        "idx": 2063,
+        "uid": "7021-85628-0003",
+        "reference_phones": 112,
+        "K": 243,
+        "original_nll": 13.839875221252441,
+        "uniform_same_k_nll": 12.394048690795898
+      },
+      {
+        "idx": 2096,
+        "uid": "7127-75946-0008",
+        "reference_phones": 42,
+        "K": 80,
+        "original_nll": 1.1825125217437744,
+        "uniform_same_k_nll": 1.486833095550537
+      },
+      {
+        "idx": 2108,
+        "uid": "7127-75946-0020",
+        "reference_phones": 70,
+        "K": 101,
+        "original_nll": 2.3777334690093994,
+        "uniform_same_k_nll": 3.903120517730713
+      },
+      {
+        "idx": 2114,
+        "uid": "7127-75946-0026",
+        "reference_phones": 208,
+        "K": 322,
+        "original_nll": 28.44898223876953,
+        "uniform_same_k_nll": 25.936176300048828
+      },
+      {
+        "idx": 2166,
+        "uid": "7176-88083-0007",
+        "reference_phones": 144,
+        "K": 245,
+        "original_nll": 13.772950172424316,
+        "uniform_same_k_nll": 17.698104858398438
+      },
+      {
+        "idx": 2188,
+        "uid": "7176-92135-0001",
+        "reference_phones": 76,
+        "K": 117,
+        "original_nll": 6.353217124938965,
+        "uniform_same_k_nll": 5.43194580078125
+      },
+      {
+        "idx": 2218,
+        "uid": "7176-92135-0031",
+        "reference_phones": 100,
+        "K": 165,
+        "original_nll": 32.57460021972656,
+        "uniform_same_k_nll": 30.933555603027344
+      },
+      {
+        "idx": 2231,
+        "uid": "7176-92135-0044",
+        "reference_phones": 66,
+        "K": 81,
+        "original_nll": 6.939033031463623,
+        "uniform_same_k_nll": 5.978549957275391
+      },
+      {
+        "idx": 2252,
+        "uid": "7729-102255-0019",
+        "reference_phones": 86,
+        "K": 138,
+        "original_nll": 20.006669998168945,
+        "uniform_same_k_nll": 19.52545738220215
+      },
+      {
+        "idx": 2331,
+        "uid": "8230-279154-0019",
+        "reference_phones": 172,
+        "K": 294,
+        "original_nll": 8.132856369018555,
+        "uniform_same_k_nll": 6.911764621734619
+      },
+      {
+        "idx": 2332,
+        "uid": "8230-279154-0020",
+        "reference_phones": 78,
+        "K": 121,
+        "original_nll": 2.0208938121795654,
+        "uniform_same_k_nll": 2.218313217163086
+      },
+      {
+        "idx": 2345,
+        "uid": "8230-279154-0033",
+        "reference_phones": 112,
+        "K": 187,
+        "original_nll": 5.908664703369141,
+        "uniform_same_k_nll": 6.148830890655518
+      },
+      {
+        "idx": 2354,
+        "uid": "8230-279154-0042",
+        "reference_phones": 173,
+        "K": 295,
+        "original_nll": 9.95328140258789,
+        "uniform_same_k_nll": 10.043261528015137
+      },
+      {
+        "idx": 2366,
+        "uid": "8455-210777-0010",
+        "reference_phones": 25,
+        "K": 44,
+        "original_nll": 6.042601585388184,
+        "uniform_same_k_nll": 4.975517749786377
+      },
+      {
+        "idx": 2367,
+        "uid": "8455-210777-0011",
+        "reference_phones": 67,
+        "K": 104,
+        "original_nll": 10.402180671691895,
+        "uniform_same_k_nll": 12.669126510620117
+      },
+      {
+        "idx": 2416,
+        "uid": "8455-210777-0060",
+        "reference_phones": 85,
+        "K": 113,
+        "original_nll": 32.046356201171875,
+        "uniform_same_k_nll": 34.19567108154297
+      },
+      {
+        "idx": 2431,
+        "uid": "8463-287645-0004",
+        "reference_phones": 41,
+        "K": 97,
+        "original_nll": 7.341748237609863,
+        "uniform_same_k_nll": 7.899003982543945
+      },
+      {
+        "idx": 2452,
+        "uid": "8463-294825-0010",
+        "reference_phones": 44,
+        "K": 74,
+        "original_nll": 1.709946632385254,
+        "uniform_same_k_nll": 1.4814438819885254
+      },
+      {
+        "idx": 2460,
+        "uid": "8463-294825-0018",
+        "reference_phones": 24,
+        "K": 41,
+        "original_nll": 1.0310810804367065,
+        "uniform_same_k_nll": 0.8345918655395508
+      },
+      {
+        "idx": 2522,
+        "uid": "8555-284447-0021",
+        "reference_phones": 157,
+        "K": 219,
+        "original_nll": 28.740976333618164,
+        "uniform_same_k_nll": 31.2930908203125
+      },
+      {
+        "idx": 2551,
+        "uid": "8555-292519-0004",
+        "reference_phones": 23,
+        "K": 57,
+        "original_nll": 6.003190994262695,
+        "uniform_same_k_nll": 5.465266227722168
+      },
+      {
+        "idx": 2594,
+        "uid": "908-31957-0000",
+        "reference_phones": 16,
+        "K": 32,
+        "original_nll": 5.083724021911621,
+        "uniform_same_k_nll": 4.47761344909668
+      },
+      {
+        "idx": 2600,
+        "uid": "908-31957-0006",
+        "reference_phones": 40,
+        "K": 88,
+        "original_nll": 6.697866916656494,
+        "uniform_same_k_nll": 6.604484558105469
+      }
+    ]
+  },
+  "example_figure": {
+    "file": "mel_layer5_fusion_example_20261107.png",
+    "uid": "7729-102255-0019",
+    "selection": "Lowest sample-hash in original PPM decile 5 with at least 200 raw frames; fixed 0.64 s window centred on utterance midpoint.",
+    "evidence": "Same frozen E10, true detector extrema and normalized weights. Bottom rows show retained centers. Layer-5 locations displayed at the corresponding Mel centers; positional reference only, hidden features contextualized."
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "observed_utc": "2026-11-07T06:47:30.363554+00:00",
+  "scope": "Local synthetic diagnostics on current code and two existing best checkpoints; no training or corpus recognition evaluation.",
+  "environment": {
+    "torch": "2.8.0",
+    "torchaudio": "2.8.0",
+    "device": "cpu",
+    "threads": 4
+  },
+  "padding_checks": [
+    {
+      "name": "stride4_none",
+      "checkpoint_sha256": "856b24c15f7450c4334810728f3681596ee43653ac855e73efddd51cbd47fd3b",
+      "config_sha256": "017cdecbc2e7f088d764bfcf31a2cd071a2b53ccef8b432e33c1b29361418ee2",
+      "real_input_frames": 81,
+      "padded_input_frames": [
+        81,
+        101
+      ],
+      "batch_sizes": [
+        1,
+        2
+      ],
+      "batch_member_real_lengths": [
+        [
+          81
+        ],
+        [
+          81,
+          101
+        ]
+      ],
+      "mode": "eval; torch.no_grad; frozen BatchNorm statistics; same short utterance alone versus padded alongside a longer utterance",
+      "prefix_layers": 2,
+      "prefix_valid_frames": 21,
+      "prefix_max_abs_difference": 0.8040264844894409,
+      "prefix_mean_abs_difference": 0.036107953637838364,
+      "prefix_equal_at_atol_1e_5_rtol_1e_5": false,
+      "output_valid_lengths": [
+        21,
+        21
+      ],
+      "batchnorm_modules": 10,
+      "output_max_abs_difference": 1.1014164686203003
+    },
+    {
+      "name": "placement_layer5_stride1",
+      "checkpoint_sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c",
+      "config_sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+      "real_input_frames": 81,
+      "padded_input_frames": [
+        81,
+        101
+      ],
+      "batch_sizes": [
+        1,
+        2
+      ],
+      "batch_member_real_lengths": [
+        [
+          81
+        ],
+        [
+          81,
+          101
+        ]
+      ],
+      "mode": "eval; torch.no_grad; frozen BatchNorm statistics; same short utterance alone versus padded alongside a longer utterance",
+      "prefix_layers": 5,
+      "prefix_valid_frames": 81,
+      "prefix_max_abs_difference": 3.6205086708068848,
+      "prefix_mean_abs_difference": 0.1167149692773819,
+      "prefix_equal_at_atol_1e_5_rtol_1e_5": false,
+      "output_valid_lengths": [
+        33,
+        32
+      ],
+      "batchnorm_modules": 10
+    }
+  ],
+  "source_sha256": {
+    "conformer_rnnt/encoder.py": "d3b0c397a8923093b38b196f3cead5e2f79970428934c07199669dec6c94523f",
+    "conformer_rnnt/staged_encoder.py": "3ffdbfca4de4afa8fb44aa008947092a48cfc7e52f1af013bff027de16c746b7",
+    "conformer_rnnt/compression/mixers.py": "8fef25607c3de380204598780786700307e13d5973c52c48789e4138a11753ad",
+    "conformer_rnnt/lightning_module.py": "2ce7b337309a70a1b1ecf455cdb9e711c91c0ae189be323215c1a4b95d24a3cc"
+  },
+  "five_frame_boundary_check": {
+    "synthetic_controlled_logits": [
+      1000,
+      0,
+      0,
+      0,
+      0
+    ],
+    "boundary_output_finite": false,
+    "interior_output_finite": true,
+    "interpretation": "Finite adversarial logits demonstrate a numerical edge case; does not establish that trained checkpoints encountered these logits or NaNs."
+  },
+  "time_mask_check": {
+    "seed": 14,
+    "real_lengths": [
+      20,
+      200
+    ],
+    "batch_padded_length": 200,
+    "mask_parameter": 100,
+    "p": 0.2,
+    "iid_masks": false,
+    "short_valid_sequence_entirely_masked": true,
+    "interpretation": "The mask limit uses padded T, not each utterance length; this is a controlled possibility, not its measured corpus frequency."
+  }
+}
