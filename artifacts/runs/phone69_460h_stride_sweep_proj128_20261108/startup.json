@@ -1,5 +1,4 @@
 {
-  "captured_at_utc": "2026-11-08T10:34:30.852231+00:00",
   "queue": {
     "status": "training",
     "pid": 17074,
@@ -2576,5 +2575,8 @@
       "error": "Actual audio-duration joint upper bound exceeds RNNT element limit"
     }
   },
-  "gpu": "name, memory.used [MiB], memory.total [MiB], utilization.gpu [%]\nNVIDIA A100-SXM4-80GB, 51685 MiB, 81920 MiB, 75 %\n"
+  "gpu": "name, memory.used [MiB], memory.total [MiB], utilization.gpu [%]\nNVIDIA A100-SXM4-80GB, 51685 MiB, 81920 MiB, 75 %\n",
+  "captured_at_server_utc": "2026-11-08T10:34:30.852231+00:00",
+  "verified_at_client_utc": "2026-11-08T11:23:39+00:00",
+  "timestamp_note": "Nested runtime timestamps use the server clock; client verification time is recorded separately."
 }
