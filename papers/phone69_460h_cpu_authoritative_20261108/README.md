@@ -7,7 +7,7 @@
 - **权威指标**：[summary.csv](summary.csv)、[summary.json](summary.json)。顶层只保存权威说明、标记和汇总。
 - **完整副本与原始核验依据**：[supporting/original_archive/](supporting/original_archive/)。该子文件夹原样保存此前 96 个归档文件，包括逐句 CSV、配置、源码、日志、冻结清单和原始核验报告。
 - **本次整理的核验资料**：[supporting/verification/](supporting/verification/)，包含整理后的一致性核验和完整校验清单。
-- **研究计划**：[ACL 2027 论文与补实验计划](supporting/research/phone69_acl_2027_plan_20261107.md)，保存 2026-11-07 的计划正文，已调整仓库内相对链接。计划中的历史 RTF 用于记录当时判断；当前指标以顶层权威汇总为准。
+- **研究计划（直接位于论文目录 `papers/`）**：[ACL 2027 论文与补实验计划](../phone69_acl_2027_plan_20261107.md)，保存 2026-11-07 的计划正文，已调整仓库内相对链接。计划中的历史 RTF 用于记录当时判断；当前指标以顶层权威汇总为准。
 - 顶层汇总与原始汇总的全部指标一致，仅将 `config`、`training_config`、`csv`、`log` 路径更新为对应子文件夹。原始字节和校验清单保存在完整副本中。
 
 ## 批次与固定协议

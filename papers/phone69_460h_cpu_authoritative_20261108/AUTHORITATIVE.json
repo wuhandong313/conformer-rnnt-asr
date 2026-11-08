@@ -83,7 +83,7 @@
     ],
     "supporting_archive": "supporting/original_archive",
     "verification": "supporting/verification",
-    "supporting_research": "supporting/research"
+    "research_plan": "../phone69_acl_2027_plan_20261107.md"
   },
   "entrypoints": {
     "summary_csv": "summary.csv",
@@ -94,7 +94,7 @@
     "original_checksums": "supporting/original_archive/SHA256SUMS",
     "archive_verification": "supporting/verification/archive_verification.json",
     "archive_checksums": "supporting/verification/SHA256SUMS",
-    "research_plan": "supporting/research/phone69_acl_2027_plan_20261107.md"
+    "research_plan": "../phone69_acl_2027_plan_20261107.md"
   },
   "models": [
     {
@@ -192,13 +192,13 @@
   "supplementary_documents": [
     {
       "kind": "research_plan",
-      "path": "supporting/research/phone69_acl_2027_plan_20261107.md",
+      "path": "../phone69_acl_2027_plan_20261107.md",
       "source_path": "docs/research/phone69_acl_2027_plan_20261107.md",
       "source_sha256": "160fae19186f68f65af7499b11ce64fe225a3d82489da54d6bd3afe45065dd8b",
-      "archived_sha256": "56782a62a77a1b10a95962d0be270ba379533677cf67038c38f015adf3d66c74",
+      "archived_sha256": "9197f4e7bb0d9c598ced6a8d250be385299e56e10a4686d83154bfda7b77070e",
       "document_date": "2026-11-07",
       "status": "historical_research_plan",
-      "content_changes": "relative Markdown link targets rebased to the new folder; prose and numerical values preserved",
+      "content_changes": "relative Markdown link targets rebased to papers/; prose and numerical values preserved",
       "relative_links_rebased": 24,
       "metric_authority": "summary.csv"
     }

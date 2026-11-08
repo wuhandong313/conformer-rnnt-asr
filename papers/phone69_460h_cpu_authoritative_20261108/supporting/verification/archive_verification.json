@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "status": "passed",
-  "verified_at": "2026-11-08T10:24:45+08:00",
+  "verified_at": "2026-11-08T10:30:42+08:00",
   "original_archive": "supporting/original_archive",
   "original_files": 96,
   "original_checksum_entries": 95,
@@ -86,142 +86,142 @@
     }
   ],
   "authoritative_files": {
-    "README.md": "14efa2208c2839c04f2e3b58fffabfb0ffd058b13dc06b4cfebab9a3c65a4071",
-    "AUTHORITATIVE.json": "dec0469d8aaf6165d938a56c380bfc3cf04f3ef09c4992d7f6910e4d1f2dd860",
+    "README.md": "7e313ad8946b39844daf36eec58f78e95fca7f3332a9c9242ca84e608bcb7de3",
+    "AUTHORITATIVE.json": "e4559128a759b66cc823b1e9f93faf19fd6d4e62c4a1844ae1b630ceda1d2426",
     "summary.csv": "97f9822d06e8970d0aaec933bd34fca18307bf5f499c9a1c6d31c5e23c6c6b86",
     "summary.json": "335c989c69da333dc96019f77594f932acbdaa0a573259b7ab0240850ff06663"
   },
   "supplementary_documents": [
     {
       "kind": "research_plan",
-      "path": "supporting/research/phone69_acl_2027_plan_20261107.md",
+      "path": "../phone69_acl_2027_plan_20261107.md",
       "source_path": "docs/research/phone69_acl_2027_plan_20261107.md",
       "source_sha256": "160fae19186f68f65af7499b11ce64fe225a3d82489da54d6bd3afe45065dd8b",
-      "archived_sha256": "56782a62a77a1b10a95962d0be270ba379533677cf67038c38f015adf3d66c74",
+      "archived_sha256": "9197f4e7bb0d9c598ced6a8d250be385299e56e10a4686d83154bfda7b77070e",
       "document_date": "2026-11-07",
       "status": "historical_research_plan",
-      "content_changes": "relative Markdown link targets rebased to the new folder; prose and numerical values preserved",
+      "content_changes": "relative Markdown link targets rebased to papers/; prose and numerical values preserved",
       "relative_links_rebased": 24,
       "metric_authority": "summary.csv",
       "link_rewrites": [
         {
           "source": "../../conformer_rnnt/compression/detectors.py",
-          "archived": "../../../../conformer_rnnt/compression/detectors.py",
+          "archived": "../conformer_rnnt/compression/detectors.py",
           "target_exists": true
         },
         {
           "source": "../../conformer_rnnt/compression/mixers.py",
-          "archived": "../../../../conformer_rnnt/compression/mixers.py",
+          "archived": "../conformer_rnnt/compression/mixers.py",
           "target_exists": true
         },
         {
           "source": "../../conformer_rnnt/compression/natural.py",
-          "archived": "../../../../conformer_rnnt/compression/natural.py",
+          "archived": "../conformer_rnnt/compression/natural.py",
           "target_exists": true
         },
         {
           "source": "../../configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
-          "archived": "../../../../configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
+          "archived": "../configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
           "target_exists": true
         },
         {
           "source": "../experiments/phone69_460h_results_20261107.md",
-          "archived": "../../../../docs/experiments/phone69_460h_results_20261107.md",
+          "archived": "../docs/experiments/phone69_460h_results_20261107.md",
           "target_exists": true
         },
         {
           "source": "../../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
-          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
+          "archived": "../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
           "target_exists": true
         },
         {
           "source": "../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_rtf_retest.json",
-          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_rtf_retest.json",
+          "archived": "../artifacts/research/phone69_460h_summary_20261107/mel_layer5_rtf_retest.json",
           "target_exists": true
         },
         {
           "source": "../../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
-          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
+          "archived": "../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
           "target_exists": true
         },
         {
           "source": "../../artifacts/research/phone69_460h_summary_20261107/acl_original_baseline_pilot.json",
-          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/acl_original_baseline_pilot.json",
+          "archived": "../artifacts/research/phone69_460h_summary_20261107/acl_original_baseline_pilot.json",
           "target_exists": true
         },
         {
           "source": "../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_compute.json",
-          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_compute.json",
+          "archived": "../artifacts/research/phone69_460h_summary_20261107/mel_layer5_compute.json",
           "target_exists": true
         },
         {
           "source": "../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
-          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
+          "archived": "../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
           "target_exists": true
         },
         {
           "source": "../../conformer_rnnt/staged_encoder.py",
-          "archived": "../../../../conformer_rnnt/staged_encoder.py",
+          "archived": "../conformer_rnnt/staged_encoder.py",
           "target_exists": true
         },
         {
           "source": "../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
-          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
+          "archived": "../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
           "target_exists": true
         },
         {
           "source": "../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_fusion_example_20261107.png",
-          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_fusion_example_20261107.png",
+          "archived": "../artifacts/research/phone69_460h_summary_20261107/mel_layer5_fusion_example_20261107.png",
           "target_exists": true
         },
         {
           "source": "../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
-          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
+          "archived": "../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json",
           "target_exists": true
         },
         {
           "source": "../../speech_rate_analysis/README.md",
-          "archived": "../../../../speech_rate_analysis/README.md",
+          "archived": "../speech_rate_analysis/README.md",
           "target_exists": true
         },
         {
           "source": "../../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
-          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
+          "archived": "../artifacts/research/phone69_460h_summary_20261107/acl_input128_baseline_pilot.json",
           "target_exists": true
         },
         {
           "source": "../../artifacts/research/phone69_460h_summary_20261107/acl_speech_rate_e09_test_clean_pilot.png",
-          "archived": "../../../../artifacts/research/phone69_460h_summary_20261107/acl_speech_rate_e09_test_clean_pilot.png",
+          "archived": "../artifacts/research/phone69_460h_summary_20261107/acl_speech_rate_e09_test_clean_pilot.png",
           "target_exists": true
         },
         {
           "source": "../experiments/phone69_460h_results_20261107.md",
-          "archived": "../../../../docs/experiments/phone69_460h_results_20261107.md",
+          "archived": "../docs/experiments/phone69_460h_results_20261107.md",
           "target_exists": true
         },
         {
           "source": "../experiments/phone69_460h_rigor_review_20261107.md",
-          "archived": "../../../../docs/experiments/phone69_460h_rigor_review_20261107.md",
+          "archived": "../docs/experiments/phone69_460h_rigor_review_20261107.md",
           "target_exists": true
         },
         {
           "source": "../phone69_tokenizer.md",
-          "archived": "../../../../docs/phone69_tokenizer.md",
+          "archived": "../docs/phone69_tokenizer.md",
           "target_exists": true
         },
         {
           "source": "../experiments/phone69_460h_rigor_review_20261107.md",
-          "archived": "../../../../docs/experiments/phone69_460h_rigor_review_20261107.md",
+          "archived": "../docs/experiments/phone69_460h_rigor_review_20261107.md",
           "target_exists": true
         },
         {
           "source": "../phone69_tokenizer.md",
-          "archived": "../../../../docs/phone69_tokenizer.md",
+          "archived": "../docs/phone69_tokenizer.md",
           "target_exists": true
         },
         {
           "source": "../../artifacts/evaluations/phone69_460h_cpu_serial_20261108/manifest.json",
-          "archived": "../../../../artifacts/evaluations/phone69_460h_cpu_serial_20261108/manifest.json",
+          "archived": "../artifacts/evaluations/phone69_460h_cpu_serial_20261108/manifest.json",
           "target_exists": true
         }
       ]
