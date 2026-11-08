@@ -1,0 +1,84 @@
+{
+  "status": "passed",
+  "torch": "2.8.0",
+  "method": "actual dispatched CPU matrix/convolution/attention shapes, no checkpoint or decoder",
+  "audit_script_sha256": "e0f998f255296be183969475e007cbc33c62dcb658558ee49fb4186975578ec8",
+  "records": [
+    {
+      "stride": 1,
+      "mel_frames": 1001,
+      "encoder_frames": 1001,
+      "observed_macs": 6419981568,
+      "dispatched_operators": {
+        "aten::mm": 10250240,
+        "aten::addmm": 3312877568,
+        "aten::_scaled_dot_product_flash_attention_for_cpu": 2565122560,
+        "aten::convolution": 531731200
+      },
+      "formula_components": {
+        "encoder_weights": 3811808000,
+        "attention_products": 2565122560,
+        "projections": 43051008
+      },
+      "exact_match": true,
+      "config_sha256": "e981c670f539b23a63b257a3714868646dd8e9905cfa1dd9ea1f9ac20ae844d7"
+    },
+    {
+      "stride": 2,
+      "mel_frames": 1001,
+      "encoder_frames": 501,
+      "observed_macs": 6292998656,
+      "dispatched_operators": {
+        "aten::mm": 10250240,
+        "aten::addmm": 3972857856,
+        "aten::_scaled_dot_product_flash_attention_for_cpu": 1285125120,
+        "aten::convolution": 1024765440
+      },
+      "formula_components": {
+        "encoder_weights": 4964789760,
+        "attention_products": 1285125120,
+        "projections": 43083776
+      },
+      "exact_match": true,
+      "config_sha256": "6a8dcfd68b3540fb44fa08dba314b588b56c4be1ea771ae3eccd421032aeebe0"
+    },
+    {
+      "stride": 4,
+      "mel_frames": 1001,
+      "encoder_frames": 251,
+      "observed_macs": 7965914112,
+      "dispatched_operators": {
+        "aten::mm": 10250240,
+        "aten::addmm": 5296750592,
+        "aten::_scaled_dot_product_flash_attention_for_cpu": 645130240,
+        "aten::convolution": 2013783040
+      },
+      "formula_components": {
+        "encoder_weights": 7277634560,
+        "attention_products": 645130240,
+        "projections": 43149312
+      },
+      "exact_match": true,
+      "config_sha256": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351"
+    },
+    {
+      "stride": 8,
+      "mel_frames": 1001,
+      "encoder_frames": 126,
+      "observed_macs": 12299270144,
+      "dispatched_operators": {
+        "aten::mm": 10250240,
+        "aten::addmm": 7960264704,
+        "aten::_scaled_dot_product_flash_attention_for_cpu": 325140480,
+        "aten::convolution": 4003614720
+      },
+      "formula_components": {
+        "encoder_weights": 11930849280,
+        "attention_products": 325140480,
+        "projections": 43280384
+      },
+      "exact_match": true,
+      "config_sha256": "90cca428498888b8b30a8424f930818035a096a88471c7e9d465347e633ff693"
+    }
+  ]
+}

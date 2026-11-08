@@ -59,3 +59,21 @@ C(T,s) = 80*128*T
 ```sh
 python scripts/evaluation/estimate_phone69_stride_encoder_compute.py --out /tmp/phone69-stride-encoder.json --verify-mock
 ```
+
+### stride4 计算量增加来自哪里
+
+当前比较实际是stride1的128维编码器与stride4的512维编码器。按同一完整语料分解，单位均为GMAC／音频秒：
+
+| 组成 | stride1，D=128 | stride4，D=512 |
+| --- | ---: | ---: |
+| 两个FFN：4TD·512 | 0.26241 | 0.26294 |
+| Q/K/V及输出投影：4TD² | 0.06560 | 0.26294 |
+| 卷积中的逐点投影：3TD² | 0.04920 | 0.19720 |
+| 深度卷积：31TD | 0.00397 | 0.00398 |
+| 注意力矩阵乘法：2T²D | 0.28203 | 0.07070 |
+| 编码器入口、出口投影 | 0.00431 | 0.00431 |
+| 合计 | 0.66752 | 0.80207 |
+
+表中T为各自进入编码层的时间步数；编码层内分项汇总10层，入口与出口投影各计一次。忽略取整，时间步降到1/4而D增为4倍，故TD近似不变、TD²增为4倍、T²D降到1/4。线性／卷积分项增加约0.34586，注意力项减少约0.21133，净增约0.13454，即20.16%。结果符合当前网络形状；它不能单独归因于四倍降采样。若保持同一主干宽度，压缩时间维将降低上述编码层计算量。
+
+另对四个实际模型直接拦截底层mm、addmm、卷积和CPU flash attention的输入输出形状做独立算子级核对，1001帧输入下的总主要MAC与公式精确一致。[算子级审计](../artifacts/runs/phone69_460h_stride_sweep_proj128_20261108/encoder_operator_audit.json) · [可复现审计脚本](../scripts/diagnostics/audit_phone69_stride_encoder_ops.py)。
