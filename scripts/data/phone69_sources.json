@@ -1,0 +1,50 @@
+{
+  "format_version": 1,
+  "audited_on": "2026-11-10",
+  "description": "Original MFA-derived stressed ARPABET labels used by the existing Phone69 experiments. Keep these files outside Git.",
+  "source_layout": "<labels-root>/<subset-with-underscores>/<filename>",
+  "subsets": {
+    "train-clean-100": {
+      "filename": "phone69.trans.txt",
+      "sha256": "32e2c3f5687bc1ca159a95c95fb481849a4564be1105712751c840eff179f14e",
+      "utterances": 28539,
+      "encoded_phones": 3515503,
+      "spn": 1
+    },
+    "train-clean-360": {
+      "filename": "phone69.trans.txt",
+      "sha256": "5aac2a3b909352b7588237bdc474c1c2c74c5702170544eedec5427934412913",
+      "utterances": 104014,
+      "encoded_phones": 12757024,
+      "spn": 0
+    },
+    "dev-clean": {
+      "filename": "phone69.trans.txt",
+      "sha256": "cff926fc6012633f3f4ef655db21cb787e5ad3c6dc270ca85a41449006aba865",
+      "utterances": 2703,
+      "encoded_phones": 193062,
+      "spn": 0
+    },
+    "test-clean": {
+      "filename": "phone69.trans.txt",
+      "sha256": "869bd804fffe31b2891364a00699917bf13d278cea8983d5615e7818b2fcfd9b",
+      "utterances": 2620,
+      "encoded_phones": 189023,
+      "spn": 0
+    },
+    "dev-other": {
+      "filename": "phone69",
+      "sha256": "188c7c552fde5e5a56f27b7505d1390180d7493a5c87fd1b8cdd764315d25c51",
+      "utterances": 2864,
+      "encoded_phones": 177952,
+      "spn": 0
+    },
+    "test-other": {
+      "filename": "phone69",
+      "sha256": "0e72608b0d244d1cae48e1e27413f537260d6829a87c20c51a06f4fefceb7cb9",
+      "utterances": 2939,
+      "encoded_phones": 182055,
+      "spn": 0
+    }
+  }
+}

@@ -41,6 +41,8 @@ data:
 
 每行格式是 `<utterance_id> <whitespace-delimited ARPABET phones>`。读取时不修改、复制或生成数据。独立的原始 `phone69.trans.txt` / `phone69` 平面文件仅用于词表核验，当前训练读取服务器已经分发好的 chapter 标签。
 
+新机器的官方音频下载、原始标签校验及 chapter 文件分发步骤见 [数据准备](data_preparation.md)。数据准备工具不会重新生成音素，也不启动训练。
+
 2026-10-15 对服务器 `/test21/librispeech/LibriSpeech` 只读核验：
 
 | 子集 | 语句数 | 编码后音素 token 总数 | 固定词表之外的标签 |
