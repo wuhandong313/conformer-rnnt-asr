@@ -10,6 +10,8 @@
 
 三个 YAML 与原投影128的 stride4 基线逐字段比较，只有 stride 和独立实验路径不同。FFN512、注意力头8、卷积核31、输出256、predictor、joiner、增强、优化器、seed42、50轮及选模规则一致。运行时仅根据试探结果覆盖 `data.max_token_limit`。stride 是帧拼接，因此主干宽度及参数量随 stride 改变，不将其写成同主干宽度对照。
 
+2026-11-11重启后已核实stride1、stride2完成50轮，并下载两组最佳checkpoint；stride8保持预算9700，从第8轮完整边界续训，本地评测队列已启动。原模型和训练源码SHA一致，详见[恢复与本地评测记录](phone69_stride_recovery_20261111.md)。上表为原始启动时的状态；当前状态以恢复记录为准，未完成的全量评测不填指标。
+
 2026-11-08，stride1 从头开始正式训练，控制器PID17074、训练PID17432，运行源码提交 `354baeb03005729f7bc3ef950891565537a70ca1`。5300通过24个真实优化器步骤的确认，最高reserved为75.48 GiB；5400、5600、6100显存不足，7000触及实际RNNT张量元素边界。后两组的batch上限待各自校准，不以5300代替。[启动状态与全部校准记录](../artifacts/runs/phone69_460h_stride_sweep_proj128_20261108/startup.json)
 
 ## Batch 校准与串行流程

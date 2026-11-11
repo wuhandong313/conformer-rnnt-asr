@@ -229,14 +229,34 @@ def preserve_checkpoints(stride):
     for source in (experiment(stride) / 'checkpoints').glob('*.ckpt'):
         target = destination / source.name
         if not target.exists():
-            try:
-                os.link(str(source), str(target))
-            except OSError:
+            if source.name.startswith('last'):
                 shutil.copy2(str(source), str(target))
+            else:
+                try:
+                    os.link(str(source), str(target))
+                except OSError:
+                    shutil.copy2(str(source), str(target))
         if source.stat().st_size != target.stat().st_size:
             raise ValueError('Preserved checkpoint size mismatch')
         inventory.append(dict(original=str(source), preserved=str(target), bytes=target.stat().st_size))
     save(destination / 'inventory.json', inventory)
+
+
+def protect_mutable_archives():
+    protected = []
+    for path in (OUT / 'original_checkpoints').glob('stride*/last*.ckpt'):
+        before = path.stat()
+        if before.st_nlink > 1:
+            temporary = path.with_suffix('.independent.tmp')
+            shutil.copy2(str(path), str(temporary))
+            after = path.stat()
+            if (before.st_size, before.st_mtime_ns) != (after.st_size, after.st_mtime_ns):
+                raise ValueError('Archived checkpoint changed during preservation')
+            temporary.replace(path)
+        protected.append(dict(path=str(path), bytes=path.stat().st_size,
+                              independent_inode=path.stat().st_nlink == 1))
+    save(OUT / 'mutable_archive_protection.json', protected)
+    return protected
 
 
 def finalize_boundary(stride, boundary, metadata):
@@ -370,7 +390,7 @@ def run_queue():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=('inspect', 'restore', 'run', 'status'), required=True)
+    parser.add_argument('--mode', choices=('inspect', 'restore', 'run', 'status', 'protect-archive'), required=True)
     args = parser.parse_args()
     os.chdir(str(ROOT))
     sys.path.insert(0, str(ROOT))
@@ -381,6 +401,8 @@ def main():
             restore()
         elif args.mode == 'run':
             run_queue()
+        elif args.mode == 'protect-archive':
+            print(json.dumps(protect_mutable_archives()))
         else:
             print(json.dumps(dict(server_utc=now(), state=read(OUT / 'recovery_state.json'),
                                   live_jobs=live_jobs(), gpu=gpu_info(),

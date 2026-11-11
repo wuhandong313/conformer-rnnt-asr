@@ -58,6 +58,21 @@ class StrideRecoveryTests(unittest.TestCase):
                 preserved = recovery.OUT / 'original_checkpoints/stride8/old_best.ckpt'
                 self.assertEqual(preserved.read_bytes(), b'immutable original checkpoint')
 
+    def test_last_checkpoint_archive_survives_in_place_overwrite(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            exp = root / 'experiment'
+            checkpoints = exp / 'checkpoints'
+            checkpoints.mkdir(parents=True)
+            original = checkpoints / 'last.ckpt'
+            original.write_bytes(b'old full optimizer state')
+            with patch.object(recovery, 'OUT', root / 'recovery'), \
+                    patch.object(recovery, 'experiment', return_value=exp):
+                recovery.preserve_checkpoints(8)
+                original.write_bytes(b'new full optimizer state')
+                preserved = recovery.OUT / 'original_checkpoints/stride8/last.ckpt'
+                self.assertEqual(preserved.read_bytes(), b'old full optimizer state')
+
     def test_trained_label_cannot_hide_missing_final_epoch_boundary(self):
         with tempfile.TemporaryDirectory() as folder:
             exp = Path(folder)
