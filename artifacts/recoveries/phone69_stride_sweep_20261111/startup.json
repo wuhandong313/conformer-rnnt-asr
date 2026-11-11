@@ -1,0 +1,164 @@
+{
+  "schema": 1,
+  "recorded_at_client_utc": "2026-11-11T15:16:32.390174+00:00",
+  "authorization": "2026-11-11 user restarted environment and explicitly requested reinstall after ten minutes, continue unfinished training, and locally evaluate completed best checkpoints",
+  "not_before_client_utc": "2026-11-11T14:51:20Z",
+  "first_server_access_after_not_before": true,
+  "environment_restore_commit": "95e3c4705f323bab72d06cf25dcf3a6961855c44",
+  "training_resume_commit": "191e387c7b82aaa8eb51b02396b231478418ffc3",
+  "runtime": {
+    "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+    "torch": "2.6.0+cu124",
+    "torchaudio": "2.6.0+cu124",
+    "lightning": "2.6.6",
+    "numpy": "2.2.6",
+    "cuda_build": "12.4",
+    "cuda_available": true
+  },
+  "original_controller_commit": "354baeb03005729f7bc3ef950891565537a70ca1",
+  "original_source_sha256": {
+    "conformer_rnnt/__init__.py": "53467afcb57ca9fa24a0ac716cae00b38c0a18af4c5f356920922667be4b4ca0",
+    "conformer_rnnt/checkpoint_utils.py": "2b6be42fa3204a1c6bbe4234db6351d81785acd3c0ea17634fe88f30522d54af",
+    "conformer_rnnt/compression/__init__.py": "5f912b187342ecfa0de09028c21c7a103124c5ca1cd8e844fbebd89be15fd145",
+    "conformer_rnnt/compression/batched_cosine.py": "6ac6c9415b666329483a9710386981860f8dd8b5028f7c1873849d7532b5d6fb",
+    "conformer_rnnt/compression/core.py": "4c8435d13986cbbb9c102a25861fd58d8823881840b77081ef99ba158a3f9a12",
+    "conformer_rnnt/compression/detectors.py": "a3cb19db86f0747b7fc8a2366daf6e9fc9ac07741ca69bbfbdda86da3d544014",
+    "conformer_rnnt/compression/feature_smoothing.py": "e6c9151b8f8b3b1af70850ef80986d77355b9544124b25b3309769ed18edc8e9",
+    "conformer_rnnt/compression/mixers.py": "bcec02719b2fb0f6909b30609b14757756a24f41443b7bb109e00b257894f422",
+    "conformer_rnnt/compression/natural.py": "23db4d350e7718ac93184b771b5338272af3fb6566b0c50b9330409d8c21bd62",
+    "conformer_rnnt/compression/stages.py": "3b1582fd5b1f2795cb04df3835fb5b397a8104d628107f634cc560d5d1121cdb",
+    "conformer_rnnt/encoder.py": "d3b0c397a8923093b38b196f3cead5e2f79970428934c07199669dec6c94523f",
+    "conformer_rnnt/joiner.py": "56a409bcc92c1ee3d21b2fbe2e9e62b9836268a871013940c568377414fc0889",
+    "conformer_rnnt/lightning_module.py": "af38cd3e9a68977d73d02f3456728c275796aa830d8def1cb0e496b7562de197",
+    "conformer_rnnt/metrics.py": "bdc922877d565554d52ac81051d7ac2bb05d8f8ac0327a7f41d1ebed84d776e9",
+    "conformer_rnnt/model.py": "a58515bc0bfc25f1c8751388a525b0cc853539192c5dd2e82d9f0e77558c0c36",
+    "conformer_rnnt/predictor.py": "da238c0e54bd16a1f01f252ef935410877792a7dbf6ccc37c8613342393fdaf1",
+    "conformer_rnnt/staged_encoder.py": "ae8bc132aef5bb1f5731dcddd3f4516cb49bfb0f0c86ca0b243fa5e468c75aee",
+    "common.py": "635d1925a0126dd1ccfa82151a4bf8c7064fca1ca79ad6856a6e3c2eaf5aad95",
+    "train.py": "e551b0550a4269c507c1618287cf53a36d3194c735a9fc94f9b977f00e1fba64",
+    "phone69_tokenizer.py": "f5fdd23989a9be25ee2d6b86009bd88f7f0891013bd5f78e45d51958a275f597",
+    "scripts/server/train_phone69_460h_one.py": "07316eaa5dac2775668dbd4f3e4e9bfc81c8ec5db55ab65841c40ce262c33ca0",
+    "scripts/server/phone69_epoch_checkpoint.py": "a18e0042ee64f1920977746e32fcb50e12f45304bf729702bf2da0891ad84edc",
+    "scripts/server/probe_phone69_training_memory.py": "2590069b4fc68b8be55683ff0b28726858ce96920a2aea590c778f8bffac066e",
+    "scripts/server/phone69_stride_sweep.py": "69f528b5f6fb21e56a1e7e0258dbfd262dbd688988732cadc34990d46f1dc426",
+    "configs/server_phone69_460h_offline_native_stride4_none_dim512_s42_e50.yaml": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351",
+    "configs/server_phone69_460h_offline_native_stride1_none_proj128_s42_e50.yaml": "e981c670f539b23a63b257a3714868646dd8e9905cfa1dd9ea1f9ac20ae844d7",
+    "configs/server_phone69_460h_offline_native_stride2_none_proj128_s42_e50.yaml": "6a8dcfd68b3540fb44fa08dba314b588b56c4be1ea771ae3eccd421032aeebe0",
+    "configs/server_phone69_460h_offline_native_stride8_none_proj128_s42_e50.yaml": "90cca428498888b8b30a8424f930818035a096a88471c7e9d465347e633ff693",
+    "configs/server_phone69_460h_stride_sweep_proj128_s42_e50.yaml": "631460058e31e3de7ee6b75d6e5305e1cece3c710460e48bd554c956fb085601"
+  },
+  "original_training_source_files_unchanged": true,
+  "recovery_controller_pid": 604,
+  "resumed_training_pid": 740,
+  "stride8_resume": {
+    "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride8_none_proj128_s42_e50/checkpoints/epoch-boundary-epoch=08-step=13544-abdfca2aad3f.ckpt",
+    "metadata": {
+      "previous_max_token_limit": 9700,
+      "resume_global_step": 13544,
+      "resume_completed_epochs": 8,
+      "resume_at_epoch_boundary": true
+    },
+    "original_effective_config_sha256": "48b4c3129c44d57d53b02cf6ffc908115053407520094398e0818009e3649a36",
+    "resumed_config_sha256": "6c52489becbf6aa22ea91fdb96435fed11c80948ed4e772c1aa4e4630ee36152",
+    "only_recipe_change": "paths.from_checkpoint",
+    "original_budget": 9700,
+    "total_epochs": 50,
+    "old_partial_ninth_epoch_is_replayed": true,
+    "restored_all_states_log_confirmed": true,
+    "preserved_existing_checkpoint_count": 14
+  },
+  "server_recovery_directory": "/test21/conformer-rnnt-asr/output/phone69_460h_stride_sweep_recovery_20261111",
+  "completed_groups": [
+    {
+      "stride": 1,
+      "server": {
+        "name": "stride1_proj128",
+        "stride": 1,
+        "budget": 5300,
+        "status": "trained",
+        "epoch": 50,
+        "global_step": 155550,
+        "training_commit": "354baeb03005729f7bc3ef950891565537a70ca1",
+        "original_config": "/test21/conformer-rnnt-asr/output/phone69_460h_stride_sweep_proj128_20261108/stride1_proj128_train.yaml",
+        "original_config_sha256": "fa9e2ce4a6804b1c3355a67e6c2ce1991345cc1ae52370dbce67893cd9bff5ba",
+        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_none_proj128_s42_e50/checkpoints/val-none-epoch=43-step=136173.ckpt",
+        "best_checkpoint_sha256": "01409ecf07a8eb3d5536c56a552554bdd860801dc2ce790e011a580b46033c77",
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_none_proj128_s42_e50/checkpoints/epoch-boundary-epoch=50-step=155550-7f360509cdc4.ckpt",
+        "epoch_boundary_metadata": {
+          "previous_max_token_limit": 5300,
+          "resume_global_step": 155550,
+          "resume_completed_epochs": 50,
+          "resume_at_epoch_boundary": true
+        }
+      },
+      "local_transfer": {
+        "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_none_proj128_s42_e50/checkpoints/val-none-epoch=43-step=136173.ckpt",
+        "local_path": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261111/models/stride1_proj128/val-none-epoch=43-step=136173.ckpt",
+        "bytes": 51037968,
+        "sha256": "01409ecf07a8eb3d5536c56a552554bdd860801dc2ce790e011a580b46033c77",
+        "completed_at_utc": "2026-11-11T15:07:59.780593+00:00"
+      }
+    },
+    {
+      "stride": 2,
+      "server": {
+        "name": "stride2_proj128",
+        "stride": 2,
+        "budget": 8800,
+        "status": "trained",
+        "epoch": 50,
+        "global_step": 93250,
+        "training_commit": "14c7b9a5366417f6a882a9362d6fa0dab691bc12",
+        "original_config": "/test21/conformer-rnnt-asr/output/phone69_460h_stride_sweep_proj128_20261108/stride2_proj128_train.yaml",
+        "original_config_sha256": "c1043b605152e6f6bc7d0657da3f8bf97a16057a617f7e7e184353cce7ffd104",
+        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_none_proj128_s42_e50/checkpoints/val-none-epoch=24-step=46360.ckpt",
+        "best_checkpoint_sha256": "362f3aae0bf25a87e15d10e18fe57edacd735398d0f8efeda7f5d67bfe0d055d",
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_none_proj128_s42_e50/checkpoints/epoch-boundary-epoch=50-step=93250-7890107eca4b.ckpt",
+        "epoch_boundary_metadata": {
+          "previous_max_token_limit": 8800,
+          "resume_global_step": 93250,
+          "resume_completed_epochs": 50,
+          "resume_at_epoch_boundary": true
+        }
+      },
+      "local_transfer": {
+        "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_none_proj128_s42_e50/checkpoints/val-none-epoch=24-step=46360.ckpt",
+        "local_path": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261111/models/stride2_proj128/val-none-epoch=24-step=46360.ckpt",
+        "bytes": 125002256,
+        "sha256": "362f3aae0bf25a87e15d10e18fe57edacd735398d0f8efeda7f5d67bfe0d055d",
+        "completed_at_utc": "2026-11-11T15:14:41.735201+00:00"
+      }
+    }
+  ],
+  "local_evaluation": {
+    "controller_pid": 18644,
+    "directory": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111",
+    "status": "running",
+    "protocol": {
+      "corpus": "frozen test-clean",
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "audio_seconds": 19452.480625,
+      "device": "cpu",
+      "dtype": "float32",
+      "batch": 1,
+      "beam": 20,
+      "threads": 4,
+      "interop_threads": 1,
+      "workers": 0,
+      "warmup_utterances": 10,
+      "outcomes": [
+        "corpus_PER",
+        "major_MAC_per_audio_second"
+      ]
+    },
+    "stride8_action": "automatically fetch and evaluate once the recovery controller verifies completion"
+  },
+  "local_checks": {
+    "recovery_and_aggregation_checks_passed": 9,
+    "actual_encoder_counter_matches_independent_formula_for_all_three_strides": true,
+    "real_audio_preflight_frames": 1044,
+    "preflight_is_not_a_full_corpus_metric": true,
+    "server_software_tests_run": false
+  }
+}
