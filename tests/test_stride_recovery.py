@@ -13,6 +13,13 @@ spec.loader.exec_module(recovery)
 
 
 class StrideRecoveryTests(unittest.TestCase):
+    def test_installer_is_distinct_from_original_controller(self):
+        self.assertEqual(recovery.job_kind(['/usr/bin/python3',
+                         'scripts/server/recover_phone69_stride_sweep.py', '--mode', 'restore']),
+                         'runtime_installer')
+        self.assertIsNone(recovery.job_kind(['/usr/bin/python3',
+                          'scripts/server/recover_phone69_stride_sweep.py', '--mode', 'status']))
+
     def test_boundary_order_uses_completed_epoch_and_step(self):
         names = ['epoch-boundary-epoch=09-step=9000-abcd.ckpt',
                  'epoch-boundary-epoch=10-step=10000-1234.ckpt',

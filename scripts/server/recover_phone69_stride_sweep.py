@@ -71,6 +71,21 @@ def source_identity():
                 original_source_files_unchanged=True)
 
 
+def job_kind(arguments):
+    names = {Path(value).name for value in arguments if value}
+    if 'train_phone69_460h_one.py' in names:
+        return 'training'
+    if 'phone69_stride_sweep.py' in names:
+        return 'original_controller'
+    if Path(__file__).name in names and '--mode' in arguments:
+        mode = arguments[arguments.index('--mode') + 1:][:1]
+        if mode == ['run']:
+            return 'recovery_controller'
+        if mode == ['restore']:
+            return 'runtime_installer'
+    return None
+
+
 def live_jobs():
     result = []
     for path in Path('/proc').glob('[0-9]*'):
@@ -78,13 +93,10 @@ def live_jobs():
             pid = int(path.name)
             if pid == os.getpid() or (path / 'stat').read_text().split()[2] == 'Z':
                 continue
-            command = (path / 'cmdline').read_bytes().replace(b'\0', b' ').decode(errors='replace')
-            if 'train_phone69_460h_one.py' in command:
-                result.append(dict(pid=pid, kind='training'))
-            elif 'phone69_stride_sweep.py' in command:
-                result.append(dict(pid=pid, kind='original_controller'))
-            elif str(Path(__file__).name) in command and '--mode run' in command:
-                result.append(dict(pid=pid, kind='recovery_controller'))
+            arguments = (path / 'cmdline').read_bytes().decode(errors='replace').split('\0')
+            kind = job_kind(arguments)
+            if kind:
+                result.append(dict(pid=pid, kind=kind))
         except (OSError, ValueError, IndexError):
             continue
     return result
