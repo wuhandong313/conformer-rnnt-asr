@@ -1,0 +1,87 @@
+{
+  "model": {
+    "name": "stride1_proj128",
+    "stride": 1,
+    "expected_parameters": 4215622,
+    "training_commit": "354baeb03005729f7bc3ef950891565537a70ca1",
+    "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261111/models/stride1_proj128/val-none-epoch=43-step=136173.ckpt",
+    "checkpoint_sha256": "01409ecf07a8eb3d5536c56a552554bdd860801dc2ce790e011a580b46033c77",
+    "training_config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/training_config.yaml",
+    "training_config_sha256": "fa9e2ce4a6804b1c3355a67e6c2ce1991345cc1ae52370dbce67893cd9bff5ba",
+    "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/config.yaml",
+    "config_sha256": "3c413f88b86b72247a86e1337e699e2390d25c0316528493e8b6de65c3787af3",
+    "server_training": {
+      "name": "stride1_proj128",
+      "stride": 1,
+      "budget": 5300,
+      "status": "trained",
+      "epoch": 50,
+      "global_step": 155550,
+      "training_commit": "354baeb03005729f7bc3ef950891565537a70ca1",
+      "original_config": "/test21/conformer-rnnt-asr/output/phone69_460h_stride_sweep_proj128_20261108/stride1_proj128_train.yaml",
+      "original_config_sha256": "fa9e2ce4a6804b1c3355a67e6c2ce1991345cc1ae52370dbce67893cd9bff5ba",
+      "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_none_proj128_s42_e50/checkpoints/val-none-epoch=43-step=136173.ckpt",
+      "best_checkpoint_sha256": "01409ecf07a8eb3d5536c56a552554bdd860801dc2ce790e011a580b46033c77",
+      "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride1_none_proj128_s42_e50/checkpoints/epoch-boundary-epoch=50-step=155550-7f360509cdc4.ckpt",
+      "epoch_boundary_metadata": {
+        "previous_max_token_limit": 5300,
+        "resume_global_step": 155550,
+        "resume_completed_epochs": 50,
+        "resume_at_epoch_boundary": true
+      }
+    }
+  },
+  "utterances": 2620,
+  "reference_phones": 189023,
+  "phone_errors": 9424,
+  "corpus_PER": 0.04985636668553562,
+  "audio_seconds": 19452.480625,
+  "components_macs": {
+    "encoder_weights": 7415082304000,
+    "attention_products": 5486135915520,
+    "projections": 83746811904,
+    "fusion_mlp": 0,
+    "detector_dots": 0,
+    "fusion_weighted_sum": 0,
+    "predictor": 6136332779520,
+    "joiner": 1069818534400
+  },
+  "total_major_macs": 20191116345344,
+  "gmac_per_audio_second": 1.0379712867774158,
+  "encoder_compression_gmac_per_audio_second": 0.6675223217925195,
+  "predictor_gmac_per_audio_second": 0.3154524555410012,
+  "joiner_gmac_per_audio_second": 0.054996509443895156,
+  "protocol": {
+    "device": "cpu",
+    "dtype": "float32",
+    "batch": 1,
+    "beam": 20,
+    "threads": 4,
+    "interop_threads": 1,
+    "data_workers": 0,
+    "openmp_max_active_levels": 1,
+    "warmup_utterances": 10,
+    "subset": "test-clean"
+  },
+  "runtime": {
+    "python": "/opt/anaconda3/envs/aligner/bin/python",
+    "python_version": "3.12.9",
+    "machine": "arm64",
+    "os": "macOS-27.3-arm64-arm-64bit",
+    "torch": "2.8.0",
+    "torchaudio": "2.8.0",
+    "openmp": {
+      "path": "/opt/anaconda3/envs/aligner/lib/libomp.dylib",
+      "sha256": "ce4985af1eb24c5cf570933a9234a54353c4b649cd1985fbe4300d67be97d76b"
+    },
+    "model_source": "snapshot"
+  },
+  "checkpoint_epoch": 43,
+  "checkpoint_global_step": 136173,
+  "manifest_sha256": "e68bfe670084fc290bd0b12e8bf00d9facd264ed9457c5682b9f95745f70bae3",
+  "csv_sha256": "fc0a59c9d26ea04a521173eb807a37998928e669f39fb66280a3471f17efd18d",
+  "counted_scope": "linear, convolution, attention products, compression, and actual beam-search predictor/joiner matrices",
+  "excluded_scope": "feature extraction, normalization, softmax, activations, comparisons/sorting, memory access",
+  "completed_at_utc": "2026-11-11T15:44:37.158448+00:00",
+  "verified_full_corpus": true
+}

@@ -1,0 +1,87 @@
+{
+  "model": {
+    "name": "stride2_proj128",
+    "stride": 2,
+    "expected_parameters": 10378310,
+    "training_commit": "14c7b9a5366417f6a882a9362d6fa0dab691bc12",
+    "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261111/models/stride2_proj128/val-none-epoch=24-step=46360.ckpt",
+    "checkpoint_sha256": "362f3aae0bf25a87e15d10e18fe57edacd735398d0f8efeda7f5d67bfe0d055d",
+    "training_config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/training_config.yaml",
+    "training_config_sha256": "c1043b605152e6f6bc7d0657da3f8bf97a16057a617f7e7e184353cce7ffd104",
+    "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/config.yaml",
+    "config_sha256": "0c9c26fcf52ff75d22b58afdd0d2da2b44d48f572c3cf84c3b8f7e658293cd32",
+    "server_training": {
+      "name": "stride2_proj128",
+      "stride": 2,
+      "budget": 8800,
+      "status": "trained",
+      "epoch": 50,
+      "global_step": 93250,
+      "training_commit": "14c7b9a5366417f6a882a9362d6fa0dab691bc12",
+      "original_config": "/test21/conformer-rnnt-asr/output/phone69_460h_stride_sweep_proj128_20261108/stride2_proj128_train.yaml",
+      "original_config_sha256": "c1043b605152e6f6bc7d0657da3f8bf97a16057a617f7e7e184353cce7ffd104",
+      "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_none_proj128_s42_e50/checkpoints/val-none-epoch=24-step=46360.ckpt",
+      "best_checkpoint_sha256": "362f3aae0bf25a87e15d10e18fe57edacd735398d0f8efeda7f5d67bfe0d055d",
+      "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride2_none_proj128_s42_e50/checkpoints/epoch-boundary-epoch=50-step=93250-7890107eca4b.ckpt",
+      "epoch_boundary_metadata": {
+        "previous_max_token_limit": 8800,
+        "resume_global_step": 93250,
+        "resume_completed_epochs": 50,
+        "resume_at_epoch_boundary": true
+      }
+    }
+  },
+  "utterances": 2620,
+  "reference_phones": 189023,
+  "phone_errors": 9260,
+  "corpus_PER": 0.048988747401109915,
+  "audio_seconds": 19452.480625,
+  "components_macs": {
+    "encoder_weights": 9654742236160,
+    "attention_products": 2745557995520,
+    "projections": 83789213696,
+    "fusion_mlp": 0,
+    "detector_dots": 0,
+    "fusion_weighted_sum": 0,
+    "predictor": 3697366892544,
+    "joiner": 572904317440
+  },
+  "total_major_macs": 16754360655360,
+  "gmac_per_audio_second": 0.8612968689364779,
+  "encoder_compression_gmac_per_audio_second": 0.6417736475897916,
+  "predictor_gmac_per_audio_second": 0.1900717427160527,
+  "joiner_gmac_per_audio_second": 0.029451478630633514,
+  "protocol": {
+    "device": "cpu",
+    "dtype": "float32",
+    "batch": 1,
+    "beam": 20,
+    "threads": 4,
+    "interop_threads": 1,
+    "data_workers": 0,
+    "openmp_max_active_levels": 1,
+    "warmup_utterances": 10,
+    "subset": "test-clean"
+  },
+  "runtime": {
+    "python": "/opt/anaconda3/envs/aligner/bin/python",
+    "python_version": "3.12.9",
+    "machine": "arm64",
+    "os": "macOS-27.3-arm64-arm-64bit",
+    "torch": "2.8.0",
+    "torchaudio": "2.8.0",
+    "openmp": {
+      "path": "/opt/anaconda3/envs/aligner/lib/libomp.dylib",
+      "sha256": "ce4985af1eb24c5cf570933a9234a54353c4b649cd1985fbe4300d67be97d76b"
+    },
+    "model_source": "snapshot"
+  },
+  "checkpoint_epoch": 24,
+  "checkpoint_global_step": 46360,
+  "manifest_sha256": "410fce340ad082b367c40167a3811843180b1c2b1e0f6b3cbd83081d361c6e91",
+  "csv_sha256": "2a88e18879caefc4790788b73485beab1b3fb5b8d0f29a1365286fd71c2414e7",
+  "counted_scope": "linear, convolution, attention products, compression, and actual beam-search predictor/joiner matrices",
+  "excluded_scope": "feature extraction, normalization, softmax, activations, comparisons/sorting, memory access",
+  "completed_at_utc": "2026-11-11T16:05:08.945815+00:00",
+  "verified_full_corpus": true
+}

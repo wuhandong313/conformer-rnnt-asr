@@ -17,3 +17,5 @@ stride8 的重启前记录为第9轮、step14000，最近完整边界为第8轮�
 本地目录为 `artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/`，独立于冻结E01–E10归档。队列控制器串行评测stride1、stride2，并等待stride8完成后自动下载及评测。使用同一冻结test-clean的2,620句、189,023个参考音素、19,452.480625秒音频，FP32、CPU、batch1、beam20、4线程、interop1、worker0。一次解码同时统计corpus PER和主要MAC，分开报告编码器/压缩、predictor、joiner；不生成RTF或重复计时结果。只在完整语料核实通过后报告该模型的正式指标，尚未完成的组不填估计值。
 
 本地恢复安全与指标聚合检查共9项通过；三个实际模型在同一真实音频上，执行计数与已独立审计的固定stride编码器公式一致。此项为软件预检，不是完整语料指标。运行中的本地进度见各组 `attempt_01/progress.json`，完整结果为`result.json`、`utterances.csv`及`summary.json`。
+
+stride1、stride2的完整本地PER及主要MAC现已完成并独立核实，见[两组全量结果](../artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/REPORT_stride1_stride2.md)。stride8仍在续训，不填写其待完成指标。
