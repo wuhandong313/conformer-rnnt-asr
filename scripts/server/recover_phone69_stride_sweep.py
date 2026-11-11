@@ -55,7 +55,7 @@ def sha(path):
 
 
 def commit():
-    return subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=str(ROOT), text=True).strip()
+    return subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=str(ROOT), universal_newlines=True).strip()
 
 
 def source_identity():
@@ -93,7 +93,8 @@ def live_jobs():
 def gpu_info():
     result = subprocess.run(['nvidia-smi', '-i', '0',
                              '--query-gpu=timestamp,name,memory.used,memory.total,utilization.gpu',
-                             '--format=csv,noheader'], capture_output=True, text=True)
+                             '--format=csv,noheader'], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            universal_newlines=True)
     return result.stdout.strip() if result.returncode == 0 else None
 
 
@@ -175,7 +176,8 @@ def restore():
                  'print(json.dumps(dict(python=sys.version,torch=torch.__version__,'
                  'torchaudio=torchaudio.__version__,lightning=pytorch_lightning.__version__,'
                  'numpy=numpy.__version__,cuda_build=torch.version.cuda,cuda_available=torch.cuda.is_available())))')
-        runtime = json.loads(subprocess.check_output([str(PYTHON), '-c', query], cwd=str(ROOT), env=env, text=True))
+        runtime = json.loads(subprocess.check_output([str(PYTHON), '-c', query], cwd=str(ROOT), env=env,
+                                                   universal_newlines=True))
         if runtime['torch'].split('+')[0] != '2.6.0' or not runtime['cuda_available']:
             raise RuntimeError('The recorded CUDA training runtime is unavailable')
         save(OUT / 'runtime.json', runtime)
@@ -322,7 +324,7 @@ def run_queue():
             resumed_config.write_text(yaml.safe_dump(cfg, sort_keys=False, allow_unicode=True))
             allowed.add(sha(resumed_config))
             while subprocess.check_output(['nvidia-smi', '-i', '0', '--query-compute-apps=pid',
-                                           '--format=csv,noheader,nounits'], text=True).strip():
+                                           '--format=csv,noheader,nounits'], universal_newlines=True).strip():
                 update(status='waiting_for_gpu', completed=results, active_stride=stride)
                 import time
                 time.sleep(30)
