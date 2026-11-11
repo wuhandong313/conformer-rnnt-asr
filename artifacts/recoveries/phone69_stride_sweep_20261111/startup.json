@@ -65,7 +65,19 @@
     "total_epochs": 50,
     "old_partial_ninth_epoch_is_replayed": true,
     "restored_all_states_log_confirmed": true,
-    "preserved_existing_checkpoint_count": 14
+    "preserved_existing_checkpoint_count": 14,
+    "immutable_checkpoints_preserved": 13,
+    "rolling_last_archive_note": {
+      "initial_method": "hard link (corrected)",
+      "original_bytes": 1146804752,
+      "observed_after_resume_bytes": 1146804816,
+      "observed_after_resume_global_step": 14344,
+      "original_rolling_last_bytes_preserved": false,
+      "corrected_method": "independent copy",
+      "preserved_pre_restart_full_validation_checkpoint": "val-none-epoch=08-step=13744.ckpt",
+      "preserved_validation_checkpoint_optimizer_and_scheduler_present": true,
+      "selected_epoch8_resume_checkpoint_unchanged": true
+    }
   },
   "server_recovery_directory": "/test21/conformer-rnnt-asr/output/phone69_460h_stride_sweep_recovery_20261111",
   "completed_groups": [
