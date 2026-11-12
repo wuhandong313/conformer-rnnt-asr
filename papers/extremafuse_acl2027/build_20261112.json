@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "compiler": "Tectonic 0.17.0",
+  "compiler_release": "https://github.com/tectonic-typesetting/tectonic/releases/tag/tectonic%400.17.0",
+  "binary_release_tar_sha256": "a3f1cac7c5678f01661a92212f58480ae3b0634115d880dbc59e2953ded45667",
+  "pages": 8,
+  "pdf_sha256": "f2b9110100156ee49a46f8d231ea74b764e6936a3d4f7f8ddc7ec3c1ccac57d9",
+  "sources_sha256": {
+    "papers/extremafuse_acl2027/main.tex": "d11900caed9c7fc4c9826f77c289bfb19a77f980ec470e7dcd9596551a510a94",
+    "papers/extremafuse_acl2027/references.bib": "85e7ec90acd01220ce6969343be441dc73fae37af939756b69e6cda082ee2ec1",
+    "papers/extremafuse_acl2027/acl.sty": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de",
+    "papers/extremafuse_acl2027/acl_natbib.bst": "6fbb306202290f4b68e74ac1460a8b27398500cb6dfeb4492e74c457eae7cd1e",
+    "papers/extremafuse_acl2027/figures/fusion_weights.png": "0b434552dda582e4982c0cc8ca8dfbac2c63c90071f39794e569c7db69b3733e",
+    "papers/extremafuse_acl2027/figures/quality_compute.png": "7779b087d7918b9a21657fc659ad7ee1aac74731509145a25b505b442a8741b8"
+  },
+  "qa": {
+    "all_eight_pages_rendered": true,
+    "contact_sheet_reviewed": true,
+    "appendix_pages_7_8_reviewed_at_full_resolution": true,
+    "overfull_boxes": false,
+    "undefined_references": false,
+    "ten_system_speaking_rate_table_verified_in_pdf": true,
+    "pending_supplementary_cells_preserved": true
+  },
+  "intermediates": "output/paper_build_20261112/",
+  "notes": [
+    "First build fetched TeX resources; final build succeeded with --only-cached.",
+    "Ordinary underfull paragraph/page warnings remain; no clipping or overlapping text observed.",
+    "No OS-global TeX installation was changed."
+  ]
+}

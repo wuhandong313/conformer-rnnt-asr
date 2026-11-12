@@ -1,0 +1,383 @@
+{
+  "schema": 1,
+  "authorized_work": "User requested position-only supplementary placements, reuse existing experiments, automatic maximum stable batch, serial training, paper inclusion and natural-rate comparison.",
+  "recorded_at_client_utc": "2026-11-12T02:13:40.277549+00:00",
+  "server_utc": "2026-11-12T01:23:56.043270+00:00",
+  "deployment_commit": "8ef8eef970362ecdaa184a58d61460ec3f4d1c3c",
+  "branch": "main",
+  "controller_pid": 5031,
+  "manifest": "configs/phone69_placement_supplement_20261112.json",
+  "server_runtime_dir": "/test21/conformer-rnnt-asr/output/phone69_460h_placement_supplement_20261112",
+  "initial_state": {
+    "status": "calibrating",
+    "controller_pid": 5031,
+    "code_commit": "8ef8eef970362ecdaa184a58d61460ec3f4d1c3c",
+    "server_utc": "2026-11-12T01:23:47.632823+00:00",
+    "completed": [
+      {
+        "name": "layer5",
+        "action": "reuse",
+        "positions": [
+          5
+        ],
+        "status": "trained",
+        "epoch": 50,
+        "global_step": 165000,
+        "budget": 5000,
+        "training_commit": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
+        "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+        "config_sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/val-none-epoch=45-step=151700.ckpt",
+        "best_checkpoint_sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c",
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=165000-03d646231711.ckpt",
+        "epoch_boundary_metadata": {
+          "previous_max_token_limit": 5000,
+          "resume_global_step": 165000,
+          "resume_completed_epochs": 50,
+          "resume_at_epoch_boundary": true
+        }
+      },
+      {
+        "name": "layer7",
+        "action": "reuse",
+        "positions": [
+          7
+        ],
+        "status": "trained",
+        "epoch": 50,
+        "global_step": 126550,
+        "budget": 6500,
+        "training_commit": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
+        "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+        "config_sha256": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca",
+        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/val-none-epoch=46-step=118826.ckpt",
+        "best_checkpoint_sha256": "c452301ca02f49a42b544cfdb7db26d893069fcff73adfbe890ed3798c9d165b",
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=126550-5c4a663a9583.ckpt",
+        "epoch_boundary_metadata": {
+          "previous_max_token_limit": 6500,
+          "resume_global_step": 126550,
+          "resume_completed_epochs": 50,
+          "resume_at_epoch_boundary": true
+        }
+      },
+      {
+        "name": "mel_layer5",
+        "action": "reuse",
+        "positions": [
+          0,
+          5
+        ],
+        "status": "trained",
+        "epoch": 50,
+        "global_step": 90986,
+        "budget": 11050,
+        "training_commit": "a05b80c3aacff5417b25bedca818c8054e1cb67d",
+        "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml",
+        "config_sha256": "2b9909965c50808e96ee5546a3f53eede597e415449ae79bb845b60ab1728192",
+        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_resume_b11050/checkpoints/val-none-epoch=49-step=89901.ckpt",
+        "best_checkpoint_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_resume_b11050/checkpoints/epoch-boundary-epoch=50-step=90986-15e8878e93b7.ckpt",
+        "epoch_boundary_metadata": {
+          "previous_max_token_limit": 11050,
+          "resume_global_step": 90986,
+          "resume_completed_epochs": 50,
+          "resume_at_epoch_boundary": true
+        }
+      },
+      {
+        "name": "layers2_5_n3",
+        "action": "reuse",
+        "positions": [
+          2,
+          5
+        ],
+        "status": "trained",
+        "epoch": 50,
+        "global_step": 141382,
+        "budget": 6000,
+        "training_commit": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
+        "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+        "config_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
+        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
+        "best_checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=141382-e74a7a871dc9.ckpt",
+        "epoch_boundary_metadata": {
+          "previous_max_token_limit": 6000,
+          "resume_global_step": 141382,
+          "resume_completed_epochs": 50,
+          "resume_at_epoch_boundary": true
+        }
+      }
+    ],
+    "experiment": "layer1",
+    "positions": [
+      1
+    ],
+    "budget": 5000,
+    "confirmation": false,
+    "calibration_pid": 5049,
+    "report": "output/phone69_460h_placement_supplement_20261112/layer1_b5000_search_001.json"
+  },
+  "source_sha256": {
+    "common.py": "635d1925a0126dd1ccfa82151a4bf8c7064fca1ca79ad6856a6e3c2eaf5aad95",
+    "configs/phone69_placement_supplement_20261112.json": "f734f6e0c6d5ba37d8d4022d2bf1a181acaab64ad7fef2d934ba4d8ea231459c",
+    "configs/server_phone69_460h_placement_layer1_stride1_s42_e50_supp20261112.yaml": "d9dd5911340ca2ca6af1222715906f4fdc984c2c47ed23d56463ba5f5474e3c6",
+    "configs/server_phone69_460h_placement_layer3_stride1_s42_e50_supp20261112.yaml": "7282fa59ff0f6598ab2b00acb137bcfbb8c80027db88c5163b559f409d59be55",
+    "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+    "configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca",
+    "configs/server_phone69_460h_placement_layer9_stride1_s42_e50_supp20261112.yaml": "020f3a97ca5d9e73bcfa87967c44349d7fba3f0a8b5641a8209d06e11a7dbdab",
+    "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch4000_before6000.yaml": "e60e15d89be9e141bfc3ab5812e3a3454ea888bd48893ef25443eccd8ab19e61",
+    "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
+    "configs/server_phone69_460h_placement_layers2_7_n3_stride1_s42_e50_supp20261112.yaml": "551e09bdcabf9067464b4215acecff5bcdb8dd7b55661e54799e01f23f27fe20",
+    "configs/server_phone69_460h_placement_mel_layer3_stride1_s42_e50_supp20261112.yaml": "47b71c569a1a5cc16a0c9e6b8c34bd919beb3c2dbfa821dc4e626589fcb90342",
+    "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml": "681154e65a68ec870b479b8fbca1ca39502ee89e617ddbae3e0d9df618dab0b0",
+    "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml": "2b9909965c50808e96ee5546a3f53eede597e415449ae79bb845b60ab1728192",
+    "configs/server_phone69_460h_placement_mel_layer7_stride1_s42_e50_supp20261112.yaml": "9f0e6b96f44e712cfb19f8b8e3f90707feac980347bf5f372b01b587c8f1e345",
+    "conformer_rnnt/__init__.py": "53467afcb57ca9fa24a0ac716cae00b38c0a18af4c5f356920922667be4b4ca0",
+    "conformer_rnnt/checkpoint_utils.py": "2b6be42fa3204a1c6bbe4234db6351d81785acd3c0ea17634fe88f30522d54af",
+    "conformer_rnnt/compression/__init__.py": "5f912b187342ecfa0de09028c21c7a103124c5ca1cd8e844fbebd89be15fd145",
+    "conformer_rnnt/compression/batched_cosine.py": "6ac6c9415b666329483a9710386981860f8dd8b5028f7c1873849d7532b5d6fb",
+    "conformer_rnnt/compression/core.py": "4c8435d13986cbbb9c102a25861fd58d8823881840b77081ef99ba158a3f9a12",
+    "conformer_rnnt/compression/detectors.py": "a3cb19db86f0747b7fc8a2366daf6e9fc9ac07741ca69bbfbdda86da3d544014",
+    "conformer_rnnt/compression/feature_smoothing.py": "e6c9151b8f8b3b1af70850ef80986d77355b9544124b25b3309769ed18edc8e9",
+    "conformer_rnnt/compression/mixers.py": "bcec02719b2fb0f6909b30609b14757756a24f41443b7bb109e00b257894f422",
+    "conformer_rnnt/compression/natural.py": "23db4d350e7718ac93184b771b5338272af3fb6566b0c50b9330409d8c21bd62",
+    "conformer_rnnt/compression/stages.py": "3b1582fd5b1f2795cb04df3835fb5b397a8104d628107f634cc560d5d1121cdb",
+    "conformer_rnnt/encoder.py": "d3b0c397a8923093b38b196f3cead5e2f79970428934c07199669dec6c94523f",
+    "conformer_rnnt/joiner.py": "56a409bcc92c1ee3d21b2fbe2e9e62b9836268a871013940c568377414fc0889",
+    "conformer_rnnt/lightning_module.py": "af38cd3e9a68977d73d02f3456728c275796aa830d8def1cb0e496b7562de197",
+    "conformer_rnnt/metrics.py": "bdc922877d565554d52ac81051d7ac2bb05d8f8ac0327a7f41d1ebed84d776e9",
+    "conformer_rnnt/model.py": "a58515bc0bfc25f1c8751388a525b0cc853539192c5dd2e82d9f0e77558c0c36",
+    "conformer_rnnt/predictor.py": "da238c0e54bd16a1f01f252ef935410877792a7dbf6ccc37c8613342393fdaf1",
+    "conformer_rnnt/staged_encoder.py": "ae8bc132aef5bb1f5731dcddd3f4516cb49bfb0f0c86ca0b243fa5e468c75aee",
+    "phone69_tokenizer.py": "f5fdd23989a9be25ee2d6b86009bd88f7f0891013bd5f78e45d51958a275f597",
+    "scripts/server/phone69_epoch_checkpoint.py": "a18e0042ee64f1920977746e32fcb50e12f45304bf729702bf2da0891ad84edc",
+    "scripts/server/phone69_placement_supplement.py": "c68c5042b76c1ef75c1b864b4fffd0ba94f1b2d27811d131e591650541db61fa",
+    "scripts/server/phone69_stride_sweep.py": "69f528b5f6fb21e56a1e7e0258dbfd262dbd688988732cadc34990d46f1dc426",
+    "scripts/server/probe_phone69_training_memory.py": "2590069b4fc68b8be55683ff0b28726858ce96920a2aea590c778f8bffac066e",
+    "scripts/server/train_phone69_460h_one.py": "07316eaa5dac2775668dbd4f3e4e9bfc81c8ec5db55ab65841c40ce262c33ca0",
+    "train.py": "e551b0550a4269c507c1618287cf53a36d3194c735a9fc94f9b977f00e1fba64"
+  },
+  "integrity_ok": true,
+  "local_validation": "artifacts/runs/phone69_placement_supplement_20261112/local_validation.json",
+  "calibration_protocol": {
+    "minimum_confirmation_optimizer_steps": 24,
+    "batch_search": {
+      "initial": 5000,
+      "minimum": 1000,
+      "maximum": 100000,
+      "quantum": 100,
+      "growth": 1.4,
+      "max_reserved_fraction": 0.96
+    },
+    "fresh_optimizer_steps_only": true,
+    "discard_calibration_weights": true,
+    "backend": "reference",
+    "no_automatic_training_retry": true
+  },
+  "reused_models_verified": [
+    {
+      "name": "layer5",
+      "action": "reuse",
+      "positions": [
+        5
+      ],
+      "status": "trained",
+      "epoch": 50,
+      "global_step": 165000,
+      "budget": 5000,
+      "training_commit": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
+      "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "config_sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+      "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/val-none-epoch=45-step=151700.ckpt",
+      "best_checkpoint_sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c",
+      "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=165000-03d646231711.ckpt",
+      "epoch_boundary_metadata": {
+        "previous_max_token_limit": 5000,
+        "resume_global_step": 165000,
+        "resume_completed_epochs": 50,
+        "resume_at_epoch_boundary": true
+      }
+    },
+    {
+      "name": "layer7",
+      "action": "reuse",
+      "positions": [
+        7
+      ],
+      "status": "trained",
+      "epoch": 50,
+      "global_step": 126550,
+      "budget": 6500,
+      "training_commit": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
+      "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+      "config_sha256": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca",
+      "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/val-none-epoch=46-step=118826.ckpt",
+      "best_checkpoint_sha256": "c452301ca02f49a42b544cfdb7db26d893069fcff73adfbe890ed3798c9d165b",
+      "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=126550-5c4a663a9583.ckpt",
+      "epoch_boundary_metadata": {
+        "previous_max_token_limit": 6500,
+        "resume_global_step": 126550,
+        "resume_completed_epochs": 50,
+        "resume_at_epoch_boundary": true
+      }
+    },
+    {
+      "name": "mel_layer5",
+      "action": "reuse",
+      "positions": [
+        0,
+        5
+      ],
+      "status": "trained",
+      "epoch": 50,
+      "global_step": 90986,
+      "budget": 11050,
+      "training_commit": "a05b80c3aacff5417b25bedca818c8054e1cb67d",
+      "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml",
+      "config_sha256": "2b9909965c50808e96ee5546a3f53eede597e415449ae79bb845b60ab1728192",
+      "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_resume_b11050/checkpoints/val-none-epoch=49-step=89901.ckpt",
+      "best_checkpoint_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+      "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_resume_b11050/checkpoints/epoch-boundary-epoch=50-step=90986-15e8878e93b7.ckpt",
+      "epoch_boundary_metadata": {
+        "previous_max_token_limit": 11050,
+        "resume_global_step": 90986,
+        "resume_completed_epochs": 50,
+        "resume_at_epoch_boundary": true
+      }
+    },
+    {
+      "name": "layers2_5_n3",
+      "action": "reuse",
+      "positions": [
+        2,
+        5
+      ],
+      "status": "trained",
+      "epoch": 50,
+      "global_step": 141382,
+      "budget": 6000,
+      "training_commit": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
+      "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+      "config_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
+      "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
+      "best_checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
+      "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=141382-e74a7a871dc9.ckpt",
+      "epoch_boundary_metadata": {
+        "previous_max_token_limit": 6000,
+        "resume_global_step": 141382,
+        "resume_completed_epochs": 50,
+        "resume_at_epoch_boundary": true
+      }
+    }
+  ],
+  "pending_training": [
+    "layer1",
+    "layer3",
+    "layer9",
+    "mel_layer3",
+    "mel_layer7",
+    "layers2_7_n3"
+  ],
+  "latest_first_probe": {
+    "status": "preparing",
+    "budget": 5000,
+    "pid": 5049
+  },
+  "note": "The first probe budget is not the final selected budget. Future status comes from actual queue/report/run files; no duplicate controller is launched.",
+  "launch_receipt": {
+    "pid": 5031,
+    "commit": "8ef8eef970362ecdaa184a58d61460ec3f4d1c3c",
+    "branch": "main",
+    "manifest": "configs/phone69_placement_supplement_20261112.json",
+    "controller_log": "/test21/conformer-rnnt-asr/output/phone69_460h_placement_supplement_20261112_launcher/controller.log"
+  },
+  "latest_observed_state": {
+    "status": "calibrating",
+    "controller_pid": 5031,
+    "code_commit": "8ef8eef970362ecdaa184a58d61460ec3f4d1c3c",
+    "server_utc": "2026-11-12T01:29:56.111728+00:00",
+    "experiment": "layer1",
+    "positions": [
+      1
+    ],
+    "budget": 8300,
+    "confirmation": true,
+    "calibration_pid": 5379,
+    "report": "output/phone69_460h_placement_supplement_20261112/layer1_b8300_confirm_009.json"
+  },
+  "latest_observed_server_utc": "2026-11-12T01:31:02.982140+00:00",
+  "calibration_history_at_snapshot": [
+    {
+      "name": "layer1_b5000_search_001",
+      "status": "passed",
+      "budget": 5000,
+      "optimizer_steps": 6,
+      "peak_reserved_GiB": 50.537109375
+    },
+    {
+      "name": "layer1_b7000_search_002",
+      "status": "passed",
+      "budget": 7000,
+      "optimizer_steps": 6,
+      "peak_reserved_GiB": 68.0
+    },
+    {
+      "name": "layer1_b8300_confirm_009",
+      "status": "running",
+      "budget": 8300,
+      "optimizer_steps": 15,
+      "peak_reserved_GiB": 74.21484375
+    },
+    {
+      "name": "layer1_b8400_confirm_008",
+      "status": "failed",
+      "budget": 8400,
+      "optimizer_steps": 41,
+      "peak_reserved_GiB": 76.07421875
+    },
+    {
+      "name": "layer1_b8400_search_004",
+      "status": "passed",
+      "budget": 8400,
+      "optimizer_steps": 7,
+      "peak_reserved_GiB": 75.32421875
+    },
+    {
+      "name": "layer1_b8500_search_007",
+      "status": "failed",
+      "budget": 8500,
+      "optimizer_steps": 2,
+      "peak_reserved_GiB": 77.390625
+    },
+    {
+      "name": "layer1_b8700_search_006",
+      "status": "failed",
+      "budget": 8700,
+      "optimizer_steps": 2,
+      "peak_reserved_GiB": 77.919921875
+    },
+    {
+      "name": "layer1_b9100_search_005",
+      "status": "unsafe_joint",
+      "budget": 9100,
+      "optimizer_steps": 0,
+      "peak_reserved_GiB": null
+    },
+    {
+      "name": "layer1_b9800_search_003",
+      "status": "unsafe_joint",
+      "budget": 9800,
+      "optimizer_steps": 0,
+      "peak_reserved_GiB": null
+    }
+  ],
+  "speaking_rate_aggregation_verified": {
+    "models": 10,
+    "utterances_per_model": 2620,
+    "independent_reaggregation_byte_match": true,
+    "no_model_inference": true,
+    "report": "artifacts/research/phone69_supplementary_rate_groups_20261112/REPORT.md"
+  },
+  "paper_build_record": "papers/extremafuse_acl2027/build_20261112.json"
+}

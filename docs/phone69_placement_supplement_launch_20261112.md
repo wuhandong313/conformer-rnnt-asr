@@ -19,6 +19,6 @@
 
 原四组在服务器均已确认trained、epoch50、best存在；冻结配置、本地best checkpoint、全量逐句CSV哈希已核对。E08历史预算4000→6000，E10为6500→11050，保留这些训练历史，不声称与自动校准的新组严格batch或训练暴露匹配。
 
-软件检查仅在本地进行：现有层位回归12项通过，六个完整新模型的层位、参数量及有限前后向通过。服务器仅运行获授权的真实数据batch校准和正式训练，不运行软件测试。论文语速比较复用既有完整预测与MAC档案；新增组未完成前保持pending，不填写估计值。
+软件检查仅在本地进行：现有层位回归12项及队列安全检查8项通过，六个完整新模型的层位、参数量及有限前后向通过。服务器仅运行获授权的真实数据batch校准和正式训练，不运行软件测试。论文语速比较复用既有完整预测与MAC档案；新增组未完成前保持pending，不填写估计值。
 
-启动状态及实际部署commit、PID、首组校准记录将在启动核实后记入`artifacts/runs/phone69_placement_supplement_20261112/startup.json`。
+队列已于2026-11-12启动，部署commit为`8ef8eef970362ecdaa184a58d61460ec3f4d1c3c`，控制器PID5031；四个复用组已实际通过完整边界与最佳checkpoint核验，首组L1正在进行batch校准。初始校准预算5000不是最终选定预算。后续PID及进展以`queue_state.json`、校准报告、selected配置和各实验run.json核对。[启动档案](../artifacts/runs/phone69_placement_supplement_20261112/startup.json)记录当时快照，后续只含论文或归档的HEAD变化不替代该实际启动commit。

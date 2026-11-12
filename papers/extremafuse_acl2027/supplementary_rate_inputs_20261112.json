@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "baseline_id": "E05",
+  "decile_directory": "speech_rate_analysis/deciles",
+  "protocol": {
+    "subset": "test-clean",
+    "dtype": "FP32",
+    "batch": 1,
+    "beam": 20,
+    "threads": 4,
+    "interop_threads": 1,
+    "data_workers": 0
+  },
+  "models": [
+    {
+      "id": "E01",
+      "name": "ExtremaFuse-L2",
+      "archive_id": "E02",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E02/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E02/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E02.json"
+    },
+    {
+      "id": "E02",
+      "name": "ExtremaFuse-Mel",
+      "archive_id": "E05",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E05/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E05/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E05.json"
+    },
+    {
+      "id": "E03",
+      "name": "ExtremaFuse-L5",
+      "archive_id": "E06",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E06.json"
+    },
+    {
+      "id": "E04",
+      "name": "ExtremaFuse-L7",
+      "archive_id": "E07",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E07/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E07/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E07.json"
+    },
+    {
+      "id": "E05",
+      "name": "Stride4",
+      "archive_id": "E09",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E09/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E09/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E09.json"
+    },
+    {
+      "id": "E06",
+      "name": "ExtremaFuse-Mel-L5",
+      "archive_id": "E10",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E10.json"
+    },
+    {
+      "id": "legacy_L2_L5_n3",
+      "name": "ExtremaFuse-L2-L5-neighborhood3",
+      "archive_id": "E08",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E08.json"
+    },
+    {
+      "id": "fixed_stride1",
+      "name": "Stride1 projection128",
+      "predictions_csv": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/attempt_01/result.json"
+    },
+    {
+      "id": "fixed_stride2",
+      "name": "Stride2 projection128",
+      "predictions_csv": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/attempt_01/result.json"
+    },
+    {
+      "id": "fixed_stride8",
+      "name": "Stride8 projection128",
+      "predictions_csv": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/attempt_01/result.json"
+    }
+  ],
+  "pending_models": [
+    "L1",
+    "L3",
+    "L9",
+    "Mel+L3",
+    "Mel+L7",
+    "L2+L7"
+  ]
+}

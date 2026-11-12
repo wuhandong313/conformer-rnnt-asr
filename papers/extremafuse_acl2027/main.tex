@@ -148,7 +148,7 @@ Two comparisons remain open. On test-other we will test whether E06 stays within
 \subsection{The cost of the second fusion stage}
 To examine the second compression itself, the relevant reference is the Mel-only system (E02). Across test-clean, both E02 and E06 produce 764,950 Mel-stage outputs. E06 reduces this to 307,404 steps after layer~5, removing a further 59.81\%. The final sequence retains 15.79\% of the original Mel frames. Computation including the decoder falls from 0.38207 to 0.23252 GMAC per audio second, a reduction of 39.14\%.
 
-E06 makes 208 more errors than E02. PER increases from 5.5782\% to 5.6882\%, a difference of $+0.110$ percentage points (paired 95\% interval $[-0.011,+0.232]$). These are separately trained systems. To test how much earlier the additional reduction can occur under the same computation budget, Appendix~\ref{app:placement} reserves one paired comparison with the second stage after layer~2.
+E06 makes 208 more errors than E02. PER increases from 5.5782\% to 5.6882\%, a difference of $+0.110$ percentage points (paired 95\% interval $[-0.011,+0.232]$). These are separately trained systems. Appendix~\ref{app:placement} extends this comparison by moving the second Mel-family stage to layer~3 or~7, while retaining the completed Mel-plus-layer-5 system.
 
 \subsection{Window coverage and a matched-length intervention}
 \label{sec:weights}
@@ -233,28 +233,61 @@ All systems use 16 kHz audio, 80 Mel bins and a 10 ms frame hop. Training uses A
 \label{app:diagnostics}
 \subsection{Testing early placements under the computation budget}
 \label{app:placement}
-The stride-one, layer-2-only system (E01) uses 0.48637 GMAC per audio second on test-clean. This is 52.47\% of E05's total. Table~\ref{tab:early} reserves two early placements for distinct questions. A layer-1-only run would test a new one-stage candidate against both E01 and E05. A Mel-plus-layer-2 run could be compared with E01 to examine the addition of Mel fusion, and with E06 to examine moving the second module forward. In the latter comparison, layers~3 through~5 would also process the shortened sequence.
+The stride-one, layer-2-only system (E01) uses 0.48637 GMAC per audio second on test-clean, or 52.47\% of E05's total. We extend the placement study with the prespecified grid in Table~\ref{tab:early}. Completed placements are reused rather than trained again. New runs move the fusion sites in the corresponding reference recipe, preserving the backbone, fusion rule, optimization settings, seed and 50-epoch target. They use independently calibrated phone-token batch budgets; actual update counts and validation histories will therefore be reported rather than described as matched optimization exposure.
 
 \begin{table}[t]
 \centering
 \small
-\begin{tabular}{@{}lrrr@{}}
+\begin{tabular}{@{}lll@{}}
 \toprule
-Fusion site(s) & PER (\%) & GMAC/s & Ratio/E05\\
+Family & Fusion site(s) & Status\\
 \midrule
-Layer 2 (E01) & 5.5141 & 0.48637 & 0.525\\
-Mel + layer 5 & 5.6882 & 0.23252 & 0.251\\
+One stage & Layers 1, 3, 9 & Pending\\
+One stage & Layers 5, 7 & Reuse E03, E04\\
+Two stages & Mel + layers 3, 7 & Pending\\
+Two stages & Mel + layer 5 & Reuse E06\\
+Two stages & Layers 2 + 7 & Pending\\
+Two stages & Layers 2 + 5 & Reuse archive E08\\
 \midrule
-Layer 1 only & -- & -- & --\\
-Mel + layer 2 & -- & -- & --\\
+Reference & Layer 2; Mel only & Reuse E01, E02\\
 \bottomrule
 \end{tabular}
-\caption{Early-placement comparisons on test-clean. E01 and E06 are measured on the full corpus. Dashes reserve optional experiments. A major-MAC ratio of 1 is the baseline computation budget.}
+\caption{Supplementary placement grid. Layer numbers identify global Conformer outputs; ``Mel'' is the input-feature site. Pending runs have no reported scores. The layers-2-plus-5/7 family uses a hard three-frame neighborhood at its first stage and learned five-frame fusion at its second stage. Single-stage and Mel-plus-layer runs use learned five-frame fusion. Archive IDs remain distinct from paper IDs.}
 \label{tab:early}
 \end{table}
 
-Both proposed runs use stride one and a 128-dimensional projection and encoder. Each would follow the corresponding reference training recipe, with the actual updates recorded. We would report stage input and output counts, paired PER and full-corpus major MACs, including any over-budget result. Candidate selection would use the E05-relative computation budget on dev-clean before confirmation on test-other.
-% FILL optional early placement only: for the single-stage question compare layer 1 with E01 and E05. For the two-stage question compare Mel + layer 2 with E01 and E06. Record held-out results only for frozen comparisons.
+All supplementary adaptive runs use stride one and a 128-dimensional projection and encoder. We will report stage input and output counts, corpus PER and full-corpus major MACs, including any over-budget result. The historical layers-2-plus-5 reference retains its recorded batch-resume history and its hard-first, learned-second fusion rules, and is kept separate from the Mel family. Candidate selection uses the E05-relative computation budget on dev-clean before confirmation on an independent split.
+% FILL supplementary placements only after strict 50-epoch completion and full-corpus PER/MAC verification: L1, L3, L9, Mel+L3, Mel+L7, L2+L7. Do not repeat L5, L7, Mel+L5 or L2+L5 training.
+
+\subsection{Extending the natural speaking-rate comparison}
+We reuse the frozen test-clean decile membership for every completed system: deciles 1--3 are slow, 4--7 middle and 8--10 fast, containing 786, 1,048 and 786 utterances respectively. The labels describe natural reference-phone rate over the full recording, including pauses; no audio is time-stretched. Within a group, PER divides total phone errors by total reference phones, and major GMAC per audio second divides total counted operations by total audio duration. Encoder/compression, predictor and joiner costs remain separate. Existing predictions and completed per-utterance counts are aggregated directly; completed systems are neither retrained nor decoded again for this analysis.
+
+Table~\ref{tab:rateextended} reports the ten already completed systems. The supplementary layer grid will enter these same groups after its full-corpus evaluations are verified. These test-clean comparisons are descriptive and conditional on the selected checkpoints. New paired uncertainty intervals and a fast-minus-slow interaction contrast remain to be computed; independent confirmation requires thresholds frozen on dev-clean. Point estimates alone do not establish a rate-specific advantage.
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+System & \multicolumn{2}{c}{Slow} & \multicolumn{2}{c}{Middle} & \multicolumn{2}{c}{Fast}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+& PER (\%) & GMAC/s & PER (\%) & GMAC/s & PER (\%) & GMAC/s\\
+\midrule
+Layer 2 (E01) & 5.5401 & 0.470140 & 5.2628 & 0.491895 & 5.8027 & 0.491566\\
+Mel only (E02) & 5.8459 & 0.367544 & 5.3505 & 0.384496 & 5.7102 & 0.390297\\
+Layer 5 (E03) & 4.8793 & 0.602607 & 4.6066 & 0.634487 & 4.9384 & 0.629924\\
+Layer 7 (E04) & 5.0568 & 0.677281 & 4.6631 & 0.716562 & 4.9934 & 0.706431\\
+Stride4 (E05) & 5.9142 & 0.917053 & 5.3469 & 0.930294 & 6.1279 & 0.930231\\
+Mel + layer 5 (E06) & 5.9497 & 0.222101 & 5.4046 & 0.233596 & 5.8909 & 0.239352\\
+Layers 2 + 5 (archive E08) & 5.5319 & 0.545851 & 5.1859 & 0.569498 & 5.6452 & 0.565460\\
+Stride1, projection128 & 5.1524 & 0.986788 & 4.8217 & 1.055389 & 5.0945 & 1.054391\\
+Stride2, projection128 & 5.3490 & 0.838819 & 4.6306 & 0.868587 & 4.9832 & 0.869017\\
+Stride8, projection128 & 5.4554 & 1.303961 & 6.0728 & 1.313081 & 8.0544 & 1.316922\\
+\bottomrule
+\end{tabular}
+\caption{Natural speaking-rate groups on the frozen full test-clean set. Each group reports corpus PER and total major GMAC per second of its input audio, including the actual beam-20 predictor/joiner path. Slow/middle/fast contain 786/1,048/786 utterances. All ten systems reuse completed predictions and full counts; no additional training or decoding was performed for this table. Archive E08 uses hard three-frame neighborhoods first and learned five-frame fusion second. These are descriptive point estimates for fixed checkpoints with different training histories and capacities, not causal estimates of layer or rate effects.}
+\label{tab:rateextended}
+\end{table*}
+% FILL new-placement rate rows only after full verification: L1, L3, L9, Mel+L3, Mel+L7, L2+L7. Ten-decile details remain in the artifact; no held-out rate claim is established.
 
 \subsection{Selection of the illustrated excerpt}
 For the weight diagnostic we select ten utterances per test-clean speaking-rate decile using a deterministic hash of the utterance identifier. Figure~\ref{fig:weights} shows a 0.64-second window centered at the midpoint of the lowest-hash eligible utterance in decile five (at least 200 raw frames). The choice therefore does not use recognition errors or the appearance of the weights.
