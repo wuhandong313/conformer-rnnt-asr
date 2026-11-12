@@ -215,11 +215,13 @@ def inventory(extra_calibration=None):
     triple = read(TRIPLE / 'result.json')
     extra = read(extra_calibration) if extra_calibration else None
     if extra and (extra['checkpoint_sha256'] != triple['checkpoint_sha256']
-                  or extra['config_sha256'] != sha(TRIPLE / 'config.yaml')):
+                  or extra['config_sha256'] != sha(TRIPLE / 'config.yaml')
+                  or extra['manifest_sha256'] != sha(TRIPLE / 'manifest.json')
+                  or extra.get('status') != 'complete'):
         raise ValueError('Three-stage calibration uses another checkpoint/config')
     entries.append(dict(id='E11', paper_id=None, name='placement_mel_layer5_layer8_stride1',
                         config_path=TRIPLE / 'config.yaml', checkpoint_sha256=triple['checkpoint_sha256'],
-                        rows=extra['rows'] if extra else None, source=Path(extra_calibration) if extra else None,
+                        rows=extra['rows'] if extra else None, source=Path(extra_calibration).resolve() if extra else None,
                         per_percent=100 * triple['corpus_PER']))
     for item in read(ROOT / 'configs/phone69_placement_supplement_20261112.json')['experiments']:
         if item['action'] == 'train':
@@ -235,6 +237,8 @@ def inventory(extra_calibration=None):
         if entry['rows'] is not None:
             if [r['uid'] for r in entry['rows']] != uids:
                 raise ValueError('Calibration must cover the full frozen corpus in order')
+            if any(r.get('input_mel_frames', n) != n for r, n in zip(entry['rows'], raw)):
+                raise ValueError('Calibration input lengths differ from the frozen corpus')
             entry['rates'] = calibrate(entry['model'], raw, entry['rows'])
     return entries, manifest, raw
 
@@ -251,7 +255,8 @@ def generate(durations, extra_calibration=None, target_phones=None):
             record.update(status='pending_stage_retention', reason='No full-corpus stage lengths for this checkpoint', results=[])
         else:
             source = entry['source']
-            record.update(status='calibrated_theory', calibration_source=str(source.relative_to(ROOT)),
+            source_name = source.relative_to(ROOT) if source.is_relative_to(ROOT) else source
+            record.update(status='calibrated_theory', calibration_source=str(source_name),
                           calibration_sha256=sha(source), calibration_utterances=2620,
                           stage_rates=entry['rates'], results=[])
             for duration in durations:
@@ -280,11 +285,49 @@ def generate(durations, extra_calibration=None, target_phones=None):
         models.append(record)
     return dict(schema=1, method='fixed-duration structure with pooled stage retention',
                 manifest_sha256=sha(ARCHIVE / 'manifest.json'), script_sha256=sha(__file__),
-                primary_duration_seconds=30, durations_seconds=durations, calibration_subset='test-clean',
+                primary_duration_seconds=30 if 30 in durations else durations[0],
+                durations_seconds=durations, calibration_subset='test-clean',
                 calibration_utterances=2620, calibration_audio_seconds=seconds,
                 common_reference_phones=189023, target_phones_override=target_phones,
                 decoder='prescribed single monotone path, U+1 cached predictor tokens, T_encoder+U joiner rows; not beam20',
                 models=models), table
+
+
+def write_report(path, report):
+    duration = report['primary_duration_seconds']
+    text = [f'# 固定 {duration:g} 秒输入的理论主要 MAC', '',
+            '采用实测逐层保留率校准固定长度公式；不是对整集历史 MAC 作线性缩放。', '',
+            f'输入为 {mel_frames(duration)} 个80维Mel帧，batch 1。主指标为编码器＋压缩层。',
+            '单次乘加计1 MAC，GMAC为十亿次乘加；每秒列为固定长度MAC除以该时长。', '',
+            '| 原归档ID | 论文ID | 实验 | 主干宽度 | 保留率（位置:输出/输入） | 编码器＋压缩 GMAC | GMAC/音频秒 | 原始全量 PER |',
+            '|---|---|---|---:|---|---:|---:|---:|']
+    for model in report['models']:
+        if not model['results']:
+            continue
+        r = next(r for r in model['results'] if r['duration_seconds'] == duration)
+        rates = '；'.join(f"L{s['after_layer']}:{s['retention']:.6f}" for s in model['stage_rates']) or '无自适应压缩'
+        width = model['model']['time_reduction_input_dim'] * model['model']['time_reduction_stride']
+        text.append(f"| {model['id']} | {model['paper_id'] or '—'} | {model['name']} | {width} | {rates} | "
+                    f"{r['encoder_compression_gmac']:.6f} | {r['encoder_compression_gmac_per_audio_s']:.6f} | {model['per_percent']:.4f}% |")
+    text += ['', 'PER来自原始test-clean全部2620句的CPU/FP32/batch1/beam20评估，未裁切成固定时长重算。',
+             'L0代表Mel处；每层保留率以该层输入为分母。理论长度使用逐层四舍五入（半数向上）及stride向上取整。', '',
+             '## 解码参考与范围', '',
+             '汇总CSV另外列出规定单路径的predictor、joiner和合计，使用所有模型一致的目标音素数。',
+             '它不是beam20执行成本；主要结果不把该参考路径与实际beam搜索混为同一口径。',
+             '计数包含线性、卷积、注意力矩阵乘法、输入输出投影、融合MLP、相邻点积和融合加权和；',
+             '不含特征提取、归一化、softmax、激活、峰谷比较、排序、访存及训练。', '',
+             '## 待校准项', '']
+    for m in report['models']:
+        if not m['results']:
+            text.append(f"- {m['id']} / {m['name']}：没有对应checkpoint的完整逐层帧数，不填写数值。")
+    text += ['', '## 复现与来源', '',
+             '- [算法、公式与论文时长依据](../../../docs/phone69_fixed_duration_macs.md)',
+             '- [完整结果与逐层长度](results.json)；[所有时长汇总CSV](summary.csv)',
+             '- [Fast Conformer §3.1.1 / 表4](https://arxiv.org/html/2305.05084v4#S3.SS1.SSS1)：30秒、编码器GMAC。',
+             '- [Zipformer 表2](https://arxiv.org/html/2310.11230v4)：30秒、编码器GFLOPs；单位与GMAC分开。', '',
+             '所有已报告保留率来自完整校准集；只由平均保留率代入的理论MAC不等于随机输入MAC的期望。',
+             '旧实验档案、历史实测总GMAC和原论文曲线保留，本表是单独的固定时长结构比较。', '']
+    path.write_text('\n'.join(text))
 
 
 def main():
@@ -303,6 +346,7 @@ def main():
         writer = csv.DictWriter(f, fieldnames=rows[0])
         writer.writeheader()
         writer.writerows(rows)
+    write_report(args.out / 'REPORT.md', report)
     print(json.dumps({'models_calculated': sum(bool(m['results']) for m in report['models']),
                       'pending': [m['id'] for m in report['models'] if not m['results']], 'output': str(args.out)}))
 

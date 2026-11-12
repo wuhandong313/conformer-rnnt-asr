@@ -60,6 +60,8 @@ python -m unittest discover -s tests -p test_theoretical_macs.py
 
 默认输出[结果JSON](../artifacts/research/phone69_fixed_duration_20261112/results.json)、[汇总CSV](../artifacts/research/phone69_fixed_duration_20261112/summary.csv)。没有stage-calibration时E11明确pending。
 
+已完成[14组结果表](../artifacts/research/phone69_fixed_duration_20261112/REPORT.md)，每组包含1／5／10／20／30秒，共70个理论工作点。E11缺失帧数已在家中CPU按其冻结checkpoint补测完整2620句，Mel／L5／L8条件保留率分别为0.392838／0.384232／0.449261；[原始补测记录](../artifacts/research/phone69_fixed_duration_20261112/E11_stage_lengths.json)保留逐层观测与来源哈希。9项本机回归通过，[核验记录](../artifacts/research/phone69_fixed_duration_20261112/verification.json)列明范围和产物哈希。
+
 缺失帧数的本地补测入口为`calibrate_phone69_stage_lengths.py --manifest <冻结manifest> --out <新文件>`：校验checkpoint、配置、源码、统计、词表和音频哈希，使用原CPU/FP32环境，实际观测每层输入帧数及各压缩模块前后长度，覆盖完整2620句。只执行编码器，不执行解码、不计时、不训练。脚本经Git同步到家中电脑后运行，服务器不执行测试或此补测。
 
 公式通过原E01–E10全部26200条逐句记录的6个编码器／压缩MAC分项逐一精确核对；另测试多阶段条件比率、长短句加权、stride取整、Mel先压缩后投影、单帧旁路和规定解码路径。旧PER、计数及时间档案保留原样；本协议结果另存，不能直接覆盖旧beam20总GMAC曲线。

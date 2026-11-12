@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "unit_tests": 9,
+  "archived_encoder_compression_traces_exactly_verified": 26200,
+  "new_home_cpu_encoder_traces_verified": 2620,
+  "calculated_models": 14,
+  "pending_models": 6,
+  "duration_points_per_model": 5,
+  "result_rows": 70,
+  "primary_duration_seconds": 30,
+  "primary_input_frames": 3001,
+  "main_metric": "encoder/compression GMAC per 30-second input",
+  "source_sha256": {
+    "scripts/evaluation/theoretical_phone69_macs.py": "0a998ad2a931b23d157b86fb80077916501cddd6ded9134a78a8f73e941f0cb1",
+    "scripts/evaluation/calibrate_phone69_stage_lengths.py": "5cbe849d790dc6bda3d3c694f33807c761434cc6bccd4bcb522fca93a853a2b8",
+    "tests/test_theoretical_macs.py": "62da97ae2f1f3c910f325dc2164a147471c5b6fc03fae201c6375d07fe78dc3e",
+    "artifacts/research/phone69_fixed_duration_20261112/E11_stage_lengths.json": "848e651373be702fd61af1108d5bda57ac1043901698d0ec20f834942013403a",
+    "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+    "artifacts/research/phone69_fixed_duration_20261112/summary.csv": "1aafe6708a016ab145f12409f2a04a6f363ad943dcd1ce4d16f31ca7232f0c3e",
+    "artifacts/research/phone69_fixed_duration_20261112/REPORT.md": "84f16d985f9870c0ed2d3399133eb5ae803b5b1556bc62e2fef70fafff42cb78"
+  },
+  "server_tests_run": false,
+  "training_started": false,
+  "python_version": "3.9.6"
+}

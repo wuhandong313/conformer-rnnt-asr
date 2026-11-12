@@ -1,0 +1,4342 @@
+{
+  "schema": 1,
+  "method": "fixed-duration structure with pooled stage retention",
+  "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
+  "script_sha256": "0a998ad2a931b23d157b86fb80077916501cddd6ded9134a78a8f73e941f0cb1",
+  "primary_duration_seconds": 30,
+  "durations_seconds": [
+    1,
+    5,
+    10,
+    20,
+    30
+  ],
+  "calibration_subset": "test-clean",
+  "calibration_utterances": 2620,
+  "calibration_audio_seconds": 19452.480625,
+  "common_reference_phones": 189023,
+  "target_phones_override": null,
+  "decoder": "prescribed single monotone path, U+1 cached predictor tokens, T_encoder+U joiner rows; not beam20",
+  "models": [
+    {
+      "id": "E01",
+      "name": "stride4_none",
+      "paper_id": null,
+      "checkpoint_sha256": "856b24c15f7450c4334810728f3681596ee43653ac855e73efddd51cbd47fd3b",
+      "per_percent": 6.128883786629141,
+      "config_sha256": "c781d6b13c3a89ae314562a1b0ea18fda549cf4c771f0fdbd963dc2a18932d83",
+      "config": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E01/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 32,
+        "time_reduction_stride": 4,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "num_layers_block1": 2,
+        "num_layers_block2": 8,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "filter": "none"
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        }
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/research/phone69_460h_compute_20261108/full/E01.json",
+      "calibration_sha256": "7bae630a1858a54454ce6b23003db1b218163c6e5baddfbef79e6b5eed717ad6",
+      "calibration_utterances": 2620,
+      "stage_rates": [],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 101,
+            "layer_frames": [
+              26,
+              26,
+              26,
+              26,
+              26,
+              26,
+              26,
+              26,
+              26,
+              26
+            ],
+            "output_frames": 26,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 99008000,
+            "attention_products": 1730560,
+            "projections": 1110528,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 0.101849088,
+          "encoder_compression_gmac_per_audio_s": 0.101849088,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 645120
+          },
+          "reference_path_total_gmac": 0.10573824,
+          "reference_path_total_gmac_per_audio_s": 0.10573824,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 501,
+            "layer_frames": [
+              126,
+              126,
+              126,
+              126,
+              126,
+              126,
+              126,
+              126,
+              126,
+              126
+            ],
+            "output_frames": 126,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 479808000,
+            "attention_products": 40642560,
+            "projections": 5411328,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 0.525861888,
+          "encoder_compression_gmac_per_audio_s": 0.10517237759999999,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 3136000
+          },
+          "reference_path_total_gmac": 0.543743488,
+          "reference_path_total_gmac_per_audio_s": 0.1087486976,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 1001,
+            "layer_frames": [
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251
+            ],
+            "output_frames": 251,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 955808000,
+            "attention_products": 161282560,
+            "projections": 10787328,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 1.127877888,
+          "encoder_compression_gmac_per_audio_s": 0.1127877888,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 6254080
+          },
+          "reference_path_total_gmac": 1.163328256,
+          "reference_path_total_gmac_per_audio_s": 0.1163328256,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 2001,
+            "layer_frames": [
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501
+            ],
+            "output_frames": 501,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 1907808000,
+            "attention_products": 642562560,
+            "projections": 21539328,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 2.571909888,
+          "encoder_compression_gmac_per_audio_s": 0.1285954944,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 12472320
+          },
+          "reference_path_total_gmac": 2.64218496,
+          "reference_path_total_gmac_per_audio_s": 0.132109248,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 3001,
+            "layer_frames": [
+              751,
+              751,
+              751,
+              751,
+              751,
+              751,
+              751,
+              751,
+              751,
+              751
+            ],
+            "output_frames": 751,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 2859808000,
+            "attention_products": 1443842560,
+            "projections": 32291328,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 4.335941888,
+          "encoder_compression_gmac_per_audio_s": 0.14453139626666667,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 18690560
+          },
+          "reference_path_total_gmac": 4.441041664,
+          "reference_path_total_gmac_per_audio_s": 0.14803472213333332,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "E02",
+      "name": "stride1_cosd_learned_five_frames",
+      "paper_id": "E01",
+      "checkpoint_sha256": "c314db27cc84ebc90c128ad84751d7f4c7b6620ffbc6687c9b579a76d5e91317",
+      "per_percent": 5.514143781444586,
+      "config_sha256": "733b2b28c723c90328f688b1063c425daa8cf424ca617519997ca6891baa5e0f",
+      "config": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E02/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "num_layers_block1": 2,
+        "num_layers_block2": 8,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "detector": {
+            "type": "cosine_diff"
+          },
+          "mixer": {
+            "type": "learned"
+          },
+          "weight_predictor_mode": "five_frames"
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        }
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/research/phone69_460h_compute_20261108/full/E02.json",
+      "calibration_sha256": "7035559cad6b73e7efc70c38609194413cacead93e278e34dd0bcb2c577794d2",
+      "calibration_utterances": 2620,
+      "stage_rates": [
+        {
+          "after_layer": 2,
+          "input_frames": 1947238,
+          "output_frames": 792763,
+          "retention": 0.40712177966946,
+          "reduction": 0.59287822033054,
+          "utterance_ratio_mean": 0.407316854448892,
+          "utterance_ratio_std": 0.015384685816292896,
+          "utterances": 2620
+        }
+      ],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 101,
+            "layer_frames": [
+              101,
+              101,
+              41,
+              41,
+              41,
+              41,
+              41,
+              41,
+              41,
+              41
+            ],
+            "output_frames": 41,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 101,
+                "output_frames": 41
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 201824000,
+            "attention_products": 8665600,
+            "projections": 2377728,
+            "fusion_mlp": 846240,
+            "detector_dots": 12800,
+            "fusion_weighted_sum": 26240
+          },
+          "encoder_compression_gmac": 0.213752608,
+          "encoder_compression_gmac_per_audio_s": 0.213752608,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 913920
+          },
+          "reference_path_total_gmac": 0.21791056,
+          "reference_path_total_gmac_per_audio_s": 0.21791056,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 501,
+            "layer_frames": [
+              501,
+              501,
+              204,
+              204,
+              204,
+              204,
+              204,
+              204,
+              204,
+              204
+            ],
+            "output_frames": 204,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 501,
+                "output_frames": 204
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 1003027200,
+            "attention_products": 213742080,
+            "projections": 11814912,
+            "fusion_mlp": 4210560,
+            "detector_dots": 64000,
+            "fusion_weighted_sum": 130560
+          },
+          "encoder_compression_gmac": 1.232989312,
+          "encoder_compression_gmac_per_audio_s": 0.2465978624,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 4533760
+          },
+          "reference_path_total_gmac": 1.252268672,
+          "reference_path_total_gmac_per_audio_s": 0.2504537344,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 1001,
+            "layer_frames": [
+              1001,
+              1001,
+              408,
+              408,
+              408,
+              408,
+              408,
+              408,
+              408,
+              408
+            ],
+            "output_frames": 408,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 1001,
+                "output_frames": 408
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 2005292800,
+            "attention_products": 853942784,
+            "projections": 23619584,
+            "fusion_mlp": 8421120,
+            "detector_dots": 128000,
+            "fusion_weighted_sum": 261120
+          },
+          "encoder_compression_gmac": 2.891665408,
+          "encoder_compression_gmac_per_audio_s": 0.28916654080000004,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 9067520
+          },
+          "reference_path_total_gmac": 2.929929216,
+          "reference_path_total_gmac_per_audio_s": 0.2929929216,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 2001,
+            "layer_frames": [
+              2001,
+              2001,
+              815,
+              815,
+              815,
+              815,
+              815,
+              815,
+              815,
+              815
+            ],
+            "output_frames": 815,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 2001,
+                "output_frames": 815
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 4006777600,
+            "attention_products": 3410381312,
+            "projections": 47196160,
+            "fusion_mlp": 16821600,
+            "detector_dots": 256000,
+            "fusion_weighted_sum": 521600
+          },
+          "encoder_compression_gmac": 7.481954272,
+          "encoder_compression_gmac_per_audio_s": 0.37409771360000005,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 18099200
+          },
+          "reference_path_total_gmac": 7.557856224,
+          "reference_path_total_gmac_per_audio_s": 0.3778928112,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 3001,
+            "layer_frames": [
+              3001,
+              3001,
+              1222,
+              1222,
+              1222,
+              1222,
+              1222,
+              1222,
+              1222,
+              1222
+            ],
+            "output_frames": 1222,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 3001,
+                "output_frames": 1222
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 6008262400,
+            "attention_products": 7669318144,
+            "projections": 70772736,
+            "fusion_mlp": 25222080,
+            "detector_dots": 384000,
+            "fusion_weighted_sum": 782080
+          },
+          "encoder_compression_gmac": 13.77474144,
+          "encoder_compression_gmac_per_audio_s": 0.459158048,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 27130880
+          },
+          "reference_path_total_gmac": 13.888281536,
+          "reference_path_total_gmac_per_audio_s": 0.4629427178666667,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "E03",
+      "name": "stride2_cosd_learned_five_frames",
+      "paper_id": null,
+      "checkpoint_sha256": "dd2d95921a78963e99b94a5aac23c8e302580c9896d6fb25ce7d855e7480d04c",
+      "per_percent": 6.713468731318412,
+      "config_sha256": "696e16cdb7e91d6089d8b1da227ef1e65235f3ba49cc5ccec233737ab7b1e9d2",
+      "config": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E03/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 64,
+        "time_reduction_stride": 2,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "num_layers_block1": 2,
+        "num_layers_block2": 8,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "detector": {
+            "type": "cosine_diff"
+          },
+          "mixer": {
+            "type": "learned"
+          },
+          "weight_predictor_mode": "five_frames"
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        }
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/research/phone69_460h_compute_20261108/full/E03.json",
+      "calibration_sha256": "2b300ce50946a6eaae45a134b88db335436833eea5c18b6335a3db36d46fa664",
+      "calibration_utterances": 2620,
+      "stage_rates": [
+        {
+          "after_layer": 2,
+          "input_frames": 974266,
+          "output_frames": 390801,
+          "retention": 0.4011235124699004,
+          "reduction": 0.5988764875300996,
+          "utterance_ratio_mean": 0.3998106703020821,
+          "utterance_ratio_std": 0.02014064421844746,
+          "utterances": 2620
+        }
+      ],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 101,
+            "layer_frames": [
+              51,
+              51,
+              20,
+              20,
+              20,
+              20,
+              20,
+              20,
+              20,
+              20
+            ],
+            "output_frames": 20,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 51,
+                "output_frames": 20
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 99769600,
+            "attention_products": 2150912,
+            "projections": 1172480,
+            "fusion_mlp": 412800,
+            "detector_dots": 6400,
+            "fusion_weighted_sum": 12800
+          },
+          "encoder_compression_gmac": 0.103524992,
+          "encoder_compression_gmac_per_audio_s": 0.103524992,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 537600
+          },
+          "reference_path_total_gmac": 0.107306624,
+          "reference_path_total_gmac_per_audio_s": 0.107306624,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 501,
+            "layer_frames": [
+              251,
+              251,
+              101,
+              101,
+              101,
+              101,
+              101,
+              101,
+              101,
+              101
+            ],
+            "output_frames": 101,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 251,
+                "output_frames": 101
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 498848000,
+            "attention_products": 53148160,
+            "projections": 5874688,
+            "fusion_mlp": 2084640,
+            "detector_dots": 32000,
+            "fusion_weighted_sum": 64640
+          },
+          "encoder_compression_gmac": 0.560052128,
+          "encoder_compression_gmac_per_audio_s": 0.11201042559999999,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 2688000
+          },
+          "reference_path_total_gmac": 0.577485728,
+          "reference_path_total_gmac_per_audio_s": 0.11549714559999999,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 1001,
+            "layer_frames": [
+              501,
+              501,
+              201,
+              201,
+              201,
+              201,
+              201,
+              201,
+              201,
+              201
+            ],
+            "output_frames": 201,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 501,
+                "output_frames": 201
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 993888000,
+            "attention_products": 211253760,
+            "projections": 11711488,
+            "fusion_mlp": 4148640,
+            "detector_dots": 64000,
+            "fusion_weighted_sum": 128640
+          },
+          "encoder_compression_gmac": 1.221194528,
+          "encoder_compression_gmac_per_audio_s": 0.1221194528,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 5358080
+          },
+          "reference_path_total_gmac": 1.255748896,
+          "reference_path_total_gmac_per_audio_s": 0.1255748896,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 2001,
+            "layer_frames": [
+              1001,
+              1001,
+              402,
+              402,
+              402,
+              402,
+              402,
+              402,
+              402,
+              402
+            ],
+            "output_frames": 402,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 1001,
+                "output_frames": 402
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 1987014400,
+            "attention_products": 843989504,
+            "projections": 23417856,
+            "fusion_mlp": 8297280,
+            "detector_dots": 128000,
+            "fusion_weighted_sum": 257280
+          },
+          "encoder_compression_gmac": 2.86310432,
+          "encoder_compression_gmac_per_audio_s": 0.143155216,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 10698240
+          },
+          "reference_path_total_gmac": 2.931605312,
+          "reference_path_total_gmac_per_audio_s": 0.14658026559999998,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 3001,
+            "layer_frames": [
+              1501,
+              1501,
+              602,
+              602,
+              602,
+              602,
+              602,
+              602,
+              602,
+              602
+            ],
+            "output_frames": 602,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 1501,
+                "output_frames": 602
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 2977094400,
+            "attention_products": 1895739904,
+            "projections": 35091456,
+            "fusion_mlp": 12425280,
+            "detector_dots": 192000,
+            "fusion_weighted_sum": 385280
+          },
+          "encoder_compression_gmac": 4.92092832,
+          "encoder_compression_gmac_per_audio_s": 0.164030944,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 16020480
+          },
+          "reference_path_total_gmac": 5.023358016,
+          "reference_path_total_gmac_per_audio_s": 0.1674452672,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "E04",
+      "name": "stride4_cosd_learned_five_frames",
+      "paper_id": null,
+      "checkpoint_sha256": "e00b5dd7bf64eb3eafb23c2c6f8a8a11578bef3b90c1c49cf7ca795ab10ef494",
+      "per_percent": 7.608068859345159,
+      "config_sha256": "752ea4b568f2e61dd839ff378218b623910e4c2f6e7b35bed43314b2dfa909b9",
+      "config": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E04/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 32,
+        "time_reduction_stride": 4,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "num_layers_block1": 2,
+        "num_layers_block2": 8,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "detector": {
+            "type": "cosine_diff"
+          },
+          "mixer": {
+            "type": "learned"
+          },
+          "weight_predictor_mode": "five_frames"
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        }
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/research/phone69_460h_compute_20261108/full/E04.json",
+      "calibration_sha256": "54e228a997d81b4bdfee8159d4418d4b8425967b4798c8b94a499d96aabed17b",
+      "calibration_utterances": 2620,
+      "stage_rates": [
+        {
+          "after_layer": 2,
+          "input_frames": 487781,
+          "output_frames": 195765,
+          "retention": 0.4013378954899842,
+          "reduction": 0.5986621045100158,
+          "utterance_ratio_mean": 0.3969734517887354,
+          "utterance_ratio_std": 0.02918738870019261,
+          "utterances": 2620
+        }
+      ],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 101,
+            "layer_frames": [
+              26,
+              26,
+              10,
+              10,
+              10,
+              10,
+              10,
+              10,
+              10,
+              10
+            ],
+            "output_frames": 10,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 26,
+                "output_frames": 10
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 50265600,
+            "attention_products": 550912,
+            "projections": 586240,
+            "fusion_mlp": 206400,
+            "detector_dots": 3200,
+            "fusion_weighted_sum": 6400
+          },
+          "encoder_compression_gmac": 0.051618752,
+          "encoder_compression_gmac_per_audio_s": 0.051618752,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 358400
+          },
+          "reference_path_total_gmac": 0.055221184,
+          "reference_path_total_gmac_per_audio_s": 0.055221184,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 501,
+            "layer_frames": [
+              126,
+              126,
+              51,
+              51,
+              51,
+              51,
+              51,
+              51,
+              51,
+              51
+            ],
+            "output_frames": 51,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 126,
+                "output_frames": 51
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 251328000,
+            "attention_products": 13455360,
+            "projections": 2953728,
+            "fusion_mlp": 1052640,
+            "detector_dots": 16000,
+            "fusion_weighted_sum": 32640
+          },
+          "encoder_compression_gmac": 0.268838368,
+          "encoder_compression_gmac_per_audio_s": 0.0537676736,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 1792000
+          },
+          "reference_path_total_gmac": 0.285375968,
+          "reference_path_total_gmac_per_audio_s": 0.057075193600000004,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 1001,
+            "layer_frames": [
+              251,
+              251,
+              101,
+              101,
+              101,
+              101,
+              101,
+              101,
+              101,
+              101
+            ],
+            "output_frames": 101,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 251,
+                "output_frames": 101
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 498848000,
+            "attention_products": 53148160,
+            "projections": 5872128,
+            "fusion_mlp": 2084640,
+            "detector_dots": 32000,
+            "fusion_weighted_sum": 64640
+          },
+          "encoder_compression_gmac": 0.560049568,
+          "encoder_compression_gmac_per_audio_s": 0.0560049568,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 3566080
+          },
+          "reference_path_total_gmac": 0.592811936,
+          "reference_path_total_gmac_per_audio_s": 0.059281193600000004,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 2001,
+            "layer_frames": [
+              501,
+              501,
+              201,
+              201,
+              201,
+              201,
+              201,
+              201,
+              201,
+              201
+            ],
+            "output_frames": 201,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 501,
+                "output_frames": 201
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 993888000,
+            "attention_products": 211253760,
+            "projections": 11708928,
+            "fusion_mlp": 4148640,
+            "detector_dots": 64000,
+            "fusion_weighted_sum": 128640
+          },
+          "encoder_compression_gmac": 1.221191968,
+          "encoder_compression_gmac_per_audio_s": 0.0610595984,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 7096320
+          },
+          "reference_path_total_gmac": 1.28609104,
+          "reference_path_total_gmac_per_audio_s": 0.064304552,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 3001,
+            "layer_frames": [
+              751,
+              751,
+              301,
+              301,
+              301,
+              301,
+              301,
+              301,
+              301,
+              301
+            ],
+            "output_frames": 301,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 751,
+                "output_frames": 301
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 1488928000,
+            "attention_products": 474319360,
+            "projections": 17545728,
+            "fusion_mlp": 6212640,
+            "detector_dots": 96000,
+            "fusion_weighted_sum": 192640
+          },
+          "encoder_compression_gmac": 1.987294368,
+          "encoder_compression_gmac_per_audio_s": 0.0662431456,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 10626560
+          },
+          "reference_path_total_gmac": 2.084330144,
+          "reference_path_total_gmac_per_audio_s": 0.06947767146666667,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "E05",
+      "name": "placement_mel_stride1",
+      "paper_id": "E02",
+      "checkpoint_sha256": "5630172734bcc316161794fe7168045376a6b47c94dc8fe8f30285ed5142e6a0",
+      "per_percent": 5.578157155478434,
+      "config_sha256": "584a45b39917382123fd4116356f77ebc13eb94f1beb0c3652c3fd611b5e01a3",
+      "config": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E05/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "stages": [
+            {
+              "after_layer": 0,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            }
+          ]
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        },
+        "num_layers": 10
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/research/phone69_460h_compute_20261108/full/E05.json",
+      "calibration_sha256": "d57a3a071926a3acefe4eaf855f5a3285c99b5141aace93835a55a16dc83b40f",
+      "calibration_utterances": 2620,
+      "stage_rates": [
+        {
+          "after_layer": 0,
+          "input_frames": 1947238,
+          "output_frames": 764950,
+          "retention": 0.3928384717225116,
+          "reduction": 0.6071615282774885,
+          "utterance_ratio_mean": 0.393071664403057,
+          "utterance_ratio_std": 0.016941888369289275,
+          "utterances": 2620
+        }
+      ],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 40,
+            "layer_frames": [
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40,
+              40
+            ],
+            "output_frames": 40,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 101,
+                "output_frames": 40
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 152320000,
+            "attention_products": 4096000,
+            "projections": 1720320,
+            "fusion_mlp": 518400,
+            "detector_dots": 8000,
+            "fusion_weighted_sum": 16000
+          },
+          "encoder_compression_gmac": 0.15867872,
+          "encoder_compression_gmac_per_audio_s": 0.15867872,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 896000
+          },
+          "reference_path_total_gmac": 0.162818752,
+          "reference_path_total_gmac_per_audio_s": 0.162818752,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 197,
+            "layer_frames": [
+              197,
+              197,
+              197,
+              197,
+              197,
+              197,
+              197,
+              197,
+              197,
+              197
+            ],
+            "output_frames": 197,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 501,
+                "output_frames": 197
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 750176000,
+            "attention_products": 99351040,
+            "projections": 8472576,
+            "fusion_mlp": 2553120,
+            "detector_dots": 40000,
+            "fusion_weighted_sum": 78800
+          },
+          "encoder_compression_gmac": 0.860671536,
+          "encoder_compression_gmac_per_audio_s": 0.17213430719999998,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 4408320
+          },
+          "reference_path_total_gmac": 0.879825456,
+          "reference_path_total_gmac_per_audio_s": 0.17596509119999998,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 393,
+            "layer_frames": [
+              393,
+              393,
+              393,
+              393,
+              393,
+              393,
+              393,
+              393,
+              393,
+              393
+            ],
+            "output_frames": 393,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 1001,
+                "output_frames": 393
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 1496544000,
+            "attention_products": 395389440,
+            "projections": 16902144,
+            "fusion_mlp": 5093280,
+            "detector_dots": 80000,
+            "fusion_weighted_sum": 157200
+          },
+          "encoder_compression_gmac": 1.914166064,
+          "encoder_compression_gmac_per_audio_s": 0.1914166064,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 8798720
+          },
+          "reference_path_total_gmac": 1.952161072,
+          "reference_path_total_gmac_per_audio_s": 0.1952161072,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 786,
+            "layer_frames": [
+              786,
+              786,
+              786,
+              786,
+              786,
+              786,
+              786,
+              786,
+              786,
+              786
+            ],
+            "output_frames": 786,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 2001,
+                "output_frames": 786
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 2993088000,
+            "attention_products": 1581557760,
+            "projections": 33804288,
+            "fusion_mlp": 10186560,
+            "detector_dots": 160000,
+            "fusion_weighted_sum": 314400
+          },
+          "encoder_compression_gmac": 4.619111008,
+          "encoder_compression_gmac_per_audio_s": 0.23095555040000001,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 17579520
+          },
+          "reference_path_total_gmac": 4.69449328,
+          "reference_path_total_gmac_per_audio_s": 0.234724664,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 1179,
+            "layer_frames": [
+              1179,
+              1179,
+              1179,
+              1179,
+              1179,
+              1179,
+              1179,
+              1179,
+              1179,
+              1179
+            ],
+            "output_frames": 1179,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 3001,
+                "output_frames": 1179
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 4489632000,
+            "attention_products": 3558504960,
+            "projections": 50706432,
+            "fusion_mlp": 15279840,
+            "detector_dots": 240000,
+            "fusion_weighted_sum": 471600
+          },
+          "encoder_compression_gmac": 8.114834832,
+          "encoder_compression_gmac_per_audio_s": 0.27049449439999995,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 26360320
+          },
+          "reference_path_total_gmac": 8.227604368,
+          "reference_path_total_gmac_per_audio_s": 0.27425347893333335,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "E06",
+      "name": "placement_layer5_stride1",
+      "paper_id": "E03",
+      "checkpoint_sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c",
+      "per_percent": 4.780899678875058,
+      "config_sha256": "99742e054c65ff6a2e7b2a0a2a175a697bafda81599e49135c75a0ac5c610c6d",
+      "config": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "stages": [
+            {
+              "after_layer": 5,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            }
+          ]
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        },
+        "num_layers": 10
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/research/phone69_460h_compute_20261108/full/E06.json",
+      "calibration_sha256": "484efee7f1511a1db48e74a2eb79db6585d16f3d92ed4c16bb97a31b26f658bf",
+      "calibration_utterances": 2620,
+      "stage_rates": [
+        {
+          "after_layer": 5,
+          "input_frames": 1947238,
+          "output_frames": 767905,
+          "retention": 0.394356005788712,
+          "reduction": 0.605643994211288,
+          "utterance_ratio_mean": 0.3939792809784728,
+          "utterance_ratio_std": 0.01364148804530132,
+          "utterances": 2620
+        }
+      ],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 101,
+            "layer_frames": [
+              101,
+              101,
+              101,
+              101,
+              101,
+              40,
+              40,
+              40,
+              40,
+              40
+            ],
+            "output_frames": 40,
+            "stages": [
+              {
+                "after_layer": 5,
+                "input_frames": 101,
+                "output_frames": 40
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 268464000,
+            "attention_products": 15105280,
+            "projections": 2344960,
+            "fusion_mlp": 825600,
+            "detector_dots": 12800,
+            "fusion_weighted_sum": 25600
+          },
+          "encoder_compression_gmac": 0.28677824,
+          "encoder_compression_gmac_per_audio_s": 0.28677824,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 896000
+          },
+          "reference_path_total_gmac": 0.290918272,
+          "reference_path_total_gmac_per_audio_s": 0.290918272,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 501,
+            "layer_frames": [
+              501,
+              501,
+              501,
+              501,
+              501,
+              198,
+              198,
+              198,
+              198,
+              198
+            ],
+            "output_frames": 198,
+            "stages": [
+              {
+                "after_layer": 5,
+                "input_frames": 501,
+                "output_frames": 198
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 1330896000,
+            "attention_products": 371462400,
+            "projections": 11618304,
+            "fusion_mlp": 4086720,
+            "detector_dots": 64000,
+            "fusion_weighted_sum": 126720
+          },
+          "encoder_compression_gmac": 1.718254144,
+          "encoder_compression_gmac_per_audio_s": 0.34365082880000003,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 4426240
+          },
+          "reference_path_total_gmac": 1.737425984,
+          "reference_path_total_gmac_per_audio_s": 0.3474851968,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 1001,
+            "layer_frames": [
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              395,
+              395,
+              395,
+              395,
+              395
+            ],
+            "output_frames": 395,
+            "stages": [
+              {
+                "after_layer": 5,
+                "input_frames": 1001,
+                "output_frames": 395
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 2657984000,
+            "attention_products": 1482273280,
+            "projections": 23193600,
+            "fusion_mlp": 8152800,
+            "detector_dots": 128000,
+            "fusion_weighted_sum": 252800
+          },
+          "encoder_compression_gmac": 4.17198448,
+          "encoder_compression_gmac_per_audio_s": 0.417198448,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 8834560
+          },
+          "reference_path_total_gmac": 4.210015328,
+          "reference_path_total_gmac_per_audio_s": 0.4210015328,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 2001,
+            "layer_frames": [
+              2001,
+              2001,
+              2001,
+              2001,
+              2001,
+              789,
+              789,
+              789,
+              789,
+              789
+            ],
+            "output_frames": 789,
+            "stages": [
+              {
+                "after_layer": 5,
+                "input_frames": 2001,
+                "output_frames": 789
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 5312160000,
+            "attention_products": 5921948160,
+            "projections": 46344192,
+            "fusion_mlp": 16284960,
+            "detector_dots": 256000,
+            "fusion_weighted_sum": 504960
+          },
+          "encoder_compression_gmac": 11.297498272,
+          "encoder_compression_gmac_per_audio_s": 0.5648749136,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 17633280
+          },
+          "reference_path_total_gmac": 11.372934304,
+          "reference_path_total_gmac_per_audio_s": 0.5686467152000001,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 3001,
+            "layer_frames": [
+              3001,
+              3001,
+              3001,
+              3001,
+              3001,
+              1183,
+              1183,
+              1183,
+              1183,
+              1183
+            ],
+            "output_frames": 1183,
+            "stages": [
+              {
+                "after_layer": 5,
+                "input_frames": 3001,
+                "output_frames": 1183
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 7966336000,
+            "attention_products": 13319027200,
+            "projections": 69494784,
+            "fusion_mlp": 24417120,
+            "detector_dots": 384000,
+            "fusion_weighted_sum": 757120
+          },
+          "encoder_compression_gmac": 21.380416224,
+          "encoder_compression_gmac_per_audio_s": 0.7126805408,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 26432000
+          },
+          "reference_path_total_gmac": 21.49325744,
+          "reference_path_total_gmac_per_audio_s": 0.7164419146666666,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "E07",
+      "name": "placement_layer7_stride1",
+      "paper_id": "E04",
+      "checkpoint_sha256": "c452301ca02f49a42b544cfdb7db26d893069fcff73adfbe890ed3798c9d165b",
+      "per_percent": 4.8602551012310675,
+      "config_sha256": "8d94308e6d24536f29985588c6f1d7409486d453c451128afea8112edb7d1605",
+      "config": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E07/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "stages": [
+            {
+              "after_layer": 7,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            }
+          ]
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        },
+        "num_layers": 10
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/research/phone69_460h_compute_20261108/full/E07.json",
+      "calibration_sha256": "2f9f6ed278b0afa6d7977408c31ad0a53721a29d936fec054c1c077be967090c",
+      "calibration_utterances": 2620,
+      "stage_rates": [
+        {
+          "after_layer": 7,
+          "input_frames": 1947238,
+          "output_frames": 732265,
+          "retention": 0.37605315837098496,
+          "reduction": 0.623946841629015,
+          "utterance_ratio_mean": 0.3767376824914218,
+          "utterance_ratio_std": 0.01403611898449449,
+          "utterances": 2620
+        }
+      ],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 101,
+            "layer_frames": [
+              101,
+              101,
+              101,
+              101,
+              101,
+              101,
+              101,
+              38,
+              38,
+              38
+            ],
+            "output_frames": 38,
+            "stages": [
+              {
+                "after_layer": 7,
+                "input_frames": 101,
+                "output_frames": 38
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 312636800,
+            "attention_products": 19389184,
+            "projections": 2279424,
+            "fusion_mlp": 784320,
+            "detector_dots": 12800,
+            "fusion_weighted_sum": 24320
+          },
+          "encoder_compression_gmac": 0.335126848,
+          "encoder_compression_gmac_per_audio_s": 0.335126848,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 860160
+          },
+          "reference_path_total_gmac": 0.33923104,
+          "reference_path_total_gmac_per_audio_s": 0.33923104,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 501,
+            "layer_frames": [
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              188,
+              188,
+              188
+            ],
+            "output_frames": 188,
+            "stages": [
+              {
+                "after_layer": 7,
+                "input_frames": 501,
+                "output_frames": 188
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 1550236800,
+            "attention_products": 476937984,
+            "projections": 11290624,
+            "fusion_mlp": 3880320,
+            "detector_dots": 64000,
+            "fusion_weighted_sum": 120320
+          },
+          "encoder_compression_gmac": 2.042530048,
+          "encoder_compression_gmac_per_audio_s": 0.4085060096,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 4247040
+          },
+          "reference_path_total_gmac": 2.061522688,
+          "reference_path_total_gmac_per_audio_s": 0.4123045376,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 1001,
+            "layer_frames": [
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              376,
+              376,
+              376
+            ],
+            "output_frames": 376,
+            "stages": [
+              {
+                "after_layer": 7,
+                "input_frames": 1001,
+                "output_frames": 376
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 3097808000,
+            "attention_products": 1904162560,
+            "projections": 22571008,
+            "fusion_mlp": 7760640,
+            "detector_dots": 128000,
+            "fusion_weighted_sum": 240640
+          },
+          "encoder_compression_gmac": 5.032670848,
+          "encoder_compression_gmac_per_audio_s": 0.5032670848,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 8494080
+          },
+          "reference_path_total_gmac": 5.070361216,
+          "reference_path_total_gmac_per_audio_s": 0.5070361216,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 2001,
+            "layer_frames": [
+              2001,
+              2001,
+              2001,
+              2001,
+              2001,
+              2001,
+              2001,
+              752,
+              752,
+              752
+            ],
+            "output_frames": 752,
+            "stages": [
+              {
+                "after_layer": 7,
+                "input_frames": 2001,
+                "output_frames": 752
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 6192950400,
+            "attention_products": 7609476864,
+            "projections": 45131776,
+            "fusion_mlp": 15521280,
+            "detector_dots": 256000,
+            "fusion_weighted_sum": 481280
+          },
+          "encoder_compression_gmac": 13.8638176,
+          "encoder_compression_gmac_per_audio_s": 0.69319088,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 16970240
+          },
+          "reference_path_total_gmac": 13.938590592,
+          "reference_path_total_gmac_per_audio_s": 0.6969295296,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 3001,
+            "layer_frames": [
+              3001,
+              3001,
+              3001,
+              3001,
+              3001,
+              3001,
+              3001,
+              1129,
+              1129,
+              1129
+            ],
+            "output_frames": 1129,
+            "stages": [
+              {
+                "after_layer": 7,
+                "input_frames": 3001,
+                "output_frames": 1129
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 9289235200,
+            "attention_products": 17117678080,
+            "projections": 67725312,
+            "fusion_mlp": 23302560,
+            "detector_dots": 384000,
+            "fusion_weighted_sum": 722560
+          },
+          "encoder_compression_gmac": 26.499047712,
+          "encoder_compression_gmac_per_audio_s": 0.8833015904,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 25464320
+          },
+          "reference_path_total_gmac": 26.610921248,
+          "reference_path_total_gmac_per_audio_s": 0.8870307082666666,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "E08",
+      "name": "placement_layers2_5_n3_stride1",
+      "paper_id": null,
+      "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
+      "per_percent": 5.4210334192135345,
+      "config_sha256": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
+      "config": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "stages": [
+            {
+              "after_layer": 2,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "hard"
+              },
+              "neighborhood_radius": 1
+            },
+            {
+              "after_layer": 5,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            }
+          ]
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        },
+        "num_layers": 10
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/research/phone69_460h_compute_20261108/full/E08.json",
+      "calibration_sha256": "dc9a64598b8b19686c27378f3eb46290b566dabd21457617e13cfc53d536cc0d",
+      "calibration_utterances": 2620,
+      "stage_rates": [
+        {
+          "after_layer": 2,
+          "input_frames": 1947238,
+          "output_frames": 1676106,
+          "retention": 0.8607607287861063,
+          "reduction": 0.13923927121389368,
+          "utterance_ratio_mean": 0.8604679748141549,
+          "utterance_ratio_std": 0.024972269483417953,
+          "utterances": 2620
+        },
+        {
+          "after_layer": 5,
+          "input_frames": 1676106,
+          "output_frames": 701682,
+          "retention": 0.4186382006865914,
+          "reduction": 0.5813617993134086,
+          "utterance_ratio_mean": 0.41815721388570676,
+          "utterance_ratio_std": 0.01398726505492919,
+          "utterances": 2620
+        }
+      ],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 101,
+            "layer_frames": [
+              101,
+              101,
+              87,
+              87,
+              87,
+              36,
+              36,
+              36,
+              36,
+              36
+            ],
+            "output_frames": 36,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 101,
+                "output_frames": 87
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 87,
+                "output_frames": 36
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 244854400,
+            "attention_products": 12694784,
+            "projections": 2213888,
+            "fusion_mlp": 743040,
+            "detector_dots": 23808,
+            "fusion_weighted_sum": 23040
+          },
+          "encoder_compression_gmac": 0.26055296,
+          "encoder_compression_gmac_per_audio_s": 0.26055296,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 824320
+          },
+          "reference_path_total_gmac": 0.264621312,
+          "reference_path_total_gmac_per_audio_s": 0.264621312,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 501,
+            "layer_frames": [
+              501,
+              501,
+              431,
+              431,
+              431,
+              180,
+              180,
+              180,
+              180,
+              180
+            ],
+            "output_frames": 180,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 501,
+                "output_frames": 431
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 431,
+                "output_frames": 180
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 1216656000,
+            "attention_products": 312648960,
+            "projections": 11028480,
+            "fusion_mlp": 3715200,
+            "detector_dots": 119040,
+            "fusion_weighted_sum": 115200
+          },
+          "encoder_compression_gmac": 1.54428288,
+          "encoder_compression_gmac_per_audio_s": 0.308856576,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 4103680
+          },
+          "reference_path_total_gmac": 1.56313216,
+          "reference_path_total_gmac_per_audio_s": 0.312626432,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 1001,
+            "layer_frames": [
+              1001,
+              1001,
+              862,
+              862,
+              862,
+              361,
+              361,
+              361,
+              361,
+              361
+            ],
+            "output_frames": 361,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 1001,
+                "output_frames": 862
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 862,
+                "output_frames": 361
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 2434454400,
+            "attention_products": 1250493184,
+            "projections": 22079488,
+            "fusion_mlp": 7451040,
+            "detector_dots": 238208,
+            "fusion_weighted_sum": 231040
+          },
+          "encoder_compression_gmac": 3.71494736,
+          "encoder_compression_gmac_per_audio_s": 0.371494736,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 8225280
+          },
+          "reference_path_total_gmac": 3.752368928,
+          "reference_path_total_gmac_per_audio_s": 0.3752368928,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 2001,
+            "layer_frames": [
+              2001,
+              2001,
+              1722,
+              1722,
+              1722,
+              721,
+              721,
+              721,
+              721,
+              721
+            ],
+            "output_frames": 721,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 2001,
+                "output_frames": 1722
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 1722,
+                "output_frames": 721
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 4863958400,
+            "attention_products": 4992783104,
+            "projections": 44115968,
+            "fusion_mlp": 14881440,
+            "detector_dots": 476288,
+            "fusion_weighted_sum": 461440
+          },
+          "encoder_compression_gmac": 9.91667664,
+          "encoder_compression_gmac_per_audio_s": 0.495833832,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 16414720
+          },
+          "reference_path_total_gmac": 9.990894112,
+          "reference_path_total_gmac_per_audio_s": 0.4995447056,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 3001,
+            "layer_frames": [
+              3001,
+              3001,
+              2583,
+              2583,
+              2583,
+              1081,
+              1081,
+              1081,
+              1081,
+              1081
+            ],
+            "output_frames": 1081,
+            "stages": [
+              {
+                "after_layer": 2,
+                "input_frames": 3001,
+                "output_frames": 2583
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 2583,
+                "output_frames": 1081
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 7294604800,
+            "attention_products": 11230841344,
+            "projections": 66152448,
+            "fusion_mlp": 22311840,
+            "detector_dots": 714496,
+            "fusion_weighted_sum": 691840
+          },
+          "encoder_compression_gmac": 18.615316768,
+          "encoder_compression_gmac_per_audio_s": 0.6205105589333333,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 24604160
+          },
+          "reference_path_total_gmac": 18.726330144,
+          "reference_path_total_gmac_per_audio_s": 0.6242110047999999,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "E09",
+      "name": "dim512_stride4_none",
+      "paper_id": "E05",
+      "checkpoint_sha256": "005b39b31850128e7033f670cd58c6732d3dcc6ff738af1d79befc3d1a8c04a3",
+      "per_percent": 5.742687397829894,
+      "config_sha256": "773e1ca8b7b335463b2475935cdd235bc1d7ac1e8ed17b9e5c73df7cb8a1ced7",
+      "config": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E09/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 4,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "num_layers_block1": 2,
+        "num_layers_block2": 8,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "filter": "none"
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        }
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/research/phone69_460h_compute_20261108/full/E09.json",
+      "calibration_sha256": "32e164529117f2e88ccb54a2b23b2e077c99f9d36e068e785fbb5b9f1fa27b92",
+      "calibration_utterances": 2620,
+      "stage_rates": [],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 101,
+            "layer_frames": [
+              26,
+              26,
+              26,
+              26,
+              26,
+              26,
+              26,
+              26,
+              26,
+              26
+            ],
+            "output_frames": 26,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 753858560,
+            "attention_products": 6922240,
+            "projections": 4442112,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 0.765222912,
+          "encoder_compression_gmac_per_audio_s": 0.765222912,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 645120
+          },
+          "reference_path_total_gmac": 0.769112064,
+          "reference_path_total_gmac_per_audio_s": 0.769112064,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 501,
+            "layer_frames": [
+              126,
+              126,
+              126,
+              126,
+              126,
+              126,
+              126,
+              126,
+              126,
+              126
+            ],
+            "output_frames": 126,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 3653314560,
+            "attention_products": 162570240,
+            "projections": 21645312,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 3.837530112,
+          "encoder_compression_gmac_per_audio_s": 0.7675060224,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 3136000
+          },
+          "reference_path_total_gmac": 3.855411712,
+          "reference_path_total_gmac_per_audio_s": 0.7710823424,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 1001,
+            "layer_frames": [
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251
+            ],
+            "output_frames": 251,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 7277634560,
+            "attention_products": 645130240,
+            "projections": 43149312,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 7.965914112,
+          "encoder_compression_gmac_per_audio_s": 0.7965914112000001,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 6254080
+          },
+          "reference_path_total_gmac": 8.00136448,
+          "reference_path_total_gmac_per_audio_s": 0.800136448,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 2001,
+            "layer_frames": [
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501
+            ],
+            "output_frames": 501,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 14526274560,
+            "attention_products": 2570250240,
+            "projections": 86157312,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 17.182682112,
+          "encoder_compression_gmac_per_audio_s": 0.8591341056,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 12472320
+          },
+          "reference_path_total_gmac": 17.252957184,
+          "reference_path_total_gmac_per_audio_s": 0.8626478592000001,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 3001,
+            "layer_frames": [
+              751,
+              751,
+              751,
+              751,
+              751,
+              751,
+              751,
+              751,
+              751,
+              751
+            ],
+            "output_frames": 751,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 21774914560,
+            "attention_products": 5775370240,
+            "projections": 129165312,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 27.679450112,
+          "encoder_compression_gmac_per_audio_s": 0.9226483370666667,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 18690560
+          },
+          "reference_path_total_gmac": 27.784549888,
+          "reference_path_total_gmac_per_audio_s": 0.9261516629333333,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "E10",
+      "name": "placement_mel_layer5_stride1",
+      "paper_id": "E06",
+      "checkpoint_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+      "per_percent": 5.688196674478767,
+      "config_sha256": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4",
+      "config": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "stages": [
+            {
+              "after_layer": 0,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            },
+            {
+              "after_layer": 5,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            }
+          ]
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        },
+        "num_layers": 10
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/research/phone69_460h_compute_20261108/full/E10.json",
+      "calibration_sha256": "424625ab26112c73fe03dc5e94b939a708e0b8e1db8c38fda2ad2766a270c550",
+      "calibration_utterances": 2620,
+      "stage_rates": [
+        {
+          "after_layer": 0,
+          "input_frames": 1947238,
+          "output_frames": 764950,
+          "retention": 0.3928384717225116,
+          "reduction": 0.6071615282774885,
+          "utterance_ratio_mean": 0.393071664403057,
+          "utterance_ratio_std": 0.016941888369289275,
+          "utterances": 2620
+        },
+        {
+          "after_layer": 5,
+          "input_frames": 764950,
+          "output_frames": 307404,
+          "retention": 0.40186155957905745,
+          "reduction": 0.5981384404209426,
+          "utterance_ratio_mean": 0.39989301101734687,
+          "utterance_ratio_std": 0.020618252746703192,
+          "utterances": 2620
+        }
+      ],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 40,
+            "layer_frames": [
+              40,
+              40,
+              40,
+              40,
+              40,
+              16,
+              16,
+              16,
+              16,
+              16
+            ],
+            "output_frames": 16,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 101,
+                "output_frames": 40
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 40,
+                "output_frames": 16
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 106624000,
+            "attention_products": 2375680,
+            "projections": 933888,
+            "fusion_mlp": 848640,
+            "detector_dots": 12992,
+            "fusion_weighted_sum": 26240
+          },
+          "encoder_compression_gmac": 0.11082144,
+          "encoder_compression_gmac_per_audio_s": 0.11082144,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 465920
+          },
+          "reference_path_total_gmac": 0.114531392,
+          "reference_path_total_gmac_per_audio_s": 0.114531392,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 197,
+            "layer_frames": [
+              197,
+              197,
+              197,
+              197,
+              197,
+              79,
+              79,
+              79,
+              79,
+              79
+            ],
+            "output_frames": 79,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 501,
+                "output_frames": 197
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 197,
+                "output_frames": 79
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 525504000,
+            "attention_products": 57664000,
+            "projections": 4605952,
+            "fusion_mlp": 4183680,
+            "detector_dots": 65088,
+            "fusion_weighted_sum": 129360
+          },
+          "encoder_compression_gmac": 0.59215208,
+          "encoder_compression_gmac_per_audio_s": 0.118430416,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 2293760
+          },
+          "reference_path_total_gmac": 0.60919144,
+          "reference_path_total_gmac_per_audio_s": 0.121838288,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 393,
+            "layer_frames": [
+              393,
+              393,
+              393,
+              393,
+              393,
+              158,
+              158,
+              158,
+              158,
+              158
+            ],
+            "output_frames": 158,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 1001,
+                "output_frames": 393
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 393,
+                "output_frames": 158
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 1049104000,
+            "attention_products": 229648640,
+            "projections": 9201664,
+            "fusion_mlp": 8354400,
+            "detector_dots": 130176,
+            "fusion_weighted_sum": 258320
+          },
+          "encoder_compression_gmac": 1.2966972,
+          "encoder_compression_gmac_per_audio_s": 0.12966972,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 4587520
+          },
+          "reference_path_total_gmac": 1.330481008,
+          "reference_path_total_gmac_per_audio_s": 0.13304810079999999,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 786,
+            "layer_frames": [
+              786,
+              786,
+              786,
+              786,
+              786,
+              316,
+              316,
+              316,
+              316,
+              316
+            ],
+            "output_frames": 316,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 2001,
+                "output_frames": 786
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 786,
+                "output_frames": 316
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 2098208000,
+            "attention_products": 918594560,
+            "projections": 18403328,
+            "fusion_mlp": 16708800,
+            "detector_dots": 260480,
+            "fusion_weighted_sum": 516640
+          },
+          "encoder_compression_gmac": 3.052691808,
+          "encoder_compression_gmac_per_audio_s": 0.15263459040000002,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 9157120
+          },
+          "reference_path_total_gmac": 3.11965168,
+          "reference_path_total_gmac_per_audio_s": 0.155982584,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 1179,
+            "layer_frames": [
+              1179,
+              1179,
+              1179,
+              1179,
+              1179,
+              474,
+              474,
+              474,
+              474,
+              474
+            ],
+            "output_frames": 474,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 3001,
+                "output_frames": 1179
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 1179,
+                "output_frames": 474
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 3147312000,
+            "attention_products": 2066837760,
+            "projections": 27604992,
+            "fusion_mlp": 25063200,
+            "detector_dots": 390784,
+            "fusion_weighted_sum": 774960
+          },
+          "encoder_compression_gmac": 5.267983696,
+          "encoder_compression_gmac_per_audio_s": 0.17559945653333334,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 13726720
+          },
+          "reference_path_total_gmac": 5.368119632,
+          "reference_path_total_gmac_per_audio_s": 0.17893732106666665,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "S1",
+      "name": "stride1_proj128",
+      "paper_id": null,
+      "checkpoint_sha256": "01409ecf07a8eb3d5536c56a552554bdd860801dc2ce790e011a580b46033c77",
+      "per_percent": 4.985636668553562,
+      "config_sha256": "3c413f88b86b72247a86e1337e699e2390d25c0316528493e8b6de65c3787af3",
+      "config": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "num_layers_block1": 2,
+        "num_layers_block2": 8,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "filter": "none"
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        }
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/attempt_01/utterances.csv",
+      "calibration_sha256": "fc0a59c9d26ea04a521173eb807a37998928e669f39fb66280a3471f17efd18d",
+      "calibration_utterances": 2620,
+      "stage_rates": [],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 101,
+            "layer_frames": [
+              101,
+              101,
+              101,
+              101,
+              101,
+              101,
+              101,
+              101,
+              101,
+              101
+            ],
+            "output_frames": 101,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 384608000,
+            "attention_products": 26114560,
+            "projections": 4343808,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 0.415066368,
+          "encoder_compression_gmac_per_audio_s": 0.415066368,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 1989120
+          },
+          "reference_path_total_gmac": 0.42029952,
+          "reference_path_total_gmac_per_audio_s": 0.42029952,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 501,
+            "layer_frames": [
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501
+            ],
+            "output_frames": 501,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 1907808000,
+            "attention_products": 642562560,
+            "projections": 21547008,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 2.571917568,
+          "encoder_compression_gmac_per_audio_s": 0.5143835136,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 9856000
+          },
+          "reference_path_total_gmac": 2.596519168,
+          "reference_path_total_gmac_per_audio_s": 0.5193038336,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 1001,
+            "layer_frames": [
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              1001
+            ],
+            "output_frames": 1001,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 3811808000,
+            "attention_products": 2565122560,
+            "projections": 43051008,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 6.419981568,
+          "encoder_compression_gmac_per_audio_s": 0.6419981567999999,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 19694080
+          },
+          "reference_path_total_gmac": 6.468871936,
+          "reference_path_total_gmac_per_audio_s": 0.6468871936,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 2001,
+            "layer_frames": [
+              2001,
+              2001,
+              2001,
+              2001,
+              2001,
+              2001,
+              2001,
+              2001,
+              2001,
+              2001
+            ],
+            "output_frames": 2001,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 7619808000,
+            "attention_products": 10250242560,
+            "projections": 86059008,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 17.956109568,
+          "encoder_compression_gmac_per_audio_s": 0.8978054784,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 39352320
+          },
+          "reference_path_total_gmac": 18.05326464,
+          "reference_path_total_gmac_per_audio_s": 0.902663232,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 3001,
+            "layer_frames": [
+              3001,
+              3001,
+              3001,
+              3001,
+              3001,
+              3001,
+              3001,
+              3001,
+              3001,
+              3001
+            ],
+            "output_frames": 3001,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 11427808000,
+            "attention_products": 23055362560,
+            "projections": 129067008,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 34.612237568,
+          "encoder_compression_gmac_per_audio_s": 1.1537412522666666,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 59010560
+          },
+          "reference_path_total_gmac": 34.757657344,
+          "reference_path_total_gmac_per_audio_s": 1.1585885781333334,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "S2",
+      "name": "stride2_proj128",
+      "paper_id": null,
+      "checkpoint_sha256": "362f3aae0bf25a87e15d10e18fe57edacd735398d0f8efeda7f5d67bfe0d055d",
+      "per_percent": 4.898874740110991,
+      "config_sha256": "0c9c26fcf52ff75d22b58afdd0d2da2b44d48f572c3cf84c3b8f7e658293cd32",
+      "config": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 2,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "num_layers_block1": 2,
+        "num_layers_block2": 8,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "filter": "none"
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        }
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/attempt_01/utterances.csv",
+      "calibration_sha256": "2a88e18879caefc4790788b73485beab1b3fb5b8d0f29a1365286fd71c2414e7",
+      "calibration_utterances": 2620,
+      "stage_rates": [],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 101,
+            "layer_frames": [
+              51,
+              51,
+              51,
+              51,
+              51,
+              51,
+              51,
+              51,
+              51,
+              51
+            ],
+            "output_frames": 51,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 505397760,
+            "attention_products": 13317120,
+            "projections": 4376576,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 0.523091456,
+          "encoder_compression_gmac_per_audio_s": 0.523091456,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 1093120
+          },
+          "reference_path_total_gmac": 0.527428608,
+          "reference_path_total_gmac_per_audio_s": 0.527428608,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 501,
+            "layer_frames": [
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251
+            ],
+            "output_frames": 251,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 2487349760,
+            "attention_products": 322565120,
+            "projections": 21579776,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 2.831494656,
+          "encoder_compression_gmac_per_audio_s": 0.5662989312000001,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 5376000
+          },
+          "reference_path_total_gmac": 2.851616256,
+          "reference_path_total_gmac_per_audio_s": 0.5703232512,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 1001,
+            "layer_frames": [
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501,
+              501
+            ],
+            "output_frames": 501,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 4964789760,
+            "attention_products": 1285125120,
+            "projections": 43083776,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 6.292998656,
+          "encoder_compression_gmac_per_audio_s": 0.6292998656000001,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 10734080
+          },
+          "reference_path_total_gmac": 6.332929024,
+          "reference_path_total_gmac_per_audio_s": 0.6332929024,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 2001,
+            "layer_frames": [
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              1001,
+              1001
+            ],
+            "output_frames": 1001,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 9919669760,
+            "attention_products": 5130245120,
+            "projections": 86091776,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 15.136006656,
+          "encoder_compression_gmac_per_audio_s": 0.7568003327999999,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 21432320
+          },
+          "reference_path_total_gmac": 15.215241728,
+          "reference_path_total_gmac_per_audio_s": 0.7607620864,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 3001,
+            "layer_frames": [
+              1501,
+              1501,
+              1501,
+              1501,
+              1501,
+              1501,
+              1501,
+              1501,
+              1501,
+              1501
+            ],
+            "output_frames": 1501,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 14874549760,
+            "attention_products": 11535365120,
+            "projections": 129099776,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 26.539014656,
+          "encoder_compression_gmac_per_audio_s": 0.8846338218666667,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 32130560
+          },
+          "reference_path_total_gmac": 26.657554432,
+          "reference_path_total_gmac_per_audio_s": 0.8885851477333333,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "S8",
+      "name": "stride8_proj128",
+      "paper_id": null,
+      "checkpoint_sha256": "b0d98ff359afee613f574b134f9111d39d737e0ec87a392b2d35e64afcb8ceef",
+      "per_percent": 6.678552345481767,
+      "config_sha256": "378a5a26acec688a4a8f95152e8820b668ed0b202bdeda6db2158b2ea5fcb2f0",
+      "config": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 8,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "num_layers_block1": 2,
+        "num_layers_block2": 8,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "filter": "none"
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        }
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/attempt_01/utterances.csv",
+      "calibration_sha256": "c98b7d616c9a9d2de9a6dbfe09d2e137034948949004f7567a996c4e0f5f788a",
+      "calibration_utterances": 2620,
+      "stage_rates": [],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 101,
+            "layer_frames": [
+              13,
+              13,
+              13,
+              13,
+              13,
+              13,
+              13,
+              13,
+              13,
+              13
+            ],
+            "output_frames": 13,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 1230960640,
+            "attention_products": 3461120,
+            "projections": 4442112,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 1.238863872,
+          "encoder_compression_gmac_per_audio_s": 1.238863872,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 412160
+          },
+          "reference_path_total_gmac": 1.242520064,
+          "reference_path_total_gmac_per_audio_s": 1.242520064,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 501,
+            "layer_frames": [
+              63,
+              63,
+              63,
+              63,
+              63,
+              63,
+              63,
+              63,
+              63,
+              63
+            ],
+            "output_frames": 63,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 5965424640,
+            "attention_products": 81285120,
+            "projections": 21645312,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 6.068355072,
+          "encoder_compression_gmac_per_audio_s": 1.2136710144,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 2007040
+          },
+          "reference_path_total_gmac": 6.085107712,
+          "reference_path_total_gmac_per_audio_s": 1.2170215424000002,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 1001,
+            "layer_frames": [
+              126,
+              126,
+              126,
+              126,
+              126,
+              126,
+              126,
+              126,
+              126,
+              126
+            ],
+            "output_frames": 126,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 11930849280,
+            "attention_products": 325140480,
+            "projections": 43280384,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 12.299270144,
+          "encoder_compression_gmac_per_audio_s": 1.2299270144,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 4014080
+          },
+          "reference_path_total_gmac": 12.332480512,
+          "reference_path_total_gmac_per_audio_s": 1.2332480512000001,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 2001,
+            "layer_frames": [
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251,
+              251
+            ],
+            "output_frames": 251,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 23767009280,
+            "attention_products": 1290260480,
+            "projections": 86288384,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 25.143558144,
+          "encoder_compression_gmac_per_audio_s": 1.2571779072,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 7992320
+          },
+          "reference_path_total_gmac": 25.209353216,
+          "reference_path_total_gmac_per_audio_s": 1.2604676608,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 3001,
+            "layer_frames": [
+              376,
+              376,
+              376,
+              376,
+              376,
+              376,
+              376,
+              376,
+              376,
+              376
+            ],
+            "output_frames": 376,
+            "stages": []
+          },
+          "components_macs": {
+            "encoder_weights": 35603169280,
+            "attention_products": 2895380480,
+            "projections": 129296384,
+            "fusion_mlp": 0,
+            "detector_dots": 0,
+            "fusion_weighted_sum": 0
+          },
+          "encoder_compression_gmac": 38.627846144,
+          "encoder_compression_gmac_per_audio_s": 1.2875948714666667,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 11970560
+          },
+          "reference_path_total_gmac": 38.72622592,
+          "reference_path_total_gmac_per_audio_s": 1.2908741973333333,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "E11",
+      "name": "placement_mel_layer5_layer8_stride1",
+      "paper_id": null,
+      "checkpoint_sha256": "8cd027fec53d5863bf95d93005fc5dcc516b5d79bd074999ec8d77e9e8100978",
+      "per_percent": 7.061574517386774,
+      "config_sha256": "395664ece5870461b8057776a9bf17954a062c45a96d848561579b0ef669a697",
+      "config": "artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/config.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "stages": [
+            {
+              "after_layer": 0,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            },
+            {
+              "after_layer": 5,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            },
+            {
+              "after_layer": 8,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            }
+          ]
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        },
+        "num_layers": 10
+      },
+      "status": "calibrated_theory",
+      "calibration_source": "artifacts/research/phone69_fixed_duration_20261112/E11_stage_lengths.json",
+      "calibration_sha256": "848e651373be702fd61af1108d5bda57ac1043901698d0ec20f834942013403a",
+      "calibration_utterances": 2620,
+      "stage_rates": [
+        {
+          "after_layer": 0,
+          "input_frames": 1947238,
+          "output_frames": 764950,
+          "retention": 0.3928384717225116,
+          "reduction": 0.6071615282774885,
+          "utterance_ratio_mean": 0.393071664403057,
+          "utterance_ratio_std": 0.016941888369289275,
+          "utterances": 2620
+        },
+        {
+          "after_layer": 5,
+          "input_frames": 764950,
+          "output_frames": 293918,
+          "retention": 0.38423164912739394,
+          "reduction": 0.6157683508726061,
+          "utterance_ratio_mean": 0.38125183439338933,
+          "utterance_ratio_std": 0.020898720293714954,
+          "utterances": 2620
+        },
+        {
+          "after_layer": 8,
+          "input_frames": 293918,
+          "output_frames": 132046,
+          "retention": 0.44926135861022465,
+          "reduction": 0.5507386413897754,
+          "utterance_ratio_mean": 0.4458075049123538,
+          "utterance_ratio_std": 0.02861231607767704,
+          "utterances": 2620
+        }
+      ],
+      "results": [
+        {
+          "duration_seconds": 1,
+          "input_mel_frames": 101,
+          "target_phones": 10,
+          "trace": {
+            "projected_frames": 40,
+            "layer_frames": [
+              40,
+              40,
+              40,
+              40,
+              40,
+              15,
+              15,
+              15,
+              7,
+              7
+            ],
+            "output_frames": 7,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 101,
+                "output_frames": 40
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 40,
+                "output_frames": 15
+              },
+              {
+                "after_layer": 8,
+                "input_frames": 15,
+                "output_frames": 7
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 98627200,
+            "attention_products": 2245888,
+            "projections": 638976,
+            "fusion_mlp": 972480,
+            "detector_dots": 14784,
+            "fusion_weighted_sum": 30080
+          },
+          "encoder_compression_gmac": 0.102529408,
+          "encoder_compression_gmac_per_audio_s": 0.102529408,
+          "reference_decoder_macs": {
+            "predictor": 3244032,
+            "joiner": 304640
+          },
+          "reference_path_total_gmac": 0.10607808,
+          "reference_path_total_gmac_per_audio_s": 0.10607808,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 5,
+          "input_mel_frames": 501,
+          "target_phones": 49,
+          "trace": {
+            "projected_frames": 197,
+            "layer_frames": [
+              197,
+              197,
+              197,
+              197,
+              197,
+              76,
+              76,
+              76,
+              34,
+              34
+            ],
+            "output_frames": 34,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 501,
+                "output_frames": 197
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 197,
+                "output_frames": 76
+              },
+              {
+                "after_layer": 8,
+                "input_frames": 76,
+                "output_frames": 34
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 487804800,
+            "attention_products": 54703360,
+            "projections": 3131392,
+            "fusion_mlp": 4823520,
+            "detector_dots": 74688,
+            "fusion_weighted_sum": 149200
+          },
+          "encoder_compression_gmac": 0.55068696,
+          "encoder_compression_gmac_per_audio_s": 0.110137392,
+          "reference_decoder_macs": {
+            "predictor": 14745600,
+            "joiner": 1487360
+          },
+          "reference_path_total_gmac": 0.56691992,
+          "reference_path_total_gmac_per_audio_s": 0.113383984,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 10,
+          "input_mel_frames": 1001,
+          "target_phones": 98,
+          "trace": {
+            "projected_frames": 393,
+            "layer_frames": [
+              393,
+              393,
+              393,
+              393,
+              393,
+              151,
+              151,
+              151,
+              68,
+              68
+            ],
+            "output_frames": 68,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 1001,
+                "output_frames": 393
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 393,
+                "output_frames": 151
+              },
+              {
+                "after_layer": 8,
+                "input_frames": 151,
+                "output_frames": 68
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 972563200,
+            "attention_products": 217573376,
+            "projections": 6252544,
+            "fusion_mlp": 9613440,
+            "detector_dots": 149376,
+            "fusion_weighted_sum": 297360
+          },
+          "encoder_compression_gmac": 1.206449296,
+          "encoder_compression_gmac_per_audio_s": 0.12064492959999999,
+          "reference_decoder_macs": {
+            "predictor": 29196288,
+            "joiner": 2974720
+          },
+          "reference_path_total_gmac": 1.238620304,
+          "reference_path_total_gmac_per_audio_s": 0.1238620304,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 20,
+          "input_mel_frames": 2001,
+          "target_phones": 195,
+          "trace": {
+            "projected_frames": 786,
+            "layer_frames": [
+              786,
+              786,
+              786,
+              786,
+              786,
+              302,
+              302,
+              302,
+              136,
+              136
+            ],
+            "output_frames": 136,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 2001,
+                "output_frames": 786
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 786,
+                "output_frames": 302
+              },
+              {
+                "after_layer": 8,
+                "input_frames": 302,
+                "output_frames": 136
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 1945126400,
+            "attention_products": 870293504,
+            "projections": 12505088,
+            "fusion_mlp": 19226880,
+            "detector_dots": 299008,
+            "fusion_weighted_sum": 594720
+          },
+          "encoder_compression_gmac": 2.8480456,
+          "encoder_compression_gmac_per_audio_s": 0.14240228,
+          "reference_decoder_macs": {
+            "predictor": 57802752,
+            "joiner": 5931520
+          },
+          "reference_path_total_gmac": 2.911779872,
+          "reference_path_total_gmac_per_audio_s": 0.1455889936,
+          "actual_beam20_macs": null
+        },
+        {
+          "duration_seconds": 30,
+          "input_mel_frames": 3001,
+          "target_phones": 292,
+          "trace": {
+            "projected_frames": 1179,
+            "layer_frames": [
+              1179,
+              1179,
+              1179,
+              1179,
+              1179,
+              453,
+              453,
+              453,
+              204,
+              204
+            ],
+            "output_frames": 204,
+            "stages": [
+              {
+                "after_layer": 0,
+                "input_frames": 3001,
+                "output_frames": 1179
+              },
+              {
+                "after_layer": 5,
+                "input_frames": 1179,
+                "output_frames": 453
+              },
+              {
+                "after_layer": 8,
+                "input_frames": 453,
+                "output_frames": 204
+              }
+            ]
+          },
+          "components_macs": {
+            "encoder_weights": 2917689600,
+            "attention_products": 1958160384,
+            "projections": 18757632,
+            "fusion_mlp": 28840320,
+            "detector_dots": 448640,
+            "fusion_weighted_sum": 892080
+          },
+          "encoder_compression_gmac": 4.924788656,
+          "encoder_compression_gmac_per_audio_s": 0.1641596218666667,
+          "reference_decoder_macs": {
+            "predictor": 86409216,
+            "joiner": 8888320
+          },
+          "reference_path_total_gmac": 5.020086192,
+          "reference_path_total_gmac_per_audio_s": 0.1673362064,
+          "actual_beam20_macs": null
+        }
+      ]
+    },
+    {
+      "id": "supp_layer1",
+      "name": "layer1",
+      "paper_id": null,
+      "checkpoint_sha256": null,
+      "per_percent": null,
+      "config_sha256": "d9dd5911340ca2ca6af1222715906f4fdc984c2c47ed23d56463ba5f5474e3c6",
+      "config": "configs/server_phone69_460h_placement_layer1_stride1_s42_e50_supp20261112.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "stages": [
+            {
+              "after_layer": 1,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            }
+          ]
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        },
+        "num_layers": 10
+      },
+      "status": "pending_stage_retention",
+      "reason": "No full-corpus stage lengths for this checkpoint",
+      "results": []
+    },
+    {
+      "id": "supp_layer3",
+      "name": "layer3",
+      "paper_id": null,
+      "checkpoint_sha256": null,
+      "per_percent": null,
+      "config_sha256": "7282fa59ff0f6598ab2b00acb137bcfbb8c80027db88c5163b559f409d59be55",
+      "config": "configs/server_phone69_460h_placement_layer3_stride1_s42_e50_supp20261112.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "stages": [
+            {
+              "after_layer": 3,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            }
+          ]
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        },
+        "num_layers": 10
+      },
+      "status": "pending_stage_retention",
+      "reason": "No full-corpus stage lengths for this checkpoint",
+      "results": []
+    },
+    {
+      "id": "supp_layer9",
+      "name": "layer9",
+      "paper_id": null,
+      "checkpoint_sha256": null,
+      "per_percent": null,
+      "config_sha256": "020f3a97ca5d9e73bcfa87967c44349d7fba3f0a8b5641a8209d06e11a7dbdab",
+      "config": "configs/server_phone69_460h_placement_layer9_stride1_s42_e50_supp20261112.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "stages": [
+            {
+              "after_layer": 9,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            }
+          ]
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        },
+        "num_layers": 10
+      },
+      "status": "pending_stage_retention",
+      "reason": "No full-corpus stage lengths for this checkpoint",
+      "results": []
+    },
+    {
+      "id": "supp_mel_layer3",
+      "name": "mel_layer3",
+      "paper_id": null,
+      "checkpoint_sha256": null,
+      "per_percent": null,
+      "config_sha256": "47b71c569a1a5cc16a0c9e6b8c34bd919beb3c2dbfa821dc4e626589fcb90342",
+      "config": "configs/server_phone69_460h_placement_mel_layer3_stride1_s42_e50_supp20261112.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "stages": [
+            {
+              "after_layer": 0,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            },
+            {
+              "after_layer": 3,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            }
+          ]
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        },
+        "num_layers": 10
+      },
+      "status": "pending_stage_retention",
+      "reason": "No full-corpus stage lengths for this checkpoint",
+      "results": []
+    },
+    {
+      "id": "supp_mel_layer7",
+      "name": "mel_layer7",
+      "paper_id": null,
+      "checkpoint_sha256": null,
+      "per_percent": null,
+      "config_sha256": "9f0e6b96f44e712cfb19f8b8e3f90707feac980347bf5f372b01b587c8f1e345",
+      "config": "configs/server_phone69_460h_placement_mel_layer7_stride1_s42_e50_supp20261112.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "stages": [
+            {
+              "after_layer": 0,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            },
+            {
+              "after_layer": 7,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            }
+          ]
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        },
+        "num_layers": 10
+      },
+      "status": "pending_stage_retention",
+      "reason": "No full-corpus stage lengths for this checkpoint",
+      "results": []
+    },
+    {
+      "id": "supp_layers2_7_n3",
+      "name": "layers2_7_n3",
+      "paper_id": null,
+      "checkpoint_sha256": null,
+      "per_percent": null,
+      "config_sha256": "551e09bdcabf9067464b4215acecff5bcdb8dd7b55661e54799e01f23f27fe20",
+      "config": "configs/server_phone69_460h_placement_layers2_7_n3_stride1_s42_e50_supp20261112.yaml",
+      "model": {
+        "sequence_mode": "offline",
+        "input_dim": 80,
+        "encoding_dim": 256,
+        "num_symbols": 69,
+        "time_reduction_input_dim": 128,
+        "time_reduction_stride": 1,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "depthwise_conv_kernel_size": 31,
+        "dropout": 0.1,
+        "compression": {
+          "stages": [
+            {
+              "after_layer": 2,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "hard"
+              },
+              "neighborhood_radius": 1
+            },
+            {
+              "after_layer": 7,
+              "detector": {
+                "type": "cosine_diff"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames"
+            }
+          ]
+        },
+        "predictor": {
+          "symbol_embedding_dim": 128,
+          "num_lstm_layers": 2,
+          "lstm_hidden_dim": 128,
+          "lstm_layer_norm": true,
+          "lstm_layer_norm_epsilon": 0.001,
+          "lstm_dropout": 0.3
+        },
+        "joiner": {
+          "activation": "relu"
+        },
+        "num_layers": 10
+      },
+      "status": "pending_stage_retention",
+      "reason": "No full-corpus stage lengths for this checkpoint",
+      "results": []
+    }
+  ]
+}
