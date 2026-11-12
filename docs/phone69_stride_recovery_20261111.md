@@ -18,4 +18,6 @@ stride8 的重启前记录为第9轮、step14000，最近完整边界为第8轮�
 
 本地恢复安全与指标聚合检查共9项通过；三个实际模型在同一真实音频上，执行计数与已独立审计的固定stride编码器公式一致。此项为软件预检，不是完整语料指标。运行中的本地进度见各组 `attempt_01/progress.json`，完整结果为`result.json`、`utterances.csv`及`summary.json`。
 
-stride1、stride2的完整本地PER及主要MAC现已完成并独立核实，见[两组全量结果](../artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/REPORT_stride1_stride2.md)。stride8仍在续训，不填写其待完成指标。
+三组均已完成50轮训练及本地全量PER／主要MAC评测，见[最终三组报告](../artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/REPORT_complete.md)。服务器stride8最终step84,650，实际读取最终边界确认已完成50轮且优化器、scheduler状态完整；最佳验证checkpoint为 `val-none-epoch=21-step=36553.ckpt`，下载SHA已核对。本地stride8于客户端UTC 2026-11-12 01:17:45完成，PER为6.678552%，总主要GMAC／音频秒为1.312000。三组逐句编辑距离、完整语料覆盖、编码器公式和实际解码路径矩阵MAC均已独立核验，`EVALUATION_COMPLETE`已生成。[较早两组报告](../artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/REPORT_stride1_stride2.md)保留为当时的阶段记录。
+
+完训后恢复状态将 `active_stride` 清空，而状态查询脚本仍用它查找run，导致一次 `run_config_mismatch`误报；已修正本地只读查询，在complete状态按唯一配置路径定位run。原始运行配置和续训配置SHA未变，29个原训练源码／配置SHA全部通过，实际续训YAML仍仅改变恢复checkpoint路径。最终本地控制器的`pending_strides=[8]`是上轮缓存字段；其`status=complete`、`completed_models=[1,2,8]`、三份完整结果和完成标记一致，归档保留原始状态字段，不据此重复评测。

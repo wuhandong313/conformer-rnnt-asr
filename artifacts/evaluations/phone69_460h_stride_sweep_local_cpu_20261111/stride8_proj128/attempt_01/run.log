@@ -1,0 +1,33 @@
+/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/model_source/conformer_rnnt/lightning_module.py:555: torchaudio.transforms._transforms.RNNTLoss has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/ffmpeg.py:88: UserWarning: torio.io._streaming_media_decoder.StreamingMediaDecoder has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+  s = torchaudio.io.StreamReader(src, format, None, buffer_size)
+stride8_proj128 100 / 2620
+stride8_proj128 200 / 2620
+stride8_proj128 300 / 2620
+stride8_proj128 400 / 2620
+stride8_proj128 500 / 2620
+stride8_proj128 600 / 2620
+stride8_proj128 700 / 2620
+stride8_proj128 800 / 2620
+stride8_proj128 900 / 2620
+stride8_proj128 1000 / 2620
+stride8_proj128 1100 / 2620
+stride8_proj128 1200 / 2620
+stride8_proj128 1300 / 2620
+stride8_proj128 1400 / 2620
+stride8_proj128 1500 / 2620
+stride8_proj128 1600 / 2620
+stride8_proj128 1700 / 2620
+stride8_proj128 1800 / 2620
+stride8_proj128 1900 / 2620
+stride8_proj128 2000 / 2620
+stride8_proj128 2100 / 2620
+stride8_proj128 2200 / 2620
+stride8_proj128 2300 / 2620
+stride8_proj128 2400 / 2620
+stride8_proj128 2500 / 2620
+stride8_proj128 2600 / 2620
+stride8_proj128 2620 / 2620
+{"utterances": 2620, "reference_phones": 189023, "phone_errors": 12624, "corpus_PER": 0.06678552345481767, "audio_seconds": 19452.480625, "components_macs": {"encoder_weights": 23154274949120, "attention_products": 690088529920, "projections": 84041527296, "fusion_mlp": 0, "detector_dots": 0, "fusion_weighted_sum": 0, "predictor": 1420243402752, "joiner": 172999697920}, "total_major_macs": 25521648107008, "gmac_per_audio_second": 1.3119996672407943, "encoder_compression_gmac_per_audio_second": 1.2300953008318958, "predictor_gmac_per_audio_second": 0.0730109146556212, "joiner_gmac_per_audio_second": 0.008893451753277354}

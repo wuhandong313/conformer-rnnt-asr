@@ -1,5 +1,5 @@
 {
-  "complete": false,
+  "complete": true,
   "models": {
     "1": {
       "model": {
@@ -174,6 +174,93 @@
       "excluded_scope": "feature extraction, normalization, softmax, activations, comparisons/sorting, memory access",
       "completed_at_utc": "2026-11-11T16:05:08.945815+00:00",
       "verified_full_corpus": true
+    },
+    "8": {
+      "model": {
+        "name": "stride8_proj128",
+        "stride": 8,
+        "expected_parameters": 95523398,
+        "training_commit": "191e387c7b82aaa8eb51b02396b231478418ffc3",
+        "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261111/models/stride8_proj128/val-none-epoch=21-step=36553.ckpt",
+        "checkpoint_sha256": "b0d98ff359afee613f574b134f9111d39d737e0ec87a392b2d35e64afcb8ceef",
+        "training_config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/training_config.yaml",
+        "training_config_sha256": "48b4c3129c44d57d53b02cf6ffc908115053407520094398e0818009e3649a36",
+        "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/config.yaml",
+        "config_sha256": "378a5a26acec688a4a8f95152e8820b668ed0b202bdeda6db2158b2ea5fcb2f0",
+        "server_training": {
+          "name": "stride8_proj128",
+          "stride": 8,
+          "budget": 9700,
+          "status": "trained",
+          "epoch": 50,
+          "global_step": 84650,
+          "training_commit": "191e387c7b82aaa8eb51b02396b231478418ffc3",
+          "original_config": "/test21/conformer-rnnt-asr/output/phone69_460h_stride_sweep_proj128_20261108/stride8_proj128_train.yaml",
+          "original_config_sha256": "48b4c3129c44d57d53b02cf6ffc908115053407520094398e0818009e3649a36",
+          "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride8_none_proj128_s42_e50/checkpoints/val-none-epoch=21-step=36553.ckpt",
+          "best_checkpoint_sha256": "b0d98ff359afee613f574b134f9111d39d737e0ec87a392b2d35e64afcb8ceef",
+          "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride8_none_proj128_s42_e50/checkpoints/epoch-boundary-epoch=50-step=84650-545e1e4645c2.ckpt",
+          "epoch_boundary_metadata": {
+            "previous_max_token_limit": 9700,
+            "resume_global_step": 84650,
+            "resume_completed_epochs": 50,
+            "resume_at_epoch_boundary": true
+          }
+        }
+      },
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 12624,
+      "corpus_PER": 0.06678552345481767,
+      "audio_seconds": 19452.480625,
+      "components_macs": {
+        "encoder_weights": 23154274949120,
+        "attention_products": 690088529920,
+        "projections": 84041527296,
+        "fusion_mlp": 0,
+        "detector_dots": 0,
+        "fusion_weighted_sum": 0,
+        "predictor": 1420243402752,
+        "joiner": 172999697920
+      },
+      "total_major_macs": 25521648107008,
+      "gmac_per_audio_second": 1.3119996672407943,
+      "encoder_compression_gmac_per_audio_second": 1.2300953008318958,
+      "predictor_gmac_per_audio_second": 0.0730109146556212,
+      "joiner_gmac_per_audio_second": 0.008893451753277354,
+      "protocol": {
+        "device": "cpu",
+        "dtype": "float32",
+        "batch": 1,
+        "beam": 20,
+        "threads": 4,
+        "interop_threads": 1,
+        "data_workers": 0,
+        "openmp_max_active_levels": 1,
+        "warmup_utterances": 10,
+        "subset": "test-clean"
+      },
+      "runtime": {
+        "python": "/opt/anaconda3/envs/aligner/bin/python",
+        "python_version": "3.12.9",
+        "machine": "arm64",
+        "os": "macOS-27.3-arm64-arm-64bit",
+        "torch": "2.8.0",
+        "torchaudio": "2.8.0",
+        "openmp": {
+          "path": "/opt/anaconda3/envs/aligner/lib/libomp.dylib",
+          "sha256": "ce4985af1eb24c5cf570933a9234a54353c4b649cd1985fbe4300d67be97d76b"
+        },
+        "model_source": "snapshot"
+      },
+      "checkpoint_epoch": 21,
+      "checkpoint_global_step": 36553,
+      "manifest_sha256": "108c5958f2f23f3a812a9a1606fdc84339a3b3e02f175eb320ce547cdcad9199",
+      "csv_sha256": "c98b7d616c9a9d2de9a6dbfe09d2e137034948949004f7567a996c4e0f5f788a",
+      "counted_scope": "linear, convolution, attention products, compression, and actual beam-search predictor/joiner matrices",
+      "excluded_scope": "feature extraction, normalization, softmax, activations, comparisons/sorting, memory access",
+      "completed_at_utc": "2026-11-12T01:17:45.920269+00:00",
+      "verified_full_corpus": true
     }
   },
   "protocol": {
@@ -188,5 +275,5 @@
     "warmup_utterances": 10,
     "subset": "test-clean"
   },
-  "updated_at_utc": "2026-11-11T16:05:09.568806+00:00"
+  "updated_at_utc": "2026-11-12T01:17:46.383684+00:00"
 }

@@ -1,0 +1,19 @@
+{
+  "status": "complete",
+  "completed_models": [
+    1,
+    2,
+    8
+  ],
+  "updated_at_utc": "2026-11-12T01:17:46.385414+00:00",
+  "controller_pid": 18644,
+  "pending_strides": [
+    8
+  ],
+  "active_model": null,
+  "transferred_bytes": 1146804816,
+  "checkpoint_bytes": 1146804816,
+  "evaluation_pid": null,
+  "progress": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/attempt_01/progress.json",
+  "log": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/attempt_01/run.log"
+}

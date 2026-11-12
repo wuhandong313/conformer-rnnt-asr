@@ -82,3 +82,6 @@ remote-access.md
 !/papers/phone69_460h_cpu_authoritative_20261108/supporting/**/run.log
 /artifacts/evaluations/phone69_460h_cpu_serial_20261108/batch.lock
 /artifacts/evaluations/phone69_460h_cpu_serial_20261108/runtime_lib/
+!/artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride*/attempt_*/run.log
+/artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/controller.lock
+/artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/runtime_lib/

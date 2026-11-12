@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "verified_at_client_utc": "2026-11-12T01:54:54.646859+00:00",
+  "valid": true,
+  "scope": [
+    "stride1_proj128",
+    "stride2_proj128",
+    "stride8_proj128"
+  ],
+  "models": [
+    {
+      "name": "stride1_proj128",
+      "result_sha256": "5595928f5bdeb7b5898778d05e84cc1c77716f4a3e5c54bbd2f5ebbd83062fcf",
+      "csv_sha256": "fc0a59c9d26ea04a521173eb807a37998928e669f39fb66280a3471f17efd18d",
+      "manifest_sha256": "e68bfe670084fc290bd0b12e8bf00d9facd264ed9457c5682b9f95745f70bae3",
+      "checkpoint_sha256": "01409ecf07a8eb3d5536c56a552554bdd860801dc2ce790e011a580b46033c77",
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 9424,
+      "corpus_PER": 0.04985636668553562,
+      "gmac_per_audio_second": 1.0379712867774158,
+      "audio_seconds": 19452.480625,
+      "full_reference_order_verified": true,
+      "independent_edit_distances_verified": true,
+      "independent_csv_totals_verified": true,
+      "per_utterance_encoder_formula_verified": true,
+      "per_utterance_decoder_matrix_counts_verified": true,
+      "inputs_and_frozen_source_hashes_verified": true
+    },
+    {
+      "name": "stride2_proj128",
+      "result_sha256": "312fed0584a0d57b72a8a0593d68a602cd6224389b43fb4c7c4afbe558fe6bcf",
+      "csv_sha256": "2a88e18879caefc4790788b73485beab1b3fb5b8d0f29a1365286fd71c2414e7",
+      "manifest_sha256": "410fce340ad082b367c40167a3811843180b1c2b1e0f6b3cbd83081d361c6e91",
+      "checkpoint_sha256": "362f3aae0bf25a87e15d10e18fe57edacd735398d0f8efeda7f5d67bfe0d055d",
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 9260,
+      "corpus_PER": 0.048988747401109915,
+      "gmac_per_audio_second": 0.8612968689364779,
+      "audio_seconds": 19452.480625,
+      "full_reference_order_verified": true,
+      "independent_edit_distances_verified": true,
+      "independent_csv_totals_verified": true,
+      "per_utterance_encoder_formula_verified": true,
+      "per_utterance_decoder_matrix_counts_verified": true,
+      "inputs_and_frozen_source_hashes_verified": true
+    },
+    {
+      "name": "stride8_proj128",
+      "result_sha256": "e1c89da5b5b293fd4a3c340a094e90087ea70d9a75f0d7dc922583748d7349d6",
+      "csv_sha256": "c98b7d616c9a9d2de9a6dbfe09d2e137034948949004f7567a996c4e0f5f788a",
+      "manifest_sha256": "108c5958f2f23f3a812a9a1606fdc84339a3b3e02f175eb320ce547cdcad9199",
+      "checkpoint_sha256": "b0d98ff359afee613f574b134f9111d39d737e0ec87a392b2d35e64afcb8ceef",
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 12624,
+      "corpus_PER": 0.06678552345481767,
+      "gmac_per_audio_second": 1.3119996672407943,
+      "audio_seconds": 19452.480625,
+      "full_reference_order_verified": true,
+      "independent_edit_distances_verified": true,
+      "independent_csv_totals_verified": true,
+      "per_utterance_encoder_formula_verified": true,
+      "per_utterance_decoder_matrix_counts_verified": true,
+      "inputs_and_frozen_source_hashes_verified": true
+    }
+  ],
+  "completion_marker_sha256": "b7e9ce7935ecdf762c10a654a2bc5e3f30bd2d13675ea0863999b3094e19ff14",
+  "summary_sha256": "d736ad5823d8dcb46b00664fb09f67ebda7c196fcef5801ed728ff5f15fd197f",
+  "controller_status": "complete",
+  "controller_cached_pending_strides": [
+    8
+  ],
+  "note": "The completed controller retains cached pending_strides=[8]; status, completed_models, all full results and EVALUATION_COMPLETE agree on completion."
+}
