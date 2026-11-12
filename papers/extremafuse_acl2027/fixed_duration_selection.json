@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "decision_date": "2026-11-12",
+  "duration_seconds": 30,
+  "source": "artifacts/research/phone69_fixed_duration_20261112/results.json",
+  "selection_basis": "User-selected representative operating points after exploratory test-clean evaluation; not a complete stride sweep or independent model selection.",
+  "selected": [
+    {"archive_id": "S1", "label": "Stride 1", "family": "fixed", "role": "128-dimensional uncompressed reference"},
+    {"archive_id": "S2", "label": "Stride 2", "family": "fixed", "role": "Strong fixed-stride reference"},
+    {"archive_id": "E09", "label": "Stride 4", "family": "fixed", "role": "Original 512-dimensional system reference"},
+    {"archive_id": "E05", "label": "Mel", "family": "single", "role": "Frontend single-stage placement"},
+    {"archive_id": "E02", "label": "L2", "family": "single", "role": "Early single-stage placement"},
+    {"archive_id": "E06", "label": "L5", "family": "single", "role": "Highest-quality observed placement"},
+    {"archive_id": "E07", "label": "L7", "family": "single", "role": "Later placement comparison, retained despite domination by L5"},
+    {"archive_id": "E10", "label": "Mel+L5", "family": "double", "role": "Low-compute two-stage operating point"},
+    {"archive_id": "E08", "label": "L2+L5*", "family": "mixed", "role": "Core placement/computation comparison; stage 1 hard three-frame neighborhood, stage 2 learned five-frame fusion"}
+  ],
+  "excluded": [
+    {"archive_id": "E01", "reason": "128-dimensional stride4 reference removed from paper selection at explicit user request; retained in original archives."},
+    {"archive_id": "E03", "reason": "Stride2 plus L2 compression: high PER, not a selected operating point."},
+    {"archive_id": "E04", "reason": "Stride4 plus L2 compression: high PER, outside selected quality range."},
+    {"archive_id": "S8", "reason": "Stride8: high PER and computation; not a selected operating point."},
+    {"archive_id": "E11", "reason": "Mel+L5+L8: high PER, not a selected operating point."}
+  ],
+  "pending_policy": "Six unverified supplementary placements remain pending; do not invent numbers or apply another checkpoint's retention rates.",
+  "curve_policy": "Plot all nine selected systems. Connect only the observed nondominated points within this selected set; lines do not interpolate unmeasured PER or imply a continuously tunable checkpoint. Mark mixed fusion separately. No new statistical intervals are inferred.",
+  "scope": "Theoretical encoder+compression MACs at fixed duration, with checkpoint-specific retention calibrated on 2620 test-clean utterances. PER is full-corpus CPU/FP32/batch1/beam20. Actual beam-search decoder counts remain in the separate historical full-corpus archives."
+}

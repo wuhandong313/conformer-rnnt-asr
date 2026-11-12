@@ -1,0 +1,166 @@
+{
+  "duration_seconds": 30,
+  "source": "artifacts/research/phone69_fixed_duration_20261112/results.json",
+  "source_sha256": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+  "selection_sha256": "24198cee6d009b2fc4df6073529a4bd2556d429b10906703cbd1643fb8f24106",
+  "plot_script_sha256": "1e272ee3e954e7ac7755fbe995fceee8704f6ef613e24a510a8f2fa2f69ca6d2",
+  "scope": "Theoretical encoder+compression MACs at fixed duration, with checkpoint-specific retention calibrated on 2620 test-clean utterances. PER is full-corpus CPU/FP32/batch1/beam20. Actual beam-search decoder counts remain in the separate historical full-corpus archives.",
+  "curve_policy": "Plot all nine selected systems. Connect only the observed nondominated points within this selected set; lines do not interpolate unmeasured PER or imply a continuously tunable checkpoint. Mark mixed fusion separately. No new statistical intervals are inferred.",
+  "selection_basis": "User-selected representative operating points after exploratory test-clean evaluation; not a complete stride sweep or independent model selection.",
+  "observed_frontier_archive_ids": [
+    "E10",
+    "E05",
+    "E02",
+    "E08",
+    "E06"
+  ],
+  "models": [
+    {
+      "archive_id": "S1",
+      "label": "Stride 1",
+      "family": "fixed",
+      "role": "128-dimensional uncompressed reference",
+      "paper_id": null,
+      "backbone_dim": 128,
+      "per_percent": 4.985636668553562,
+      "gmac_30_seconds": 34.612237568,
+      "gmac_per_audio_second": 1.1537412522666666,
+      "checkpoint_sha256": "01409ecf07a8eb3d5536c56a552554bdd860801dc2ce790e011a580b46033c77",
+      "config_sha256": "3c413f88b86b72247a86e1337e699e2390d25c0316528493e8b6de65c3787af3"
+    },
+    {
+      "archive_id": "S2",
+      "label": "Stride 2",
+      "family": "fixed",
+      "role": "Strong fixed-stride reference",
+      "paper_id": null,
+      "backbone_dim": 256,
+      "per_percent": 4.898874740110991,
+      "gmac_30_seconds": 26.539014656,
+      "gmac_per_audio_second": 0.8846338218666666,
+      "checkpoint_sha256": "362f3aae0bf25a87e15d10e18fe57edacd735398d0f8efeda7f5d67bfe0d055d",
+      "config_sha256": "0c9c26fcf52ff75d22b58afdd0d2da2b44d48f572c3cf84c3b8f7e658293cd32"
+    },
+    {
+      "archive_id": "E09",
+      "label": "Stride 4",
+      "family": "fixed",
+      "role": "Original 512-dimensional system reference",
+      "paper_id": "E05",
+      "backbone_dim": 512,
+      "per_percent": 5.742687397829894,
+      "gmac_30_seconds": 27.679450112,
+      "gmac_per_audio_second": 0.9226483370666667,
+      "checkpoint_sha256": "005b39b31850128e7033f670cd58c6732d3dcc6ff738af1d79befc3d1a8c04a3",
+      "config_sha256": "773e1ca8b7b335463b2475935cdd235bc1d7ac1e8ed17b9e5c73df7cb8a1ced7"
+    },
+    {
+      "archive_id": "E05",
+      "label": "Mel",
+      "family": "single",
+      "role": "Frontend single-stage placement",
+      "paper_id": "E02",
+      "backbone_dim": 128,
+      "per_percent": 5.578157155478434,
+      "gmac_30_seconds": 8.114834832,
+      "gmac_per_audio_second": 0.2704944944,
+      "checkpoint_sha256": "5630172734bcc316161794fe7168045376a6b47c94dc8fe8f30285ed5142e6a0",
+      "config_sha256": "584a45b39917382123fd4116356f77ebc13eb94f1beb0c3652c3fd611b5e01a3"
+    },
+    {
+      "archive_id": "E02",
+      "label": "L2",
+      "family": "single",
+      "role": "Early single-stage placement",
+      "paper_id": "E01",
+      "backbone_dim": 128,
+      "per_percent": 5.514143781444586,
+      "gmac_30_seconds": 13.77474144,
+      "gmac_per_audio_second": 0.459158048,
+      "checkpoint_sha256": "c314db27cc84ebc90c128ad84751d7f4c7b6620ffbc6687c9b579a76d5e91317",
+      "config_sha256": "733b2b28c723c90328f688b1063c425daa8cf424ca617519997ca6891baa5e0f"
+    },
+    {
+      "archive_id": "E06",
+      "label": "L5",
+      "family": "single",
+      "role": "Highest-quality observed placement",
+      "paper_id": "E03",
+      "backbone_dim": 128,
+      "per_percent": 4.780899678875058,
+      "gmac_30_seconds": 21.380416224,
+      "gmac_per_audio_second": 0.7126805408,
+      "checkpoint_sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c",
+      "config_sha256": "99742e054c65ff6a2e7b2a0a2a175a697bafda81599e49135c75a0ac5c610c6d"
+    },
+    {
+      "archive_id": "E07",
+      "label": "L7",
+      "family": "single",
+      "role": "Later placement comparison, retained despite domination by L5",
+      "paper_id": "E04",
+      "backbone_dim": 128,
+      "per_percent": 4.8602551012310675,
+      "gmac_30_seconds": 26.499047712,
+      "gmac_per_audio_second": 0.8833015904,
+      "checkpoint_sha256": "c452301ca02f49a42b544cfdb7db26d893069fcff73adfbe890ed3798c9d165b",
+      "config_sha256": "8d94308e6d24536f29985588c6f1d7409486d453c451128afea8112edb7d1605"
+    },
+    {
+      "archive_id": "E10",
+      "label": "Mel+L5",
+      "family": "double",
+      "role": "Low-compute two-stage operating point",
+      "paper_id": "E06",
+      "backbone_dim": 128,
+      "per_percent": 5.688196674478767,
+      "gmac_30_seconds": 5.267983696,
+      "gmac_per_audio_second": 0.17559945653333334,
+      "checkpoint_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+      "config_sha256": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4"
+    },
+    {
+      "archive_id": "E08",
+      "label": "L2+L5*",
+      "family": "mixed",
+      "role": "Core placement/computation comparison; stage 1 hard three-frame neighborhood, stage 2 learned five-frame fusion",
+      "paper_id": null,
+      "backbone_dim": 128,
+      "per_percent": 5.4210334192135345,
+      "gmac_30_seconds": 18.615316768,
+      "gmac_per_audio_second": 0.6205105589333333,
+      "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
+      "config_sha256": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb"
+    }
+  ],
+  "excluded": [
+    {
+      "archive_id": "E01",
+      "reason": "128-dimensional stride4 reference removed from paper selection at explicit user request; retained in original archives."
+    },
+    {
+      "archive_id": "E03",
+      "reason": "Stride2 plus L2 compression: high PER, not a selected operating point."
+    },
+    {
+      "archive_id": "E04",
+      "reason": "Stride4 plus L2 compression: high PER, outside selected quality range."
+    },
+    {
+      "archive_id": "S8",
+      "reason": "Stride8: high PER and computation; not a selected operating point."
+    },
+    {
+      "archive_id": "E11",
+      "reason": "Mel+L5+L8: high PER, not a selected operating point."
+    }
+  ],
+  "pending": [
+    "supp_layer1",
+    "supp_layer3",
+    "supp_layer9",
+    "supp_mel_layer3",
+    "supp_mel_layer7",
+    "supp_layers2_7_n3"
+  ]
+}

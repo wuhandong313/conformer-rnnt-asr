@@ -8,7 +8,7 @@
 
 ## 当前论文实验与编号
 
-当前已核实的主表保留以下六组。2026-11-12授权的层位与自然语速补充纳入论文实验范围，见[补充方案及复用清单](placement_rate_supplement_20261112.md)；新增层位结果在全量核验前留空。当前论文编号与原始归档编号分开；原始配置、checkpoint、评测记录与文件名保留归档编号。计算快照中的 `id` 为论文编号，`archive_id` 为溯源编号。
+2026-11-12按用户最新选择，核心性能—计算量曲线纳入九组：下表原六组，加固定stride1、固定stride2及L2+L5。移除128维stride4。最新主图使用固定30秒编码器＋压缩理论MAC与完整test-clean PER，见[九组核心曲线与完整表](fixed_duration_curve_20261112/REPORT.md)。下表保留已有六组论文编号，新增组使用名称，避免改写原归档编号。已授权的层位与自然语速补充见[补充方案及复用清单](placement_rate_supplement_20261112.md)；新增层位结果在全量核验前留空。
 
 | 论文编号 | 论文名称 | 原归档编号 |
 | --- | --- | --- |
@@ -19,11 +19,11 @@
 | E05 | Stride4（主基线） | E09 |
 | E06 | ExtremaFuse-Mel-L5（双阶段） | E10 |
 
-原E01、E03、E04不进入当前六组主表；原E08（L2+L5_n3）在本次补充中复用，第一阶段hard三帧邻域、第二阶段learned五帧融合，与五帧Mel系列分开标注。原E11继续仅作内部参考。已完成的十组全量核验原件保留，原六组计算快照不被待训结果覆盖。[计算量—性能曲线方案](compute_quality_curve_plan.md)
+原E01、E03、E04、S8及E11不进入当前九组核心曲线。原E08（L2+L5_n3）是核心插入位置与性能—计算量对比点，第一阶段hard三帧邻域、第二阶段learned五帧融合，与五帧Mel系列分开标注。它位于当前入选集合的观察前沿。[入选和排除清单](fixed_duration_selection.json)。已完成的全量核验原件保留，原六组计算快照不被待训结果覆盖。[计算量—性能曲线方案](compute_quality_curve_plan.md)
 
 ## 七节正文与版面预算
 
-效率指标统一为按实际帧长和 beam 搜索路径计算的主要 GMAC／输入音频秒，分列编码器及压缩、预测器及 joiner。位置实验使用 E05 的计算量预算，论文不再报告 RTF 或安排重复计时。[计数方案](../phone69_460h_compute_eval_plan_20261108.md) · [全量计数快照与来源哈希](compute_snapshot.json)
+当前核心曲线横轴改为固定30秒、实测保留率校准的编码器＋压缩理论GMAC／输入音频秒，纵轴为完整test-clean PER；实际beam搜索的predictor/joiner成本继续在历史全量计数中分列，不加入固定长度理论主轴。原`main.tex`、`main.pdf`及下文六组证据表仍是完整语料实际搜索口径的历史稿，尚未迁移到九组理论曲线，不能将两套数字混用。位置实验继续使用预先定义的计算预算，论文不再报告 RTF 或安排重复计时。[固定时长方案](../../docs/phone69_fixed_duration_macs.md) · [历史全量计数与来源哈希](compute_snapshot.json)
 
 下面的页数是写作分配，图表占用计入所属节。合计 7.75 页，另留 0.25 页给双栏浮动图表和换栏。
 
@@ -33,7 +33,7 @@
 | 2 Related Work | 0.60 | 已有时间降采样和相似度合并如何选择、保留或汇总帧？ | 比较固定步长、Transducer 时间压缩、A-ToMe，以及从局部声学变化提取候选位置的工作。交代本研究把自然峰谷选点和五帧学习融合合为一个算子。 |
 | 3 ExtremaFuse | 1.20 | 给定任意有序帧序列，如何得到更短、维度相同的表示？ | 图 1 与式 1。先定义输入、输出和长度，再给相邻帧余弦距离、峰谷到中心的映射、去重、窗口掩码和权重归一化。算子定义独立于 Conformer。 |
 | 4 Experimental Setup | 1.35 | 各系统匹配了哪些条件，哪些量仍有差异？ | 460h 英语 Phone69、Conformer–RNN-T 验证载体、选模与训练预算、两处均匀池化、完整 MAC 计数范围及配对统计。列清输入投影和主干宽度。 |
-| 5 Results | 1.40 | 达到怎样的识别质量，花了多少主要乘加量？ | 表 1 先比较 E06 与 E05，再看 E02、E03 及其他单阶段位置。图 2 给出六个实测工作点及配对区间。入选六组 test-clean 计数已完成，训练后的均匀池化和独立 test-other 留位。 |
+| 5 Results | 1.40 | 达到怎样的识别质量，花了多少主要乘加量？ | 核心图展示九组已核验工作点及当前入选集合的观察前沿，含L2+L5混合规则标记。原六组配对区间保留其来源，新增组不虚构区间；训练后的均匀池化和独立 test-other 留位。 |
 | 6 Analysis | 1.80 | 二次压缩省下哪些时间步？哪些帧参与输出？收益和代价集中在哪类错误？ | 依次写 E02→E06、窗口覆盖与冻结替换、自然语速及替换／删除／插入。图 3 给出真实融合权重；语速表报告快慢差异的区间。 |
 | 7 Conclusion | 0.30 | 在什么训练和评测条件下，观察到了什么，又能解释到哪一步？ | 用一段收束两个问题。质量门槛、池化对照和独立集结果到位后再定最终结论。 |
 
@@ -78,4 +78,4 @@
 latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
 ```
 
-图 2 由 `compute_snapshot.json` 与 `plot_quality_compute.py` 生成：`python plot_quality_compute.py`。该快照保留全量计数文件和 PER／区间来源的 SHA-256；未完成模型用空值标记，图只绘制已完成全量计数的模型。全量计数补齐后，需同时更新快照、正文表格、当前结果入口及摘要，不混用 24 句试测值。
+最新九组核心曲线由`fixed_duration_selection.json`、固定时长结果及`plot_fixed_duration_quality.py`生成：`python plot_fixed_duration_quality.py`，输出[PNG/PDF、CSV和来源哈希](fixed_duration_curve_20261112/REPORT.md)。原英文稿的历史图 2 由 `compute_snapshot.json` 与 `plot_quality_compute.py` 生成：`python plot_quality_compute.py`。历史快照保留全量计数文件和 PER／区间来源的 SHA-256；未完成模型用空值标记，不混用 24 句试测值。

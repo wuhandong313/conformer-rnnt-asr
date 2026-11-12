@@ -1,5 +1,15 @@
 # 计算量—识别性能曲线方案
 
+## 2026-11-12最新核心曲线
+
+按用户明确选择，移除128维stride4，将L2+L5作为核心插入位置对比纳入正文。当前入选九组：固定stride1／2／4（主干128／256／512），单阶段Mel／L2／L5／L7，以及双阶段Mel+L5、L2+L5。L2+L5首阶段hard三帧邻域、次阶段learned五帧融合，独立标记，避免将融合规则差异全归因于位置。
+
+核心曲线横轴为固定30秒、实测逐层保留率校准的编码器＋压缩理论GMAC／音频秒，纵轴为原始完整test-clean PER。九组均显示；当前入选集合的观察前沿为Mel+L5→Mel→L2→L2+L5→L5。连线只连接已有工作点，不插值未知性能。它是筛选后的探索性系统比较，不是全部实验的前沿或严格单因素因果实验。未核验的六个新增层位保持pending。
+
+[核心图和九组完整表](fixed_duration_curve_20261112/REPORT.md) · [入选清单](fixed_duration_selection.json) · [固定时长算法](../../docs/phone69_fixed_duration_macs.md)。重建：`python papers/extremafuse_acl2027/plot_fixed_duration_quality.py`。原始评测和下述历史真实搜索计数不覆盖；实际predictor/joiner分项保持独立，不混入理论编码器曲线。
+
+## 历史完整语料计数方案（保留来源）
+
 当前六组按新论文编号 E01–E06 命名，原始归档编号见 [README](README.md#当前论文实验与编号)。固定stride1、2、8已完成50轮和本地全量PER／主要MAC评测，层数保持10、投影维度128，见[完成报告](../../artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/REPORT_complete.md)。2026-11-12进一步授权[层位网格与自然语速补充](placement_rate_supplement_20261112.md)：已有位置复用，只训练六个缺少的位置，原六组快照保留。
 
 ## 现有结果直接能画什么
