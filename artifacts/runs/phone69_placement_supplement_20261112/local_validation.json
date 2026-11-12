@@ -1,0 +1,159 @@
+{
+  "valid": true,
+  "models": [
+    {
+      "name": "layer1",
+      "parameters": 4236299,
+      "positions": [
+        1
+      ],
+      "output_lengths": [
+        28,
+        18
+      ],
+      "forward_backward_finite": true
+    },
+    {
+      "name": "layer3",
+      "parameters": 4236299,
+      "positions": [
+        3
+      ],
+      "output_lengths": [
+        29,
+        20
+      ],
+      "forward_backward_finite": true
+    },
+    {
+      "name": "layer9",
+      "parameters": 4236299,
+      "positions": [
+        9
+      ],
+      "output_lengths": [
+        30,
+        22
+      ],
+      "forward_backward_finite": true
+    },
+    {
+      "name": "mel_layer3",
+      "parameters": 4249296,
+      "positions": [
+        0,
+        3
+      ],
+      "output_lengths": [
+        10,
+        9
+      ],
+      "forward_backward_finite": true
+    },
+    {
+      "name": "mel_layer7",
+      "parameters": 4249296,
+      "positions": [
+        0,
+        7
+      ],
+      "output_lengths": [
+        10,
+        9
+      ],
+      "forward_backward_finite": true
+    },
+    {
+      "name": "layers2_7_n3",
+      "parameters": 4236299,
+      "positions": [
+        2,
+        7
+      ],
+      "output_lengths": [
+        28,
+        20
+      ],
+      "forward_backward_finite": true
+    }
+  ],
+  "schema": 1,
+  "manifest": "configs/phone69_placement_supplement_20261112.json",
+  "manifest_sha256": "f734f6e0c6d5ba37d8d4022d2bf1a181acaab64ad7fef2d934ba4d8ea231459c",
+  "software_tests": {
+    "command": "python -m unittest discover -s tests -p test_compression_placement.py",
+    "tests": 20,
+    "passed": true,
+    "location": "local_development_machine",
+    "suite_results": {
+      "test_compression_placement.py": 12,
+      "test_placement_supplement.py": 8
+    },
+    "commands": [
+      "python -m unittest discover -s tests -p test_compression_placement.py",
+      "python -m unittest discover -s tests -p test_placement_supplement.py"
+    ]
+  },
+  "config_hashes": {
+    "layer1": {
+      "config": "configs/server_phone69_460h_placement_layer1_stride1_s42_e50_supp20261112.yaml",
+      "sha256": "d9dd5911340ca2ca6af1222715906f4fdc984c2c47ed23d56463ba5f5474e3c6",
+      "baseline": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "baseline_sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60"
+    },
+    "layer3": {
+      "config": "configs/server_phone69_460h_placement_layer3_stride1_s42_e50_supp20261112.yaml",
+      "sha256": "7282fa59ff0f6598ab2b00acb137bcfbb8c80027db88c5163b559f409d59be55",
+      "baseline": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "baseline_sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60"
+    },
+    "layer9": {
+      "config": "configs/server_phone69_460h_placement_layer9_stride1_s42_e50_supp20261112.yaml",
+      "sha256": "020f3a97ca5d9e73bcfa87967c44349d7fba3f0a8b5641a8209d06e11a7dbdab",
+      "baseline": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "baseline_sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60"
+    },
+    "mel_layer3": {
+      "config": "configs/server_phone69_460h_placement_mel_layer3_stride1_s42_e50_supp20261112.yaml",
+      "sha256": "47b71c569a1a5cc16a0c9e6b8c34bd919beb3c2dbfa821dc4e626589fcb90342",
+      "baseline": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
+      "baseline_sha256": "681154e65a68ec870b479b8fbca1ca39502ee89e617ddbae3e0d9df618dab0b0"
+    },
+    "mel_layer7": {
+      "config": "configs/server_phone69_460h_placement_mel_layer7_stride1_s42_e50_supp20261112.yaml",
+      "sha256": "9f0e6b96f44e712cfb19f8b8e3f90707feac980347bf5f372b01b587c8f1e345",
+      "baseline": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
+      "baseline_sha256": "681154e65a68ec870b479b8fbca1ca39502ee89e617ddbae3e0d9df618dab0b0"
+    },
+    "layers2_7_n3": {
+      "config": "configs/server_phone69_460h_placement_layers2_7_n3_stride1_s42_e50_supp20261112.yaml",
+      "sha256": "551e09bdcabf9067464b4215acecff5bcdb8dd7b55661e54799e01f23f27fe20",
+      "baseline": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch4000_before6000.yaml",
+      "baseline_sha256": "e60e15d89be9e141bfc3ab5812e3a3454ea888bd48893ef25443eccd8ab19e61"
+    },
+    "layer5": {
+      "config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
+      "baseline": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "baseline_sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60"
+    },
+    "layer7": {
+      "config": "configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+      "sha256": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca",
+      "baseline": "configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+      "baseline_sha256": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca"
+    },
+    "mel_layer5": {
+      "config": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml",
+      "sha256": "2b9909965c50808e96ee5546a3f53eede597e415449ae79bb845b60ab1728192",
+      "baseline": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml",
+      "baseline_sha256": "2b9909965c50808e96ee5546a3f53eede597e415449ae79bb845b60ab1728192"
+    },
+    "layers2_5_n3": {
+      "config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+      "sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
+      "baseline": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+      "baseline_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0"
+    }
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "schema": 1,
+  "study": "phone69_placement_supplement_20261112",
+  "runtime_dir": "output/phone69_460h_placement_supplement_20261112",
+  "batch_search": {
+    "initial": 5000,
+    "minimum": 1000,
+    "maximum": 100000,
+    "quantum": 100,
+    "growth": 1.4,
+    "max_reserved_fraction": 0.96
+  },
+  "experiments": [
+    {
+      "name": "layer1",
+      "action": "train",
+      "config": "configs/server_phone69_460h_placement_layer1_stride1_s42_e50_supp20261112.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "positions": [
+        1
+      ],
+      "initial_budget": 5000
+    },
+    {
+      "name": "layer3",
+      "action": "train",
+      "config": "configs/server_phone69_460h_placement_layer3_stride1_s42_e50_supp20261112.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "positions": [
+        3
+      ],
+      "initial_budget": 5000
+    },
+    {
+      "name": "layer9",
+      "action": "train",
+      "config": "configs/server_phone69_460h_placement_layer9_stride1_s42_e50_supp20261112.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "positions": [
+        9
+      ],
+      "initial_budget": 5000
+    },
+    {
+      "name": "mel_layer3",
+      "action": "train",
+      "config": "configs/server_phone69_460h_placement_mel_layer3_stride1_s42_e50_supp20261112.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
+      "positions": [
+        0,
+        3
+      ],
+      "initial_budget": 6500
+    },
+    {
+      "name": "mel_layer7",
+      "action": "train",
+      "config": "configs/server_phone69_460h_placement_mel_layer7_stride1_s42_e50_supp20261112.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
+      "positions": [
+        0,
+        7
+      ],
+      "initial_budget": 6500
+    },
+    {
+      "name": "layers2_7_n3",
+      "action": "train",
+      "config": "configs/server_phone69_460h_placement_layers2_7_n3_stride1_s42_e50_supp20261112.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch4000_before6000.yaml",
+      "positions": [
+        2,
+        7
+      ],
+      "initial_budget": 4000
+    },
+    {
+      "name": "layer5",
+      "action": "reuse",
+      "config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "positions": [
+        5
+      ],
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50",
+      "archive_id": "E06",
+      "archive_result": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/result.json",
+      "expected_best_sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c"
+    },
+    {
+      "name": "layer7",
+      "action": "reuse",
+      "config": "configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml",
+      "positions": [
+        7
+      ],
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer7_stride1_s42_e50",
+      "archive_id": "E07",
+      "archive_result": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E07/result.json",
+      "expected_best_sha256": "c452301ca02f49a42b544cfdb7db26d893069fcff73adfbe890ed3798c9d165b"
+    },
+    {
+      "name": "mel_layer5",
+      "action": "reuse",
+      "config": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml",
+      "positions": [
+        0,
+        5
+      ],
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_stride1_s42_e50_resume_b11050",
+      "archive_id": "E10",
+      "archive_result": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/result.json",
+      "expected_best_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c"
+    },
+    {
+      "name": "layers2_5_n3",
+      "action": "reuse",
+      "config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
+      "positions": [
+        2,
+        5
+      ],
+      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
+      "archive_id": "E08",
+      "archive_result": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/result.json",
+      "expected_best_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87"
+    }
+  ]
+}
