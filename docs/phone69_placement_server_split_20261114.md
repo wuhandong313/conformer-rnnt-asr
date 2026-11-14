@@ -4,6 +4,8 @@
 
 当前服务器由`scripts/server/continue_phone69_placement_local.py`接管：核对原队列父进程及L3训练进程身份，仅向旧队列父PID发送SIGTERM，不发送给训练PID或进程组；核实同一L3 worker仍存活后等待其严格完成。L3正常结束并通过50轮完整边界／best核验，才启动[仅L9清单](../configs/phone69_placement_current_server_layer9_20261114.json)。失败保留现场并停止。新的控制记录在服务器`output/phone69_460h_placement_local_handoff_20261114/`，L9原型校准及运行状态在`output/phone69_460h_placement_current_server_layer9_20261114/`。原状态文件保留为历史。
 
+接管已执行并核实：新控制器PID1415，旧恢复控制器PID538已退出；L3原训练PID557保持不变，预算8800，已观察第2轮step2900继续推进。三个迁移项均尚未在当前服务器创建run，现行控制状态明确将它们列为`deferred_to_other_server`，本机剩余仅`layer9`。[接管核验记录](../artifacts/runs/phone69_placement_server_split_20261114/handoff.json)
+
 其他服务器使用[仅三组清单](../configs/phone69_placement_remote_three_20261114.json)，顺序为Mel+L3→Mel+L7→L2+L7。三个action均为train，不会运行L1／L3／L9，也不要求复制旧四组实验的checkpoint。三个完整YAML、相应基线、队列程序、真实数据batch校准程序及环境锁定版本都由Git跟踪；数据、权重、凭据和环境本体不入Git。
 
 配置采用原规范路径：仓库`/test21/conformer-rnnt-asr`、数据`/test21/librispeech`及其`global_stats.json`，词表`configs/phone69_vocab.json`。目标服务器可使用等价兼容路径；需要改路径时，应生成**新名称**的配置与相应基线、三组清单，先在本地提交并通过Git部署，不修改当前服务器运行指纹所引用的原YAML。仅适配路径，不改变模型、融合、训练、tokenizer或后端。
