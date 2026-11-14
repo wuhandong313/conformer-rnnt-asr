@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "study": "other_server_three_fresh_experiments",
+  "runtime_dir": "output/phone69_460h_placement_remote_three_20261114",
+  "batch_search": {
+    "initial": 5000,
+    "minimum": 1000,
+    "maximum": 100000,
+    "quantum": 100,
+    "growth": 1.4,
+    "max_reserved_fraction": 0.96
+  },
+  "experiments": [
+    {
+      "name": "mel_layer3",
+      "action": "train",
+      "config": "configs/server_phone69_460h_placement_mel_layer3_stride1_s42_e50_supp20261112.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
+      "positions": [
+        0,
+        3
+      ],
+      "initial_budget": 6500
+    },
+    {
+      "name": "mel_layer7",
+      "action": "train",
+      "config": "configs/server_phone69_460h_placement_mel_layer7_stride1_s42_e50_supp20261112.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml",
+      "positions": [
+        0,
+        7
+      ],
+      "initial_budget": 6500
+    },
+    {
+      "name": "layers2_7_n3",
+      "action": "train",
+      "config": "configs/server_phone69_460h_placement_layers2_7_n3_stride1_s42_e50_supp20261112.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch4000_before6000.yaml",
+      "positions": [
+        2,
+        7
+      ],
+      "initial_budget": 4000
+    }
+  ]
+}

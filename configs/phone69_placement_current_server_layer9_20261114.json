@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "study": "current_server_after_running_layer3",
+  "runtime_dir": "output/phone69_460h_placement_current_server_layer9_20261114",
+  "batch_search": {
+    "initial": 5000,
+    "minimum": 1000,
+    "maximum": 100000,
+    "quantum": 100,
+    "growth": 1.4,
+    "max_reserved_fraction": 0.96
+  },
+  "experiments": [
+    {
+      "name": "layer9",
+      "action": "train",
+      "config": "configs/server_phone69_460h_placement_layer9_stride1_s42_e50_supp20261112.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "positions": [
+        9
+      ],
+      "initial_budget": 5000
+    }
+  ]
+}
