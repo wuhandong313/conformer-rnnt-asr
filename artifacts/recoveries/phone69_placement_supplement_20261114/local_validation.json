@@ -1,0 +1,15 @@
+{
+  "valid": true,
+  "tests": 7,
+  "suite": "tests/test_placement_recovery.py",
+  "location": "local development machine",
+  "checks": [
+    "numeric checkpoint ordering",
+    "optimizer/scheduler required",
+    "placement definition match",
+    "budget and boundary eligibility",
+    "actual progress vs filename",
+    "independent archive survives overwrite/rotation",
+    "duplicate recovery refused"
+  ]
+}
