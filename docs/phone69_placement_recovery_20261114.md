@@ -20,4 +20,6 @@ L3原run记录第2轮、step2200，轮中完整验证／last checkpoint还记录
 
 恢复入口为`scripts/server/recover_phone69_placement_supplement.py`，沿用原[队列清单](../configs/phone69_placement_supplement_20261112.json)。服务器独立目录为`output/phone69_460h_placement_recovery_20261114/`，以`recovery_state.json`、各组resume／selected记录、实际run与日志为准；原20261112队列状态保留为历史，不再据其旧PID判断进程。
 
-[初始核对](../artifacts/recoveries/phone69_placement_supplement_20261114/initial_inspection.json)及[本地安全检查](../artifacts/recoveries/phone69_placement_supplement_20261114/local_validation.json)记录恢复依据。环境版本、选定断点、独立备份清单及实际恢复PID将在启动核实后归档。
+[初始核对](../artifacts/recoveries/phone69_placement_supplement_20261114/initial_inspection.json)及[本地安全检查](../artifacts/recoveries/phone69_placement_supplement_20261114/local_validation.json)记录恢复依据。环境版本、选定断点、独立备份清单及实际恢复PID见[启动核验](../artifacts/recoveries/phone69_placement_supplement_20261114/startup.json)和[checkpoint备份清单](../artifacts/recoveries/phone69_placement_supplement_20261114/checkpoint_inventory.json)。
+
+环境重装已完成，pip依赖检查通过、CUDA可用。恢复控制器PID538、L3训练PID557，实际恢复启动commit为`a9ba99c4f9c188d96758ebec4dfd0bdfc1f3cc3a`。日志明确记录已恢复全部checkpoint状态，已观察第2轮、global_step1900，原预算8800不变；GPU正常执行训练。原配置与续训YAML独立解析比较，仅`paths.from_checkpoint`变化。7个旧checkpoint均独立复制并核对SHA，5组已完成实验实际核验后跳过。后续归档提交不替代该实际恢复启动commit。

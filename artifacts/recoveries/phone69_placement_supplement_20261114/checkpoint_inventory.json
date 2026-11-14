@@ -1,0 +1,53 @@
+{
+  "layer3": [
+    {
+      "original": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints/epoch-boundary-epoch=00-step=0-e1328b4ef36f.ckpt",
+      "preserved": "/test21/conformer-rnnt-asr/output/phone69_460h_placement_recovery_20261114/original_checkpoints/layer3/epoch-boundary-epoch=00-step=0-e1328b4ef36f.ckpt",
+      "sha256": "6d33eaaeeafb16d5e72b3e86d7952a54d4f6c3f9489ee3a2fee45a38ae71a284",
+      "bytes": 17135288,
+      "independent_copy": true
+    },
+    {
+      "original": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints/epoch-boundary-epoch=01-step=1866-12455ffe1e41.ckpt",
+      "preserved": "/test21/conformer-rnnt-asr/output/phone69_460h_placement_recovery_20261114/original_checkpoints/layer3/epoch-boundary-epoch=01-step=1866-12455ffe1e41.ckpt",
+      "sha256": "cf84f6829118f1744fbd84ae48c8678817268c99aafd3ddf689c67edccf136e5",
+      "bytes": 51323364,
+      "independent_copy": true
+    },
+    {
+      "original": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints/last.ckpt",
+      "preserved": "/test21/conformer-rnnt-asr/output/phone69_460h_placement_recovery_20261114/original_checkpoints/layer3/last.ckpt",
+      "sha256": "c4e453f61f8947ba9ea6439716bc577e88cd7e2dc59012d4b4ee6494a2595fbc",
+      "bytes": 51297216,
+      "independent_copy": true
+    },
+    {
+      "original": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints/train-none-epoch=00-step=1500.ckpt",
+      "preserved": "/test21/conformer-rnnt-asr/output/phone69_460h_placement_recovery_20261114/original_checkpoints/layer3/train-none-epoch=00-step=1500.ckpt",
+      "sha256": "1d096e3f48194b91c26907f789b0fc67f2c94abf012582cb34f1ea8998942130",
+      "bytes": 17126818,
+      "independent_copy": true
+    },
+    {
+      "original": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints/train-none-epoch=01-step=2000.ckpt",
+      "preserved": "/test21/conformer-rnnt-asr/output/phone69_460h_placement_recovery_20261114/original_checkpoints/layer3/train-none-epoch=01-step=2000.ckpt",
+      "sha256": "8faf92d01b9dfec4db87898c26b1337d40293a8efb6e5148813f7f57bb29954d",
+      "bytes": 17126818,
+      "independent_copy": true
+    },
+    {
+      "original": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints/val-none-epoch=01-step=2066.ckpt",
+      "preserved": "/test21/conformer-rnnt-asr/output/phone69_460h_placement_recovery_20261114/original_checkpoints/layer3/val-none-epoch=01-step=2066.ckpt",
+      "sha256": "2465e238f73ba65dc39bbe1de85bcb17194daa37fe18c7ffda2a74a098bf1982",
+      "bytes": 51297216,
+      "independent_copy": true
+    },
+    {
+      "original": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints/val-none-epoch=01-step=2266.ckpt",
+      "preserved": "/test21/conformer-rnnt-asr/output/phone69_460h_placement_recovery_20261114/original_checkpoints/layer3/val-none-epoch=01-step=2266.ckpt",
+      "sha256": "c4e453f61f8947ba9ea6439716bc577e88cd7e2dc59012d4b4ee6494a2595fbc",
+      "bytes": 51297216,
+      "independent_copy": true
+    }
+  ]
+}
