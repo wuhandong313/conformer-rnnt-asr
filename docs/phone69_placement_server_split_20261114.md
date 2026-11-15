@@ -1,5 +1,7 @@
 # 将三组双阶段实验迁移到其他服务器
 
+**已被2026-11-15安排替代：** 用户改为仍在当前服务器运行后三组，现行顺序是L3→L9→Mel+L3→Mel+L7→L2+L7，见[接回当前服务器的记录](phone69_placement_return_local_20261115.md)。下文的跨服务器prompt与清单仅保留为历史，本次不据此在其他服务器启动任务。
+
 2026-11-14用户明确将Mel+L3、Mel+L7、L2+L7从当前服务器的后续队列中移出，改由其他服务器执行。原部署JSON与源码保持原字节，以保留运行指纹；不能只改JSON，因为原恢复控制器已经将后续项载入内存。
 
 当前服务器由`scripts/server/continue_phone69_placement_local.py`接管：核对原队列父进程及L3训练进程身份，仅向旧队列父PID发送SIGTERM，不发送给训练PID或进程组；核实同一L3 worker仍存活后等待其严格完成。L3正常结束并通过50轮完整边界／best核验，才启动[仅L9清单](../configs/phone69_placement_current_server_layer9_20261114.json)。失败保留现场并停止。新的控制记录在服务器`output/phone69_460h_placement_local_handoff_20261114/`，L9原型校准及运行状态在`output/phone69_460h_placement_current_server_layer9_20261114/`。原状态文件保留为历史。
