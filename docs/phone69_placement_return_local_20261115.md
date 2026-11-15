@@ -8,6 +8,6 @@
 
 三组配方与此前Git跟踪的基础YAML、基线完全相同，reference后端、stride1、投影／主干128、10层、seed42、50轮保持原样。L2+L7仍为首阶段hard三帧邻域、第二阶段learned五帧融合。每组开跑前按原真实数据前后向／裁剪／Adam协议独立校准最大稳定phone-token预算，至少24步压力确认后再从头训练；不复制L3的8800预算。
 
-等待控制状态位于服务器`output/phone69_460h_placement_append_20261115/append_state.json`，三组校准／训练状态位于`output/phone69_460h_placement_current_server_three_20261115/queue_state.json`。不同runtime目录保证保留历史记录，原实验输出路径未改动；已有同名实验目录时拒绝覆盖。注册后的实际PID与状态将记录在`artifacts/runs/phone69_placement_return_local_20261115/startup.json`。
+等待控制状态位于服务器`output/phone69_460h_placement_append_20261115/append_state.json`，三组校准／训练状态位于`output/phone69_460h_placement_current_server_three_20261115/queue_state.json`。不同runtime目录保证保留历史记录，原实验输出路径未改动；已有同名实验目录时拒绝覆盖。等待控制器已注册，PID7212，状态`waiting_for_existing_l3_l9`；原L3训练PID557保持运行，已观察第47轮、global_step87400，预算8800。新等待控制器核对44个冻结源码／配置文件均一致，后三组训练尚未开始。[实际启动核验](../artifacts/runs/phone69_placement_return_local_20261115/startup.json)记录当时快照。
 
 本地4项安全检查通过，覆盖等待存活前序、拒绝失败／非完整退出、缺失L9完成记录不得读作成功、仅包含三项新训练且配方与原清单相同。服务器不运行软件测试。
