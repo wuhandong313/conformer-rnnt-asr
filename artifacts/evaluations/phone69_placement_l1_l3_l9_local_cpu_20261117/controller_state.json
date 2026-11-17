@@ -1,0 +1,15 @@
+{
+  "status": "complete",
+  "completed_models": [
+    "layer1",
+    "layer3",
+    "layer9"
+  ],
+  "controller_pid": 96454,
+  "updated_at_utc": "2026-11-17T04:24:55.825390+00:00",
+  "active_model": null,
+  "checkpoint_bytes": 51297280,
+  "evaluation_pid": null,
+  "progress": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer9/attempt_01/progress.json",
+  "log": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer9/attempt_01/run.log"
+}

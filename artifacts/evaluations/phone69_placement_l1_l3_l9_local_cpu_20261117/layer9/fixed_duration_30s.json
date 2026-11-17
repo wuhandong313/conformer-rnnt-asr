@@ -1,0 +1,54 @@
+{
+  "duration_seconds": 30,
+  "method": "pooled observed stage retention and fixed-length structure",
+  "calibration_utterances": 2620,
+  "stage_rates": [
+    {
+      "after_layer": 9,
+      "input_frames": 1947238,
+      "output_frames": 704469,
+      "retention": 0.36177858073846136,
+      "reduction": 0.6382214192615386,
+      "utterance_ratio_mean": 0.3636154818957253,
+      "utterance_ratio_std": 0.01511510095810307,
+      "utterances": 2620
+    }
+  ],
+  "trace": {
+    "projected_frames": 3001,
+    "layer_frames": [
+      3001,
+      3001,
+      3001,
+      3001,
+      3001,
+      3001,
+      3001,
+      3001,
+      3001,
+      1086
+    ],
+    "output_frames": 1086,
+    "stages": [
+      {
+        "after_layer": 9,
+        "input_frames": 3001,
+        "output_frames": 1086
+      }
+    ]
+  },
+  "components_macs": {
+    "encoder_weights": 10698576000,
+    "attention_products": 21051751680,
+    "projections": 66316288,
+    "fusion_mlp": 22415040,
+    "detector_dots": 384000,
+    "fusion_weighted_sum": 695040
+  },
+  "encoder_compression_gmac": 31.840138048,
+  "encoder_compression_gmac_per_audio_s": 1.0613379349333334,
+  "actual_beam20_macs": null,
+  "checkpoint_sha256": "5890e73762175447f7ba86ba6291893184a30febcae14101086b4ef61a35d2cc",
+  "manifest_sha256": "601ad508c8f698dd85222952cfa516d722a3670ca41333c6ebe13a3001c27449",
+  "theoretical_counter_sha256": "0a998ad2a931b23d157b86fb80077916501cddd6ded9134a78a8f73e941f0cb1"
+}

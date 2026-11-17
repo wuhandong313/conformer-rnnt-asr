@@ -1,0 +1,33 @@
+/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer9/model_source/conformer_rnnt/lightning_module.py:555: torchaudio.transforms._transforms.RNNTLoss has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/ffmpeg.py:88: UserWarning: torio.io._streaming_media_decoder.StreamingMediaDecoder has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+  s = torchaudio.io.StreamReader(src, format, None, buffer_size)
+layer9 100 / 2620
+layer9 200 / 2620
+layer9 300 / 2620
+layer9 400 / 2620
+layer9 500 / 2620
+layer9 600 / 2620
+layer9 700 / 2620
+layer9 800 / 2620
+layer9 900 / 2620
+layer9 1000 / 2620
+layer9 1100 / 2620
+layer9 1200 / 2620
+layer9 1300 / 2620
+layer9 1400 / 2620
+layer9 1500 / 2620
+layer9 1600 / 2620
+layer9 1700 / 2620
+layer9 1800 / 2620
+layer9 1900 / 2620
+layer9 2000 / 2620
+layer9 2100 / 2620
+layer9 2200 / 2620
+layer9 2300 / 2620
+layer9 2400 / 2620
+layer9 2500 / 2620
+layer9 2600 / 2620
+layer9 2620 / 2620
+{"utterances": 2620, "reference_phones": 189023, "phone_errors": 9302, "corpus_PER": 0.04921094258370674, "audio_seconds": 19452.480625, "components_macs": {"encoder_weights": 6941835868800, "attention_products": 5008927790336, "projections": 43023757312, "fusion_mlp": 14540240160, "detector_dots": 248911104, "fusion_weighted_sum": 450860160, "predictor": 2899153354752, "joiner": 427706513920}, "total_major_macs": 15335887296544, "gmac_per_audio_second": 0.7883769475053262, "encoder_compression_gmac_per_audio_second": 0.6173519799031801, "predictor_gmac_per_audio_second": 0.14903771969452867, "joiner_gmac_per_audio_second": 0.021987247907617437}
