@@ -29,9 +29,12 @@ def edit_distance(reference, hypothesis):
     return previous[-1]
 
 
-def verify_model(root, name):
+def verify_model(root, name, attempt_name='attempt_01'):
+    """Verify a preserved evaluation attempt; the original default is unchanged."""
     folder = root / name
-    attempt = folder / 'attempt_01'
+    if Path(attempt_name).name != attempt_name or not attempt_name.startswith('attempt_'):
+        raise ValueError('Expected an evaluation attempt directory name')
+    attempt = folder / attempt_name
     manifest = json.loads((folder / 'manifest.json').read_text())
     result = json.loads((attempt / 'result.json').read_text())
     verified(attempt / 'utterances.csv', result['csv_sha256'])
