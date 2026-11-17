@@ -1,0 +1,45 @@
+{
+  "complete": true,
+  "verified_at_utc": "2026-11-17T06:03:48.858707+00:00",
+  "verifier_sha256": "1ec3f30659be3eca1a92548082c2b7d1f93985aca676907f2adb974274917b4d",
+  "evaluation_attempt": "attempt_02",
+  "comparison": {
+    "validation_best": {
+      "checkpoint": "val-none-epoch=14-step=27324.ckpt",
+      "per_percent": 6.393930897298213,
+      "phone_errors": 12086,
+      "checkpoint_sha256": "34f99288beef3f8e2b4318804297412f145e71875d41c99af427fecd74ac8e79",
+      "csv_sha256": "c84d5ea87ce88085ea4535e7779b35b719bfee7561537a1add7d7a6294ba49b8"
+    },
+    "training_best": {
+      "name": "layer3_train_best",
+      "corpus_PER": 0.05737397036339493,
+      "per_percent": 5.737397036339493,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10845,
+      "encoder_compression_gmac_30s": 16.34707168,
+      "encoder_compression_gmac_per_audio_s_30s": 0.5449023893333333,
+      "full_corpus_components_macs": {
+        "encoder_weights": 4330980438400,
+        "attention_products": 2279210879744,
+        "projections": 45834203136,
+        "fusion_mlp": 16310491680,
+        "detector_dots": 248911104,
+        "fusion_weighted_sum": 505751680,
+        "predictor": 3166275207168,
+        "joiner": 474677127680
+      },
+      "full_corpus_total_gmac_per_audio_s": 0.530217364531728,
+      "checkpoint_sha256": "238c3e4afdb552d0d27b9f722aa38d3e066d167cea7f6746a45b5d018550e0e0",
+      "csv_sha256": "672a250f02a382c45d15149d7954ef29b05bc7ea83f2a682cc914b075c6c4377",
+      "independent_edit_distance_checked": 2620,
+      "checkpoint_hash_verified": true,
+      "frozen_model_source_verified": true,
+      "manifest_hash_verified": true
+    },
+    "delta_per_percentage_points": -0.6565338609587199,
+    "fewer_phone_errors": 1241,
+    "relative_error_reduction_percent": 10.268078768823433
+  }
+}

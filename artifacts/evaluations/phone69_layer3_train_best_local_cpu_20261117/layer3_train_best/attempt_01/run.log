@@ -1,0 +1,9 @@
+/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer3/model_source/conformer_rnnt/lightning_module.py:555: torchaudio.transforms._transforms.RNNTLoss has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+Traceback (most recent call last):
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/scripts/evaluation/eval_phone69_placement_checkpoint.py", line 234, in <module>
+    main()
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/scripts/evaluation/eval_phone69_placement_checkpoint.py", line 230, in main
+    run(args.manifest.resolve(), args.out.resolve())
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/scripts/evaluation/eval_phone69_placement_checkpoint.py", line 162, in run
+    raise ValueError('CPU runtime/thread budget differs: ' + repr(pools))
+ValueError: CPU runtime/thread budget differs: [{'user_api': 'openmp', 'internal_api': 'openmp', 'num_threads': 4, 'prefix': 'libomp', 'filepath': '/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torch/lib/libomp.dylib', 'version': None}, {'user_api': 'blas', 'internal_api': 'openblas', 'num_threads': 4, 'prefix': 'libopenblas', 'filepath': '/opt/anaconda3/envs/aligner/lib/libopenblas.0.dylib', 'version': '0.3.30', 'threading_layer': 'openmp', 'architecture': 'VORTEX'}, {'user_api': 'openmp', 'internal_api': 'openmp', 'num_threads': 4, 'prefix': 'libomp', 'filepath': '/opt/anaconda3/envs/aligner/lib/libomp.dylib', 'version': None}]

@@ -1,0 +1,44 @@
+{
+  "selected": {
+    "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints/train-none-epoch=30-step=57500.ckpt",
+    "bytes": 17126818,
+    "sha256": "238c3e4afdb552d0d27b9f722aa38d3e066d167cea7f6746a45b5d018550e0e0",
+    "logged_row": [
+      {
+        "epoch": 30,
+        "step": 57499,
+        "train_loss_step": 9.764921188354492,
+        "source": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/lightning_logs/version_1/metrics.csv"
+      }
+    ]
+  },
+  "callback": {
+    "monitor": "Losses/train_loss",
+    "best_model_score": 9.764921188354492,
+    "best_model_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints/train-none-epoch=30-step=57500.ckpt",
+    "current_score": 9.764921188354492,
+    "dirpath": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints",
+    "best_k_models": {
+      "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints/train-none-epoch=16-step=31000.ckpt": 13.636312484741211,
+      "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints/train-none-epoch=30-step=57500.ckpt": 9.764921188354492
+    },
+    "kth_best_model_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints/train-none-epoch=16-step=31000.ckpt",
+    "kth_value": 13.636312484741211,
+    "last_model_path": ""
+  },
+  "final_boundary": {
+    "path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/checkpoints/epoch-boundary-epoch=50-step=93300-2701e8ac20cf.ckpt",
+    "bytes": 51324786,
+    "sha256": "dfb03f548a9a8ad0358bfdadff0ab0b4fc54066ae81b4cfed7ab1e86dbfb0356",
+    "epoch": 50,
+    "global_step": 93300
+  },
+  "absolute_lowest_logged_step": {
+    "epoch": 45,
+    "step": 84509,
+    "train_loss_step": 4.002810001373291,
+    "source": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_supp20261112/lightning_logs/version_1/metrics.csv"
+  },
+  "selection_rule": "minimum Losses/train_loss among retained training-callback checkpoints; checked every 500 optimizer steps",
+  "scope": "diagnostic checkpoint-selection comparison"
+}

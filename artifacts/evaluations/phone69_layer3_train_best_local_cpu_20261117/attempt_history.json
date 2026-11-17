@@ -1,0 +1,38 @@
+{
+  "attempt_01": {
+    "status": "failed_before_decode",
+    "reason": "Launching the evaluator through caffeinate resulted in two OpenMP libraries, detected by the pre-decode runtime check.",
+    "log": "layer3_train_best/attempt_01/run.log",
+    "predictions_written": false
+  },
+  "attempt_02": {
+    "status": "complete",
+    "launch": {
+      "pid": 15901,
+      "model": "layer3_train_best",
+      "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261117/models/layer3_train_best/train-none-epoch=30-step=57500.ckpt",
+      "checkpoint_sha256": "238c3e4afdb552d0d27b9f722aa38d3e066d167cea7f6746a45b5d018550e0e0",
+      "checkpoint_bytes": 17126818,
+      "selected_training_score": 9.764921188354492,
+      "manifest": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/layer3_train_best/manifest.json",
+      "output": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/layer3_train_best/attempt_02",
+      "protocol": {
+        "device": "cpu",
+        "dtype": "float32",
+        "batch": 1,
+        "beam": 20,
+        "threads": 4,
+        "interop_threads": 1,
+        "data_workers": 0,
+        "openmp_max_active_levels": 1,
+        "warmup_utterances": 10,
+        "subset": "test-clean"
+      },
+      "attempt": "attempt_02",
+      "caffeinate_pid": 15902,
+      "launched_at_utc": "2026-11-17T05:45:40.694235+00:00"
+    },
+    "fix": "Start Python directly with the frozen runtime environment; run caffeinate separately as a sleep guard",
+    "result": "layer3_train_best/attempt_02/result.json"
+  }
+}
