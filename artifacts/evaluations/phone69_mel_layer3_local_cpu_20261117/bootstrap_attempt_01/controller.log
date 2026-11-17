@@ -1,0 +1,15 @@
+{"status": "preparing", "completed_models": [], "controller_pid": 55413, "updated_at_utc": "2026-11-17T11:11:06.765696+00:00"}
+{"status": "downloading_checkpoint", "completed_models": [], "controller_pid": 55413, "updated_at_utc": "2026-11-17T11:11:06.766725+00:00", "active_model": "mel_layer3", "checkpoint_bytes": 51458736}
+{"status": "failed", "completed_models": [], "controller_pid": 55413, "updated_at_utc": "2026-11-17T11:11:07.614302+00:00", "active_model": "mel_layer3", "checkpoint_bytes": 51458736, "error": "Checkpoint download failed: Permission denied, please try again.\nPermission denied, please try again.\nroot@192.168.19.114: Permission denied (publickey,password).\n", "traceback": "Traceback (most recent call last):\n  File \"/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/scripts/evaluation/run_phone69_placement_cpu_batch.py\", line 230, in <module>\n    main()\n  File \"/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/scripts/evaluation/run_phone69_placement_cpu_batch.py\", line 215, in main\n    checkpoint = download(entry)\n                 ^^^^^^^^^^^^^^^\n  File \"/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/scripts/evaluation/run_phone69_placement_cpu_batch.py\", line 60, in download\n    raise ConnectionError('Checkpoint download failed: ' + result.stderr.replace(secret, '[redacted]')[-800:])\nConnectionError: Checkpoint download failed: Permission denied, please try again.\nPermission denied, please try again.\nroot@192.168.19.114: Permission denied (publickey,password).\n\n"}
+Traceback (most recent call last):
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/scripts/evaluation/run_phone69_placement_cpu_batch.py", line 230, in <module>
+    main()
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/scripts/evaluation/run_phone69_placement_cpu_batch.py", line 215, in main
+    checkpoint = download(entry)
+                 ^^^^^^^^^^^^^^^
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/scripts/evaluation/run_phone69_placement_cpu_batch.py", line 60, in download
+    raise ConnectionError('Checkpoint download failed: ' + result.stderr.replace(secret, '[redacted]')[-800:])
+ConnectionError: Checkpoint download failed: Permission denied, please try again.
+Permission denied, please try again.
+root@192.168.19.114: Permission denied (publickey,password).
+

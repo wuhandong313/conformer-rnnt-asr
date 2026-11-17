@@ -1,0 +1,9 @@
+{
+  "controller_pid": 55413,
+  "caffeinate_pid": 55414,
+  "launched_at_utc": "2026-11-17T11:11:06.652393+00:00",
+  "metadata": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/phone69_460h/mel_layer3_eval_20261117/server_metadata.json",
+  "out": "artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117",
+  "log": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/phone69_460h/mel_layer3_eval_20261117/controller.log",
+  "code_commit": "68a369980a3330eb2edf101a317da70615156fd2"
+}

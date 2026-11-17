@@ -1,0 +1,33 @@
+/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/mel_layer3/model_source/conformer_rnnt/lightning_module.py:555: torchaudio.transforms._transforms.RNNTLoss has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/ffmpeg.py:88: UserWarning: torio.io._streaming_media_decoder.StreamingMediaDecoder has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+  s = torchaudio.io.StreamReader(src, format, None, buffer_size)
+mel_layer3 100 / 2620
+mel_layer3 200 / 2620
+mel_layer3 300 / 2620
+mel_layer3 400 / 2620
+mel_layer3 500 / 2620
+mel_layer3 600 / 2620
+mel_layer3 700 / 2620
+mel_layer3 800 / 2620
+mel_layer3 900 / 2620
+mel_layer3 1000 / 2620
+mel_layer3 1100 / 2620
+mel_layer3 1200 / 2620
+mel_layer3 1300 / 2620
+mel_layer3 1400 / 2620
+mel_layer3 1500 / 2620
+mel_layer3 1600 / 2620
+mel_layer3 1700 / 2620
+mel_layer3 1800 / 2620
+mel_layer3 1900 / 2620
+mel_layer3 2000 / 2620
+mel_layer3 2100 / 2620
+mel_layer3 2200 / 2620
+mel_layer3 2300 / 2620
+mel_layer3 2400 / 2620
+mel_layer3 2500 / 2620
+mel_layer3 2600 / 2620
+mel_layer3 2620 / 2620
+{"utterances": 2620, "reference_phones": 189023, "phone_errors": 11380, "corpus_PER": 0.06020431376075927, "audio_seconds": 19452.480625, "components_macs": {"encoder_weights": 1709605788800, "attention_products": 354639178496, "projections": 18106609664, "fusion_mlp": 16384866720, "detector_dots": 253147680, "fusion_weighted_sum": 506634720, "predictor": 1743353118720, "joiner": 217360550400}, "total_major_macs": 4060209895200, "gmac_per_audio_second": 0.2087245309979585, "encoder_compression_gmac_per_audio_second": 0.10792948552699047, "predictor_gmac_per_audio_second": 0.08962112094225513, "joiner_gmac_per_audio_second": 0.011173924528712902}

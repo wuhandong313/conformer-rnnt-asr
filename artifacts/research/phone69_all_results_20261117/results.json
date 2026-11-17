@@ -1,0 +1,1371 @@
+{
+  "schema": 1,
+  "snapshot_date": "2026-11-17",
+  "complete": true,
+  "duration_seconds": 30,
+  "input_mel_frames": 3001,
+  "counted_scope": "encoder and compression major MACs",
+  "per_protocol": "full test-clean, CPU/FP32/batch1/beam20, threads4/interop1/workers0",
+  "script_sha256": "f731a4e482de4c19a303793a5db04694c01e0d1fc61893024533cbcf63f732cf",
+  "models": [
+    {
+      "id": "S1",
+      "system": "Stride 1",
+      "inclusion": "existing_paper_selection",
+      "note": "",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 4.985636668553562,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 9424,
+      "encoder_compression_gmac_30s": 34.612237568,
+      "encoder_compression_gmac_per_audio_s_30s": 1.1537412522666666,
+      "stage_rates": [],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          3001
+        ],
+        "output_frames": 3001,
+        "stages": []
+      },
+      "components_macs_30s": {
+        "encoder_weights": 11427808000,
+        "attention_products": 23055362560,
+        "projections": 129067008,
+        "fusion_mlp": 0,
+        "detector_dots": 0,
+        "fusion_weighted_sum": 0
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.6675223217925195,
+        "predictor": 0.3154524555410012,
+        "joiner": 0.054996509443895156,
+        "total": 1.0379712867774158
+      },
+      "checkpoint": "val-none-epoch=43-step=136173.ckpt",
+      "checkpoint_sha256": "01409ecf07a8eb3d5536c56a552554bdd860801dc2ce790e011a580b46033c77",
+      "sources": {
+        "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/attempt_01/result.json": "5595928f5bdeb7b5898778d05e84cc1c77716f4a3e5c54bbd2f5ebbd83062fcf",
+        "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/attempt_01/utterances.csv": "fc0a59c9d26ea04a521173eb807a37998928e669f39fb66280a3471f17efd18d",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/config.yaml": "3c413f88b86b72247a86e1337e699e2390d25c0316528493e8b6de65c3787af3"
+      }
+    },
+    {
+      "id": "S2",
+      "system": "Stride 2",
+      "inclusion": "existing_paper_selection",
+      "note": "",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 256,
+      "per_percent": 4.898874740110992,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 9260,
+      "encoder_compression_gmac_30s": 26.539014656,
+      "encoder_compression_gmac_per_audio_s_30s": 0.8846338218666666,
+      "stage_rates": [],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          1501,
+          1501,
+          1501,
+          1501,
+          1501,
+          1501,
+          1501,
+          1501,
+          1501,
+          1501
+        ],
+        "output_frames": 1501,
+        "stages": []
+      },
+      "components_macs_30s": {
+        "encoder_weights": 14874549760,
+        "attention_products": 11535365120,
+        "projections": 129099776,
+        "fusion_mlp": 0,
+        "detector_dots": 0,
+        "fusion_weighted_sum": 0
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.6417736475897916,
+        "predictor": 0.1900717427160527,
+        "joiner": 0.029451478630633514,
+        "total": 0.8612968689364779
+      },
+      "checkpoint": "val-none-epoch=24-step=46360.ckpt",
+      "checkpoint_sha256": "362f3aae0bf25a87e15d10e18fe57edacd735398d0f8efeda7f5d67bfe0d055d",
+      "sources": {
+        "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/attempt_01/result.json": "312fed0584a0d57b72a8a0593d68a602cd6224389b43fb4c7c4afbe558fe6bcf",
+        "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/attempt_01/utterances.csv": "2a88e18879caefc4790788b73485beab1b3fb5b8d0f29a1365286fd71c2414e7",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/config.yaml": "0c9c26fcf52ff75d22b58afdd0d2da2b44d48f572c3cf84c3b8f7e658293cd32"
+      }
+    },
+    {
+      "id": "E09",
+      "system": "Stride 4（主干512）",
+      "inclusion": "existing_paper_selection",
+      "note": "",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 512,
+      "per_percent": 5.742687397829894,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10855,
+      "encoder_compression_gmac_30s": 27.679450112,
+      "encoder_compression_gmac_per_audio_s_30s": 0.9226483370666667,
+      "stage_rates": [],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          751,
+          751,
+          751,
+          751,
+          751,
+          751,
+          751,
+          751,
+          751,
+          751
+        ],
+        "output_frames": 751,
+        "stages": []
+      },
+      "components_macs_30s": {
+        "encoder_weights": 21774914560,
+        "attention_products": 5775370240,
+        "projections": 129165312,
+        "fusion_mlp": 0,
+        "detector_dots": 0,
+        "fusion_weighted_sum": 0
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.8020664161454203,
+        "predictor": 0.10932432461260949,
+        "joiner": 0.015581764358138234,
+        "total": 0.926972505116168
+      },
+      "checkpoint": "val-none-epoch=09-step=23150.ckpt",
+      "checkpoint_sha256": "005b39b31850128e7033f670cd58c6732d3dcc6ff738af1d79befc3d1a8c04a3",
+      "sources": {
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E09/result.json": "d97fab3b5f83bd9b4dc601c57399b036083592ee95974d9f9319fe1874310ef9",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E09/attempt_01/utterances.csv": "ddb61d71075f1b9a00ebee4c335bf9920e32a65c6532c51b865a52eeab8524f8",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E09/config.yaml": "773e1ca8b7b335463b2475935cdd235bc1d7ac1e8ed17b9e5c73df7cb8a1ced7",
+        "artifacts/research/phone69_460h_compute_20261108/full/E09.json": "32e164529117f2e88ccb54a2b23b2e077c99f9d36e068e785fbb5b9f1fa27b92"
+      }
+    },
+    {
+      "id": "E05",
+      "system": "Mel",
+      "inclusion": "existing_paper_selection",
+      "note": "",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 5.578157155478434,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10544,
+      "encoder_compression_gmac_30s": 8.114834832,
+      "encoder_compression_gmac_per_audio_s_30s": 0.2704944944,
+      "stage_rates": [
+        {
+          "after_layer": 0,
+          "input_frames": 1947238,
+          "output_frames": 764950,
+          "retention": 0.3928384717225116,
+          "reduction": 0.6071615282774885,
+          "utterance_ratio_mean": 0.393071664403057,
+          "utterance_ratio_std": 0.016941888369289275,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 1179,
+        "layer_frames": [
+          1179,
+          1179,
+          1179,
+          1179,
+          1179,
+          1179,
+          1179,
+          1179,
+          1179,
+          1179
+        ],
+        "output_frames": 1179,
+        "stages": [
+          {
+            "after_layer": 0,
+            "input_frames": 3001,
+            "output_frames": 1179
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 4489632000,
+        "attention_products": 3558504960,
+        "projections": 50706432,
+        "fusion_mlp": 15279840,
+        "detector_dots": 240000,
+        "fusion_weighted_sum": 471600
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.19552068267488604,
+        "predictor": 0.16262257536030808,
+        "joiner": 0.023927041821176435,
+        "total": 0.3820702998563706
+      },
+      "checkpoint": "val-none-epoch=48-step=121688.ckpt",
+      "checkpoint_sha256": "5630172734bcc316161794fe7168045376a6b47c94dc8fe8f30285ed5142e6a0",
+      "sources": {
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E05/result.json": "f9c9108d601c42df5976329bdda0a9afbaaa7ea44fd831e9ab15d07b45c51022",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E05/attempt_01/utterances.csv": "92fcc23ff24851c8517ae2a1fab350ca690d764a8ea3cbfe0430020388336fb9",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E05/config.yaml": "584a45b39917382123fd4116356f77ebc13eb94f1beb0c3652c3fd611b5e01a3",
+        "artifacts/research/phone69_460h_compute_20261108/full/E05.json": "d57a3a071926a3acefe4eaf855f5a3285c99b5141aace93835a55a16dc83b40f"
+      }
+    },
+    {
+      "id": "P_L1",
+      "system": "L1",
+      "inclusion": "new_placement_comparison",
+      "note": "",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 5.452246552006899,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10306,
+      "encoder_compression_gmac_30s": 10.956676416,
+      "encoder_compression_gmac_per_audio_s_30s": 0.3652225472,
+      "stage_rates": [
+        {
+          "after_layer": 1,
+          "input_frames": 1947238,
+          "output_frames": 777394,
+          "retention": 0.39922906188149576,
+          "reduction": 0.6007709381185042,
+          "utterance_ratio_mean": 0.39887190231819286,
+          "utterance_ratio_std": 0.01627036928154952,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          3001,
+          1198,
+          1198,
+          1198,
+          1198,
+          1198,
+          1198,
+          1198,
+          1198,
+          1198
+        ],
+        "output_frames": 1198,
+        "stages": [
+          {
+            "after_layer": 1,
+            "input_frames": 3001,
+            "output_frames": 1198
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 5248566400,
+        "attention_products": 5612246272,
+        "projections": 69986304,
+        "fusion_mlp": 24726720,
+        "detector_dots": 384000,
+        "fusion_weighted_sum": 766720
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.24701909929988686,
+        "predictor": 0.16346027636482996,
+        "joiner": 0.02420721684384148,
+        "total": 0.4346865925085583
+      },
+      "checkpoint": "val-none-epoch=44-step=88720.ckpt",
+      "checkpoint_sha256": "bdb28193b75d348b6b3273140d182fe1b6401ec73f5d9cdeb7b7f00146900b75",
+      "sources": {
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer1/attempt_01/result.json": "770433e239d327bca76f9579a19163df5251486a868a4f5caa9b1261b9d6b86c",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer1/attempt_01/utterances.csv": "a7f3c0bfe3a7db6bf0a01b0084f3232783f71e674e48510eb41fdf507455e0d7",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/verification.json": "5e70c89dcee8ee2b3767d24718228cd6318f9f7d00bbbb60288a9d725420f644",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer1/manifest.json": "9688cfadd2a3b453e4b2380df1d127903eadc38ca0ddbd254c89b1c7113719e3",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer1/config.yaml": "185763e9e578a6925d6a0aedd568f3cc197b853017b622b817f8775640d77479",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer1/fixed_duration_30s.json": "12d963601483f3ae42cec0972b7920bf422ba557c30438779e1496b6b82803aa"
+      }
+    },
+    {
+      "id": "E02",
+      "system": "L2",
+      "inclusion": "existing_paper_selection",
+      "note": "",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 5.514143781444586,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10423,
+      "encoder_compression_gmac_30s": 13.77474144,
+      "encoder_compression_gmac_per_audio_s_30s": 0.459158048,
+      "stage_rates": [
+        {
+          "after_layer": 2,
+          "input_frames": 1947238,
+          "output_frames": 792763,
+          "retention": 0.40712177966946,
+          "reduction": 0.59287822033054,
+          "utterance_ratio_mean": 0.407316854448892,
+          "utterance_ratio_std": 0.015384685816292896,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          3001,
+          3001,
+          1222,
+          1222,
+          1222,
+          1222,
+          1222,
+          1222,
+          1222,
+          1222
+        ],
+        "output_frames": 1222,
+        "stages": [
+          {
+            "after_layer": 2,
+            "input_frames": 3001,
+            "output_frames": 1222
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 6008262400,
+        "attention_products": 7669318144,
+        "projections": 70772736,
+        "fusion_mlp": 25222080,
+        "detector_dots": 384000,
+        "fusion_weighted_sum": 782080
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.2974389753041582,
+        "predictor": 0.16438210374477602,
+        "joiner": 0.024546395039527213,
+        "total": 0.4863674740884615
+      },
+      "checkpoint": "val-none-epoch=27-step=69137.ckpt",
+      "checkpoint_sha256": "c314db27cc84ebc90c128ad84751d7f4c7b6620ffbc6687c9b579a76d5e91317",
+      "sources": {
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E02/result.json": "7a40d860f78f6f017d0a2e7169fc9eb87eb8b4dba304fa669c47c93382d46c8e",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E02/attempt_01/utterances.csv": "be5e3a989315c38b57aabc3bf05a50d4c60a6eceebe0794a5781c3d5f02a149b",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E02/config.yaml": "733b2b28c723c90328f688b1063c425daa8cf424ca617519997ca6891baa5e0f",
+        "artifacts/research/phone69_460h_compute_20261108/full/E02.json": "7035559cad6b73e7efc70c38609194413cacead93e278e34dd0bcb2c577794d2"
+      }
+    },
+    {
+      "id": "P_L3",
+      "system": "L3",
+      "inclusion": "new_placement_comparison",
+      "note": "",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 6.393930897298213,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 12086,
+      "encoder_compression_gmac_30s": 16.31169168,
+      "encoder_compression_gmac_per_audio_s_30s": 0.543723056,
+      "stage_rates": [
+        {
+          "after_layer": 3,
+          "input_frames": 1947238,
+          "output_frames": 786946,
+          "retention": 0.40413447149244214,
+          "reduction": 0.5958655285075578,
+          "utterance_ratio_mean": 0.4042783207280732,
+          "utterance_ratio_std": 0.014402994597877876,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          3001,
+          3001,
+          3001,
+          1213,
+          1213,
+          1213,
+          1213,
+          1213,
+          1213,
+          1213
+        ],
+        "output_frames": 1213,
+        "stages": [
+          {
+            "after_layer": 3,
+            "input_frames": 3001,
+            "output_frames": 1213
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 6661715200,
+        "attention_products": 9553302016,
+        "projections": 70477824,
+        "fusion_mlp": 25036320,
+        "detector_dots": 384000,
+        "fusion_weighted_sum": 776320
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.3422957985894408,
+        "predictor": 0.16216141910014112,
+        "joiner": 0.02430428295465787,
+        "total": 0.5287615006442398
+      },
+      "checkpoint": "val-none-epoch=14-step=27324.ckpt",
+      "checkpoint_sha256": "34f99288beef3f8e2b4318804297412f145e71875d41c99af427fecd74ac8e79",
+      "sources": {
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer3/attempt_01/result.json": "44be537384f1187c4571550a2ac4e8850a5a781c3ee7f8cf85b78d4954e04bce",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer3/attempt_01/utterances.csv": "c84d5ea87ce88085ea4535e7779b35b719bfee7561537a1add7d7a6294ba49b8",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/verification.json": "5e70c89dcee8ee2b3767d24718228cd6318f9f7d00bbbb60288a9d725420f644",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer3/manifest.json": "ebddcf3ffac45d26041a68e9e2ad80efc937dfef6dcf44c4b7726ba83b4ebdd6",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer3/config.yaml": "389b5777824790d027fea6bb3a3d1ac0cdc7045bba27589ef8cb6511306dd027",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer3/fixed_duration_30s.json": "073e4249e44200569f009305594e7ca021a6cce1a4badf0b0775a720192f7f4d"
+      }
+    },
+    {
+      "id": "E06",
+      "system": "L5",
+      "inclusion": "existing_paper_selection",
+      "note": "",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 4.780899678875057,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 9037,
+      "encoder_compression_gmac_30s": 21.380416224,
+      "encoder_compression_gmac_per_audio_s_30s": 0.7126805408,
+      "stage_rates": [
+        {
+          "after_layer": 5,
+          "input_frames": 1947238,
+          "output_frames": 767905,
+          "retention": 0.394356005788712,
+          "reduction": 0.605643994211288,
+          "utterance_ratio_mean": 0.3939792809784728,
+          "utterance_ratio_std": 0.01364148804530132,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          1183,
+          1183,
+          1183,
+          1183,
+          1183
+        ],
+        "output_frames": 1183,
+        "stages": [
+          {
+            "after_layer": 5,
+            "input_frames": 3001,
+            "output_frames": 1183
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 7966336000,
+        "attention_products": 13319027200,
+        "projections": 69494784,
+        "fusion_mlp": 24417120,
+        "detector_dots": 384000,
+        "fusion_weighted_sum": 757120
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.4319309499429967,
+        "predictor": 0.1688300224292857,
+        "joiner": 0.02435867450401325,
+        "total": 0.6251196468762956
+      },
+      "checkpoint": "val-none-epoch=45-step=151700.ckpt",
+      "checkpoint_sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c",
+      "sources": {
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/result.json": "6b159a3898cd1c18bc44763741fa3704c89e2c2abfae022559ee827005397650",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/attempt_01/utterances.csv": "df7729151cefd0405d7c89f786fb1825b11c6ee042a49e7d4b939d4b7db4697d",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/config.yaml": "99742e054c65ff6a2e7b2a0a2a175a697bafda81599e49135c75a0ac5c610c6d",
+        "artifacts/research/phone69_460h_compute_20261108/full/E06.json": "484efee7f1511a1db48e74a2eb79db6585d16f3d92ed4c16bb97a31b26f658bf"
+      }
+    },
+    {
+      "id": "E07",
+      "system": "L7",
+      "inclusion": "existing_paper_selection",
+      "note": "",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 4.8602551012310675,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 9187,
+      "encoder_compression_gmac_30s": 26.499047712,
+      "encoder_compression_gmac_per_audio_s_30s": 0.8833015904,
+      "stage_rates": [
+        {
+          "after_layer": 7,
+          "input_frames": 1947238,
+          "output_frames": 732265,
+          "retention": 0.37605315837098496,
+          "reduction": 0.623946841629015,
+          "utterance_ratio_mean": 0.3767376824914218,
+          "utterance_ratio_std": 0.01403611898449449,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          1129,
+          1129,
+          1129
+        ],
+        "output_frames": 1129,
+        "stages": [
+          {
+            "after_layer": 7,
+            "input_frames": 3001,
+            "output_frames": 1129
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 9289235200,
+        "attention_products": 17117678080,
+        "projections": 67725312,
+        "fusion_mlp": 23302560,
+        "detector_dots": 384000,
+        "fusion_weighted_sum": 722560
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.5222799229140466,
+        "predictor": 0.1582784918794898,
+        "joiner": 0.023060877378460277,
+        "total": 0.7036192921719967
+      },
+      "checkpoint": "val-none-epoch=46-step=118826.ckpt",
+      "checkpoint_sha256": "c452301ca02f49a42b544cfdb7db26d893069fcff73adfbe890ed3798c9d165b",
+      "sources": {
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E07/result.json": "2a5a69925e7a51d0c65c85603e83f9d5354fccaf83b282abaecb92f3460e30b2",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E07/attempt_01/utterances.csv": "ca61d07a5fa41a42ce836526af75167329f08da342187f8639e16a7ff9d5c457",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E07/config.yaml": "8d94308e6d24536f29985588c6f1d7409486d453c451128afea8112edb7d1605",
+        "artifacts/research/phone69_460h_compute_20261108/full/E07.json": "2f9f6ed278b0afa6d7977408c31ad0a53721a29d936fec054c1c077be967090c"
+      }
+    },
+    {
+      "id": "P_L9",
+      "system": "L9",
+      "inclusion": "new_placement_comparison",
+      "note": "",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 4.921094258370674,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 9302,
+      "encoder_compression_gmac_30s": 31.840138048,
+      "encoder_compression_gmac_per_audio_s_30s": 1.0613379349333334,
+      "stage_rates": [
+        {
+          "after_layer": 9,
+          "input_frames": 1947238,
+          "output_frames": 704469,
+          "retention": 0.36177858073846136,
+          "reduction": 0.6382214192615386,
+          "utterance_ratio_mean": 0.3636154818957253,
+          "utterance_ratio_std": 0.01511510095810307,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          3001,
+          1086
+        ],
+        "output_frames": 1086,
+        "stages": [
+          {
+            "after_layer": 9,
+            "input_frames": 3001,
+            "output_frames": 1086
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 10698576000,
+        "attention_products": 21051751680,
+        "projections": 66316288,
+        "fusion_mlp": 22415040,
+        "detector_dots": 384000,
+        "fusion_weighted_sum": 695040
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.6173519799031801,
+        "predictor": 0.14903771969452867,
+        "joiner": 0.021987247907617437,
+        "total": 0.7883769475053262
+      },
+      "checkpoint": "val-none-epoch=49-step=117150.ckpt",
+      "checkpoint_sha256": "5890e73762175447f7ba86ba6291893184a30febcae14101086b4ef61a35d2cc",
+      "sources": {
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer9/attempt_01/result.json": "b8b0e7d5811820948fa9e7e1316c9112f4199a1f7ab2d38fc60d2289f3a308ad",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer9/attempt_01/utterances.csv": "2bb869c1f260e34aa097165f49b5a7daab3c56fa11a362c7dda4a9e7f669bb08",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/verification.json": "5e70c89dcee8ee2b3767d24718228cd6318f9f7d00bbbb60288a9d725420f644",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer9/manifest.json": "601ad508c8f698dd85222952cfa516d722a3670ca41333c6ebe13a3001c27449",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer9/config.yaml": "5be122935fa0b098fad225fb1c3234b56cf323f0ed3abd7d0eb2c5926ee2cac6",
+        "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer9/fixed_duration_30s.json": "98d555b49ab804402fcfa0528a9bf785339973fa06b47ce5efb1efd372618453"
+      }
+    },
+    {
+      "id": "P_MEL_L3",
+      "system": "Mel＋L3",
+      "inclusion": "new_placement_comparison",
+      "note": "",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 6.020431376075927,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 11380,
+      "encoder_compression_gmac_30s": 4.174300144,
+      "encoder_compression_gmac_per_audio_s_30s": 0.13914333813333332,
+      "stage_rates": [
+        {
+          "after_layer": 0,
+          "input_frames": 1947238,
+          "output_frames": 764950,
+          "retention": 0.3928384717225116,
+          "reduction": 0.6071615282774885,
+          "utterance_ratio_mean": 0.393071664403057,
+          "utterance_ratio_std": 0.016941888369289275,
+          "utterances": 2620
+        },
+        {
+          "after_layer": 3,
+          "input_frames": 764950,
+          "output_frames": 313523,
+          "retention": 0.4098607752140663,
+          "reduction": 0.5901392247859337,
+          "utterance_ratio_mean": 0.4070795557515202,
+          "utterance_ratio_std": 0.02098661684564491,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 1179,
+        "layer_frames": [
+          1179,
+          1179,
+          1179,
+          483,
+          483,
+          483,
+          483,
+          483,
+          483,
+          483
+        ],
+        "output_frames": 483,
+        "stages": [
+          {
+            "after_layer": 0,
+            "input_frames": 3001,
+            "output_frames": 1179
+          },
+          {
+            "after_layer": 3,
+            "input_frames": 1179,
+            "output_frames": 483
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 2634374400,
+        "attention_products": 1485605376,
+        "projections": 27899904,
+        "fusion_mlp": 25248960,
+        "detector_dots": 390784,
+        "fusion_weighted_sum": 780720
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.10792948552699047,
+        "predictor": 0.08962112094225513,
+        "joiner": 0.011173924528712902,
+        "total": 0.2087245309979585
+      },
+      "checkpoint": "val-none-epoch=48-step=88800.ckpt",
+      "checkpoint_sha256": "a905d1026801f3f68a750e6cc7179f8ea1fd2fa26982026e901a38127a56ddd2",
+      "sources": {
+        "artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/mel_layer3/attempt_01/result.json": "02fa0ee2b8c1749b0748cf6579045067a9cde4ee05ac0bb3a2093aadfe944d1b",
+        "artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/mel_layer3/attempt_01/utterances.csv": "97dd050410fe5839d02a03eac909939662480c7f9a5f2fe9223b7922bc0f02c7",
+        "artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/verification.json": "56d262609315565a787522ebebc9c9bd50ec6996362cf8abe9be893829d15d8d",
+        "artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/mel_layer3/manifest.json": "79384e599d995163703ea3c7f70b9fdad5593cf1448cd99a4920b1213faf764e",
+        "artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/mel_layer3/config.yaml": "1442a4ee32da6ec401d7630402187c86fc97cf9a19f10b160840d701042c44fd",
+        "artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/mel_layer3/fixed_duration_30s.json": "1d067eb7ba7b9eb99e9e1784b07ae3245f230c02f9f1f8a5cb580e1b7c7cfb18"
+      }
+    },
+    {
+      "id": "E10",
+      "system": "Mel＋L5",
+      "inclusion": "existing_paper_selection",
+      "note": "",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 5.6881966744787675,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10752,
+      "encoder_compression_gmac_30s": 5.267983696,
+      "encoder_compression_gmac_per_audio_s_30s": 0.17559945653333334,
+      "stage_rates": [
+        {
+          "after_layer": 0,
+          "input_frames": 1947238,
+          "output_frames": 764950,
+          "retention": 0.3928384717225116,
+          "reduction": 0.6071615282774885,
+          "utterance_ratio_mean": 0.393071664403057,
+          "utterance_ratio_std": 0.016941888369289275,
+          "utterances": 2620
+        },
+        {
+          "after_layer": 5,
+          "input_frames": 764950,
+          "output_frames": 307404,
+          "retention": 0.40186155957905745,
+          "reduction": 0.5981384404209426,
+          "utterance_ratio_mean": 0.39989301101734687,
+          "utterance_ratio_std": 0.020618252746703192,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 1179,
+        "layer_frames": [
+          1179,
+          1179,
+          1179,
+          1179,
+          1179,
+          474,
+          474,
+          474,
+          474,
+          474
+        ],
+        "output_frames": 474,
+        "stages": [
+          {
+            "after_layer": 0,
+            "input_frames": 3001,
+            "output_frames": 1179
+          },
+          {
+            "after_layer": 5,
+            "input_frames": 1179,
+            "output_frames": 474
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 3147312000,
+        "attention_products": 2066837760,
+        "projections": 27604992,
+        "fusion_mlp": 25063200,
+        "detector_dots": 390784,
+        "fusion_weighted_sum": 774960
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.13207142737416278,
+        "predictor": 0.08939827473710682,
+        "joiner": 0.011047644712407967,
+        "total": 0.23251734682367756
+      },
+      "checkpoint": "val-none-epoch=49-step=89901.ckpt",
+      "checkpoint_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+      "sources": {
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/result.json": "51cf1c85692a34752d279580b91038f36c2095a5174ecb479a5086b5e697a449",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/attempt_01/utterances.csv": "41ab794a0046c1a9006663775fa035f9b3b509e1f1654873054a89dee95da39f",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/config.yaml": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4",
+        "artifacts/research/phone69_460h_compute_20261108/full/E10.json": "424625ab26112c73fe03dc5e94b939a708e0b8e1db8c38fda2ad2766a270c550"
+      }
+    },
+    {
+      "id": "E08",
+      "system": "L2＋L5*",
+      "inclusion": "existing_paper_selection",
+      "note": "",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 5.4210334192135345,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10247,
+      "encoder_compression_gmac_30s": 18.615316768,
+      "encoder_compression_gmac_per_audio_s_30s": 0.6205105589333333,
+      "stage_rates": [
+        {
+          "after_layer": 2,
+          "input_frames": 1947238,
+          "output_frames": 1676106,
+          "retention": 0.8607607287861063,
+          "reduction": 0.13923927121389368,
+          "utterance_ratio_mean": 0.8604679748141549,
+          "utterance_ratio_std": 0.024972269483417953,
+          "utterances": 2620
+        },
+        {
+          "after_layer": 5,
+          "input_frames": 1676106,
+          "output_frames": 701682,
+          "retention": 0.4186382006865914,
+          "reduction": 0.5813617993134086,
+          "utterance_ratio_mean": 0.41815721388570676,
+          "utterance_ratio_std": 0.01398726505492919,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          3001,
+          3001,
+          2583,
+          2583,
+          2583,
+          1081,
+          1081,
+          1081,
+          1081,
+          1081
+        ],
+        "output_frames": 1081,
+        "stages": [
+          {
+            "after_layer": 2,
+            "input_frames": 3001,
+            "output_frames": 2583
+          },
+          {
+            "after_layer": 5,
+            "input_frames": 2583,
+            "output_frames": 1081
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 7294604800,
+        "attention_products": 11230841344,
+        "projections": 66152448,
+        "fusion_mlp": 22311840,
+        "detector_dots": 714496,
+        "fusion_weighted_sum": 691840
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.38387530805973946,
+        "predictor": 0.15610571484817998,
+        "joiner": 0.022365378017694303,
+        "total": 0.5623464009256137
+      },
+      "checkpoint": "val-none-epoch=25-step=73182.ckpt",
+      "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
+      "sources": {
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/result.json": "2de7f6ec7bc98cce0260278a249d4cc3fae2c291d5e91acd5aaf0a78508c98cd",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/attempt_01/utterances.csv": "0b270c3a9996f067629312d5d9f3e983f49e547c3b36b54b944dc0163dc44041",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/config.yaml": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
+        "artifacts/research/phone69_460h_compute_20261108/full/E08.json": "dc9a64598b8b19686c27378f3eb46290b566dabd21457617e13cfc53d536cc0d"
+      }
+    },
+    {
+      "id": "D_L3_TRAIN",
+      "system": "L3（训练回调best，诊断）",
+      "inclusion": "checkpoint_diagnostic",
+      "note": "",
+      "checkpoint_selection": "saved training callback batch loss",
+      "backbone": 128,
+      "per_percent": 5.737397036339493,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10845,
+      "encoder_compression_gmac_30s": 16.34707168,
+      "encoder_compression_gmac_per_audio_s_30s": 0.5449023893333333,
+      "stage_rates": [
+        {
+          "after_layer": 3,
+          "input_frames": 1947238,
+          "output_frames": 790237,
+          "retention": 0.40582455765551,
+          "reduction": 0.59417544234449,
+          "utterance_ratio_mean": 0.40558284520210897,
+          "utterance_ratio_std": 0.014261918356611948,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          3001,
+          3001,
+          3001,
+          1218,
+          1218,
+          1218,
+          1218,
+          1218,
+          1218,
+          1218
+        ],
+        "output_frames": 1218,
+        "stages": [
+          {
+            "after_layer": 3,
+            "input_frames": 3001,
+            "output_frames": 1218
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 6675043200,
+        "attention_products": 9575083776,
+        "projections": 70641664,
+        "fusion_mlp": 25139520,
+        "detector_dots": 384000,
+        "fusion_weighted_sum": 779520
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.34304574333660337,
+        "predictor": 0.1627697396649123,
+        "joiner": 0.024401881530212294,
+        "total": 0.530217364531728
+      },
+      "checkpoint": "train-none-epoch=30-step=57500.ckpt",
+      "checkpoint_sha256": "238c3e4afdb552d0d27b9f722aa38d3e066d167cea7f6746a45b5d018550e0e0",
+      "sources": {
+        "artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/layer3_train_best/attempt_02/result.json": "67a3e6849e08d913e03039553a80d7c9eca58ef57c2bf306961c8fb0dcbef533",
+        "artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/layer3_train_best/attempt_02/utterances.csv": "672a250f02a382c45d15149d7954ef29b05bc7ea83f2a682cc914b075c6c4377",
+        "artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/verification.json": "fe805960519dd181df53234168668772dee43c02175bd2d7c96bcc8791d21cac",
+        "artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/layer3_train_best/manifest.json": "8ebd20ec8d6016740f8a2f5d7f6f881d0151f6ac941657c0071cd2de169373e2",
+        "artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/layer3_train_best/config.yaml": "007c8f061213a4d55911caf6d2a3bb890edbf771a75b32128b7802cbe634c390",
+        "artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/layer3_train_best/fixed_duration_30s.json": "c68d180746e2ac2b52b17668df58e3ee8220f4df5b86499075f7b6fa2018e7d7"
+      }
+    },
+    {
+      "id": "E01",
+      "system": "Stride 4（主干128）",
+      "inclusion": "historically_excluded",
+      "note": "128-dimensional stride4 reference removed from paper selection at explicit user request; retained in original archives.",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 6.128883786629141,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 11585,
+      "encoder_compression_gmac_30s": 4.335941888,
+      "encoder_compression_gmac_per_audio_s_30s": 0.14453139626666667,
+      "stage_rates": [],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          751,
+          751,
+          751,
+          751,
+          751,
+          751,
+          751,
+          751,
+          751,
+          751
+        ],
+        "output_frames": 751,
+        "stages": []
+      },
+      "components_macs_30s": {
+        "encoder_weights": 2859808000,
+        "attention_products": 1443842560,
+        "projections": 32291328,
+        "fusion_mlp": 0,
+        "detector_dots": 0,
+        "fusion_weighted_sum": 0
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.11424077874736331,
+        "predictor": 0.11393440147184296,
+        "joiner": 0.015861890556181934,
+        "total": 0.24403707077538822
+      },
+      "checkpoint": "val-none-epoch=41-step=46858.ckpt",
+      "checkpoint_sha256": "856b24c15f7450c4334810728f3681596ee43653ac855e73efddd51cbd47fd3b",
+      "sources": {
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E01/result.json": "3ec80ed70144b9289fb7c3e0b6daeaed95849d642580c2222715eed792bb77fd",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E01/attempt_01/utterances.csv": "b92d9efcc2cc9c32243fce3393c2f8f4d949a5e0a4fb04ffc4df6af8ad538cfa",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E01/config.yaml": "c781d6b13c3a89ae314562a1b0ea18fda549cf4c771f0fdbd963dc2a18932d83",
+        "artifacts/research/phone69_460h_compute_20261108/full/E01.json": "7bae630a1858a54454ce6b23003db1b218163c6e5baddfbef79e6b5eed717ad6"
+      }
+    },
+    {
+      "id": "E03",
+      "system": "Stride 2＋L2",
+      "inclusion": "historically_excluded",
+      "note": "Stride2 plus L2 compression: high PER, not a selected operating point.",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 6.713468731318411,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 12690,
+      "encoder_compression_gmac_30s": 4.92092832,
+      "encoder_compression_gmac_per_audio_s_30s": 0.164030944,
+      "stage_rates": [
+        {
+          "after_layer": 2,
+          "input_frames": 974266,
+          "output_frames": 390801,
+          "retention": 0.4011235124699004,
+          "reduction": 0.5988764875300996,
+          "utterance_ratio_mean": 0.3998106703020821,
+          "utterance_ratio_std": 0.02014064421844746,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          1501,
+          1501,
+          602,
+          602,
+          602,
+          602,
+          602,
+          602,
+          602,
+          602
+        ],
+        "output_frames": 602,
+        "stages": [
+          {
+            "after_layer": 2,
+            "input_frames": 1501,
+            "output_frames": 602
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 2977094400,
+        "attention_products": 1895739904,
+        "projections": 35091456,
+        "fusion_mlp": 12425280,
+        "detector_dots": 192000,
+        "fusion_weighted_sum": 385280
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.12418051717185538,
+        "predictor": 0.09766458181001259,
+        "joiner": 0.013086476146021073,
+        "total": 0.23493157512788904
+      },
+      "checkpoint": "val-none-epoch=20-step=24540.ckpt",
+      "checkpoint_sha256": "dd2d95921a78963e99b94a5aac23c8e302580c9896d6fb25ce7d855e7480d04c",
+      "sources": {
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E03/result.json": "886bcc1b7c16fa3f229edab3d75581d1f2ce3c63911c07b409dd1448e36f8d48",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E03/attempt_01/utterances.csv": "92111e45f0b5ce2286a2ff56b48ad09b8c947a4a69344b6a07ea540b05f5cad5",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E03/config.yaml": "696e16cdb7e91d6089d8b1da227ef1e65235f3ba49cc5ccec233737ab7b1e9d2",
+        "artifacts/research/phone69_460h_compute_20261108/full/E03.json": "2b300ce50946a6eaae45a134b88db335436833eea5c18b6335a3db36d46fa664"
+      }
+    },
+    {
+      "id": "E04",
+      "system": "Stride 4＋L2",
+      "inclusion": "historically_excluded",
+      "note": "Stride4 plus L2 compression: high PER, outside selected quality range.",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 7.608068859345159,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 14381,
+      "encoder_compression_gmac_30s": 1.987294368,
+      "encoder_compression_gmac_per_audio_s_30s": 0.0662431456,
+      "stage_rates": [
+        {
+          "after_layer": 2,
+          "input_frames": 487781,
+          "output_frames": 195765,
+          "retention": 0.4013378954899842,
+          "reduction": 0.5986621045100158,
+          "utterance_ratio_mean": 0.3969734517887354,
+          "utterance_ratio_std": 0.02918738870019261,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          751,
+          751,
+          301,
+          301,
+          301,
+          301,
+          301,
+          301,
+          301,
+          301
+        ],
+        "output_frames": 301,
+        "stages": [
+          {
+            "after_layer": 2,
+            "input_frames": 751,
+            "output_frames": 301
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 1488928000,
+        "attention_products": 474319360,
+        "projections": 17545728,
+        "fusion_mlp": 6212640,
+        "detector_dots": 96000,
+        "fusion_weighted_sum": 192640
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 0.05640585023494906,
+        "predictor": 0.06883340109493094,
+        "joiner": 0.007741163053850864,
+        "total": 0.13298041438373087
+      },
+      "checkpoint": "val-none-epoch=44-step=43524.ckpt",
+      "checkpoint_sha256": "e00b5dd7bf64eb3eafb23c2c6f8a8a11578bef3b90c1c49cf7ca795ab10ef494",
+      "sources": {
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E04/result.json": "5ee23304b9ec32fe0d0d66959687a8af3d130529a3549b98543030b392405815",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E04/attempt_01/utterances.csv": "c74df09bfb115507e10e48d3ca6cd0af65a6f3e46af92883b557be99c52885cc",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E04/config.yaml": "752ea4b568f2e61dd839ff378218b623910e4c2f6e7b35bed43314b2dfa909b9",
+        "artifacts/research/phone69_460h_compute_20261108/full/E04.json": "54e228a997d81b4bdfee8159d4418d4b8425967b4798c8b94a499d96aabed17b"
+      }
+    },
+    {
+      "id": "S8",
+      "system": "Stride 8",
+      "inclusion": "historically_excluded",
+      "note": "Stride8: high PER and computation; not a selected operating point.",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 1024,
+      "per_percent": 6.678552345481767,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 12624,
+      "encoder_compression_gmac_30s": 38.627846144,
+      "encoder_compression_gmac_per_audio_s_30s": 1.2875948714666667,
+      "stage_rates": [],
+      "trace_30s": {
+        "projected_frames": 3001,
+        "layer_frames": [
+          376,
+          376,
+          376,
+          376,
+          376,
+          376,
+          376,
+          376,
+          376,
+          376
+        ],
+        "output_frames": 376,
+        "stages": []
+      },
+      "components_macs_30s": {
+        "encoder_weights": 35603169280,
+        "attention_products": 2895380480,
+        "projections": 129296384,
+        "fusion_mlp": 0,
+        "detector_dots": 0,
+        "fusion_weighted_sum": 0
+      },
+      "actual_beam20_gmac_per_audio_s": {
+        "encoder_compression": 1.2300953008318958,
+        "predictor": 0.0730109146556212,
+        "joiner": 0.008893451753277354,
+        "total": 1.3119996672407943
+      },
+      "checkpoint": "val-none-epoch=21-step=36553.ckpt",
+      "checkpoint_sha256": "b0d98ff359afee613f574b134f9111d39d737e0ec87a392b2d35e64afcb8ceef",
+      "sources": {
+        "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/attempt_01/result.json": "e1c89da5b5b293fd4a3c340a094e90087ea70d9a75f0d7dc922583748d7349d6",
+        "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/attempt_01/utterances.csv": "c98b7d616c9a9d2de9a6dbfe09d2e137034948949004f7567a996c4e0f5f788a",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/config.yaml": "378a5a26acec688a4a8f95152e8820b668ed0b202bdeda6db2158b2ea5fcb2f0"
+      }
+    },
+    {
+      "id": "E11",
+      "system": "Mel＋L5＋L8",
+      "inclusion": "historically_excluded",
+      "note": "Mel+L5+L8: high PER, not a selected operating point.",
+      "checkpoint_selection": "dev-clean validation loss",
+      "backbone": 128,
+      "per_percent": 7.061574517386773,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 13348,
+      "encoder_compression_gmac_30s": 4.924788656,
+      "encoder_compression_gmac_per_audio_s_30s": 0.16415962186666666,
+      "stage_rates": [
+        {
+          "after_layer": 0,
+          "input_frames": 1947238,
+          "output_frames": 764950,
+          "retention": 0.3928384717225116,
+          "reduction": 0.6071615282774885,
+          "utterance_ratio_mean": 0.393071664403057,
+          "utterance_ratio_std": 0.016941888369289275,
+          "utterances": 2620
+        },
+        {
+          "after_layer": 5,
+          "input_frames": 764950,
+          "output_frames": 293918,
+          "retention": 0.38423164912739394,
+          "reduction": 0.6157683508726061,
+          "utterance_ratio_mean": 0.38125183439338933,
+          "utterance_ratio_std": 0.020898720293714954,
+          "utterances": 2620
+        },
+        {
+          "after_layer": 8,
+          "input_frames": 293918,
+          "output_frames": 132046,
+          "retention": 0.44926135861022465,
+          "reduction": 0.5507386413897754,
+          "utterance_ratio_mean": 0.4458075049123538,
+          "utterance_ratio_std": 0.02861231607767704,
+          "utterances": 2620
+        }
+      ],
+      "trace_30s": {
+        "projected_frames": 1179,
+        "layer_frames": [
+          1179,
+          1179,
+          1179,
+          1179,
+          1179,
+          453,
+          453,
+          453,
+          204,
+          204
+        ],
+        "output_frames": 204,
+        "stages": [
+          {
+            "after_layer": 0,
+            "input_frames": 3001,
+            "output_frames": 1179
+          },
+          {
+            "after_layer": 5,
+            "input_frames": 1179,
+            "output_frames": 453
+          },
+          {
+            "after_layer": 8,
+            "input_frames": 453,
+            "output_frames": 204
+          }
+        ]
+      },
+      "components_macs_30s": {
+        "encoder_weights": 2917689600,
+        "attention_products": 1958160384,
+        "projections": 18757632,
+        "fusion_mlp": 28840320,
+        "detector_dots": 448640,
+        "fusion_weighted_sum": 892080
+      },
+      "actual_beam20_gmac_per_audio_s": null,
+      "checkpoint": "val-none-epoch=47-step=59949.ckpt",
+      "checkpoint_sha256": "8cd027fec53d5863bf95d93005fc5dcc516b5d79bd074999ec8d77e9e8100978",
+      "sources": {
+        "artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/result.json": "6b6616ca92aee0117b90ccba2b928b75a966cb7febb143a5db16d5b7a54c2598",
+        "artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/utterances.csv": "5a3ee0fb26b3de9156083164dd75c6795b90207016f95fe899ef2e219f85ca68",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/config.yaml": "395664ece5870461b8057776a9bf17954a062c45a96d848561579b0ef669a697",
+        "artifacts/research/phone69_fixed_duration_20261112/E11_stage_lengths.json": "848e651373be702fd61af1108d5bda57ac1043901698d0ec20f834942013403a"
+      }
+    }
+  ],
+  "pending": [
+    "mel_layer7",
+    "layers2_7_n3"
+  ]
+}
