@@ -1,12 +1,15 @@
 {
   "source": "artifacts/research/phone69_all_results_20261117/results.json",
   "source_sha256": "cc87a3ef931fd483acad56750bc95806aaa4386d47f559e4ce753aef44f4319b",
-  "script_sha256": "1c64b0b08181f08b634ecc0ead85ef47671f6c9f82197f9d60ce55224c59a86f",
+  "script_sha256": "92e085dcb47907bfd7e304262388eab41b7607d9b764e1030a179da8408687da",
   "image": "paper_results_30s.png",
-  "image_sha256": "41b4a508e792a31e8a6d85593f5e1331389ed080aa97f5ccb121a2013dc01eaa",
+  "image_sha256": "9b0ab22c4f651e4ef7214f52366494cab8e33a9ba4acad3ea37132e33e4a5873",
   "duration_seconds": 30,
   "scope": "encoder and compression major MACs",
-  "selection": "Original paper comparison and newly evaluated placement comparisons; historical exclusions and training-loss checkpoint diagnosis omitted.",
+  "selection": "Original paper comparison and newly evaluated placement comparisons; historical exclusions, training-loss checkpoint diagnosis, and user-excluded L2+L5 omitted.",
+  "user_exclusions": {
+    "E08": "L2+L5 removed from the image by the user on 2026-11-17"
+  },
   "selected_ids": [
     "S1",
     "S2",
@@ -19,8 +22,7 @@
     "E07",
     "P_L9",
     "P_MEL_L3",
-    "E10",
-    "E08"
+    "E10"
   ],
   "models": [
     {
@@ -867,96 +869,10 @@
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/config.yaml": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4",
         "artifacts/research/phone69_460h_compute_20261108/full/E10.json": "424625ab26112c73fe03dc5e94b939a708e0b8e1db8c38fda2ad2766a270c550"
       }
-    },
-    {
-      "id": "E08",
-      "system": "L2＋L5*",
-      "inclusion": "existing_paper_selection",
-      "note": "",
-      "checkpoint_selection": "dev-clean validation loss",
-      "backbone": 128,
-      "per_percent": 5.4210334192135345,
-      "utterances": 2620,
-      "reference_phones": 189023,
-      "phone_errors": 10247,
-      "encoder_compression_gmac_30s": 18.615316768,
-      "encoder_compression_gmac_per_audio_s_30s": 0.6205105589333333,
-      "stage_rates": [
-        {
-          "after_layer": 2,
-          "input_frames": 1947238,
-          "output_frames": 1676106,
-          "retention": 0.8607607287861063,
-          "reduction": 0.13923927121389368,
-          "utterance_ratio_mean": 0.8604679748141549,
-          "utterance_ratio_std": 0.024972269483417953,
-          "utterances": 2620
-        },
-        {
-          "after_layer": 5,
-          "input_frames": 1676106,
-          "output_frames": 701682,
-          "retention": 0.4186382006865914,
-          "reduction": 0.5813617993134086,
-          "utterance_ratio_mean": 0.41815721388570676,
-          "utterance_ratio_std": 0.01398726505492919,
-          "utterances": 2620
-        }
-      ],
-      "trace_30s": {
-        "projected_frames": 3001,
-        "layer_frames": [
-          3001,
-          3001,
-          2583,
-          2583,
-          2583,
-          1081,
-          1081,
-          1081,
-          1081,
-          1081
-        ],
-        "output_frames": 1081,
-        "stages": [
-          {
-            "after_layer": 2,
-            "input_frames": 3001,
-            "output_frames": 2583
-          },
-          {
-            "after_layer": 5,
-            "input_frames": 2583,
-            "output_frames": 1081
-          }
-        ]
-      },
-      "components_macs_30s": {
-        "encoder_weights": 7294604800,
-        "attention_products": 11230841344,
-        "projections": 66152448,
-        "fusion_mlp": 22311840,
-        "detector_dots": 714496,
-        "fusion_weighted_sum": 691840
-      },
-      "actual_beam20_gmac_per_audio_s": {
-        "encoder_compression": 0.38387530805973946,
-        "predictor": 0.15610571484817998,
-        "joiner": 0.022365378017694303,
-        "total": 0.5623464009256137
-      },
-      "checkpoint": "val-none-epoch=25-step=73182.ckpt",
-      "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
-      "sources": {
-        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/result.json": "2de7f6ec7bc98cce0260278a249d4cc3fae2c291d5e91acd5aaf0a78508c98cd",
-        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/attempt_01/utterances.csv": "0b270c3a9996f067629312d5d9f3e983f49e547c3b36b54b944dc0163dc44041",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
-        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/config.yaml": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
-        "artifacts/research/phone69_460h_compute_20261108/full/E08.json": "dc9a64598b8b19686c27378f3eb46290b566dabd21457617e13cfc53d536cc0d"
-      }
     }
   ],
   "excluded_ids": [
+    "E08",
     "D_L3_TRAIN",
     "E01",
     "E03",

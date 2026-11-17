@@ -2,7 +2,7 @@
 
 2026-11-17最新[全部实验结果表](../artifacts/research/phone69_all_results_20261117/REPORT.md)汇总19份checkpoint的完整test-clean PER和统一30秒编码器＋压缩理论MAC，并单列实际beam20解码成本。新增Mel＋L3：PER **6.020431%**、**4.174300 GMAC／30秒**；L1／L3／L9及L3训练best诊断也已纳入。完整来源和SHA见[机器可读记录](../artifacts/research/phone69_all_results_20261117/results.json)。下文保留原结果快照。
 
-用户要求的[图片版结果表](../artifacts/research/phone69_paper_results_table_20261117/paper_results_30s.png)仅保留13组论文对比项，省略5组历史未入选实验及L3训练best诊断；L3使用原验证best。[图片数据与来源哈希](../artifacts/research/phone69_paper_results_table_20261117/data.json)可复核。
+用户要求的[图片版结果表](../artifacts/research/phone69_paper_results_table_20261117/paper_results_30s.png)仅保留12组论文对比项，省略5组历史未入选实验、L3训练best诊断，并按最新要求移除L2＋L5；L3使用原验证best。[图片数据与来源哈希](../artifacts/research/phone69_paper_results_table_20261117/data.json)可复核。
 
 当前研究使用 corpus PER 与主要乘加量 GMAC／输入音频秒比较质量和计算成本。PER 来自 [2026-11-08 权威评测归档](../papers/phone69_460h_cpu_authoritative_20261108/README.md)，全量计数使用相同 test-clean 的 2,620 句、19,452.480625 秒音频、FP32、batch 1、beam 20。下表为 E01–E06 已完成计数的快照，E07–E10 待补；试测数不填入正式表。
 
