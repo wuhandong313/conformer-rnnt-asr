@@ -6,10 +6,30 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts/evaluation'))
-from eval_phone69_placement_checkpoint import COMPONENTS, placement_encoder_macs, summarize
+from eval_phone69_placement_checkpoint import COMPONENTS, placement_encoder_macs, placement_sites, summarize
 
 
 class PlacementCPUCountsTest(unittest.TestCase):
+    def test_legacy_and_multistage_manifest_positions(self):
+        self.assertEqual(placement_sites({'position': 3}), [3])
+        self.assertEqual(placement_sites({'positions': [0, 3]}), [0, 3])
+        for sites in ([], [3, 0], [0, 0], [True], [11]):
+            with self.subTest(sites=sites), self.assertRaises(ValueError):
+                placement_sites({'positions': sites})
+
+    def test_mel_layer3_counts_both_stage_widths(self):
+        config = ROOT / 'configs/server_phone69_460h_placement_mel_layer3_stride1_s42_e50_supp20261112.yaml'
+        model = yaml.safe_load(config.read_text())['model']
+        lengths = [40] * 3 + [16] * 7
+        result = placement_encoder_macs(model, 100, lengths, 16)
+        self.assertEqual(result, dict(
+            encoder_weights=380800 * sum(lengths),
+            attention_products=256 * sum(t * t for t in lengths),
+            projections=40 * 80 * 128 + 16 * 128 * 256,
+            fusion_mlp=40 * (5 * 80 * 32 + 32 * 5) + 16 * (5 * 128 * 32 + 32 * 5),
+            detector_dots=99 * 80 + 39 * 128,
+            fusion_weighted_sum=40 * 5 * 80 + 16 * 5 * 128))
+
     def model(self, site):
         path = ROOT / ('configs/server_phone69_460h_placement_layer%d_stride1_s42_e50_supp20261112.yaml' % site)
         return yaml.safe_load(path.read_text())['model']

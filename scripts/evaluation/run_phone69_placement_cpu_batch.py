@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Download completed L1/L3/L9 weights and evaluate them serially at home."""
+"""Download explicitly selected completed placements and evaluate at home."""
 from __future__ import annotations
 
 import argparse
@@ -14,7 +14,7 @@ import subprocess
 import sys
 import traceback
 
-from eval_phone69_placement_checkpoint import THREAD_ENV, now, sha, verified, write_json
+from eval_phone69_placement_checkpoint import THREAD_ENV, now, placement_sites, sha, verified, write_json
 
 ROOT = Path(__file__).resolve().parents[2]
 ARCHIVE = ROOT / 'papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive'
@@ -122,7 +122,8 @@ def prepare(metadata, entry, checkpoint):
     cfg['trainer']['devices'] = 1
     if cfg['decoding']['beam_width'] != 20 or cfg['model']['compression'].get('execution_backend', 'reference') != 'reference':
         raise ValueError('Preserve beam20 and the reference compression backend')
-    if [s['after_layer'] for s in cfg['model']['compression']['stages']] != [entry['position']]:
+    positions = placement_sites(entry)
+    if [s['after_layer'] for s in cfg['model']['compression']['stages']] != positions:
         raise ValueError('Wrong compression placement')
     config = folder / 'config.yaml'
     config.write_text(yaml.safe_dump(cfg, sort_keys=False, allow_unicode=True))
@@ -132,8 +133,9 @@ def prepare(metadata, entry, checkpoint):
         raise ValueError('Training statistics differ from the comparison protocol')
     result = json.loads((ARCHIVE / 'E09/result.json').read_text())
     reference = ARCHIVE / result['csv']
-    manifest = dict(schema=1, model=dict(name=entry['name'], position=entry['position'],
-                    expected_parameters=4236299, training_commit=run['code_commit'],
+    placement = {'position': positions[0]} if len(positions) == 1 else {'positions': positions}
+    manifest = dict(schema=1, model=dict(name=entry['name'], **placement,
+                    expected_parameters=entry.get('expected_parameters', 4236299), training_commit=run['code_commit'],
                     checkpoint=str(checkpoint), checkpoint_sha256=sha(checkpoint),
                     config=str(config), config_sha256=sha(config),
                     training_config=str(original), training_config_sha256=sha(original),
@@ -191,12 +193,18 @@ def evaluate(entry, path, manifest):
 
 
 def main():
+    global OUT, MODELS
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--metadata', required=True, type=Path)
+    parser.add_argument('--names', nargs='+', default=['layer1', 'layer3', 'layer9'],
+                        help='Explicit model names in metadata order')
+    parser.add_argument('--out', type=Path, default=OUT)
+    parser.add_argument('--models-root', type=Path, default=MODELS)
     args = parser.parse_args()
+    OUT, MODELS = args.out.resolve(), args.models_root.resolve()
     metadata = json.loads(args.metadata.read_text())
-    if [entry['position'] for entry in metadata['models']] != [1, 3, 9]:
-        raise ValueError('Expected the three requested placements in order')
+    if [entry['name'] for entry in metadata['models']] != args.names or len(set(args.names)) != len(args.names):
+        raise ValueError('Metadata must match the explicitly requested model names in order')
     OUT.mkdir(parents=True, exist_ok=True)
     with (OUT / 'controller.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -210,7 +218,7 @@ def main():
         for entry, path, manifest in prepared:
             result = evaluate(entry, path, manifest)
             results[entry['name']] = result
-            write_json(OUT / 'summary.json', dict(complete=len(results) == 3, models=results,
+            write_json(OUT / 'summary.json', dict(complete=len(results) == len(prepared), models=results,
                                                   updated_at_utc=now()))
             state(completed_models=list(results), evaluation_pid=None)
         (OUT / 'EVALUATION_COMPLETE').write_text(now() + '\n')

@@ -47,6 +47,16 @@ def now():
     return datetime.now(timezone.utc).isoformat()
 
 
+def placement_sites(entry):
+    """Accept legacy single-site manifests and explicit multi-stage manifests."""
+    sites = entry['positions'] if 'positions' in entry else [entry['position']]
+    if (not isinstance(sites, list) or not sites
+            or any(type(site) is not int or not 0 <= site <= 10 for site in sites)
+            or sites != sorted(set(sites))):
+        raise ValueError('Expected ordered, unique compression positions in the ten-layer encoder')
+    return sites
+
+
 def placement_encoder_macs(model, frames, lengths, output_frames):
     """Independent structural count using the observed per-layer lengths."""
     from theoretical_phone69_macs import encoder_macs, observed_trace
@@ -78,8 +88,8 @@ def summarize(rows, expected_uids, expected_phones=N_PHONES):
 def run(manifest_path, out):
     manifest = json.loads(manifest_path.read_text())
     entry = manifest['model']
-    position = entry['position']
-    if position not in (1, 3, 9) or manifest['protocol'] != dict(
+    positions = placement_sites(entry)
+    if manifest['protocol'] != dict(
             device='cpu', dtype='float32', batch=1, beam=20, threads=4, interop_threads=1,
             data_workers=0, openmp_max_active_levels=1, warmup_utterances=10, subset='test-clean'):
         raise ValueError('Evaluation differs from the established placement CPU protocol')
@@ -122,6 +132,8 @@ def run(manifest_path, out):
     training = yaml.safe_load(Path(entry['training_config']).read_text())
     if cfg['model'] != training['model'] or cfg['model']['time_reduction_stride'] != 1:
         raise ValueError('Evaluation model differs from the training recipe')
+    if [stage['after_layer'] for stage in cfg['model']['compression']['stages']] != positions:
+        raise ValueError('Manifest compression positions differ from the training recipe')
     verified(cfg['paths']['global_stats_path'], manifest['global_stats_sha256'])
     verified(cfg['tokenizer']['vocab_path'], manifest['vocab_sha256'])
     audio = manifest['audio']
