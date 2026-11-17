@@ -4,6 +4,8 @@
 
 2026-11-12 用户要求：用真实数据测得各压缩层的保留率，再用固定算法计算统一输入长度的 MAC；缺失的逐层帧数在本地重新实测。主表采用 **30 秒、batch 1、编码器与压缩模块**，同时列 GMAC/30秒输入与 GMAC/输入音频秒。
 
+2026-11-17最新[全部结果表](../artifacts/research/phone69_all_results_20261117/REPORT.md)已覆盖19份checkpoint：原14组、L1／L3／L9、Mel＋L3及独立的L3训练best诊断。L1／L3／L9和Mel＋L3均完成全量本地解码与逐层帧数核验；Mel＋L7、L2＋L7仍不填待核验值。下文2026-11-12的14组清单作为原协议快照保留。
+
 - [Fast Conformer，ASRU 2023，§3.1.1、表4](https://arxiv.org/html/2305.05084v4#S3.SS1.SSS1)：使用单条30秒音频，DeepSpeed统计编码器MAC，表列GMAC；不包含RNNT decoder。
 - [Zipformer，ICLR 2024，§4.0.2、表2](https://arxiv.org/html/2310.11230v4)：明确用30秒音频统计编码器GFLOPs，同时比较Conformer、Squeezeformer、Branchformer等。
 

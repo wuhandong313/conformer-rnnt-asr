@@ -17,3 +17,7 @@
 初次bootstrap因scp认证失败在权重下载阶段退出，没有产生预测；日志保留在`bootstrap_attempt_01/`。改为通过既有SSH连接流式读取checkpoint后，51458736字节权重SHA通过，第二次bootstrap正常进入完整评测。
 
 汇总入口为`scripts/evaluation/summarize_phone69_results.py`，输出`artifacts/research/phone69_all_results_20261117/`。本机已对18份既有checkpoint结果完成来源哈希、完整语料覆盖和30秒结构公式核对；Mel＋L3完成独立核验后才生成正式19行总表。
+
+2026-11-17北京时间19:20完成评测及独立核验：2620句共11380个音素错误，corpus PER为6.020431%。固定30秒编码器与压缩为4.174300 GMAC（0.139143 GMAC／音频秒）。Mel与L3阶段条件保留率分别为0.392838472、0.409860775，按3001→1179→483帧推导；实际完整语料beam20的编码器与压缩、predictor、joiner分别为0.107929、0.089621、0.011174 GMAC／音频秒。
+
+19份checkpoint结果已完整生成，并在本机重新生成总表，与家中归档逐字节一致。[Mel＋L3报告](../artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/REPORT.md) · [全部结果表](../artifacts/research/phone69_all_results_20261117/REPORT.md) · [完整CSV](../artifacts/research/phone69_all_results_20261117/summary.csv)
