@@ -88,3 +88,5 @@ remote-access.md
 !/artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer*/attempt_*/run.log
 /artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/controller.lock
 /artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/runtime_lib/
+!/artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/layer*/attempt_*/run.log
+/artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/runtime_lib/

@@ -11,3 +11,16 @@
 沿用完整test-clean 2620句、189023个参考音素、19452.480625秒音频，CPU／FP32／batch1／beam20、4线程／interop1、worker0、预热10句。复用L3的冻结训练源码、输入清单、归一化统计和词表，严格验证权重及全部输入SHA。完整解码同步记录逐层长度和主要MAC，并以独立公式核对编码器六个分项。
 
 评测归档目录为`artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/`。第一次启动因检测到重复OpenMP运行库，在解码前被一致性检查中止；原日志保留在`layer3_train_best/attempt_01/`。修正启动方式后使用独立的`attempt_02/`，直接启动评测Python并另设防休眠进程。独立核验显式选择已完成的attempt，保留所有失败记录。
+
+2026-11-17完成全量评测，2620句的编辑距离、语料PER、输入与checkpoint哈希均通过独立核验。
+
+| 选择规则 | checkpoint | Corpus PER | 音素错误数 |
+| --- | --- | ---: | ---: |
+| 验证损失best | `val-none-epoch=14-step=27324.ckpt` | 6.393931% | 12086 |
+| 已保存的训练回调best | `train-none-epoch=30-step=57500.ckpt` | 5.737397% | 10845 |
+
+训练回调best少1241个音素错误，PER降低0.656534个百分点，相对错误数减少10.268%。固定30秒编码器与压缩理论计算量为16.347072 GMAC，即0.544902 GMAC／音频秒；全语料实际解码的编码器与压缩、predictor、joiner分别为0.343046、0.162770、0.024402 GMAC／音频秒。
+
+两份checkpoint的test-clean PER排序与验证损失排序不一致，因此先前仅凭验证损失不能判断早期checkpoint是否充分优化PER。本次结果作为选模诊断保留，正式选模需在dev PER上核对；原验证损失选模结果不被覆盖。
+
+[完整报告](../artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/REPORT.md) · [独立核验](../artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/verification.json) · [选模依据](../artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/selection.json)
