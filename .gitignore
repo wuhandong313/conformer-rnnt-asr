@@ -85,3 +85,6 @@ remote-access.md
 !/artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride*/attempt_*/run.log
 /artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/controller.lock
 /artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/runtime_lib/
+!/artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer*/attempt_*/run.log
+/artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/controller.lock
+/artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/runtime_lib/
