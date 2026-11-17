@@ -13,3 +13,7 @@
 总表保留所有已完成实验，并标记原论文入选／排除理由。L3训练回调best属于额外选模诊断，与原验证损失best分别列出，不覆盖历史结果；未完训和未核验的实验不填PER或30秒MAC。
 
 本机验证：6项placement评测回归、9项理论MAC回归通过，含Mel＋L3两阶段宽度和压缩前后长度的独立计数；评测入口语法与Git whitespace检查通过。
+
+初次bootstrap因scp认证失败在权重下载阶段退出，没有产生预测；日志保留在`bootstrap_attempt_01/`。改为通过既有SSH连接流式读取checkpoint后，51458736字节权重SHA通过，第二次bootstrap正常进入完整评测。
+
+汇总入口为`scripts/evaluation/summarize_phone69_results.py`，输出`artifacts/research/phone69_all_results_20261117/`。本机已对18份既有checkpoint结果完成来源哈希、完整语料覆盖和30秒结构公式核对；Mel＋L3完成独立核验后才生成正式19行总表。
