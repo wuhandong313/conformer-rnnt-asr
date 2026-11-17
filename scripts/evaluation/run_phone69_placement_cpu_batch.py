@@ -52,12 +52,16 @@ def download(entry):
     secret = args[args.index('-p') + 1]
     env = dict(os.environ, SSHPASS=secret)
     state(status='downloading_checkpoint', active_model=entry['name'], checkpoint_bytes=entry['checkpoint_bytes'])
-    result = subprocess.run(['sshpass', '-e', 'scp', '-O', '-o', 'ConnectTimeout=15',
-                             'internal:' + entry['best_checkpoint'], str(partial)],
-                            cwd=ROOT, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                            text=True, timeout=600)
+    # Use the same SSH/ProxyJump route as metadata reads, without a second scp
+    # authentication path. Only checkpoint bytes go to the partial file.
+    with partial.open('xb') as stream:
+        result = subprocess.run(['sshpass', '-e', 'ssh', '-o', 'ConnectTimeout=15',
+                                 'internal', 'cat -- ' + shlex.quote(entry['best_checkpoint'])],
+                                cwd=ROOT, env=env, stdout=stream, stderr=subprocess.PIPE,
+                                timeout=600)
     if result.returncode:
-        raise ConnectionError('Checkpoint download failed: ' + result.stderr.replace(secret, '[redacted]')[-800:])
+        detail = result.stderr.decode(errors='replace').replace(secret, '[redacted]')[-800:]
+        raise ConnectionError('Checkpoint download failed: ' + detail)
     if partial.stat().st_size != entry['checkpoint_bytes']:
         raise ValueError('Incomplete checkpoint transfer')
     verified(partial, entry['checkpoint_sha256'])
