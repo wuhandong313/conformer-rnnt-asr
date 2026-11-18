@@ -1,81 +1,44 @@
 # ExtremaFuse · ACL 2027 长文写作框架
 
-**工作题目**　*ExtremaFuse for Adaptive Compression of Frame-Level Speech Representations*
+**英文稿：[ExtremaFuse: Where to Fuse Speech Frames for Phone Recognition](main.tex)**。当前稿按 2026-11-17 最终入选的 12 个系统重写。查看新版排版请打开英文稿的编辑器预览；[本轮编译核验](build_20261118.json)：正文至第 5 页，连参考文献和附录共 7 页。目录中的 `main.pdf` 是 11 月 12 日的历史导出。
 
-**论文问题**　在相同解码协议下，按声学内容选择位置并融合邻近帧，能否用更少的主要乘加量达到固定步长系统的音素识别质量门槛？如果第二次压缩进一步缩短了序列，哪些输入仍参与输出、哪些识别错误随之改变？
+**论文问题：** 同一个五帧融合算子，放在声学输入、第几层编码器或两个位置，怎样改变计算预算内能达到的音素识别质量？核心证据是[完整性能—计算量曲线](figures/quality_budget_30s.pdf)。纵轴用自然整句的 corpus PER；横轴用同一 30 秒输入的编码器＋压缩理论 GMAC。用相同宽度对照，再比较相同预算内可选择的系统。
 
-英文稿写在 `main.tex`，用内置 LaTeX 编辑器编译并查看当前预览。`% FILL`注释标明待补证据；磁盘上的`main.pdf`已于2026-11-12重新编译，包含补充层位网格和10个已有系统的自然语速PER／MAC表，尚未完成的新层位仍标Pending。[编译与逐页检查记录](build_20261112.json)。`references.bib`保存实际引用的文献。实验来源仍以原始记录为准。[英文主文件](main.tex) · [引文库](references.bib) · [原编号权威指标](../phone69_460h_cpu_authoritative_20261108/summary.csv) · [逐项比较与写作笔记](../extremafuse_results_and_writing_20261108.md) · [补实验计划](../phone69_acl_2027_plan_20261107.md)
+## 七节正文与论证顺序
 
-## 当前论文实验与编号
-
-2026-11-12按用户最新选择，核心性能—计算量曲线纳入九组：下表原六组，加固定stride1、固定stride2及L2+L5。移除128维stride4。最新主图使用固定30秒编码器＋压缩理论MAC与完整test-clean PER，见[九组核心曲线与完整表](fixed_duration_curve_20261112/REPORT.md)。下表保留已有六组论文编号，新增组使用名称，避免改写原归档编号。已授权的层位与自然语速补充见[补充方案及复用清单](placement_rate_supplement_20261112.md)；新增层位结果在全量核验前留空。
-
-| 论文编号 | 论文名称 | 原归档编号 |
+| 节 | 要回答的问题 | 对应证据或安排 |
 | --- | --- | --- |
-| E01 | ExtremaFuse-L2 | E02 |
-| E02 | ExtremaFuse-Mel | E05 |
-| E03 | ExtremaFuse-L5 | E06 |
-| E04 | ExtremaFuse-L7 | E07 |
-| E05 | Stride4（主基线） | E09 |
-| E06 | ExtremaFuse-Mel-L5（双阶段） | E10 |
+| 1 · Introduction | 为什么“最后剩多少帧”还不足以描述一个识别器？ | 从短时语音变化和编码器深度切入；尽早给出完整曲线。阶梯只表示在给定预算内能选到的最低实测 PER。 |
+| 2 · Related Work | 固定降采样、相邻 token 合并与本文的差别在哪里？ | 区分按层改变分辨率、合并相似 token、用声学变化线索做边界检测；说明可重叠的融合窗口不是音素分段。 |
+| 3 · ExtremaFuse | 给一段帧序列，哪些位置产生输出、哪些邻居参与？ | 相邻余弦距离的峰谷选中心，五帧学习权重决定输出；交代平台、两端、不足一窗、重复中心及层号约定。 |
+| 4 · Evaluation Protocol | 哪些条件相同，哪些会影响归因？ | 固定的 460h Phone69、验证损失选模、相同 2,620 句与 beam 20；分开写主干宽度、更新步数和两种 MAC 口径。 |
+| 5 · Results | 在相同宽度、相同预算、很小的预算下，各能达到怎样的 PER？ | 同宽先看 L5 对 stride 1；再看 L5／L7 对 stride 2；低预算看 Mel 系列。保留单阶段 L3 的反例，六个配对差值有说话人区间。 |
+| 6 · What Changes at a Second Fusion Site? | 为什么输出帧数几乎相同，成本和识别错误仍不同？ | 直接比较 Mel+L3 和 Mel+L5 的逐层长度；用真实窗口覆盖、冻结同长度均值替换和错误类型解释能说到哪一步。 |
+| 7 · Conclusion | 结果对压缩位置的选择意味着什么？ | 在较高预算与较紧预算下分别给一个实测选择；把独立数据、训练强度和可归因性留给单独的 Limitations。 |
 
-原E01、E03、E04、S8及E11不进入当前九组核心曲线。原E08（L2+L5_n3）是核心插入位置与性能—计算量对比点，第一阶段hard三帧邻域、第二阶段learned五帧融合，与五帧Mel系列分开标注。它位于当前入选集合的观察前沿。[入选和排除清单](fixed_duration_selection.json)。已完成的全量核验原件保留，原六组计算快照不被待训结果覆盖。[计算量—性能曲线方案](compute_quality_curve_plan.md)
+附录 A 给训练参数、验证选模步数、计数公式和 12 组**实际**解码开销；附录 B 给同一批实验在慢／中／快三组自然语速下的 PER 和实际总 GMAC/音频秒，以及正文融合权重示例的选取方法。正文不需要靠附录才能读懂主结论。
 
-## 七节正文与版面预算
+## 三个决定结论的对照
 
-当前核心曲线横轴改为固定30秒、实测保留率校准的编码器＋压缩理论GMAC／输入音频秒，纵轴为完整test-clean PER；实际beam搜索的predictor/joiner成本继续在历史全量计数中分列，不加入固定长度理论主轴。原`main.tex`、`main.pdf`及下文六组证据表仍是完整语料实际搜索口径的历史稿，尚未迁移到九组理论曲线，不能将两套数字混用。位置实验继续使用预先定义的计算预算，论文不再报告 RTF 或安排重复计时。[固定时长方案](../../docs/phone69_fixed_duration_macs.md) · [历史全量计数与来源哈希](compute_snapshot.json)
+| 对照 | 完整 test-clean PER | 理论 GMAC / 30 s | 可以写进论文的结论 |
+| --- | --- | --- | --- |
+| L5 对 stride 1 | 4.7809% 对 4.9856% | 21.380 对 34.612 | 同为 128 维，L5 少 38.2% 计算量、少 387 个音素错误；ΔPER −0.205 个百分点，配对 95% 区间 [−0.315, −0.097]。区间不包含重新训练的波动。 |
+| L7 对 stride 2 | 4.8603% 对 4.8989% | 26.499 对 26.539 | 两者成本只差 0.15%；ΔPER 的区间 [−0.162, +0.081] 跨零。L5 也低于这条预算线，但相对 stride 2 的质量优势同样未获确认。 |
+| Mel+L3 对 Mel+L5 | 6.0204% 对 5.6882% | 4.174 对 5.268 | 首阶段均为 3,001→1,179，最终分别为 483、474 帧。第二阶段提前两层，少 20.8% 计算量、多 628 个错误；ΔPER +0.332 个百分点 [＋0.209, ＋0.452]。 |
 
-下面的页数是写作分配，图表占用计入所属节。合计 7.75 页，另留 0.25 页给双栏浮动图表和换栏。
+固定步长组为 stride 1／2／4，主干分别为 128／256／512。单阶段组为 Mel、L1、L2、L3、L5、L7、L9；双阶段组为 Mel+L3、Mel+L5。**L3 只用验证损失选出的 checkpoint**（第 27,324 步，PER 6.3939%）。不纳入 L2+L5、训练损失选模诊断、历史淘汰项或仅有训练进度的实验。最终入选集合内的观察前沿依成本递增为 Mel+L3 → Mel+L5 → Mel → L1 → L5。固定步长独立画点；不同主干宽度会改变算量，折线不代表可训练出的中间模型。
 
-| 节 | 页数 | 读者应得到的答案 | 正文安排 |
-| --- | ---: | --- | --- |
-| 1 Introduction，含标题和摘要 | 1.10 | 为什么统一下采样可能损失有用的音素线索？如何判断自适应压缩值得采用？ | 从语音的时间分辨率切入，引出质量约束下的解码成本。结尾给出方法、系统比较和机制证据三项贡献；摘要最后写。 |
-| 2 Related Work | 0.60 | 已有时间降采样和相似度合并如何选择、保留或汇总帧？ | 比较固定步长、Transducer 时间压缩、A-ToMe，以及从局部声学变化提取候选位置的工作。交代本研究把自然峰谷选点和五帧学习融合合为一个算子。 |
-| 3 ExtremaFuse | 1.20 | 给定任意有序帧序列，如何得到更短、维度相同的表示？ | 图 1 与式 1。先定义输入、输出和长度，再给相邻帧余弦距离、峰谷到中心的映射、去重、窗口掩码和权重归一化。算子定义独立于 Conformer。 |
-| 4 Experimental Setup | 1.35 | 各系统匹配了哪些条件，哪些量仍有差异？ | 460h 英语 Phone69、Conformer–RNN-T 验证载体、选模与训练预算、两处均匀池化、完整 MAC 计数范围及配对统计。列清输入投影和主干宽度。 |
-| 5 Results | 1.40 | 达到怎样的识别质量，花了多少主要乘加量？ | 核心图展示九组已核验工作点及当前入选集合的观察前沿，含L2+L5混合规则标记。原六组配对区间保留其来源，新增组不虚构区间；训练后的均匀池化和独立 test-other 留位。 |
-| 6 Analysis | 1.80 | 二次压缩省下哪些时间步？哪些帧参与输出？收益和代价集中在哪类错误？ | 依次写 E02→E06、窗口覆盖与冻结替换、自然语速及替换／删除／插入。图 3 给出真实融合权重；语速表报告快慢差异的区间。 |
-| 7 Conclusion | 0.30 | 在什么训练和评测条件下，观察到了什么，又能解释到哪一步？ | 用一段收束两个问题。质量门槛、池化对照和独立集结果到位后再定最终结论。 |
+## 读数与复现
 
-正文后依次放 `Limitations`、酌情保留的 `Ethical Considerations`、参考文献与附录。附录 A 追踪入选六组的训练配置、checkpoint、优化步数和计数范围；附录 B 展开十档语速、音素级错误与示例选取。读者仅凭正文就应能判断 E05 的容量差异、主比较的公平性和关键证据的力度。
+- **数据入口：** [最终入选清单与逐行来源](../../artifacts/research/phone69_paper_results_table_20261117/data.json)确定入稿范围；[全部核验记录](../../artifacts/research/phone69_all_results_20261117/REPORT.md)还包含诊断和历史组。主稿用系统名而非旧文稿编号，避免将论文 E 编号与原归档 E 编号混用。
+- **固定输入：** 按[计数协议](../../docs/phone69_fixed_duration_macs.md)，对每个 checkpoint 的每个压缩位置，以全部 2,620 句的输出帧数之和除以该位置输入帧数之和；依网络顺序传播 3,001 帧，逐层计算算子。GMAC/30 s 除以 30 得主表最后一列，不能由变长解码成本外推。30 秒见 [Fast Conformer](https://arxiv.org/html/2305.05084v4) 和 [Zipformer](https://arxiv.org/html/2310.11230v4)；各论文的 MAC/FLOP 范围不相同。
+- **真实解码：** 用整句 FP32、batch 1、beam 20 的实际计数，分别给 encoder＋fusion、predictor、joiner、总量。说明是每个真实音频秒的主要 MAC，不把它当固定输入理论值、设备耗时或速度倍数。
+- **配对与分组：** [生成脚本](build_current_results.py)校验预测文件哈希、全部 UID、参考转写和错误数；按说话人配对重采样 10,000 次（种子 42）。同一脚本复用冻结语速十等分的成员，校验三组重新合并后复现整集错误数与实际 MAC。[配对区间及三组完整计数](generated/analysis.json)可独立核查。窗口与冻结替换数值来自[100 句 / 37 人机制诊断](../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json)。
+- 从项目根运行 `python papers/extremafuse_acl2027/build_current_results.py`（NumPy、Matplotlib），生成英文矢量主图及四份 LaTeX 表行。编译入口为 `main.tex`，保留同目录的 `generated/`、`figures/`、ACL 样式与参考文献。旧的[11 月 12 日九点图](fixed_duration_curve_20261112/REPORT.md)和[历史导出记录](build_20261112.json)仅供溯源。
 
-## 每组证据填在哪里
+## 投稿前优先补的证据
 
-| 位置 | 已有证据 | 定稿条件 |
-| --- | --- | --- |
-| §5 主比较，E06 对 E05 | E05 与 E06 输入投影均为 128。test-clean PER 分别为 5.7427% 和 5.6882%；ΔPER 为 −0.054 个百分点，95% 区间 [−0.192, +0.076]。E06 的仅编码器／合计为 0.13207／0.23252，E05 为 0.80207／0.92697 GMAC／音频秒。两项分别减少 83.53% 和 74.92%。 | 在 dev 阶段冻结允许的 PER 损失 δ，独立集检验质量门槛；报告独立集上的 PER 区间和计算量比。 |
-| §5 单阶段工作点 | E02 作为直接前端替换，PER 为 5.5782%，计算量为 0.38207 GMAC／音频秒。E03 相对 E05 PER 低 0.962 个百分点，E03 为 0.62512 GMAC／音频秒。 | 列明各自匹配的条件和训练步数。E05 为 512 维、29.58M 参数；E03 的合计为 E05 的 67.44%，属于预算内高精度工作点。 |
-| §5 独立训练的均匀池化 | 原验证计划新增的一组训练。与 E06 使用相同两处插入位置和 128 维主干，各阶段将有效序列分成连续、不重叠的段并取算术平均。曲线扩展采用固定 10 层、投影 128 的 stride1／2／8 新训练，另见专项方案。 | 在 dev-clean 校准并固定两阶段保留率，训练后同口径比较实际帧数、PER、主要 MAC 和训练预算。若结果相近，如实报告普通池化也能保留的性能。 |
-| §6.1 第二次压缩，E02 到 E06 | test-clean 的 Mel 阶段均输出 764,950 步；E06 在第 5 层后剩 307,404 步，减少 59.81%。PER 从 5.5782% 到 5.6882%，差值为 +0.110 个百分点，区间 [−0.011, +0.232]。 | 明示 E02 和 E06 各自训练过。这里量化进一步压缩的代价，与 §5 的主基线比较回答不同问题。 |
-| §6.2 输入覆盖和同长度干预 | 十个语速档各取 10 句，覆盖 37 位说话人。第 5 层窗口覆盖该阶段 98.24% 的输入位置，97.03% 至少一次获得 0.05 权重，每个输出的平均有效输入数为 3.89（权重平方和的倒数）。冻结 E06，仅把第 5 层换成逐句同长度的均匀池化，参考转写 NLL 从 0.1423 到 0.1435 nats／音素。 | 用权重图解释少量输出如何汇集邻近输入；冻结替换的 NLL 差值区间为 [−0.00241, +0.00499]。完整系统能否优于均匀池化由 §5 的独立训练对照回答。 |
-| §6.3 语速和错误 | test-clean 相对 E05，E06 在慢、中、快三组分别多 13、多 48、少 164 个错误。快速组减少 504 个删除，同时增加 85 个替换与 255 个插入。快组相对慢组的 PER 变化差为 −0.273 个百分点，区间 [−0.697, +0.154]。 | 在 dev-clean 冻结自然语速分组边界，在独立集复核。语速按含停顿的整句时长计算；报告组内参考音素数、三类错误和快慢组差值，呈现一个受益例和一个失误例。 |
-| 附录层位网格与扩展语速表 | 复用L5、L7、Mel+L5及L2+L5_n3；已有10个系统的慢／中／快及十档PER和分项MAC可由原逐句记录汇总。 | 新训L1、L3、L9、Mel+L3、Mel+L7、L2+L7；仅改相应层位，自动batch单列实际训练历史。新结果完成同协议全量评测后接入冻结语速分组，区间和独立集证据仍分开标记。 |
+1. 在独立的、有匹配 Phone69 标签的测试集上确认结果。先在开发集冻结位置、保留率、预算和可接受的 PER 差值，再评价；当前 test-clean 参与过实验取舍，不能用于声称非劣或跨域泛化。
+2. 在相同主干、位置和帧预算下，从头训练均匀池化对照；尽量匹配更新次数，优先在关键工作点补种子。现有 100 句冻结替换只测参考序列似然，不能据此声称学习融合优于均匀平均。
 
-主表 PER 来自完整 test-clean 的 2,620 句；入选六组的主要 MAC 均来自同一批完整音频，计数及相对 E05 的比值已核验。40 位说话人的配对区间仅反映固定 checkpoint 的样本波动。正文披露单 seed、历史训练步数、容量差异、单一离线骨干及英语朗读任务，并列出未计入主要 MAC 的算子。[权威评测协议](../phone69_460h_cpu_authoritative_20261108/README.md) · [配置与优化历史](../../docs/phone69_460h_results.md) · [计数快照](compute_snapshot.json) · [机制数据](../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json)
-
-## 已录用论文怎样组织证据
-
-| 论文与发表场次 | 原文的安排 | 本稿借用的写法 |
-| --- | --- | --- |
-| *Phonotomizer*，ACL 2025 主会 | §3 说明系统设计和数据流，§4 交代实验设置，§5 分开报告模型大小、对齐和聚类结果。 | §3 让读者先能从输入重建算子，§4 再给验证系统；主表把质量与工程成本并列。[ACL Anthology](https://aclanthology.org/2025.acl-long.592/) |
-| *PRiSM*，ACL 2026 主会 | §3 定义音素实现评测框架，§5 报告结果，§6.1 单列音系规律与声学信号的诊断。 | §5 用 PER 回答识别任务问题；§6 再用错误类型和语速讨论差异来自哪里。[ACL Anthology](https://aclanthology.org/2026.acl-long.825/) |
-| *Do We Need Distinct Representations for Every Speech Token?*，Findings of ACL 2026 | §3 研究语音表示冗余，§4 做受控干预，§5 同时报告下游任务和实际效率。 | 把冻结模型的同长度替换作为机制诊断；独立训练的池化与完整 MAC 分项各自给出结果。[ACL Anthology](https://aclanthology.org/2026.findings-acl.742/) |
-| *Massive End-to-end Speech Recognition Models with Time Reduction*，NAACL 2024 主会 | §3 分析减少时间步与识别精度，§5.7 专门报告推理计时，§6 展开 LibriSpeech 实验。 | §6.1 同时给时间步、主要 MAC 和 PER，主表说清计数范围。[ACL Anthology](https://aclanthology.org/2024.naacl-long.344/) |
-| *Stride-k Subsampling*，EMNLP 2026 主会 | §3 区分不同位置的压缩，§5 分析相邻表示，§6 再研究两处组合。 | 用 E02→E06 单独回答第二次压缩的增量问题，保留 E06 对 E05 作为系统主比较。[ACL Anthology](https://aclanthology.org/2026.emnlp-main.1608/) |
-
-## ACL 格式与填写顺序
-
-- 按 ACL 2027 主会长文准备，建议选 `Speech Recognition, Text-to-Speech and Spoken Language Understanding`。官方列出的最迟 ARR 周期截止时间是 2027 年 1 月 4 日 23:59 AoE，即北京时间 1 月 5 日 19:59。取得 ARR 评审及 meta-review 后再向 ACL commitment。[ACL 2027 主会征稿](https://2027.aclweb.org/calls/main/)
-- 匿名审稿稿最多 8 页正文，含摘要、相关工作、正文图表和结论。摘要用纯文本，最多 200 个英文词。`Limitations` 必需，放在结论之后、参考文献之前，只讨论正文工作的局限。它及可选的伦理讨论与参考文献不计入正文 8 页；附录放在参考文献之后，审稿人可自行决定是否阅读。[ARR 征稿要求](https://aclrollingreview.org/cfp) · [ACLPUB 排版规范](https://acl-org.github.io/ACLPUB/formatting.html)
-- ACL 提供 LaTeX 和 Word 模板，投稿文件为 PDF。本项目使用官方 LaTeX 模板，保留 `\usepackage[review]{acl}` 的双栏和行号。匿名稿隐去作者、单位和致谢，正文与附录所链接的材料一并匿名化。图表题注放在图表下方。模板文件取自官方提交 `d5adc823`。[官方模板版本](https://github.com/acl-org/acl-style-files/tree/d5adc823ff0f80f98c80405ca0ab66c68e684409) · [审稿稿格式](https://acl-org.github.io/ACLPUB/formatting.html) · [匿名要求](https://aclrollingreview.org/cfp)
-- 提交时另填 Responsible NLP Checklist，最迟在投稿截止后 48 小时内完成；按 ARR 要求说明用于写作或编码的生成式工具及使用范围。[ARR 日程](https://aclrollingreview.org/dates) · [ARR 关于生成式工具的说明](https://aclrollingreview.org/cfp)
-
-填写顺序从 §3 算子和 §4 可复现实验协议开始。在独立评测前固定 PER 门槛、保留率、语速边界和计算量预算，核实 test-other 的音频与 Phone69 标签逐句匹配，并确认其历史选模用途。随后补 §5 主表，再把 §6 的帧数、权重和错误落到图表上。最后回写引言、摘要、结论，使各处对优势的表述与同一组证据对应。
-
-2026-11-12导出使用仅安装在忽略目录`output/tooling/`中的portable Tectonic 0.17.0，并已渲染全部8页检查，未改系统全局TeX环境。日常可在Overleaf以pdfLaTeX编译，只需导入本目录的`main.tex`、`references.bib`、`acl.sty`、`acl_natbib.bst`和`figures/`。若本地已安装带`latexmk`的TeX Live或MacTeX，在本目录运行以下命令。
-
-```sh
-latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
-```
-
-最新九组核心曲线由`fixed_duration_selection.json`、固定时长结果及`plot_fixed_duration_quality.py`生成：`python plot_fixed_duration_quality.py`，输出[PNG/PDF、CSV和来源哈希](fixed_duration_curve_20261112/REPORT.md)。原英文稿的历史图 2 由 `compute_snapshot.json` 与 `plot_quality_compute.py` 生成：`python plot_quality_compute.py`。历史快照保留全量计数文件和 PER／区间来源的 SHA-256；未完成模型用空值标记，不混用 24 句试测值。
+稿件使用匿名 ACL 双栏格式，正文之后单列 Limitations，参考文献之后放附录。[ACL 2027 主会征稿](https://2027.aclweb.org/calls/main/)和 [ARR 征稿要求](https://aclrollingreview.org/cfp)给出长文正文上限及必需章节；8 页是上限，不是写满的目标。
