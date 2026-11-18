@@ -69,6 +69,20 @@
       "delta_pp": 0.3322347015971601,
       "lo": 0.20876878886507427,
       "hi": 0.4516357747453323
+    },
+    {
+      "a": "P_MEL_L3",
+      "b": "E01",
+      "delta_pp": -0.1084524105532131,
+      "lo": -0.24111677134596884,
+      "hi": 0.03418068477337891
+    },
+    {
+      "a": "P_L9",
+      "b": "S2",
+      "delta_pp": 0.022219518259682686,
+      "lo": -0.10471867972986519,
+      "hi": 0.14726223722894544
     }
   ],
   "minimum_cost_at_per_ceiling": {
@@ -163,6 +177,75 @@
     "best_fixed_nearest_cost": "E07",
     "best_fixed_per_limit": "E06"
   },
+  "matched_table": [
+    {
+      "match_on": "encoder_compression_gmac_30s",
+      "fixed": "E01",
+      "fusion": "P_MEL_L3",
+      "delta_per_pp": -0.1084524105532131,
+      "interval_pp": [
+        -0.24111677134596884,
+        0.03418068477337891
+      ],
+      "change_gmac_percent": -3.7279499627832613
+    },
+    {
+      "match_on": "encoder_compression_gmac_30s",
+      "fixed": "E09",
+      "fusion": "E07",
+      "delta_per_pp": -0.8824322965988266,
+      "interval_pp": [
+        -1.05279733072043,
+        -0.7200097684382676
+      ],
+      "change_gmac_percent": -4.264544256564751
+    },
+    {
+      "match_on": "encoder_compression_gmac_30s",
+      "fixed": "S2",
+      "fusion": "E07",
+      "delta_per_pp": -0.038619638879924666,
+      "interval_pp": [
+        -0.16197810372836532,
+        0.0810121282268477
+      ],
+      "change_gmac_percent": -0.15059694008257019
+    },
+    {
+      "match_on": "phone_errors",
+      "fixed": "E01",
+      "fusion": "P_MEL_L3",
+      "delta_per_pp": -0.1084524105532131,
+      "interval_pp": [
+        -0.24111677134596884,
+        0.03418068477337891
+      ],
+      "change_gmac_percent": -3.7279499627832613
+    },
+    {
+      "match_on": "phone_errors",
+      "fixed": "E09",
+      "fusion": "E10",
+      "delta_per_pp": -0.054490723351126584,
+      "interval_pp": [
+        -0.19161846545928124,
+        0.07612272467397013
+      ],
+      "change_gmac_percent": -80.96788890428085
+    },
+    {
+      "match_on": "phone_errors",
+      "fixed": "S2",
+      "fusion": "P_L9",
+      "delta_per_pp": 0.022219518259682686,
+      "interval_pp": [
+        -0.10471867972986519,
+        0.14726223722894544
+      ],
+      "change_gmac_percent": 19.974831246425005
+    }
+  ],
+  "table_only_reference": "E01",
   "natural_rate_groups": {
     "S1": {
       "slow": {
@@ -375,6 +458,77 @@
         "encoder_compression_gmac_per_audio_second": 0.7987248941416338,
         "predictor_gmac_per_audio_second": 0.11554622637344633,
         "joiner_gmac_per_audio_second": 0.015960286044562275
+      }
+    },
+    "E01": {
+      "slow": {
+        "utterances": 786,
+        "speakers": 39,
+        "reference_phones": 36624,
+        "phone_errors": 2263,
+        "audio_seconds": 4851.1051875,
+        "corpus_PER": 0.061790083005679335,
+        "components_macs": {
+          "encoder_weights": 463509760000,
+          "attention_products": 81353681920,
+          "projections": 5231961600,
+          "fusion_mlp": 0,
+          "detector_dots": 0,
+          "fusion_weighted_sum": 0,
+          "predictor": 516858642432,
+          "joiner": 74749086720
+        },
+        "total_major_macs": 1141703132672,
+        "total_gmac_per_audio_second": 0.2353490778995812,
+        "encoder_compression_gmac_per_audio_second": 0.11339589274160632,
+        "predictor_gmac_per_audio_second": 0.1065445135602927,
+        "joiner_gmac_per_audio_second": 0.015408671597682192
+      },
+      "middle": {
+        "utterances": 1048,
+        "speakers": 40,
+        "reference_phones": 83207,
+        "phone_errors": 4753,
+        "audio_seconds": 8558.8204375,
+        "corpus_PER": 0.05712259785835326,
+        "components_macs": {
+          "encoder_weights": 817048288000,
+          "attention_products": 160571179520,
+          "projections": 9223848448,
+          "fusion_mlp": 0,
+          "detector_dots": 0,
+          "fusion_weighted_sum": 0,
+          "predictor": 974291632128,
+          "joiner": 135724807680
+        },
+        "total_major_macs": 2096859755776,
+        "total_gmac_per_audio_second": 0.24499401186041064,
+        "encoder_compression_gmac_per_audio_second": 0.11530132255657571,
+        "predictor_gmac_per_audio_second": 0.1138348022654144,
+        "joiner_gmac_per_audio_second": 0.01585788703842053
+      },
+      "fast": {
+        "utterances": 786,
+        "speakers": 36,
+        "reference_phones": 69192,
+        "phone_errors": 4569,
+        "audio_seconds": 6042.555,
+        "corpus_PER": 0.06603364550815123,
+        "components_macs": {
+          "encoder_weights": 576912000000,
+          "attention_products": 101903088640,
+          "projections": 6512727040,
+          "fusion_mlp": 0,
+          "detector_dots": 0,
+          "fusion_weighted_sum": 0,
+          "predictor": 725156462592,
+          "joiner": 98079224320
+        },
+        "total_major_macs": 1508563502592,
+        "total_gmac_per_audio_second": 0.24965656127118413,
+        "encoder_compression_gmac_per_audio_second": 0.11341689329761996,
+        "predictor_gmac_per_audio_second": 0.12000825190536123,
+        "joiner_gmac_per_audio_second": 0.01623141606820294
       }
     },
     "E05": {

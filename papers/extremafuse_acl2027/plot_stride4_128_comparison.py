@@ -1,14 +1,11 @@
 """Compare the paper's twelve systems with the archived narrow stride-4 model."""
-import json
-
-from build_current_results import COST, ERROR, NAMES, PAPER, ROOT, SELECTION, cost_at_error_ceilings, sha
+from build_current_results import COST, ERROR, NAMES, NARROW, PAPER, comparison_rows, cost_at_error_ceilings
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle
 from matplotlib.ticker import NullLocator
 
 
-NARROW = "E01"
 MARKERS = {
     "S1": "o", "S2": "d", "E09": "s", NARROW: "^", "E05": ">", "P_L1": "^",
     "E02": "P", "P_L3": "X", "E06": "o", "E07": "*", "P_L9": "s",
@@ -17,27 +14,6 @@ MARKERS = {
 INK, MUTED, GRID = "#24363c", "#485d65", "#dce5e6"
 FIXED, ONE_SITE, TWO_SITES, HIGHLIGHT = "#506575", "#00736e", "#a74319", "#773b9a"
 FRONTIERS = {"fixed_stride": (FIXED, (0, (4, 2.7))), "fusion": (ONE_SITE, "-")}
-
-
-def comparison_rows():
-    selection = json.loads(SELECTION.read_text(encoding="utf-8"))
-    source = ROOT / selection["source"]
-    if sha(source) != selection["source_sha256"] or selection["duration_seconds"] != 30:
-        raise ValueError("Review the evaluation archive and reference duration")
-    archive = json.loads(source.read_text(encoding="utf-8"))
-    archived = {r["id"]: r for r in archive["models"]}
-    ids = selection["selected_ids"]
-    narrow = archived[NARROW]
-    if (len(ids) != len(NAMES) or set(ids) != set(NAMES) or NARROW in ids or
-            narrow["backbone"] != 128 or narrow["stage_rates"]):
-        raise ValueError("Review the fixed-stride comparison after changing the selection")
-    rows = [archived[key] for key in ids]
-    if rows != selection["models"]:
-        raise ValueError("The selected operating points differ from the full evaluation archive")
-    rows.append(narrow)
-    if len({(r["utterances"], r["reference_phones"], r["checkpoint_selection"]) for r in rows}) != 1:
-        raise ValueError("The evaluations must use the same corpus and checkpoint selection")
-    return rows
 
 
 def point_style(row):

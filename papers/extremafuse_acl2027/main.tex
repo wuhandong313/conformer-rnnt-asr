@@ -1,5 +1,5 @@
-% Anonymous manuscript. The tables and budget curve are generated from the
-% twelve selected validation checkpoints; see README.md for local evidence.
+% The budget curve shares one projection width. The tables also include
+% the narrow stride-4 reference; see README.md for the evaluation archives.
 \documentclass[11pt]{article}
 \usepackage[review]{acl}
 \usepackage{times,latexsym}
@@ -7,6 +7,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{microtype,amsmath,amssymb,booktabs,graphicx}
 \input{generated/operating_points.tex}
+\input{generated/matched_points.tex}
 \input{generated/paired_per.tex}
 \input{generated/actual_decode.tex}
 \input{generated/speaking_rate.tex}
@@ -19,7 +20,7 @@ Content-Adaptive Fusion for Phone Recognition}
 \maketitle
 
 \begin{abstract}
-Fixed-stride frame stacking gives a speech encoder one time step per block of frames, regardless of where the signal changes. We replace stacking with ExtremaFuse. Peaks and valleys in adjacent-frame cosine distance select output centers, and a learned mixture combines five neighboring frames at each center. We evaluate twelve offline Conformer transducers trained on 460 hours of LibriSpeech, using whole-utterance test-clean phone error rate (PER) and estimated encoder and fusion MACs for a 30-second input. With fusion only at the Mel input, PER is 5.58\% at 8.11 GMAC, compared with 5.74\% at 27.68 GMAC for stride~4. Adding a layer-5 fusion gives 5.69\% at 5.27 GMAC. These fusion models use width 128, compared with 512 for stride~4. Against the strongest fixed baseline, stride~2, layer-5 fusion alone reaches 4.78\% versus 4.90\% PER with 19.4\% fewer MACs.
+Fixed-stride frame stacking gives a speech encoder one time step per block of frames, regardless of where the signal changes. We replace stacking with ExtremaFuse. Peaks and valleys in adjacent-frame cosine distance select output centers, and a learned mixture combines five neighboring frames at each center. We evaluate thirteen offline Conformer transducers trained on 460 hours of LibriSpeech, using whole-utterance test-clean phone error rate (PER) and estimated encoder and fusion MACs for a 30-second input. Mel fusion gives 5.58\% PER at 8.11 GMAC. Four-frame stacking gives 6.13\% at 4.34 GMAC with a 128-wide backbone and 5.74\% at 27.68 GMAC with a 512-wide backbone. Against the strongest fixed baseline, stride~2, layer-5 fusion alone reaches 4.78\% versus 4.90\% PER with 19.4\% fewer MACs.
 \end{abstract}
 
 \section{Introduction}
@@ -27,18 +28,18 @@ Speech encoders often shorten an acoustic sequence on a fixed time grid \citep{r
 
 We replace fixed-stride stacking with \emph{ExtremaFuse}. A peak in the distance between adjacent frames identifies a locally strong change, and a valley identifies a locally similar pair. Each extremum selects a center. A small network reads five frames around that center and predicts how much each contributes to one output vector. The centers can be unevenly spaced and their windows can overlap. Applied to Mel features, this rule emits between 97 and 115 steps on those same eleven recordings. It also applies to contextual encoder vectors. Training uses phone sequences without boundary labels.
 
-We first test the replacement at the front end, with all ten Conformer layers downstream of it. The input fusion model makes fewer test-clean phone errors and uses fewer MACs than four-frame stacking, even though it sends more time steps into the encoder. The two systems differ in width. We therefore compare the full set of systems at a common compute budget and at a common observed PER limit, including stride~2, the strongest fixed reference (Figure~\ref{fig:budget}). Finally we hold the number of outputs fixed within a trained model to ask how much the choice of centers and weights matters.
+We first test the replacement at the front end, with all ten Conformer layers downstream of it. A narrow and a wide stride-4 encoder put the cost of input fusion in context. All three reduce the input before the first layer. We then compare trained systems at similar compute or PER, including stride~2, the most accurate fixed reference (Table~\ref{tab:matched}). Finally we hold the number of outputs fixed within a trained model to ask how much the choice of centers and weights matters.
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/quality_budget_30s.pdf}
-\caption{Three fixed-stack and nine fusion encoders evaluated on the same utterances. From stride~4 (width 512), the arrows identify the closest fusion system (width 128) in compute or PER. The steps give the lowest cost at each PER limit for stacking (dashed) and fusion (solid). In the enlargement, stride~2 (open diamond) and L7 (star) differ by 0.15\% in cost. L7 minus stride~2 gives $-0.039$ PER points (paired 95\% interval $[-0.162,+0.081]$).}
+\caption{Three fixed-stack and nine fusion encoders with a 128-dimensional frame projection. From stride~4 (width 512), the arrows identify the closest fusion system (width 128) in compute or PER. The steps give the lowest cost at each PER limit among these stacking (dashed) and fusion (solid) systems. In the enlargement, stride~2 (open diamond) and L7 (star) differ by 0.15\% in cost. Table~\ref{tab:matched} also tests the narrow stride-4 reference.}
 \label{fig:budget}
 \end{figure*}
 
 \section{Related Work}
 \paragraph{Fixed time grids.}
-Fast Conformer uses early strided convolution \citep{rekesh-etal-2023-fast}. Funnel pooling reduces resolution inside a speech encoder \citep{wang-etal-2024-massive}, and Zipformer runs successive stacks at prescribed frame rates \citep{yao-etal-2024-zipformer}. These architectures choose when to reduce resolution and by what factor. Our fixed baselines concatenate consecutive projected frames. The question we test is whether the speech itself can determine the positions and number of outputs of a reduction stage.
+The original Conformer applies two stride-2 convolutions for fourfold time reduction across its small, medium and large models \citep{gulati20_interspeech}. Fast Conformer uses eightfold reduction at the input \citep{rekesh-etal-2023-fast}. Funnel pooling reduces resolution inside a speech encoder \citep{wang-etal-2024-massive}, and Zipformer runs successive stacks at prescribed frame rates \citep{yao-etal-2024-zipformer}. Our fixed baselines concatenate consecutive projected frames. The question we test is whether the speech itself can determine the positions and number of outputs of a reduction stage.
 
 \paragraph{Content-dependent reduction.}
 A-ToMe already uses acoustic content in a transducer by merging adjacent tokens with similar attention keys \citep{li23i_interspeech}. ExtremaFuse uses peaks as well as valleys to place output centers, and learns weights on a five-frame window around each. Both choices apply before the first attention layer because the detector can read Mel features. Neighboring-frame distances have also been used in audio token compression and phonetic boundary detection \citep{bhati-etal-2025-compression,xiang-etal-2026-need,kreuk20_interspeech,yantosca-cheng-2025-phonotomizer}. Here the training signal is the reference phone sequence, and neighboring outputs can draw on the same frames.
@@ -73,24 +74,25 @@ The ordered outputs retain the input feature dimension. A singleton passes throu
 \begin{table*}[t]
 \centering
 \small
-\begin{tabular}{@{}lrrrrr@{}}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}llrrrrr@{}}
 \toprule
- & & & \multicolumn{1}{c}{Full test-clean} & \multicolumn{2}{c}{30-second reference input}\\
-\cmidrule(lr){4-4}\cmidrule(l){5-6}
-System & Width & Final frames$^\dagger$ & PER (\%) & GMAC / 30\,s & GMAC / audio-s\\
+& & \multicolumn{2}{c}{Test-clean PER (\%)} & \multicolumn{2}{c}{GMAC / 30\,s} & \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+Stride / width & ExtremaFuse & Fixed & Fusion & Fixed & Fusion & Fusion vs.\ fixed\\
 \midrule
-\OperatingRows
+\MatchedRows
 \bottomrule
 \end{tabular}
-\caption{The twelve systems behind Figure~\ref{fig:budget}. Rules separate fixed stride, single-site fusion and two-site fusion. $^\dagger$Final frames are estimated for the same 3,001-frame input as the MAC columns. The last column divides the preceding one by 30; neither includes beam search. Bold marks the lowest PER and the lowest cost in this comparison.}
-\label{tab:points}
+\caption{For each reduced fixed-stack reference, we select the closest of nine fusion encoders on the indicated metric before rounding. Each fusion encoder has width 128. At similar compute, bold marks lower PER when the paired 95\% speaker interval for the difference excludes zero. At similar observed PER, bold marks the lower encoder and fusion cost in each pair. Appendix Table~\ref{tab:points} gives all thirteen systems.}
+\label{tab:matched}
 \end{table*}
 
 \section{Evaluation Protocol}
 \paragraph{Speech and recognizers.}
 We train on the 100-hour and 360-hour clean subsets of LibriSpeech \citep{panayotov-etal-2015-librispeech} using an offline Conformer \citep{gulati20_interspeech} with a transducer objective \citep{graves-2012-rnnt}. The targets are externally supplied sequences of 69 stressed ARPABET phones, with a separate blank and the source noise label omitted. We select one checkpoint per configuration by dev-clean validation loss. All systems decode the same 2,620 test-clean utterances from 40 speakers (189,023 reference phones) with FP32, batch size one and beam width 20. Corpus PER divides the total substitutions, deletions and insertions by the total reference phones. No utterance is cropped to measure PER.
 
-Every system uses an 80-to-128 input projection. Stacking $s$ projected frames makes the fixed encoder $128s$ units wide, giving widths 128, 256 and 512 at strides 1, 2 and 4. Every fusion system runs at width 128. Stride~1 preserves the input time grid and serves as the uncompressed, width-matched reference. We train each configuration separately with seed 42. Batch budgets and the number of updates at checkpoint selection vary.
+In Figure~\ref{fig:budget}, each 80-dimensional Mel frame is projected to 128 dimensions. Stacking $s$ such frames gives widths 128, 256 and 512 at strides 1, 2 and 4. Table~\ref{tab:matched} adds a narrower stride-4 encoder with a 32-dimensional frame projection and a 128-wide backbone. Both stride-4 systems emit 751 steps for the same 3,001-frame input. Every fusion system runs at width 128. Stride~1 preserves the input time grid and serves as the uncompressed reference. We train each configuration separately with seed 42. Batch budgets and selected update counts vary.
 
 \paragraph{A common input for computation.}
 Attention has a term quadratic in sequence length, so doubling a corpus-average MAC count does not give the cost of an input twice as long. We use a 30-second reference, a duration also used to profile Fast Conformer and Zipformer \citep{rekesh-etal-2023-fast,yao-etal-2024-zipformer}. It gives 3,001 Mel frames at a 10\,ms hop with centered framing. For checkpoint and fusion site $j$, we first measure a conditional retention ratio across whole test-clean utterances $i$:
@@ -105,7 +107,7 @@ Here $N_{ij}$ and $K_{ij}$ count frames entering and leaving that site. We propa
 One multiply--accumulate counts as one MAC. The main figure counts encoder projections, feed-forward and convolution weights, both attention matrix products, detector dot products, mixing networks and weighted sums. We exclude feature extraction, normalization, softmax, activations, extrema comparisons and memory traffic. A fixed input length does not determine how many prefixes beam search expands. We therefore count predictor and joiner operations on the \emph{actual} decodes and report those separately with their corresponding encoder counts in Appendix~\ref{app:counts}.
 
 \paragraph{Comparison rules.}
-At a given compute budget, we compare the lowest observed PER among the evaluated models within that budget. At a given PER ceiling, we compare the least expensive qualifying model in each family. Both rules use unrounded observations. As a separate descriptive comparison, the arrows in Figure~\ref{fig:budget} connect stride~4 to the fusion model closest on each axis. For uncertainty in PER differences, we resample the same 40 speakers jointly across systems 10,000 times.
+At a given compute budget, we compare the lowest observed PER within that budget. At a given PER ceiling, we compare the least expensive qualifying model in each family. Table~\ref{tab:matched} instead pairs each fixed reference with the fusion model having the smallest absolute gap on one axis, allowing a match on either side. We use unrounded measurements and the same nine fusion candidates for every reference. The paired PER intervals resample the same 40 speakers jointly 10,000 times.
 
 \section{Can Fusion Replace Fixed Stride?}
 \label{sec:results}
@@ -113,7 +115,7 @@ At a given compute budget, we compare the lowest observed PER among the evaluate
 \paragraph{Replacing the front end alone.}
 We group test-clean utterances by their exact number of input Mel frames. Of 636 lengths shared by two or more utterances (2,054 utterances in total), 629 yield more than one output length under Mel fusion. Stride~4 gives a single output length in every group. We next test how well these adaptive steps support phone recognition.
 
-Mel-only fusion and stride~4 both reduce the sequence before the first Conformer layer. Mel fusion gives 5.578\% PER at 8.115 GMAC, versus 5.743\% at 27.679 GMAC for stride~4 (Table~\ref{tab:points}). This saves 70.7\% of the estimated compute and yields 311 fewer errors. The paired PER difference is $-0.165$ percentage points, with a 95\% interval reaching zero (Table~\ref{tab:paired}). The adaptive encoder actually processes \emph{more} steps throughout the backbone, 1,179 versus 751 for the reference input. Its vectors are 128 rather than 512 units wide. The saving therefore belongs to the two trained architectures, with both time resolution and width contributing to their costs.
+Mel-only fusion and stride~4 both reduce the sequence before the first Conformer layer. At backbone width 128, Mel processes 1,179 steps and reaches 5.578\% PER at 8.115 GMAC. Stride~4 processes 751 steps and reaches 6.129\% at 4.336 GMAC. Mel thus spends 87.2\% more compute for a 0.551-point reduction in PER. Against the 512-wide stride~4 at the same 751 steps, Mel saves 70.7\% of the estimated compute and yields 311 fewer errors (5.578\% versus 5.743\%, Table~\ref{tab:points}). The paired difference for this wider reference is $-0.165$ percentage points, with a 95\% interval reaching zero (Table~\ref{tab:paired}).
 
 \begin{figure*}[t]
 \centering
@@ -123,10 +125,10 @@ Mel-only fusion and stride~4 both reduce the sequence before the first Conformer
 \end{figure*}
 
 \paragraph{Recognition under a common compute budget.}
-Stride~2 has the lowest PER and cost of the three fixed systems. At its budget of 26.539 GMAC, the lowest observed PER is 4.899\% for stacking and 4.781\% for fusion (L5, 21.380 GMAC). The paired difference of $-0.118$ points has interval $[-0.247,+0.004]$. L7 spends almost exactly the stride-2 budget (26.499 GMAC) and scores 4.860\%. Its difference from stride~2 is just $-0.039$ points. The larger horizontal gap in Figure~\ref{fig:budget} is specific to stride~4. There L7 makes 1,668 fewer errors at 4.3\% lower cost ($-0.882$ points, interval $[-1.053,-0.720]$).
+Stride~2 has the lowest PER of the fixed systems. At its budget of 26.539 GMAC, the lowest observed PER is 4.899\% for stacking and 4.781\% for fusion (L5, 21.380 GMAC). The paired difference of $-0.118$ points has interval $[-0.247,+0.004]$. At nearly identical compute, L7 scores 4.860\% at 26.499 GMAC, a difference of $-0.039$ points (Table~\ref{tab:matched}). Against the 512-wide stride~4, L7 makes 1,668 fewer errors at 4.3\% lower cost ($-0.882$ points, interval $[-1.053,-0.720]$).
 
 \paragraph{Compute at a common recognition requirement.}
-At the observed stride-2 PER ceiling, L5 is the cheapest qualifying fusion model and costs 19.4\% less. At the observed stride-4 PER, the nearest fusion system in PER is Mel+L5. Its 5.688\% versus 5.743\% PER costs 5.268 versus 27.679 GMAC, an 81.0\% saving relative to stride~4. The paired difference is $-0.054$ points with interval $[-0.192,+0.076]$. At a 5.7\% ceiling, stride~2 also qualifies and costs 26.539 GMAC. It makes fewer errors than Mel+L5 (4.899\% versus 5.688\%), at 5.04 times the cost.
+At the observed stride-2 PER ceiling, L5 is the cheapest qualifying fusion model and costs 19.4\% less. L9 has the closest PER on either side of stride~2, a gap of 0.022 points, and costs 20.0\% more. For the 512-wide stride~4, Mel+L5 is closest in PER (5.688\% versus 5.743\%) and costs 81.0\% less (5.268 versus 27.679 GMAC). For the 128-wide stride~4, Mel+L3 is closest on both axes and costs 3.7\% less (Table~\ref{tab:matched}).
 
 \begin{table}[t]
 \centering
@@ -175,7 +177,24 @@ The references encode a particular inventory of stressed English phones. An erro
 \section{Training and Arithmetic Counts}
 \label{app:counts}
 \paragraph{Training and decoding.}
-The input comprises 80 Mel bands from 16\,kHz audio, with a 400-sample transform and a 160-sample hop. The ten Conformer layers use eight attention heads, a 512-dimensional feed-forward network and a width-31 depthwise convolution. The predictor has two 128-unit LSTM layers; the 256-dimensional encoder output and predictor feed a joiner over 69 phones and blank. The runs use Adam with a peak learning rate of $5\!\times\!10^{-4}$, 10,000 warm-up updates and gradient clipping at 10. Table~\ref{tab:decode} records the optimizer step for each reported checkpoint. L3 uses the same validation rule as the other eleven systems.
+The input comprises 80 Mel bands from 16\,kHz audio, with a 400-sample transform and a 160-sample hop. The ten Conformer layers use eight attention heads, a 512-dimensional feed-forward network and a width-31 depthwise convolution. The predictor has two 128-unit LSTM layers. Its output joins the 256-dimensional encoder representation to score 69 phones and blank. The runs use Adam with a peak learning rate of $5\!\times\!10^{-4}$, 10,000 warm-up updates and gradient clipping at 10. Table~\ref{tab:decode} records the optimizer step for each validation-selected checkpoint.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{2.8pt}
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+ & & & PER & \multicolumn{2}{c}{GMAC}\\
+\cmidrule(l){5-6}
+System & $D$ & Steps & (\%) & / 30\,s & / s\\
+\midrule
+\OperatingRows
+\bottomrule
+\end{tabular}
+\caption{All thirteen systems, with backbone width $D$ and whole-utterance PER. Final steps and encoder and fusion GMAC use the same 30-second input. The last column divides this cost by 30.}
+\label{tab:points}
+\end{table}
 
 \begin{table*}[!t]
 \centering
@@ -189,7 +208,7 @@ System & Selected update & Encoder + fusion & Predictor & Joiner & Total\\
 \DecodeRows
 \bottomrule
 \end{tabular}
-\caption{Actual beam-20 arithmetic on test-clean. Each component sums the counted MACs across all utterances and divides by $10^9$ times the 19,452.48 seconds of recorded audio. Values are rounded independently. These variable-duration counts are not the 30-second estimates in Table~\ref{tab:points}.}
+\caption{Actual beam-20 arithmetic on test-clean. Each component sums the counted MACs across all utterances and divides by $10^9$ times the 19,452.48 seconds of recorded audio. Values are rounded independently. Table~\ref{tab:points} reports the fixed-duration encoder costs.}
 \label{tab:decode}
 
 \vspace{1.25em}
@@ -214,13 +233,13 @@ For length $T$, encoder width $D$, feed-forward width $F$ and convolution kernel
                       &{}+2DT^2 .
  \end{aligned}
 \end{equation}
-The first term includes two feed-forward modules, attention projections, and pointwise and depthwise convolutions; the last term counts the attention score and value products. For $N$ inputs, $K$ outputs and site width $d$, a fusion site counts $(N-1)d$ detector multiplications with accumulation, $K(5d\cdot32+32\cdot5)$ mixing-network MACs, and $5Kd$ weighted-sum MACs. The 80-to-128 input projection and the final encoder projection are charged at their respective lengths.
+The first term includes two feed-forward modules, attention projections, and pointwise and depthwise convolutions. The last term counts the attention score and value products. For $N$ inputs, $K$ outputs and site width $d$, a fusion site counts $(N-1)d$ detector multiplications with accumulation, $K(5d\cdot32+32\cdot5)$ mixing-network MACs, and $5Kd$ weighted-sum MACs. We charge the input and final projections at their actual widths and lengths.
 
-The reference duration changes the relative weight of the quadratic term. For example, stride~1 vs.\ stride~2 requires 2.572 vs.\ 2.831 GMAC at 5 seconds, but 34.612 vs.\ 26.539 at 30 seconds. The 20.8\% drop in reference encoder and fusion cost from Mel+L5 to Mel+L3 becomes a 10.2\% drop in \emph{actual total} beam-20 MACs per audio second. The latter comparison includes predictor and joiner costs on all the native utterances; it cannot be obtained by scaling the former.
+The quadratic term changes the cost ranking with duration. Strides~1 and~2 cost 2.572 and 2.831 GMAC at 5 seconds, and 34.612 and 26.539 at 30 seconds. Moving from Mel+L5 to Mel+L3 saves 20.8\% of the 30-second encoder cost and 10.2\% of total beam-20 MACs per audio second, including the predictor and joiner on the recorded utterances.
 
 \section{Speaking Rate and Diagnostic Sampling}
 \label{app:rate}
-We use the same frozen utterance groups for every checkpoint. Speaking rate divides reference phones by the duration of the recording, including pauses. Deciles 1--3, 4--7 and 8--10 give 786, 1,048 and 786 utterances, respectively. Within each group the PER denominator is total reference phones and the compute denominator is total input seconds. Table~\ref{tab:rate} reports all twelve systems. Group membership was determined without reference to the errors, but speaking rate is observational and mixes articulation rate with pause duration.
+Table~\ref{tab:rate} uses the same groups for all thirteen systems. We rank utterances by reference phones per recorded second, including pauses. Deciles 1--3, 4--7 and 8--10 contain 786, 1,048 and 786 utterances. PER and GMAC/s use each group's total reference phones and input seconds, respectively. These groups depend on articulation and pauses and were fixed before comparing errors.
 
 For the illustration, we take the first utterance in hash order from the fifth rate decile with at least 200 Mel frames, and center the excerpt on its midpoint. The example was not chosen for its error pattern or the appearance of its weights. Across the diagnostic sample, adjacent layer-5 vectors have mean cosine similarity 0.877, versus 0.143 for pairs offset by half an utterance under a circular shift. Local similarity makes averaging plausible, but does not determine whether a reference phone will be recognized.
 

@@ -35,10 +35,35 @@ PAIRS = [("E05", "E09"), ("E06", "S1"), ("E06", "S2"), ("E07", "S2"), ("E07", "E
          ("E10", "E09"), ("E10", "E05"), ("P_MEL_L3", "E10")]
 COST = "encoder_compression_gmac_30s"
 ERROR = "per_percent"
+NARROW = "E01"
+TABLE_STRIDES = {NARROW: 4, "E09": 4, "S2": 2}
+REPORT_NAMES = {**NAMES, NARROW: "Stride 4 (128)", "E09": "Stride 4 (512)"}
 
 
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def comparison_rows(selection=None):
+    """Load the projection-128 figure sample plus its narrow stride-4 control."""
+    if selection is None:
+        selection = json.loads(SELECTION.read_text(encoding="utf-8"))
+    source = ROOT / selection["source"]
+    if sha(source) != selection["source_sha256"] or selection["duration_seconds"] != 30:
+        raise ValueError("Review the evaluation archive and reference duration")
+    archived = {r["id"]: r for r in json.loads(source.read_text(encoding="utf-8"))["models"]}
+    ids = selection["selected_ids"]
+    narrow = archived[NARROW]
+    if (len(ids) != len(NAMES) or set(ids) != set(NAMES) or NARROW in ids or
+            narrow["backbone"] != 128 or narrow["stage_rates"]):
+        raise ValueError("Review the fixed-stride control after changing the selection")
+    rows = [archived[key] for key in ids]
+    if rows != selection["models"]:
+        raise ValueError("The selected operating points differ from the full evaluation archive")
+    rows.append(narrow)
+    if len({(r["utterances"], r["reference_phones"], r["checkpoint_selection"]) for r in rows}) != 1:
+        raise ValueError("The evaluations must use the same corpus and checkpoint selection")
+    return rows
 
 
 def equal_length_outputs(input_frames, fixed_steps, fusion_steps):
@@ -109,7 +134,7 @@ def corpus_analyses(models):
             front_end_steps[uid] = steps
         if uid in ("E05", "P_MEL_L3"):
             rendered.append(r"\midrule")
-        fields = [NAMES[uid]]
+        fields = [REPORT_NAMES[uid]]
         for g in parts:
             fields.extend([f"{100*g['corpus_PER']:.3f}", f"{g['total_gmac_per_audio_second']:.3f}"])
         rendered.append(" & ".join(fields) + r" \\")
@@ -119,7 +144,7 @@ def corpus_analyses(models):
     return groups, lengths
 
 
-def trials(rows):
+def trials(rows, pair_ids=None):
     """Align utterances and resample speakers jointly, keeping clusters intact."""
     counts, reference = {}, None
     for model in rows:
@@ -158,13 +183,62 @@ def trials(rows):
     den = np.array([phones[s] for s in speakers])
     den_draw = den[draws].sum(axis=1)
     result = []
-    for a, b in PAIRS:
+    for a, b in (PAIRS if pair_ids is None else pair_ids):
         delta = np.array([counts[a][s] - counts[b][s] for s in speakers])
         per_draw = 100 * delta[draws].sum(axis=1) / den_draw
         lo, hi = np.percentile(per_draw, [2.5, 97.5])
         result.append(dict(a=a, b=b, delta_pp=100 * delta.sum().item() / den.sum().item(),
                            lo=float(lo), hi=float(hi)))
     return result, n
+
+
+def table_matches(rows):
+    """For each reduced reference, match on one measured axis at a time."""
+    models = {r["id"]: r for r in rows}
+    fusion = [r for r in rows if r["stage_rates"]]
+    matches = []
+    for field in (COST, "phone_errors"):
+        for key in TABLE_STRIDES:
+            base = models[key]
+            partner = min(fusion, key=lambda r: (abs(r[field] - base[field]), r["id"]))
+            matches.append((field, base, partner))
+    return matches
+
+
+def write_matched_points(matches, pairs):
+    intervals = {(p["a"], p["b"]): p for p in pairs}
+    headings = {
+        COST: r"Nearest 30-s GMAC \quad Compare PER differences in percentage points [95\% interval]",
+        "phone_errors": r"Nearest observed PER \quad Compare GMAC changes relative to fixed stride",
+    }
+    lines = []
+    records = []
+    for field, base, partner in matches:
+        if not records or field != records[-1]["match_on"]:
+            if lines:
+                lines.append(r"\midrule")
+            lines.append(r"\multicolumn{7}{@{}l}{\emph{" + headings[field] + r"}} \\[1pt]")
+        per = [f"{r[ERROR]:.4f}" for r in (base, partner)]
+        cost = [f"{r[COST]:.3f}" for r in (base, partner)]
+        pair = intervals[partner["id"], base["id"]]
+        change = 100 * (partner[COST] / base[COST] - 1)
+        if field == COST:
+            if pair["lo"] > 0 or pair["hi"] < 0:
+                lower = 1 if pair["delta_pp"] < 0 else 0
+                per[lower] = r"\textbf{" + per[lower] + "}"
+            result = f"${pair['delta_pp']:+.3f}" + r"\;[" + f"{pair['lo']:+.3f},{pair['hi']:+.3f}]$"
+        else:
+            if partner[COST] != base[COST]:
+                lower = 1 if partner[COST] < base[COST] else 0
+                cost[lower] = r"\textbf{" + cost[lower] + "}"
+            result = f"${change:+.1f}" + r"\%$"
+        fixed = f"{TABLE_STRIDES[base['id']]} / {base['backbone']}"
+        lines.append(" & ".join([fixed, NAMES[partner["id"]], *per, *cost, result]) + r" \\")
+        records.append(dict(match_on=field, fixed=base["id"], fusion=partner["id"],
+                            delta_per_pp=pair["delta_pp"], interval_pp=[pair["lo"], pair["hi"]],
+                            change_gmac_percent=change))
+    write_rows("matched_points.tex", lines)
+    return records
 
 
 def frontier(rows):
@@ -362,7 +436,8 @@ def make_figure(rows, edges, match, pairs):
 
 def write_rows(name, rows):
     macro = {"operating_points.tex": "OperatingRows", "actual_decode.tex": "DecodeRows",
-             "paired_per.tex": "PairedRows", "speaking_rate.tex": "RateRows"}[name]
+             "paired_per.tex": "PairedRows", "speaking_rate.tex": "RateRows",
+             "matched_points.tex": "MatchedRows"}[name]
     (OUTPUT / name).write_text("% Generated by build_current_results.py\n" +
                                r"\newcommand{\%s}{%%" % macro + "\n" +
                                "\n".join(rows) + "%\n}\n", encoding="utf-8")
@@ -370,31 +445,27 @@ def write_rows(name, rows):
 
 def main():
     data = json.loads(SELECTION.read_text(encoding="utf-8"))
-    if sha(ROOT / data["source"]) != data["source_sha256"]:
-        raise ValueError("Selection does not match the full evaluation archive")
     rows = data["models"]
-    if ([m["id"] for m in rows] != data["selected_ids"] or
-            set(data["selected_ids"]) != set(NAMES) or data["duration_seconds"] != 30):
-        raise ValueError("Review the manuscript labels and contrasts for the new selection")
-    pairs, n = trials(rows)
+    all_rows = sorted(comparison_rows(data), key=lambda r: len(r["stage_rates"]))
+    matches = table_matches(all_rows)
+    matched_ids = [(partner["id"], base["id"]) for _, base, partner in matches]
+    pair_ids = dict.fromkeys(PAIRS + matched_ids)
+    pairs, n = trials(all_rows, pair_ids)
     edge = frontier(rows)
     edges, examples = cost_at_error_ceilings(rows, (5.0, 5.7, 6.1))
     comparisons = figure_comparisons(rows, pairs)
     match = measured_matches(rows, comparisons)
     OUTPUT.mkdir(exist_ok=True)
+    matched_table = write_matched_points(matches, pairs)
     summary, decode = [], []
-    for x in rows:
+    for x in all_rows:
         i = x["id"]
-        key = NAMES[i]
+        key = REPORT_NAMES[i]
         if i in ("E05", "P_MEL_L3"):
             summary.append(r"\midrule")
             decode.append(r"\midrule")
         per = f"{x[ERROR]:.4f}"
         cost = f"{x[COST]:.3f}"
-        if x[ERROR] == min(m[ERROR] for m in rows):
-            per = r"\textbf{" + per + "}"
-        if x[COST] == min(m[COST] for m in rows):
-            cost = r"\textbf{" + cost + "}"
         summary.append(" & ".join([key, str(x["backbone"]),
                                    f"{x['trace_30s']['output_frames']:,}", per, cost,
                                    f"{x['encoder_compression_gmac_per_audio_s_30s']:.3f}"]) + r" \\")
@@ -405,10 +476,10 @@ def main():
                                                           "joiner", "total")]) + r" \\")
     write_rows("operating_points.tex", summary)
     write_rows("actual_decode.tex", decode)
-    write_rows("paired_per.tex", [f"{NAMES[p['a']]} / {NAMES[p['b']]} & "
+    write_rows("paired_per.tex", [f"{REPORT_NAMES[p['a']]} / {REPORT_NAMES[p['b']]} & "
                                   f"${p['delta_pp']:+.3f}$ & "
                                   f"$[{p['lo']:+.3f}, {p['hi']:+.3f}]$" + r" \\" for p in pairs])
-    groups, lengths = corpus_analyses(rows)
+    groups, lengths = corpus_analyses(all_rows)
     record = dict(selection=str(SELECTION.relative_to(ROOT)), sha256=sha(SELECTION),
                   paired_unit="speaker", speakers=n, draws=10_000, seed=42,
                   interval="percentile; exploratory, not adjusted for multiple comparisons",
@@ -416,6 +487,7 @@ def main():
                   minimum_cost_at_per_ceiling={k: [r["id"] for r in e] for k, e in edges.items()},
                   example_per_ceilings=examples,
                   figure_comparisons=comparisons, measured_matches=match,
+                  matched_table=matched_table, table_only_reference=NARROW,
                   natural_rate_groups=groups, front_end_at_equal_input_length=lengths)
     (OUTPUT / "analysis.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
     make_figure(rows, edges, match, pairs)

@@ -1,43 +1,47 @@
 {
   "date": "2026-11-18",
-  "editor_compile": "success",
-  "layout_engine": "Tectonic 0.17.0 (XDV, same sources; no separate manuscript PDF exported)",
+  "compile": "success",
+  "layout_engine": "Tectonic 0.17.0; typeset PDF reviewed in a temporary build directory",
   "pages": 8,
   "conclusion_page": 6,
-  "abstract_word_count": 134,
+  "abstract_word_count": 121,
   "undefined_references": false,
   "overfull_boxes": false,
   "checked_page_layouts": 8,
-  "selected_systems": 12,
+  "selected_systems": 13,
   "table_figure_pages": {
     "fig:budget": 2,
     "fig:network": 3,
-    "tab:points": 4,
+    "tab:matched": 4,
     "fig:weights": 5,
     "tab:paired": 5,
+    "tab:points": 7,
     "tab:decode": 8,
     "tab:rate": 8
   },
   "source_sha256": {
-    "papers/extremafuse_acl2027/main.tex": "28d4f84e8ea210e69b891339d01b23629d1e1e22204f18a52fbfeb4ef9c99542",
+    "papers/extremafuse_acl2027/main.tex": "9499df5573ebf358ab98b680b12335028188ed6469d31bf64ccc9015ff8f353d",
     "papers/extremafuse_acl2027/references.bib": "b30ca8e0d2820128b5f43aac2ee14d4bfa91fd7aaec86bd556d4ce476ec75bba",
     "papers/extremafuse_acl2027/acl.sty": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de",
     "papers/extremafuse_acl2027/acl_natbib.bst": "6fbb306202290f4b68e74ac1460a8b27398500cb6dfeb4492e74c457eae7cd1e",
-    "papers/extremafuse_acl2027/build_current_results.py": "6999176a806e902968c13116d4cf0ab5de452800791fbc2c588f5a4bc1b861f0",
+    "papers/extremafuse_acl2027/build_current_results.py": "e21a37fbff1c1abe49b80387997d2714228a7813b4642e5b73a946de648d5673",
     "papers/extremafuse_acl2027/figures/quality_budget_30s.pdf": "026147c0d27cc3b74bfbe1acd8139699ae57f823a1b74c3899edff03ea004190",
     "papers/extremafuse_acl2027/figures/fusion_weights.png": "0b434552dda582e4982c0cc8ca8dfbac2c63c90071f39794e569c7db69b3733e",
-    "papers/extremafuse_acl2027/generated/actual_decode.tex": "e4bbfc0471eab3b20adb55335c20e65e9b1b7324a8a57dc3cf14ecfcfbf22820",
-    "papers/extremafuse_acl2027/generated/analysis.json": "3742f949ee36715b7e79c9eb0be806d19f83929f6c5d1fe86c98671057e5dc6d",
-    "papers/extremafuse_acl2027/generated/operating_points.tex": "b039a8e3d5939944784bf4853ef912272c9997c4eafc658ae053cd473334ee65",
-    "papers/extremafuse_acl2027/generated/paired_per.tex": "a6145f0a1b9bcaa3db6c51c94645a4c63713a15bd3e0c4b755e8db125a4ef061",
-    "papers/extremafuse_acl2027/generated/speaking_rate.tex": "292a0e5af3c4eece9ca89f56c7d1fe4ae8a279e4364c216a9e1c49ad673fa699",
+    "papers/extremafuse_acl2027/generated/actual_decode.tex": "977d9b42eacda97300f81201407cae5568aadd5c84b70fb640685e3a07a80fd8",
+    "papers/extremafuse_acl2027/generated/analysis.json": "c7caf3c10c4f7da5c89cac20b3cd571e5035502fce9e861ea034c1373ebf1e98",
+    "papers/extremafuse_acl2027/generated/operating_points.tex": "df582f50f48e944efeff8665b9ff6668cfb5d973969ccdd7070f15f750e439dc",
+    "papers/extremafuse_acl2027/generated/paired_per.tex": "5928d77165064d0a05718e404a86ed134547de82b6be8ce01fa6efc38cdc3d02",
+    "papers/extremafuse_acl2027/generated/speaking_rate.tex": "7970a8ad325eaa4ecd9c3c63b18ae44dd7290b8920cc015abe057f3d53abebd6",
     "artifacts/research/phone69_paper_results_table_20261117/data.json": "0108cb83feb70f0e143b4ddce1a0c32b105e86c5a78f53c05731dedc6f9285d1",
     "papers/extremafuse_acl2027/figures/quality_budget_30s.png": "56f34b9a5628499ebd226871baa27554a8a57bd078df0648d1f7d5a89f469de9",
     "papers/extremafuse_acl2027/method_figure.py": "b331de3a18b6667587ae867d30696977d249fd7aa5167c9d2994f1d1aaf0985c",
     "papers/extremafuse_acl2027/figures/extremafuse_network.pdf": "5710e9a3ce729a84f7cfe9937c95370a485816723b5550e95328138a54fe691d",
     "papers/extremafuse_acl2027/figures/extremafuse_network.png": "9bde2f56dfe2ddd45b1dac2bf55334ea3fbb4218fc631af630bfcebc4a338728",
     "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/config.yaml": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4",
-    "papers/extremafuse_acl2027/README.md": "b3998951b7651802704731e1fe9454c07c631d4271050e101d55bcc5432bf227"
+    "papers/extremafuse_acl2027/README.md": "54f62d13e720b9a73f5a3ab149ed8de9be6b87b9d22dc759aa6baaf62dfca405",
+    "papers/extremafuse_acl2027/generated/matched_points.tex": "6ef965abafd61e1b6528b627b7f7b7f003dc0e5ad9c2991925af114a123d6cdd",
+    "papers/extremafuse_acl2027/figures/matched_operating_points.png": "c5d822381042607ee3ddbe3efc1ecb03b1e7b52129a24ef2288958620de8dc09",
+    "artifacts/research/phone69_all_results_20261117/results.json": "cc87a3ef931fd483acad56750bc95806aaa4386d47f559e4ce753aef44f4319b"
   },
   "archived_main_pdf": "The existing main.pdf is the 2026-11-12 export. The editor preview follows main.tex.",
   "figure_check": {
@@ -130,7 +134,7 @@
         0.081
       ]
     },
-    "paired_contrasts_in_table": 8,
+    "paired_contrasts_in_table": 10,
     "low_per_detail": {
       "per_limits_percent": [
         4.74,
@@ -192,5 +196,30 @@
     "encoder_fusion_gmac_reduction_percent": 70.6828,
     "equal_mel_length_analysis": "generated/analysis.json#front_end_at_equal_input_length",
     "all_input_lengths_verified_against_stride1_steps_and_mel_detector_counts": 2620
+  },
+  "matched_table_check": {
+    "references_in_order": [
+      "stride 4 / 128",
+      "stride 4 / 512",
+      "stride 2 / 256"
+    ],
+    "fusion_candidates": 9,
+    "rows": 6,
+    "inputs": "Unrounded 30-second encoder/fusion cost and full test-clean corpus PER from validation-selected checkpoints",
+    "pairing": "Nearest absolute difference on the conditioning axis; denominator shared for all PERs",
+    "per_highlight": "Lower PER within a compute-matched pair when the paired 95% speaker-bootstrap interval excludes zero",
+    "cost_highlight": "Lower GMAC within each pair matched by observed PER",
+    "reported_outcomes": "generated/analysis.json#matched_table",
+    "rendered_preview": {
+      "path": "papers/extremafuse_acl2027/figures/matched_operating_points.png",
+      "page": 4,
+      "dpi": 216,
+      "crop_pixels": [
+        180,
+        180,
+        1425,
+        600
+      ]
+    }
   }
 }
