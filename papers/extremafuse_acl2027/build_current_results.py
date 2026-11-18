@@ -11,6 +11,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from matplotlib.ticker import NullLocator
 import numpy as np
 
 
@@ -132,6 +133,7 @@ def trials(rows):
 
 
 def frontier(rows):
+    """Nondominated observations, in increasing cost and decreasing PER."""
     best = float("inf")
     result = []
     for r in sorted(rows, key=lambda m: (m[COST], m[ERROR])):
@@ -139,6 +141,25 @@ def frontier(rows):
             result.append(r)
             best = r[ERROR]
     return result
+
+
+def cost_at_error_ceilings(rows, ceilings):
+    """Find each family's minimum compute at the specified observed PER ceilings."""
+    families = {"fixed_stride": [r for r in rows if not r["stage_rates"]],
+                "fusion": [r for r in rows if r["stage_rates"]]}
+    edges = {k: list(reversed(frontier(group))) for k, group in families.items()}
+    # Use the original counts; rounded table entries are only for display.
+    examples = []
+    for ceiling in ceilings:
+        best = {k: min((r for r in group
+                        if 100 * r["phone_errors"] <= ceiling * r["reference_phones"]),
+                       key=lambda r: (r[COST], r[ERROR]))
+                for k, group in families.items()}
+        base, fusion = best["fixed_stride"], best["fusion"]
+        examples.append({"per_ceiling_percent": ceiling, "fixed_id": base["id"],
+                         "fusion_id": fusion["id"], "fixed_gmac_30s": base[COST],
+                         "fusion_gmac_30s": fusion[COST], "fixed_over_fusion": base[COST] / fusion[COST]})
+    return edges, examples
 
 
 def figure_comparisons(rows, pairs):
@@ -165,7 +186,7 @@ def figure_comparisons(rows, pairs):
     ]
 
 
-def make_figure(rows, edge, comparisons):
+def make_figure(rows, edges, examples, comparisons):
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9,
                          "axes.labelsize": 9.5, "pdf.fonttype": 42})
     ink, muted, grid = "#222c32", "#52616a", "#e0e5e6"
@@ -187,37 +208,63 @@ def make_figure(rows, edge, comparisons):
             ax.spines[side].set_color("#9ba6aa")
             ax.spines[side].set_linewidth(.7)
 
-    heading(.012, .958, "a", "All 12 operating points")
-    ax = fig.add_axes([.108, .552, .864, .331])
+    heading(.012, .958, "a", "Cost at a target PER")
+    ax = fig.add_axes([.106, .540, .856, .350])
     axis_style(ax)
+    ax.set_yscale("log", base=2)
+    ax.yaxis.set_minor_locator(NullLocator())
+    ax.set(xlim=(0, 7), ylim=(3.35, 48), xticks=range(8), yticks=[4, 8, 16, 32],
+           yticklabels=["4", "8", "16", "32"], ylabel="Encoder + fusion\n(GMAC per 30 s, log₂)",
+           xlabel="Test-clean phone error rate (%)")
     ax.grid(axis="y", color=grid, linewidth=.55)
-    ax.step([r[COST] for r in edge] + [max(r[COST] for r in rows)],
-            [r[ERROR] for r in edge] + [edge[-1][ERROR]], where="post",
-            linestyle=(0, (3, 2.5)), color="#8d9b9d", lw=1.05, zorder=1)
-    offsets = {"S1": (0, 8), "S2": (-7, 14), "E09": (0, 7), "E05": (1, 8),
-               "P_L1": (0, -13), "E02": (2, 7), "P_L3": (0, 7),
-               "E06": (0, -13), "E07": (3, -13), "P_L9": (0, 8),
-               "P_MEL_L3": (2, 7), "E10": (0, -14)}
+    # The x coordinate of a dot is its measured error; on a line it is a ceiling.
+    # Do not extend either line left of its first feasible checkpoint.
+    stop = max(r[ERROR] for r in rows)
+    for key, color, style in (("fixed_stride", "#67737b", (0, (3.2, 2.4))),
+                              ("fusion", "#47818a", "-")):
+        edge = edges[key]
+        ax.step([r[ERROR] for r in edge] + [stop], [r[COST] for r in edge] + [edge[-1][COST]],
+                where="post", linestyle=style, color=color, lw=1.13, zorder=1.5)
+    # The zero-based PER axis leaves room to show exact readings from the two step curves.
+    inset = ax.inset_axes([.04, .15, .475, .71], zorder=6)
+    inset.set(xlim=(0, 1), ylim=(0, 1), xticks=[], yticks=[])
+    for spine in inset.spines.values():
+        spine.set_visible(False)
+    inset.text(.01, .93, "Minimum GMAC at each PER limit", color=ink, fontsize=8.5, weight="bold")
+    cols = [.01, .47, .70, .982]
+    for x, title, ha in zip(cols, ["PER limit", "Fixed", "Fusion", "Fixed / fusion"],
+                            ["left", "right", "right", "right"]):
+        inset.text(x, .70, title, fontsize=7.4, color=muted, ha=ha)
+    inset.plot([.01, .985], [.64, .64], color=grid, lw=.8)
+    for i, example in enumerate(examples):
+        values = [f"≤ {example['per_ceiling_percent']:.1f}%", f"{example['fixed_gmac_30s']:.2f}",
+                  f"{example['fusion_gmac_30s']:.2f}", f"{example['fixed_over_fusion']:.2f}×"]
+        ratio_color = colors[len(models[example["fusion_id"]]["stage_rates"])]
+        for j, (x, value) in enumerate(zip(cols, values)):
+            inset.text(x, .47 - .20*i, value, fontsize=8.3, ha="left" if j == 0 else "right",
+                       weight="bold" if j == 3 else "normal", color=ratio_color if j == 3 else ink)
+    # Point labels use unmodified coordinates; the two close L7/stride-2 markers
+    # have distinct positions and leader lines.
+    labels = {"S1": (6, 5, "left"), "S2": (10, -7, "left"), "E09": (8, 3, "left"),
+              "E05": (6, 2, "left"), "P_L1": (-6, -3, "right"), "E02": (7, -1, "left"),
+              "P_L3": (5, 3, "left"), "E06": (-6, -7, "right"), "E07": (-9, -2, "right"),
+              "P_L9": (-8, 4, "right"), "P_MEL_L3": (4, 5, "left"), "E10": (-5, -4, "right")}
     for n in range(3):
         group = [r for r in rows if len(r["stage_rates"]) == n]
-        ax.scatter([r[COST] for r in group], [r[ERROR] for r in group],
+        ax.scatter([r[ERROR] for r in group], [r[COST] for r in group],
                    s=55 if n == 0 else 27, marker=shapes[n],
                    facecolor="white" if n == 0 else colors[n],
                    edgecolor=colors[n] if n == 0 else "white",
                    linewidth=1.25 if n == 0 else .5, zorder=3+n)
         for r in group:
             key = r["id"]
+            dx, dy, align = labels[key]
             leader = ({"arrowstyle": "-", "color": colors[n], "lw": .65,
                        "shrinkA": 1, "shrinkB": 3} if key in {"S2", "E07"} else None)
-            ax.annotate(NAMES[key], (r[COST], r[ERROR]), offsets[key],
-                        textcoords="offset points", ha="right" if key == "S2" else "center",
+            ax.annotate(NAMES[key], (r[ERROR], r[COST]), (dx, dy),
+                        textcoords="offset points", ha=align,
                         va="baseline", fontsize=8.4, color=colors[n], zorder=6,
                         arrowprops=leader)
-    ax.set(xlim=(0, 37), ylim=(4.48, 6.70), xticks=np.arange(0, 36, 5),
-           yticks=[4.8, 5.2, 5.6, 6.0, 6.4], ylabel="Test-clean PER (%)",
-           xlabel="Encoder + fusion (GMAC per 30 s of audio)")
-    ax.text(.991, .93, "↙  Lower left is better", transform=ax.transAxes, ha="right",
-            va="top", color=muted, fontsize=8.3)
     handles = [Line2D([], [], marker=s, color=c, markerfacecolor="white" if i == 0 else c,
                       markersize=5, linestyle="none", label=name)
                for i, (s, c, name) in enumerate(zip(shapes, colors,
@@ -226,22 +273,24 @@ def make_figure(rows, edge, comparisons):
                ncol=3, frameon=False, fontsize=8.5, columnspacing=1,
                handlelength=1.0, handletextpad=.25, borderaxespad=0)
 
-    heading(.012, .384, "b", "Compute savings and paired changes in phone error")
+    heading(.012, .384, "b", "Compute ratios and paired changes in phone error")
     bottom, height = .086, .195
-    # Share row positions across the savings bars, the forest plot and the numeric labels.
+    # Align the cost ratios, PER intervals and numeric labels on the same rows.
     ys = [i+.38 for i in range(len(comparisons)-1, 0, -1)] + [.10]
     ylimits = (-.44, ys[0]+.55)
-    bars = fig.add_axes([.298, bottom, .271, height])
+    ratios = fig.add_axes([.298, bottom, .271, height])
     ci = fig.add_axes([.653, bottom, .225, height])
-    for panel in (bars, ci):
+    for panel in (ratios, ci):
         axis_style(panel)
         panel.spines["left"].set_visible(False)
         panel.set(ylim=ylimits, yticks=[])
-    bars.set(xlim=(0, 100), xticks=[0, 50, 100])
-    bars.axvline(0, color="#9ba6aa", lw=.7)
+    ratios.set_xscale("log", base=2)
+    ratios.set(xlim=(1, 8), xticks=[1, 2, 4, 8], xticklabels=["1×", "2×", "4×", "8×"])
+    ratios.xaxis.set_minor_locator(NullLocator())
+    ratios.axvline(1, color="#9ba6aa", lw=.7)
     ci.set(xlim=(-.40, .50), xticks=[-.4, 0, .4], xticklabels=["−0.4", "0", "+0.4"])
     ci.axvline(0, color=ink, linestyle=(0, (2.8, 2)), linewidth=.9, zorder=1)
-    for x, label in ((.013, "Model vs. reference"), (.298, "GMAC saved (%)"),
+    for x, label in ((.013, "Model vs. reference"), (.298, "Reference / model GMAC"),
                      (.653, "ΔPER (pp), 95% CI")):
         fig.text(x, .305, label, fontsize=8.8, color=ink, weight="bold", va="center")
     def row_y(y):
@@ -252,19 +301,19 @@ def make_figure(rows, edge, comparisons):
     for row, y in zip(comparisons, ys):
         a, b = row["a"], row["b"]
         n = len(models[a]["stage_rates"])
-        pct, delta = row["gmac_saved_percent"], row["delta_pp"]
+        ratio, delta = row["gmac_30s_b"] / row["gmac_30s_a"], row["delta_pp"]
         fig.text(.013, row_y(y), f"{NAMES[a]} vs. {NAMES[b]}", va="center", color=ink, fontsize=9)
-        bars.barh(y, pct, height=.44, color=colors[n], zorder=3)
-        bars.annotate(f"{pct:.1f}%", (pct, y), xytext=(3, 0), textcoords="offset points",
-                      color=colors[n], fontsize=8.5, weight="semibold", va="center",
-                      annotation_clip=False)
+        ratios.hlines(y, 1, ratio, color=colors[n], lw=1.9, zorder=2)
+        ratios.plot(ratio, y, marker=shapes[n], markersize=4.3, color=colors[n], zorder=3)
+        ratios.annotate(f"{ratio:.2f}×", (ratio, y), xytext=(5, 0), textcoords="offset points",
+                        color=colors[n], fontsize=8.5, weight="semibold", va="center")
         ci.errorbar(delta, y, xerr=[[delta-row["lo"]], [row["hi"]-delta]], fmt=shapes[n],
                     color=colors[n], elinewidth=1.25, capsize=2.5, capthick=1.1,
                     markersize=4.9, markeredgewidth=1.1, zorder=3,
                     markerfacecolor="white" if row["lo"] <= 0 <= row["hi"] else colors[n])
         fig.text(.98, row_y(y), f"{delta:+.3f}".replace("-", "−"), ha="right",
                  va="center", fontsize=8.7, color=ink)
-    fig.text(.013, .018, "Open point in b: interval includes zero.", fontsize=8,
+    fig.text(.013, .018, "Open PER markers show intervals that include zero.", fontsize=8,
              color=muted, va="center")
     fig.text(.653, .018, "← Lower error", fontsize=8, color=muted, va="center")
     fig.text(.976, .018, "Higher error →", fontsize=8, color=muted, va="center", ha="right")
@@ -293,6 +342,7 @@ def main():
         raise ValueError("Review the manuscript labels and contrasts for the new selection")
     pairs, n = trials(rows)
     edge = frontier(rows)
+    edges, examples = cost_at_error_ceilings(rows, (5.0, 5.7, 6.1))
     comparisons = figure_comparisons(rows, pairs)
     OUTPUT.mkdir(exist_ok=True)
     summary, decode = [], []
@@ -325,10 +375,12 @@ def main():
                   paired_unit="speaker", speakers=n, draws=10_000, seed=42,
                   interval="percentile; exploratory, not adjusted for multiple comparisons",
                   observed_frontier=[r["id"] for r in edge], contrasts=pairs,
+                  minimum_cost_at_per_ceiling={k: [r["id"] for r in e] for k, e in edges.items()},
+                  example_per_ceilings=examples,
                   figure_comparisons=comparisons,
                   natural_rate_groups=rate_groups(rows))
     (OUTPUT / "analysis.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
-    make_figure(rows, edge, comparisons)
+    make_figure(rows, edges, examples, comparisons)
 
 
 if __name__ == "__main__":

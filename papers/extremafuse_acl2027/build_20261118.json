@@ -4,7 +4,7 @@
   "layout_engine": "Tectonic 0.17.0 (XDV, same sources; no separate manuscript PDF exported)",
   "pages": 7,
   "conclusion_page": 5,
-  "abstract_word_count": 162,
+  "abstract_word_count": 157,
   "undefined_references": false,
   "overfull_boxes": false,
   "checked_page_layouts": 7,
@@ -18,20 +18,20 @@
     "tab:rate": 7
   },
   "source_sha256": {
-    "papers/extremafuse_acl2027/main.tex": "0333d5b22c61c60c8fcba18d12373356a8ae381968c37c6d20c5312f561eb53a",
+    "papers/extremafuse_acl2027/main.tex": "ccc47b5f5de8e720769d111a2b21a317d636ce221416b1865d1e45b3aaca7a27",
     "papers/extremafuse_acl2027/references.bib": "519c685d4ee59e7fe6a9a62062a2a17fcfc4d3cdaa19e69662d3ba1ee2e51ef0",
     "papers/extremafuse_acl2027/acl.sty": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de",
     "papers/extremafuse_acl2027/acl_natbib.bst": "6fbb306202290f4b68e74ac1460a8b27398500cb6dfeb4492e74c457eae7cd1e",
-    "papers/extremafuse_acl2027/build_current_results.py": "ca3fa2e679d2aa2f656b8f239c646ea6c533515c2163bc9e6472be107a1a9c72",
-    "papers/extremafuse_acl2027/figures/quality_budget_30s.pdf": "8101899368acc8422466c90b2da4aa841b41710efe836afe798254c0f0d27e56",
+    "papers/extremafuse_acl2027/build_current_results.py": "d0ce448ad213a38ec04c11b29f136f2025395bdb27aa245f4d90fe92bb685807",
+    "papers/extremafuse_acl2027/figures/quality_budget_30s.pdf": "0fa4bcd7d6baca4b5df2b34a227e5ffd10e6791fab42fb1c5fb6f73b91da8978",
     "papers/extremafuse_acl2027/figures/fusion_weights.png": "0b434552dda582e4982c0cc8ca8dfbac2c63c90071f39794e569c7db69b3733e",
     "papers/extremafuse_acl2027/generated/actual_decode.tex": "e4bbfc0471eab3b20adb55335c20e65e9b1b7324a8a57dc3cf14ecfcfbf22820",
-    "papers/extremafuse_acl2027/generated/analysis.json": "7b1f2bb411309101fd164af7b8003f38c1cdccc7927e6d3c29834d0828e6cc07",
+    "papers/extremafuse_acl2027/generated/analysis.json": "84fcb94228836161e2ec8ae038745aa7179aa97c00beed1bc49b65b96ead8ae8",
     "papers/extremafuse_acl2027/generated/operating_points.tex": "b039a8e3d5939944784bf4853ef912272c9997c4eafc658ae053cd473334ee65",
     "papers/extremafuse_acl2027/generated/paired_per.tex": "b8729cbbea790b0ce37ec627e02cfd086641ef3d9cfbac4e83e2fff9fa8d4502",
     "papers/extremafuse_acl2027/generated/speaking_rate.tex": "292a0e5af3c4eece9ca89f56c7d1fe4ae8a279e4364c216a9e1c49ad673fa699",
     "artifacts/research/phone69_paper_results_table_20261117/data.json": "0108cb83feb70f0e143b4ddce1a0c32b105e86c5a78f53c05731dedc6f9285d1",
-    "papers/extremafuse_acl2027/figures/quality_budget_30s.png": "8a345932e58135f18aed987e00e4ed760fd1500e2bd6ce71b81867a0cc031e1c"
+    "papers/extremafuse_acl2027/figures/quality_budget_30s.png": "da7d0baf2364e1a8870afdee37092b1ab8ab4e87405de87032bda6a2f3d78074"
   },
   "archived_main_pdf": "The existing main.pdf is the 2026-11-12 export. The editor preview follows main.tex.",
   "figure_check": {
@@ -43,6 +43,47 @@
       1132
     ],
     "open_intervals_include_zero": 2,
-    "reviewed_in_layout_on_page": 2
+    "reviewed_in_layout_on_page": 2,
+    "per_axis": {
+      "min_percent": 0,
+      "max_percent": 7,
+      "scale": "linear"
+    },
+    "gmac_axis": {
+      "scope": "encoder and fusion, common 30-second input",
+      "scale": "log2",
+      "ticks": [
+        4,
+        8,
+        16,
+        32
+      ]
+    },
+    "cost_at_observed_per_limit": [
+      {
+        "limit_percent": 5.0,
+        "fixed": "S2",
+        "fusion": "E06",
+        "fixed_over_fusion": 1.24
+      },
+      {
+        "limit_percent": 5.7,
+        "fixed": "S2",
+        "fusion": "E10",
+        "fixed_over_fusion": 5.04
+      },
+      {
+        "limit_percent": 6.1,
+        "fixed": "S2",
+        "fusion": "P_MEL_L3",
+        "fixed_over_fusion": 6.36
+      }
+    ],
+    "paired_cost_ratios": [
+      1.62,
+      1.24,
+      5.25,
+      1.26
+    ]
   }
 }

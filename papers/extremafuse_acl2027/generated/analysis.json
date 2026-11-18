@@ -57,6 +57,44 @@
       "hi": 0.4516357747453323
     }
   ],
+  "minimum_cost_at_per_ceiling": {
+    "fixed_stride": [
+      "S2"
+    ],
+    "fusion": [
+      "E06",
+      "P_L1",
+      "E05",
+      "E10",
+      "P_MEL_L3"
+    ]
+  },
+  "example_per_ceilings": [
+    {
+      "per_ceiling_percent": 5.0,
+      "fixed_id": "S2",
+      "fusion_id": "E06",
+      "fixed_gmac_30s": 26.539014656,
+      "fusion_gmac_30s": 21.380416224,
+      "fixed_over_fusion": 1.2412768010666395
+    },
+    {
+      "per_ceiling_percent": 5.7,
+      "fixed_id": "S2",
+      "fusion_id": "E10",
+      "fixed_gmac_30s": 26.539014656,
+      "fusion_gmac_30s": 5.267983696,
+      "fixed_over_fusion": 5.037793620384812
+    },
+    {
+      "per_ceiling_percent": 6.1,
+      "fixed_id": "S2",
+      "fusion_id": "P_MEL_L3",
+      "fixed_gmac_30s": 26.539014656,
+      "fusion_gmac_30s": 4.174300144,
+      "fixed_over_fusion": 6.357715962074815
+    }
+  ],
   "figure_comparisons": [
     {
       "a": "E06",
