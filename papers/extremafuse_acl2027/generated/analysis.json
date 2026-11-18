@@ -15,6 +15,13 @@
   ],
   "contrasts": [
     {
+      "a": "E05",
+      "b": "E09",
+      "delta_pp": -0.16453024235145988,
+      "lo": -0.3338677926523991,
+      "hi": 0.0
+    },
+    {
       "a": "E06",
       "b": "S1",
       "delta_pp": -0.20473698967850473,
@@ -1009,5 +1016,29 @@
         "joiner_gmac_per_audio_second": 0.011556172883821497
       }
     }
+  },
+  "front_end_at_equal_input_length": {
+    "input_reference": "S1",
+    "fixed": "E09",
+    "fusion": "E05",
+    "repeated_input_lengths": 636,
+    "utterances_at_repeated_lengths": 2054,
+    "groups_with_varying_fusion_steps": 629,
+    "modal_input_frames": 272,
+    "modal_utterances": 11,
+    "modal_fixed_steps": 68,
+    "modal_fusion_steps": [
+      97,
+      102,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      111,
+      112,
+      115
+    ]
   }
 }

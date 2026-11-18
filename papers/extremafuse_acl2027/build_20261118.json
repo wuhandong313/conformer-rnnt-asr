@@ -13,30 +13,31 @@
     "fig:budget": 2,
     "fig:network": 3,
     "tab:points": 4,
-    "tab:paired": 4,
     "fig:weights": 5,
+    "tab:paired": 5,
     "tab:decode": 8,
     "tab:rate": 8
   },
   "source_sha256": {
-    "papers/extremafuse_acl2027/main.tex": "040b80526fbe58b116cf4ff589dd5fd89948810a248a4a0fa6182f3e401a8cd3",
-    "papers/extremafuse_acl2027/references.bib": "5e6d38e264e8177580e162bbcd15bde7946d305fdebb1ce76d02c8a89b07130c",
+    "papers/extremafuse_acl2027/main.tex": "28d4f84e8ea210e69b891339d01b23629d1e1e22204f18a52fbfeb4ef9c99542",
+    "papers/extremafuse_acl2027/references.bib": "b30ca8e0d2820128b5f43aac2ee14d4bfa91fd7aaec86bd556d4ce476ec75bba",
     "papers/extremafuse_acl2027/acl.sty": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de",
     "papers/extremafuse_acl2027/acl_natbib.bst": "6fbb306202290f4b68e74ac1460a8b27398500cb6dfeb4492e74c457eae7cd1e",
-    "papers/extremafuse_acl2027/build_current_results.py": "e055b57af2592cd81fdf4c02c3189287c12895362599391acddb78b723f2b5ca",
+    "papers/extremafuse_acl2027/build_current_results.py": "6999176a806e902968c13116d4cf0ab5de452800791fbc2c588f5a4bc1b861f0",
     "papers/extremafuse_acl2027/figures/quality_budget_30s.pdf": "026147c0d27cc3b74bfbe1acd8139699ae57f823a1b74c3899edff03ea004190",
     "papers/extremafuse_acl2027/figures/fusion_weights.png": "0b434552dda582e4982c0cc8ca8dfbac2c63c90071f39794e569c7db69b3733e",
     "papers/extremafuse_acl2027/generated/actual_decode.tex": "e4bbfc0471eab3b20adb55335c20e65e9b1b7324a8a57dc3cf14ecfcfbf22820",
-    "papers/extremafuse_acl2027/generated/analysis.json": "4bb31ed6ac59760e23648e3a0cb00ca4d979c24b9682e3171bb3b9f44d8fe8f2",
+    "papers/extremafuse_acl2027/generated/analysis.json": "3742f949ee36715b7e79c9eb0be806d19f83929f6c5d1fe86c98671057e5dc6d",
     "papers/extremafuse_acl2027/generated/operating_points.tex": "b039a8e3d5939944784bf4853ef912272c9997c4eafc658ae053cd473334ee65",
-    "papers/extremafuse_acl2027/generated/paired_per.tex": "52cd4c2dab9d0ecead8954dc9d4c3329cb529f156206e1b7a467a8da3fcc62cd",
+    "papers/extremafuse_acl2027/generated/paired_per.tex": "a6145f0a1b9bcaa3db6c51c94645a4c63713a15bd3e0c4b755e8db125a4ef061",
     "papers/extremafuse_acl2027/generated/speaking_rate.tex": "292a0e5af3c4eece9ca89f56c7d1fe4ae8a279e4364c216a9e1c49ad673fa699",
     "artifacts/research/phone69_paper_results_table_20261117/data.json": "0108cb83feb70f0e143b4ddce1a0c32b105e86c5a78f53c05731dedc6f9285d1",
     "papers/extremafuse_acl2027/figures/quality_budget_30s.png": "56f34b9a5628499ebd226871baa27554a8a57bd078df0648d1f7d5a89f469de9",
     "papers/extremafuse_acl2027/method_figure.py": "b331de3a18b6667587ae867d30696977d249fd7aa5167c9d2994f1d1aaf0985c",
     "papers/extremafuse_acl2027/figures/extremafuse_network.pdf": "5710e9a3ce729a84f7cfe9937c95370a485816723b5550e95328138a54fe691d",
     "papers/extremafuse_acl2027/figures/extremafuse_network.png": "9bde2f56dfe2ddd45b1dac2bf55334ea3fbb4218fc631af630bfcebc4a338728",
-    "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/config.yaml": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4"
+    "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/config.yaml": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4",
+    "papers/extremafuse_acl2027/README.md": "b3998951b7651802704731e1fe9454c07c631d4271050e101d55bcc5432bf227"
   },
   "archived_main_pdf": "The existing main.pdf is the 2026-11-12 export. The editor preview follows main.tex.",
   "figure_check": {
@@ -129,7 +130,7 @@
         0.081
       ]
     },
-    "paired_contrasts_in_table": 7,
+    "paired_contrasts_in_table": 8,
     "low_per_detail": {
       "per_limits_percent": [
         4.74,
@@ -177,5 +178,19 @@
       1105
     ],
     "reviewed_in_layout_on_page": 3
+  },
+  "front_end_replacement_check": {
+    "comparison": [
+      "E05",
+      "E09"
+    ],
+    "paired_errors_difference": -311,
+    "paired_interval_pp": [
+      -0.3339,
+      0.0
+    ],
+    "encoder_fusion_gmac_reduction_percent": 70.6828,
+    "equal_mel_length_analysis": "generated/analysis.json#front_end_at_equal_input_length",
+    "all_input_lengths_verified_against_stride1_steps_and_mel_detector_counts": 2620
   }
 }

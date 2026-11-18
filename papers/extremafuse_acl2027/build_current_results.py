@@ -5,6 +5,7 @@ import json
 import math
 import re
 import sys
+from collections import defaultdict
 from pathlib import Path
 
 import matplotlib
@@ -30,7 +31,7 @@ NAMES = {
     "E06": "L5", "E07": "L7", "P_L9": "L9",
     "P_MEL_L3": "Mel+L3", "E10": "Mel+L5",
 }
-PAIRS = [("E06", "S1"), ("E06", "S2"), ("E07", "S2"), ("E07", "E09"),
+PAIRS = [("E05", "E09"), ("E06", "S1"), ("E06", "S2"), ("E07", "S2"), ("E07", "E09"),
          ("E10", "E09"), ("E10", "E05"), ("P_MEL_L3", "E10")]
 COST = "encoder_compression_gmac_30s"
 ERROR = "per_percent"
@@ -40,7 +41,28 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def rate_groups(models):
+def equal_length_outputs(input_frames, fixed_steps, fusion_steps):
+    """Compare the two front ends on utterances of exactly the same Mel length."""
+    by_length = defaultdict(list)
+    for uid, length in input_frames.items():
+        if fixed_steps[uid] != (length + 3) // 4:
+            raise ValueError(f"Stride-4 stacking disagrees with the recorded input length for {uid}")
+        by_length[length].append(fusion_steps[uid])
+    repeated = {length: steps for length, steps in by_length.items() if len(steps) >= 2}
+    if not repeated:
+        raise ValueError("No repeated input lengths for a comparison of the front ends")
+    # Pick the most frequent input length without inspecting the fusion outputs.
+    example = min(repeated, key=lambda length: (-len(repeated[length]), length))
+    steps = repeated[example]
+    return dict(input_reference="S1", fixed="E09", fusion="E05",
+                repeated_input_lengths=len(repeated),
+                utterances_at_repeated_lengths=sum(map(len, repeated.values())),
+                groups_with_varying_fusion_steps=sum(min(g) < max(g) for g in repeated.values()),
+                modal_input_frames=example, modal_utterances=len(steps),
+                modal_fixed_steps=(example + 3) // 4, modal_fusion_steps=sorted(steps))
+
+
+def corpus_analyses(models):
     previous = ROOT / "artifacts/research/phone69_supplementary_rate_groups_20261112/results.json"
     frozen = json.loads(previous.read_text())["source_sha256"]
     bins = [[], [], []]
@@ -53,7 +75,7 @@ def rate_groups(models):
     flat = sum(bins, [])
     if len(set(flat)) != len(flat):
         raise ValueError("Speaking-rate groups overlap")
-    rendered, groups = [], {}
+    rendered, groups, front_end_steps = [], {}, {}
     for x in models:
         sources = x["sources"]
         csv_path, = [p for p in sources if p.endswith("/utterances.csv")]
@@ -77,6 +99,14 @@ def rate_groups(models):
             raise ValueError("Speaking-rate groups do not reproduce corpus scores")
         uid = x["id"]
         groups[uid] = dict(zip(("slow", "middle", "fast"), parts))
+        if uid in ("S1", "E09", "E05"):
+            steps = {}
+            for utterance, row in counts.items():
+                frames = row["layer_frames"]
+                if isinstance(frames, str):
+                    frames = json.loads(frames)
+                steps[utterance] = int(frames[0])
+            front_end_steps[uid] = steps
         if uid in ("E05", "P_MEL_L3"):
             rendered.append(r"\midrule")
         fields = [NAMES[uid]]
@@ -84,7 +114,9 @@ def rate_groups(models):
             fields.extend([f"{100*g['corpus_PER']:.3f}", f"{g['total_gmac_per_audio_second']:.3f}"])
         rendered.append(" & ".join(fields) + r" \\")
     write_rows("speaking_rate.tex", rendered)
-    return groups
+    lengths = equal_length_outputs(front_end_steps["S1"], front_end_steps["E09"],
+                                   front_end_steps["E05"])
+    return groups, lengths
 
 
 def trials(rows):
@@ -376,6 +408,7 @@ def main():
     write_rows("paired_per.tex", [f"{NAMES[p['a']]} / {NAMES[p['b']]} & "
                                   f"${p['delta_pp']:+.3f}$ & "
                                   f"$[{p['lo']:+.3f}, {p['hi']:+.3f}]$" + r" \\" for p in pairs])
+    groups, lengths = corpus_analyses(rows)
     record = dict(selection=str(SELECTION.relative_to(ROOT)), sha256=sha(SELECTION),
                   paired_unit="speaker", speakers=n, draws=10_000, seed=42,
                   interval="percentile; exploratory, not adjusted for multiple comparisons",
@@ -383,7 +416,7 @@ def main():
                   minimum_cost_at_per_ceiling={k: [r["id"] for r in e] for k, e in edges.items()},
                   example_per_ceilings=examples,
                   figure_comparisons=comparisons, measured_matches=match,
-                  natural_rate_groups=rate_groups(rows))
+                  natural_rate_groups=groups, front_end_at_equal_input_length=lengths)
     (OUTPUT / "analysis.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
     make_figure(rows, edges, match, pairs)
     make_method_figure(next(x for x in rows if x["id"] == "E10"), PAPER / "figures")
