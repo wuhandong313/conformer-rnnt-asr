@@ -2,28 +2,29 @@
   "date": "2026-11-18",
   "editor_compile": "success",
   "layout_engine": "Tectonic 0.17.0 (XDV, same sources; no separate manuscript PDF exported)",
-  "pages": 7,
-  "conclusion_page": 5,
+  "pages": 8,
+  "conclusion_page": 6,
   "abstract_word_count": 134,
   "undefined_references": false,
   "overfull_boxes": false,
-  "checked_page_layouts": 7,
+  "checked_page_layouts": 8,
   "selected_systems": 12,
   "table_figure_pages": {
     "fig:budget": 2,
-    "tab:points": 3,
+    "fig:network": 3,
+    "tab:points": 4,
     "tab:paired": 4,
     "fig:weights": 5,
-    "tab:decode": 7,
-    "tab:rate": 7
+    "tab:decode": 8,
+    "tab:rate": 8
   },
   "source_sha256": {
-    "papers/extremafuse_acl2027/main.tex": "eb916f3957ce1ba1defec5c0db8e3d9f6f1f70681825cd6eeb0d527950191d8d",
+    "papers/extremafuse_acl2027/main.tex": "040b80526fbe58b116cf4ff589dd5fd89948810a248a4a0fa6182f3e401a8cd3",
     "papers/extremafuse_acl2027/references.bib": "5e6d38e264e8177580e162bbcd15bde7946d305fdebb1ce76d02c8a89b07130c",
     "papers/extremafuse_acl2027/acl.sty": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de",
     "papers/extremafuse_acl2027/acl_natbib.bst": "6fbb306202290f4b68e74ac1460a8b27398500cb6dfeb4492e74c457eae7cd1e",
-    "papers/extremafuse_acl2027/build_current_results.py": "604000741f7a8271e96a08a949d6363f5dd61c832572868214478566b748fbe4",
-    "papers/extremafuse_acl2027/figures/quality_budget_30s.pdf": "b40e92b1774f708659ae9df13e6be5842f3eea5281c1d8f6ec0278a6df43cfc1",
+    "papers/extremafuse_acl2027/build_current_results.py": "e055b57af2592cd81fdf4c02c3189287c12895362599391acddb78b723f2b5ca",
+    "papers/extremafuse_acl2027/figures/quality_budget_30s.pdf": "026147c0d27cc3b74bfbe1acd8139699ae57f823a1b74c3899edff03ea004190",
     "papers/extremafuse_acl2027/figures/fusion_weights.png": "0b434552dda582e4982c0cc8ca8dfbac2c63c90071f39794e569c7db69b3733e",
     "papers/extremafuse_acl2027/generated/actual_decode.tex": "e4bbfc0471eab3b20adb55335c20e65e9b1b7324a8a57dc3cf14ecfcfbf22820",
     "papers/extremafuse_acl2027/generated/analysis.json": "4bb31ed6ac59760e23648e3a0cb00ca4d979c24b9682e3171bb3b9f44d8fe8f2",
@@ -31,7 +32,11 @@
     "papers/extremafuse_acl2027/generated/paired_per.tex": "52cd4c2dab9d0ecead8954dc9d4c3329cb529f156206e1b7a467a8da3fcc62cd",
     "papers/extremafuse_acl2027/generated/speaking_rate.tex": "292a0e5af3c4eece9ca89f56c7d1fe4ae8a279e4364c216a9e1c49ad673fa699",
     "artifacts/research/phone69_paper_results_table_20261117/data.json": "0108cb83feb70f0e143b4ddce1a0c32b105e86c5a78f53c05731dedc6f9285d1",
-    "papers/extremafuse_acl2027/figures/quality_budget_30s.png": "3c906cf8206529fbdee59924db6d58ce3871829407cfe32c2643e540e6891180"
+    "papers/extremafuse_acl2027/figures/quality_budget_30s.png": "56f34b9a5628499ebd226871baa27554a8a57bd078df0648d1f7d5a89f469de9",
+    "papers/extremafuse_acl2027/method_figure.py": "b331de3a18b6667587ae867d30696977d249fd7aa5167c9d2994f1d1aaf0985c",
+    "papers/extremafuse_acl2027/figures/extremafuse_network.pdf": "5710e9a3ce729a84f7cfe9937c95370a485816723b5550e95328138a54fe691d",
+    "papers/extremafuse_acl2027/figures/extremafuse_network.png": "9bde2f56dfe2ddd45b1dac2bf55334ea3fbb4218fc631af630bfcebc4a338728",
+    "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/config.yaml": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4"
   },
   "archived_main_pdf": "The existing main.pdf is the 2026-11-12 export. The editor preview follows main.tex.",
   "figure_check": {
@@ -39,12 +44,12 @@
     "sources": "Archived 2,620 full test-clean utterances, 40 speakers and calibrated costs for a 30-second input.",
     "png_pixels": [
       2289,
-      1411
+      1605
     ],
     "reviewed_in_layout_on_page": 2,
     "per_axis": {
-      "min_percent": 4,
-      "max_percent": 7,
+      "min_percent": 4.7,
+      "max_percent": 6.5,
       "scale": "linear"
     },
     "gmac_axis": {
@@ -60,7 +65,14 @@
     "model_key": {
       "distinct_shape_and_fill_combinations": 12,
       "in_plot_text_labels": 0,
-      "legend_and_comparison_text": "below the axes"
+      "legend_and_comparison_text": "below the axes",
+      "outline_box_pairs_checked_at_paper_width": 66,
+      "closest_symbols": [
+        "S2",
+        "E07"
+      ],
+      "minimum_outline_gap_bp": 2.227,
+      "printed_width_bp": 453.543
     },
     "arrow_endpoints": "Two measured checkpoints for each comparison. Choose the nearest of the nine fusion models on the conditioning axis without interpolation.",
     "similar_compute": {
@@ -117,6 +129,53 @@
         0.081
       ]
     },
-    "paired_contrasts_in_table": 7
+    "paired_contrasts_in_table": 7,
+    "low_per_detail": {
+      "per_limits_percent": [
+        4.74,
+        5.03
+      ],
+      "gmac_30s_limits": [
+        16,
+        39
+      ],
+      "ids": [
+        "S1",
+        "S2",
+        "E06",
+        "E07",
+        "P_L9"
+      ],
+      "same_coordinates_as_main": true,
+      "minimum_outline_gap_bp": 2.913,
+      "stride2_l7_outline_gap_bp": 9.292
+    }
+  },
+  "network_figure_check": {
+    "model": "E10",
+    "configuration": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/config.yaml",
+    "site_after_layers": [
+      0,
+      5
+    ],
+    "feature_width_at_sites": [
+      80,
+      128
+    ],
+    "calibrated_frames_30s": [
+      3001,
+      1179,
+      474
+    ],
+    "panels": [
+      "Mel+L5 transducer and independent phone-prefix predictor",
+      "Schematic adjacent-distance extrema and selected centers",
+      "Five original frame vectors and their learned normalized mixing weights"
+    ],
+    "png_pixels": [
+      2290,
+      1105
+    ],
+    "reviewed_in_layout_on_page": 3
   }
 }

@@ -31,7 +31,7 @@ Figure~\ref{fig:budget} asks two questions of the same fixed-stride baseline. At
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/quality_budget_30s.pdf}
-\caption{From stride~4 (width 512), arrows join the closest of the nine fusion models (width 128) in GMAC (left) or PER (down). Pale steps give the minimum cost at each PER limit for fixed stride (dashed) and fusion (solid). Stride~2 and L7 differ by 0.15\% in cost and $-0.039$ PER points (L7 minus stride~2, paired 95\% interval $[-0.162,+0.081]$).}
+\caption{From stride~4 (width 512), arrows join the closest of the nine fusion models (width 128) in GMAC (left) or PER (down). Pale steps give the minimum cost at each PER limit for fixed stride (dashed) and fusion (solid). The enlargement shows the five boxed points. Its open diamond (stride~2) and star (L7) differ by 0.15\% in cost and $-0.039$ PER points (L7 minus stride~2, paired 95\% interval $[-0.162,+0.081]$).}
 \label{fig:budget}
 \end{figure*}
 
@@ -44,6 +44,15 @@ A-ToMe merges adjacent tokens in a transducer using similarity between attention
 
 \section{ExtremaFuse}
 \label{sec:method}
+Figure~\ref{fig:network} traces the Mel+L5 recognizer from input frames to phone logits. Each highlighted site applies the same two operations with its own mixing weights.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/extremafuse_network.pdf}
+\caption{\textbf{(a)} The Mel site precedes the input projection. The second site follows Conformer layer~5. Frame counts are estimates for a 30-second input using measured retention at each site. The joiner combines the encoder and phone-prefix predictor to score 69 phones and blank. \textbf{(b)} In this schematic, the distance peak between frames 3 and 4 selects frame~4, and the valley between frames 6 and 7 selects frame~6. \textbf{(c)} For center~4, a ReLU network predicts weights from five concatenated frames of width $d$. The weighted sum uses the original vectors. Each site normalizes its weights over valid neighbors.}
+\label{fig:network}
+\end{figure*}
+
 \paragraph{Selecting a position.}
 Let $h_1,\ldots,h_T$ be the valid input frames at a fusion site. For adjacent frames define $d_t=1-\cos(h_t,h_{t+1})$. A local maximum at $t$ selects $h_{t+1}$, the frame just after the change; a local minimum at $t$ selects $h_t$. Only interior extrema of the distance sequence qualify. A flat extremum is represented by its midpoint (rounded down). We remove duplicate centers and keep them in time order. If a nonempty sequence has no interior extremum, it emits one center at its first frame. There is no target number of centers or threshold tuned to the test set.
 
