@@ -2,13 +2,13 @@
 
 **英文稿：[ExtremaFuse: Where to Fuse Speech Frames for Phone Recognition](main.tex)**。当前稿按 2026-11-17 最终入选的 12 个系统重写。查看新版排版请打开英文稿的编辑器预览；[本轮编译核验](build_20261118.json)：正文至第 5 页，连参考文献和附录共 7 页。目录中的 `main.pdf` 是 11 月 12 日的历史导出。
 
-**论文问题：** 同一个五帧融合算子，放在声学输入、第几层编码器或两个位置，怎样改变计算预算内能达到的音素识别质量？核心证据是[完整性能—计算量曲线](figures/quality_budget_30s.pdf)。纵轴用自然整句的 corpus PER；横轴用同一 30 秒输入的编码器＋压缩理论 GMAC。用相同宽度对照，再比较相同预算内可选择的系统。
+**论文问题：** 同一个五帧融合算子，放在声学输入、第几层编码器或两个位置，怎样改变计算预算内能达到的音素识别质量？核心证据是[完整性能—计算量曲线](figures/quality_budget_30s.pdf)。纵轴用自然整句的 corpus PER；横轴用同一 30 秒输入的编码器＋压缩理论 GMAC。图 a 保留全部 12 个点与预算阶梯；图 b 将省下的 GMAC 百分比与配对 PER 差值并排画出。[PNG 预览](figures/quality_budget_30s.png)。
 
 ## 七节正文与论证顺序
 
 | 节 | 要回答的问题 | 对应证据或安排 |
 | --- | --- | --- |
-| 1 · Introduction | 为什么“最后剩多少帧”还不足以描述一个识别器？ | 从短时语音变化和编码器深度切入；尽早给出完整曲线。阶梯只表示在给定预算内能选到的最低实测 PER。 |
+| 1 · Introduction | 为什么“最后剩多少帧”还不足以描述一个识别器？ | 从短时语音变化和编码器深度切入；尽早给出完整曲线。阶梯表示预算以内最低的已观测 PER；下方直接读相对基线的计算节省和误差区间。 |
 | 2 · Related Work | 固定降采样、相邻 token 合并与本文的差别在哪里？ | 区分按层改变分辨率、合并相似 token、用声学变化线索做边界检测；说明可重叠的融合窗口不是音素分段。 |
 | 3 · ExtremaFuse | 给一段帧序列，哪些位置产生输出、哪些邻居参与？ | 相邻余弦距离的峰谷选中心，五帧学习权重决定输出；交代平台、两端、不足一窗、重复中心及层号约定。 |
 | 4 · Evaluation Protocol | 哪些条件相同，哪些会影响归因？ | 固定的 460h Phone69、验证损失选模、相同 2,620 句与 beam 20；分开写主干宽度、更新步数和两种 MAC 口径。 |
@@ -19,6 +19,8 @@
 附录 A 给训练参数、验证选模步数、计数公式和 12 组**实际**解码开销；附录 B 给同一批实验在慢／中／快三组自然语速下的 PER 和实际总 GMAC/音频秒，以及正文融合权重示例的选取方法。正文不需要靠附录才能读懂主结论。
 
 ## 三个决定结论的对照
+
+图 b 的前三行分别以 stride 1、2、4 在 test-clean 上的**实测 PER** 为上限，在这批已评估的融合系统中选取达到该上限且 30 秒理论 GMAC 最小的配置。用同一参考音素总数下的原始错误计数比较，不用四舍五入后的 PER 筛选。最后一行直接比较 Mel+L3 与 Mel+L5，展示继续压低成本的质量代价。空心误差点表示 95% 配对区间包含零。这种事后读图不能代替独立的质量非劣检验。
 
 | 对照 | 完整 test-clean PER | 理论 GMAC / 30 s | 可以写进论文的结论 |
 | --- | --- | --- | --- |
@@ -34,7 +36,7 @@
 - **固定输入：** 按[计数协议](../../docs/phone69_fixed_duration_macs.md)，对每个 checkpoint 的每个压缩位置，以全部 2,620 句的输出帧数之和除以该位置输入帧数之和；依网络顺序传播 3,001 帧，逐层计算算子。GMAC/30 s 除以 30 得主表最后一列，不能由变长解码成本外推。30 秒见 [Fast Conformer](https://arxiv.org/html/2305.05084v4) 和 [Zipformer](https://arxiv.org/html/2310.11230v4)；各论文的 MAC/FLOP 范围不相同。
 - **真实解码：** 用整句 FP32、batch 1、beam 20 的实际计数，分别给 encoder＋fusion、predictor、joiner、总量。说明是每个真实音频秒的主要 MAC，不把它当固定输入理论值、设备耗时或速度倍数。
 - **配对与分组：** [生成脚本](build_current_results.py)校验预测文件哈希、全部 UID、参考转写和错误数；按说话人配对重采样 10,000 次（种子 42）。同一脚本复用冻结语速十等分的成员，校验三组重新合并后复现整集错误数与实际 MAC。[配对区间及三组完整计数](generated/analysis.json)可独立核查。窗口与冻结替换数值来自[100 句 / 37 人机制诊断](../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json)。
-- 从项目根运行 `python papers/extremafuse_acl2027/build_current_results.py`（NumPy、Matplotlib），生成英文矢量主图及四份 LaTeX 表行。编译入口为 `main.tex`，保留同目录的 `generated/`、`figures/`、ACL 样式与参考文献。旧的[11 月 12 日九点图](fixed_duration_curve_20261112/REPORT.md)和[历史导出记录](build_20261112.json)仅供溯源。
+- 从项目根运行 `python papers/extremafuse_acl2027/build_current_results.py`（NumPy、Matplotlib），生成同一主图的矢量 PDF、高清 PNG 及四份 LaTeX 表行。两个面板的工作点、配对和百分比均取自同一组未舍入数值。编译入口为 `main.tex`，保留同目录的 `generated/`、`figures/`、ACL 样式与参考文献。旧的[11 月 12 日九点图](fixed_duration_curve_20261112/REPORT.md)和[历史导出记录](build_20261112.json)仅供溯源。
 
 ## 投稿前优先补的证据
 

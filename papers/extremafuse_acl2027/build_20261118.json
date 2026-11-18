@@ -18,19 +18,31 @@
     "tab:rate": 7
   },
   "source_sha256": {
-    "papers/extremafuse_acl2027/main.tex": "e62817f2ace20301c6670379bf7cccada7892e7b8c3e706c1935cfc05c3b5aad",
+    "papers/extremafuse_acl2027/main.tex": "0333d5b22c61c60c8fcba18d12373356a8ae381968c37c6d20c5312f561eb53a",
     "papers/extremafuse_acl2027/references.bib": "519c685d4ee59e7fe6a9a62062a2a17fcfc4d3cdaa19e69662d3ba1ee2e51ef0",
     "papers/extremafuse_acl2027/acl.sty": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de",
     "papers/extremafuse_acl2027/acl_natbib.bst": "6fbb306202290f4b68e74ac1460a8b27398500cb6dfeb4492e74c457eae7cd1e",
-    "papers/extremafuse_acl2027/build_current_results.py": "f6b733d26090d5c0304af99a268efc791e9b081cbb9274f4d6ecf4e83526111c",
-    "papers/extremafuse_acl2027/figures/quality_budget_30s.pdf": "e0f7137fddb88ee7e4f2c3873ca7a8b1e3478913014ba3f9857e7794d4648962",
+    "papers/extremafuse_acl2027/build_current_results.py": "ca3fa2e679d2aa2f656b8f239c646ea6c533515c2163bc9e6472be107a1a9c72",
+    "papers/extremafuse_acl2027/figures/quality_budget_30s.pdf": "8101899368acc8422466c90b2da4aa841b41710efe836afe798254c0f0d27e56",
     "papers/extremafuse_acl2027/figures/fusion_weights.png": "0b434552dda582e4982c0cc8ca8dfbac2c63c90071f39794e569c7db69b3733e",
     "papers/extremafuse_acl2027/generated/actual_decode.tex": "e4bbfc0471eab3b20adb55335c20e65e9b1b7324a8a57dc3cf14ecfcfbf22820",
-    "papers/extremafuse_acl2027/generated/analysis.json": "7b1976fc32fa47d3b2e6b8821aed0cd618f212f13db729c9e04706f7f892f976",
+    "papers/extremafuse_acl2027/generated/analysis.json": "7b1f2bb411309101fd164af7b8003f38c1cdccc7927e6d3c29834d0828e6cc07",
     "papers/extremafuse_acl2027/generated/operating_points.tex": "b039a8e3d5939944784bf4853ef912272c9997c4eafc658ae053cd473334ee65",
     "papers/extremafuse_acl2027/generated/paired_per.tex": "b8729cbbea790b0ce37ec627e02cfd086641ef3d9cfbac4e83e2fff9fa8d4502",
     "papers/extremafuse_acl2027/generated/speaking_rate.tex": "292a0e5af3c4eece9ca89f56c7d1fe4ae8a279e4364c216a9e1c49ad673fa699",
-    "artifacts/research/phone69_paper_results_table_20261117/data.json": "0108cb83feb70f0e143b4ddce1a0c32b105e86c5a78f53c05731dedc6f9285d1"
+    "artifacts/research/phone69_paper_results_table_20261117/data.json": "0108cb83feb70f0e143b4ddce1a0c32b105e86c5a78f53c05731dedc6f9285d1",
+    "papers/extremafuse_acl2027/figures/quality_budget_30s.png": "8a345932e58135f18aed987e00e4ed760fd1500e2bd6ce71b81867a0cc031e1c"
   },
-  "archived_main_pdf": "The existing main.pdf is the 2026-11-12 export. The editor preview follows main.tex."
+  "archived_main_pdf": "The existing main.pdf is the 2026-11-12 export. The editor preview follows main.tex.",
+  "figure_check": {
+    "operating_points": 12,
+    "paired_rows": 4,
+    "sources": "Unrounded full-corpus phone errors and 30-second component counts; speaker intervals reused without change.",
+    "png_pixels": [
+      1590,
+      1132
+    ],
+    "open_intervals_include_zero": 2,
+    "reviewed_in_layout_on_page": 2
+  }
 }

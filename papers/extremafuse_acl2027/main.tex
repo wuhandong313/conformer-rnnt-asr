@@ -26,12 +26,12 @@ A recognizer has no fixed allotment of acoustic frames per phone. A sustained vo
 
 We isolate these questions as far as a family of trained recognizers permits. ExtremaFuse uses a fixed rule to locate changes in the trajectory of adjacent-frame distances and a learned rule to combine each selected frame with its neighbors. We apply the same operation to Mel features, after individual encoder layers, or at both sites. We evaluate phone sequences, so a deletion that removes a reference phone counts as an error even if the remaining sequence is plausible. The method neither consumes nor predicts phone boundaries.
 
-The central comparison is the set of twelve operating points in Figure~\ref{fig:budget}. It separates two quantities often conflated in sequence compression: recognition errors on natural utterances and the arithmetic needed for an input of a specified duration. A comparison at the same encoder width favors fusion halfway through the network. At smaller budgets, moving a second fusion stage just two layers earlier saves substantial work for a measurable loss in recognition quality. We examine the latter case through the lengths seen by individual layers and a frozen-model test of what the fusion weights preserve.
+Figure~\ref{fig:budget} shows the twelve systems and asks how much arithmetic a fusion model needs to reach each fixed-stride baseline's observed phone error rate. We measure errors on whole utterances and compare encoder costs at a common input duration. At the same encoder width, the comparison favors fusion halfway through the network. At smaller budgets, moving a second fusion stage just two layers earlier saves substantial work for a measurable loss in recognition quality. We examine the latter case through the lengths seen by individual layers and a frozen-model test of what the fusion weights preserve.
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=.96\textwidth]{figures/quality_budget_30s.pdf}
-\caption{Phone error rate against estimated computation for a 30-second input. Each marker is one validation-selected checkpoint evaluated on full test-clean utterances; lower is better on both axes. The dashed step gives the lowest \emph{observed} PER available at or below each budget. It starts at the cheapest evaluated point. Fixed-stride markers stand separately because stacking also changes encoder width.}
+\includegraphics[width=\textwidth]{figures/quality_budget_30s.pdf}
+\caption{\textbf{a.} Full test-clean PER versus estimated encoder and fusion cost for a 30-second input. The step gives the lowest observed PER within each budget. \textbf{b.} The first three rows compare each fixed stride with the cheapest evaluated fusion system whose observed PER is no higher. Fixed-stride widths are 128, 256 and 512; all fusion systems have width 128. The final row moves the second fusion site earlier. Savings are relative to the named reference; error differences are model minus reference, in percentage points, with paired 95\% speaker-bootstrap intervals.}
 \label{fig:budget}
 \end{figure*}
 
@@ -124,7 +124,7 @@ Fusion at deeper layers does not invariably improve recognition. L1 uses less co
 \end{figure*}
 
 \paragraph{Two stages: where the low-cost end comes from.}
-At a ceiling of 5 GMAC per 30 seconds, only Mel+L3 fits. At 6 GMAC, Mel+L5 becomes available; at 10 GMAC, Mel alone has the lowest observed PER among the eligible systems. Each change in Figure~\ref{fig:budget} corresponds to an evaluated checkpoint, not an interpolated model. Compared with stride~4, Mel+L5 uses 5.268 instead of 27.679 GMAC (81.0\% fewer), with PER of 5.6882\% versus 5.7427\%. The interval for the PER difference crosses zero, and encoder widths differ. The data support a large arithmetic saving at similar point estimates, not a claim of statistical equivalence.
+At a ceiling of 5 GMAC per 30 seconds, only Mel+L3 fits. At 6 GMAC, Mel+L5 becomes available; at 10 GMAC, Mel alone has the lowest observed PER among the eligible systems. Each step in Figure~\ref{fig:budget}a corresponds to an evaluated checkpoint, not an interpolated model. Compared with stride~4, Mel+L5 uses 5.268 instead of 27.679 GMAC (81.0\% fewer), with PER of 5.6882\% versus 5.7427\%. The interval for the PER difference crosses zero, and encoder widths differ. The data support a large arithmetic saving at similar point estimates, not a claim of statistical equivalence.
 
 \section{What Changes at a Second Fusion Site?}
 \paragraph{Nearly equal outputs, different costs.}
