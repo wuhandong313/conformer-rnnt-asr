@@ -186,141 +186,99 @@ def figure_comparisons(rows, pairs):
     ]
 
 
-def make_figure(rows, edges, examples, comparisons):
+def make_figure(rows, edges, comparisons):
+    """Plot the complete trade-off and show both magnitudes for one named pair."""
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9,
-                         "axes.labelsize": 9.5, "pdf.fonttype": 42})
-    ink, muted, grid = "#222c32", "#52616a", "#e0e5e6"
-    colors = ["#37434b", "#006a72", "#994812"]
-    shapes = ["s", "o", "D"]
+                         "axes.unicode_minus": True, "pdf.fonttype": 42})
+    ink, muted, grid = "#1f3038", "#485a63", "#dce3e5"
+    fixed, single, double = "#51636f", "#007673", "#aa4c1e"
+    colors, shapes = (fixed, single, double), ("s", "o", "D")
     models = {r["id"]: r for r in rows}
-    fig = plt.figure(figsize=(6.36, 4.53), facecolor="white")
+    contrast = next(p for p in comparisons if p["a"] == "E10" and p["b"] == "E09")
+    ref, fusion = models[contrast["b"]], models[contrast["a"]]
+    ratio = ref[COST] / fusion[COST]
+    fig = plt.figure(figsize=(6.36, 3.20), facecolor="white")
 
-    def heading(x, y, letter, title):
-        fig.text(x, y, letter, va="center", weight="bold", fontsize=11, color=ink)
-        fig.text(x + .041, y, title, va="center", weight="bold", fontsize=10.6, color=ink)
+    def heading(x, letter, title):
+        fig.text(x, .951, f"({letter})  {title}", family="STIXGeneral", fontsize=11.8,
+                 weight="bold", color=ink, va="center")
 
-    def axis_style(ax):
-        ax.set_axisbelow(True)
-        ax.tick_params(labelsize=8.5, colors=muted, length=2.5, pad=3)
-        for side in ("top", "right"):
-            ax.spines[side].set_visible(False)
-        for side in ("bottom", "left"):
-            ax.spines[side].set_color("#9ba6aa")
-            ax.spines[side].set_linewidth(.7)
-
-    heading(.012, .958, "a", "Cost at a target PER")
-    ax = fig.add_axes([.106, .540, .856, .350])
-    axis_style(ax)
+    heading(.014, "a", "Compute at a target PER")
+    heading(.586, "b", f"Stride 4 costs {ratio:.2f}× as much")
+    ax = fig.add_axes([.089, .231, .443, .604])
     ax.set_yscale("log", base=2)
+    ax.set(xlim=(4, 7), ylim=(3.25, 44), xticks=[4, 5, 6, 7], yticks=[4, 8, 16, 32],
+           yticklabels=["4", "8", "16", "32"])
     ax.yaxis.set_minor_locator(NullLocator())
-    ax.set(xlim=(0, 7), ylim=(3.35, 48), xticks=range(8), yticks=[4, 8, 16, 32],
-           yticklabels=["4", "8", "16", "32"], ylabel="Encoder + fusion\n(GMAC per 30 s, log₂)",
-           xlabel="Test-clean phone error rate (%)")
-    ax.grid(axis="y", color=grid, linewidth=.55)
-    # The x coordinate of a dot is its measured error; on a line it is a ceiling.
-    # Do not extend either line left of its first feasible checkpoint.
-    stop = max(r[ERROR] for r in rows)
-    for key, color, style in (("fixed_stride", "#67737b", (0, (3.2, 2.4))),
-                              ("fusion", "#47818a", "-")):
-        edge = edges[key]
-        ax.step([r[ERROR] for r in edge] + [stop], [r[COST] for r in edge] + [edge[-1][COST]],
-                where="post", linestyle=style, color=color, lw=1.13, zorder=1.5)
-    # The zero-based PER axis leaves room to show exact readings from the two step curves.
-    inset = ax.inset_axes([.04, .15, .475, .71], zorder=6)
-    inset.set(xlim=(0, 1), ylim=(0, 1), xticks=[], yticks=[])
-    for spine in inset.spines.values():
-        spine.set_visible(False)
-    inset.text(.01, .93, "Minimum GMAC at each PER limit", color=ink, fontsize=8.5, weight="bold")
-    cols = [.01, .47, .70, .982]
-    for x, title, ha in zip(cols, ["PER limit", "Fixed", "Fusion", "Fixed / fusion"],
-                            ["left", "right", "right", "right"]):
-        inset.text(x, .70, title, fontsize=7.4, color=muted, ha=ha)
-    inset.plot([.01, .985], [.64, .64], color=grid, lw=.8)
-    for i, example in enumerate(examples):
-        values = [f"≤ {example['per_ceiling_percent']:.1f}%", f"{example['fixed_gmac_30s']:.2f}",
-                  f"{example['fusion_gmac_30s']:.2f}", f"{example['fixed_over_fusion']:.2f}×"]
-        ratio_color = colors[len(models[example["fusion_id"]]["stage_rates"])]
-        for j, (x, value) in enumerate(zip(cols, values)):
-            inset.text(x, .47 - .20*i, value, fontsize=8.3, ha="left" if j == 0 else "right",
-                       weight="bold" if j == 3 else "normal", color=ratio_color if j == 3 else ink)
-    # Point labels use unmodified coordinates; the two close L7/stride-2 markers
-    # have distinct positions and leader lines.
-    labels = {"S1": (6, 5, "left"), "S2": (10, -7, "left"), "E09": (8, 3, "left"),
-              "E05": (6, 2, "left"), "P_L1": (-6, -3, "right"), "E02": (7, -1, "left"),
-              "P_L3": (5, 3, "left"), "E06": (-6, -7, "right"), "E07": (-9, -2, "right"),
-              "P_L9": (-8, 4, "right"), "P_MEL_L3": (4, 5, "left"), "E10": (-5, -4, "right")}
-    for n in range(3):
-        group = [r for r in rows if len(r["stage_rates"]) == n]
-        ax.scatter([r[ERROR] for r in group], [r[COST] for r in group],
-                   s=55 if n == 0 else 27, marker=shapes[n],
-                   facecolor="white" if n == 0 else colors[n],
-                   edgecolor=colors[n] if n == 0 else "white",
-                   linewidth=1.25 if n == 0 else .5, zorder=3+n)
-        for r in group:
-            key = r["id"]
-            dx, dy, align = labels[key]
-            leader = ({"arrowstyle": "-", "color": colors[n], "lw": .65,
-                       "shrinkA": 1, "shrinkB": 3} if key in {"S2", "E07"} else None)
-            ax.annotate(NAMES[key], (r[ERROR], r[COST]), (dx, dy),
-                        textcoords="offset points", ha=align,
-                        va="baseline", fontsize=8.4, color=colors[n], zorder=6,
-                        arrowprops=leader)
-    handles = [Line2D([], [], marker=s, color=c, markerfacecolor="white" if i == 0 else c,
-                      markersize=5, linestyle="none", label=name)
-               for i, (s, c, name) in enumerate(zip(shapes, colors,
-                                      ["Fixed stride", "One fusion site", "Two fusion sites"]))]
-    fig.legend(handles=handles, loc="center right", bbox_to_anchor=(.985, .958),
-               ncol=3, frameon=False, fontsize=8.5, columnspacing=1,
-               handlelength=1.0, handletextpad=.25, borderaxespad=0)
+    ax.set_xlabel("Test-clean PER (%)", labelpad=5, color=ink, fontsize=9.4)
+    ax.set_ylabel("GMAC per 30 s", labelpad=3, color=ink, fontsize=9.4)
+    ax.grid(axis="y", color=grid, linewidth=.65)
+    ax.set_axisbelow(True)
+    ax.tick_params(labelsize=8.7, colors=muted, length=2.7, pad=3)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+    for side in ("bottom", "left"):
+        ax.spines[side].set_color("#9ca9ae")
+        ax.spines[side].set_linewidth(.65)
 
-    heading(.012, .384, "b", "Compute ratios and paired changes in phone error")
-    bottom, height = .086, .195
-    # Align the cost ratios, PER intervals and numeric labels on the same rows.
-    ys = [i+.38 for i in range(len(comparisons)-1, 0, -1)] + [.10]
-    ylimits = (-.44, ys[0]+.55)
-    ratios = fig.add_axes([.298, bottom, .271, height])
-    ci = fig.add_axes([.653, bottom, .225, height])
-    for panel in (ratios, ci):
-        axis_style(panel)
-        panel.spines["left"].set_visible(False)
-        panel.set(ylim=ylimits, yticks=[])
-    ratios.set_xscale("log", base=2)
-    ratios.set(xlim=(1, 8), xticks=[1, 2, 4, 8], xticklabels=["1×", "2×", "4×", "8×"])
-    ratios.xaxis.set_minor_locator(NullLocator())
-    ratios.axvline(1, color="#9ba6aa", lw=.7)
-    ci.set(xlim=(-.40, .50), xticks=[-.4, 0, .4], xticklabels=["−0.4", "0", "+0.4"])
-    ci.axvline(0, color=ink, linestyle=(0, (2.8, 2)), linewidth=.9, zorder=1)
-    for x, label in ((.013, "Model vs. reference"), (.298, "Reference / model GMAC"),
-                     (.653, "ΔPER (pp), 95% CI")):
-        fig.text(x, .305, label, fontsize=8.8, color=ink, weight="bold", va="center")
-    def row_y(y):
-        return bottom + height * (y - ylimits[0]) / (ylimits[1] - ylimits[0])
-    sep_y = row_y((ys[-2]+ys[-1])/2)
-    fig.add_artist(Line2D([.013, .981], [sep_y, sep_y], transform=fig.transFigure,
-                          color=grid, lw=.6, zorder=7))
-    for row, y in zip(comparisons, ys):
-        a, b = row["a"], row["b"]
-        n = len(models[a]["stage_rates"])
-        ratio, delta = row["gmac_30s_b"] / row["gmac_30s_a"], row["delta_pp"]
-        fig.text(.013, row_y(y), f"{NAMES[a]} vs. {NAMES[b]}", va="center", color=ink, fontsize=9)
-        ratios.hlines(y, 1, ratio, color=colors[n], lw=1.9, zorder=2)
-        ratios.plot(ratio, y, marker=shapes[n], markersize=4.3, color=colors[n], zorder=3)
-        ratios.annotate(f"{ratio:.2f}×", (ratio, y), xytext=(5, 0), textcoords="offset points",
-                        color=colors[n], fontsize=8.5, weight="semibold", va="center")
-        ci.errorbar(delta, y, xerr=[[delta-row["lo"]], [row["hi"]-delta]], fmt=shapes[n],
-                    color=colors[n], elinewidth=1.25, capsize=2.5, capthick=1.1,
-                    markersize=4.9, markeredgewidth=1.1, zorder=3,
-                    markerfacecolor="white" if row["lo"] <= 0 <= row["hi"] else colors[n])
-        fig.text(.98, row_y(y), f"{delta:+.3f}".replace("-", "−"), ha="right",
-                 va="center", fontsize=8.7, color=ink)
-    fig.text(.013, .018, "Open PER markers show intervals that include zero.", fontsize=8,
-             color=muted, va="center")
-    fig.text(.653, .018, "← Lower error", fontsize=8, color=muted, va="center")
-    fig.text(.976, .018, "Higher error →", fontsize=8, color=muted, va="center", ha="right")
+    stop = max(r[ERROR] for r in rows)
+    for family, color, style in (("fixed_stride", fixed, (0, (3.5, 2.8))),
+                                 ("fusion", single, "-")):
+        edge = edges[family]
+        ax.step([r[ERROR] for r in edge] + [stop], [r[COST] for r in edge] + [edge[-1][COST]],
+                where="post", linestyle=style, color=color, lw=1.05, alpha=.83, zorder=1.5)
+    # Only the labels move. The two near-coincident L7 and stride-2 markers are drawn at
+    # their original measurements, with the smaller circle visible inside the open square.
+    offsets = {"S1": (5, 6), "S2": (9, -6), "E09": (6, 6), "E05": (6, 5),
+               "P_L1": (-6, 0), "E02": (6, 0), "P_L3": (6, 3), "E06": (-6, -3),
+               "E07": (-8, 0), "P_L9": (-6, 5), "P_MEL_L3": (5, 6), "E10": (-7, 0)}
+    handles = []
+    for n, (color, shape, label) in enumerate(zip(colors, shapes,
+                                                  ("Fixed stride", "One site", "Two sites"))):
+        group = [r for r in rows if len(r["stage_rates"]) == n]
+        ax.scatter([r[ERROR] for r in group], [r[COST] for r in group], s=49 if n == 0 else 30,
+                   marker=shape, facecolor="white" if n == 0 else color,
+                   edgecolor=color if n == 0 else "white", linewidth=1.25 if n == 0 else .6,
+                   zorder=3+n)
+        for r in group:
+            dx, dy = offsets[r["id"]]
+            leader = ({"arrowstyle": "-", "color": color, "lw": .6, "shrinkA": 1, "shrinkB": 3}
+                      if r["id"] in ("S2", "E07") else None)
+            ax.annotate(NAMES[r["id"]], (r[ERROR], r[COST]), (dx, dy), textcoords="offset points",
+                        va="center", ha="left" if dx > 0 else "right",
+                        color=color, fontsize=8.1, zorder=6, arrowprops=leader)
+        handles.append(Line2D([], [], linestyle="none", marker=shape, markeredgecolor=color,
+                              markerfacecolor="white" if n == 0 else color, markersize=5, label=label))
+    fig.legend(handles=handles, loc="center", bbox_to_anchor=(.29, .046), ncol=3, frameon=False,
+               handlelength=.9, handletextpad=.32, columnspacing=1.05, fontsize=8.2)
+
+    def paired_bars(bottom, title, field, maximum, ticks, precision):
+        # Both bars in a metric have a common zero. The values have their own column so the
+        # nearly equal error rates can be compared at print size.
+        left, width, height = .718, .196, .200
+        panel = fig.add_axes([left, bottom, width, height])
+        panel.set(xlim=(0, maximum), ylim=(-.57, 1.55), yticks=[])
+        panel.set_xticks(ticks, [f"{t:g}" for t in ticks])
+        panel.spines[["left", "right", "top"]].set_visible(False)
+        panel.spines["bottom"].set_color("#aab5b9")
+        panel.spines["bottom"].set_linewidth(.65)
+        panel.tick_params(axis="x", colors=muted, labelsize=8, length=2.3, pad=2)
+        panel.axvline(0, lw=.7, color="#50616a", zorder=1)
+        fig.text(.588, bottom+height+.047, title, fontsize=9.5, weight="semibold", color=ink)
+        for y, model, color in ((1, ref, fixed), (0, fusion, double)):
+            value = model[field]
+            panel.barh(y, value, height=.39, color=color, zorder=2)
+            fy = bottom + height * (y+.57) / 2.12
+            fig.text(.588, fy, NAMES[model["id"]], va="center", color=ink, fontsize=8.8)
+            fig.text(.989, fy, f"{value:.{precision}f}", ha="right", va="center",
+                     fontsize=9.1, weight="semibold", color=color)
+
+    paired_bars(.558, "Encoder + fusion (GMAC / 30 s)", COST, 30, [0, 15, 30], 2)
+    paired_bars(.183, "Test-clean PER (%)", ERROR, 7, [0, 3.5, 7], 3)
     output = PAPER / "figures"
     fig.savefig(output / "quality_budget_30s.pdf",
                 metadata={"Creator": "Matplotlib", "CreationDate": None, "ModDate": None})
-    fig.savefig(output / "quality_budget_30s.png", dpi=250, facecolor="white")
+    fig.savefig(output / "quality_budget_30s.png", dpi=360, facecolor="white")
     plt.close(fig)
 
 
@@ -380,7 +338,7 @@ def main():
                   figure_comparisons=comparisons,
                   natural_rate_groups=rate_groups(rows))
     (OUTPUT / "analysis.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
-    make_figure(rows, edges, examples, comparisons)
+    make_figure(rows, edges, comparisons)
 
 
 if __name__ == "__main__":

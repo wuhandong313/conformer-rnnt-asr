@@ -31,7 +31,7 @@ Figure~\ref{fig:budget} plots the twelve systems and the least computation neede
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/quality_budget_30s.pdf}
-\caption{\textbf{a.} Points show whole-utterance test-clean PER on a linear scale from zero. Each vertical tick doubles the estimated encoder and fusion GMAC for 30 seconds. The dashed (fixed stride) and solid (fusion) lines give the minimum cost among that family's points at or left of each PER limit. \textbf{b.} Ratios divide reference GMAC by model GMAC. The first three rows select the cheapest fusion meeting each fixed stride's observed PER. The final row moves the second site earlier. Error differences are model minus reference, with paired 95\% speaker-bootstrap intervals.}
+\caption{\textbf{(a)} Steps give the lowest 30-second encoder and fusion cost meeting each test-clean PER limit for fixed stride (dashed) and fusion (solid). Each vertical tick doubles cost. L7 and stride~2 nearly coincide. \textbf{(b)} Mel+L5 (width 128) minus stride~4 (width 512) gives a PER difference of $-0.054$ percentage points (paired 95\% speaker-bootstrap interval $[-0.192,+0.076]$).}
 \label{fig:budget}
 \end{figure*}
 
@@ -125,7 +125,7 @@ Fusion at deeper layers does not invariably improve recognition. L1 uses less co
 \end{figure*}
 
 \paragraph{Two stages: where the low-cost end comes from.}
-At a 5.7\% observed PER limit, Mel+L5 qualifies at 5.268 GMAC. Stride~2 still costs 26.539 GMAC, or 5.04 times as much, but its PER is lower (4.899\% versus 5.688\%, a 0.789-point gap). Relaxing the limit to 6.1\% admits Mel+L3 at 4.174 GMAC. A different comparison pairs Mel+L5 with stride~4, whose observed PER is much closer. Stride~4 costs 27.679 GMAC, or 5.25 times as much as Mel+L5, at 5.743\% versus 5.688\% PER. These systems have widths 512 and 128, respectively. The paired PER difference is $-0.054$ points for Mel+L5, with a 95\% interval of $[-0.192,+0.076]$.
+At a 5.7\% observed PER limit, Mel+L5 qualifies at 5.268 GMAC. Stride~2 still costs 26.539 GMAC, or 5.04 times as much, but its PER is lower (4.899\% versus 5.688\%, a 0.789-point gap). Relaxing the limit to 6.1\% admits Mel+L3 at 4.174 GMAC. Figure~\ref{fig:budget}b compares Mel+L5 with stride~4, whose observed PER is much closer. Stride~4 costs 27.679 GMAC, or 5.25 times as much as Mel+L5, at 5.743\% versus 5.688\% PER. These systems have widths 512 and 128, respectively. The paired PER difference is $-0.054$ points for Mel+L5, with a 95\% interval of $[-0.192,+0.076]$.
 
 \section{What Changes at a Second Fusion Site?}
 \paragraph{Nearly equal outputs, different costs.}
