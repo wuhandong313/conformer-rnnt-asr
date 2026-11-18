@@ -3,8 +3,8 @@
   "editor_compile": "success",
   "layout_engine": "Tectonic 0.17.0 (XDV, same sources; no separate manuscript PDF exported)",
   "pages": 7,
-  "conclusion_page": 4,
-  "abstract_word_count": 157,
+  "conclusion_page": 5,
+  "abstract_word_count": 134,
   "undefined_references": false,
   "overfull_boxes": false,
   "checked_page_layouts": 7,
@@ -18,28 +18,28 @@
     "tab:rate": 7
   },
   "source_sha256": {
-    "papers/extremafuse_acl2027/main.tex": "f01c0c47c6eb6eb2059ac22ad73d6a7ffbe7667b2aa75b57b03c14d94f91b47f",
-    "papers/extremafuse_acl2027/references.bib": "519c685d4ee59e7fe6a9a62062a2a17fcfc4d3cdaa19e69662d3ba1ee2e51ef0",
+    "papers/extremafuse_acl2027/main.tex": "eb916f3957ce1ba1defec5c0db8e3d9f6f1f70681825cd6eeb0d527950191d8d",
+    "papers/extremafuse_acl2027/references.bib": "5e6d38e264e8177580e162bbcd15bde7946d305fdebb1ce76d02c8a89b07130c",
     "papers/extremafuse_acl2027/acl.sty": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de",
     "papers/extremafuse_acl2027/acl_natbib.bst": "6fbb306202290f4b68e74ac1460a8b27398500cb6dfeb4492e74c457eae7cd1e",
-    "papers/extremafuse_acl2027/build_current_results.py": "15d00f6311de27f4c3a27546017fbe9c7463ec7ba1d6ad8f432812c5e0048ac1",
-    "papers/extremafuse_acl2027/figures/quality_budget_30s.pdf": "c0a13e042f21dfe3691ff2e2a0f92a058e39bf919ef6844f2be7567e47724e60",
+    "papers/extremafuse_acl2027/build_current_results.py": "604000741f7a8271e96a08a949d6363f5dd61c832572868214478566b748fbe4",
+    "papers/extremafuse_acl2027/figures/quality_budget_30s.pdf": "b40e92b1774f708659ae9df13e6be5842f3eea5281c1d8f6ec0278a6df43cfc1",
     "papers/extremafuse_acl2027/figures/fusion_weights.png": "0b434552dda582e4982c0cc8ca8dfbac2c63c90071f39794e569c7db69b3733e",
     "papers/extremafuse_acl2027/generated/actual_decode.tex": "e4bbfc0471eab3b20adb55335c20e65e9b1b7324a8a57dc3cf14ecfcfbf22820",
-    "papers/extremafuse_acl2027/generated/analysis.json": "84fcb94228836161e2ec8ae038745aa7179aa97c00beed1bc49b65b96ead8ae8",
+    "papers/extremafuse_acl2027/generated/analysis.json": "4bb31ed6ac59760e23648e3a0cb00ca4d979c24b9682e3171bb3b9f44d8fe8f2",
     "papers/extremafuse_acl2027/generated/operating_points.tex": "b039a8e3d5939944784bf4853ef912272c9997c4eafc658ae053cd473334ee65",
-    "papers/extremafuse_acl2027/generated/paired_per.tex": "b8729cbbea790b0ce37ec627e02cfd086641ef3d9cfbac4e83e2fff9fa8d4502",
+    "papers/extremafuse_acl2027/generated/paired_per.tex": "52cd4c2dab9d0ecead8954dc9d4c3329cb529f156206e1b7a467a8da3fcc62cd",
     "papers/extremafuse_acl2027/generated/speaking_rate.tex": "292a0e5af3c4eece9ca89f56c7d1fe4ae8a279e4364c216a9e1c49ad673fa699",
     "artifacts/research/phone69_paper_results_table_20261117/data.json": "0108cb83feb70f0e143b4ddce1a0c32b105e86c5a78f53c05731dedc6f9285d1",
-    "papers/extremafuse_acl2027/figures/quality_budget_30s.png": "dd15d88f3320ce74ceefaf79b3c74dfad18befbdad82cdf0f4a382850a504702"
+    "papers/extremafuse_acl2027/figures/quality_budget_30s.png": "3c906cf8206529fbdee59924db6d58ce3871829407cfe32c2643e540e6891180"
   },
   "archived_main_pdf": "The existing main.pdf is the 2026-11-12 export. The editor preview follows main.tex.",
   "figure_check": {
     "operating_points": 12,
-    "sources": "Unrounded full-test-clean phone errors and calibrated 30-second encoder and fusion cost.",
+    "sources": "Archived 2,620 full test-clean utterances, 40 speakers and calibrated costs for a 30-second input.",
     "png_pixels": [
       2289,
-      1152
+      1411
     ],
     "reviewed_in_layout_on_page": 2,
     "per_axis": {
@@ -57,38 +57,66 @@
         32
       ]
     },
-    "model_labels": {
-      "distinct_at_print_size": 12,
-      "positions": "Observed coordinates, including the near-coincident L7 and stride 2."
+    "model_key": {
+      "distinct_shape_and_fill_combinations": 12,
+      "in_plot_text_labels": 0,
+      "legend_and_comparison_text": "below the axes"
     },
-    "paired_panel": {
+    "arrow_endpoints": "Two measured checkpoints for each comparison. Choose the nearest of the nine fusion models on the conditioning axis without interpolation.",
+    "similar_compute": {
       "reference": "E09",
-      "model": "E10",
-      "reference_width": 512,
-      "model_width": 128,
-      "bar_origin": 0,
-      "gmac_axis": [
-        0,
-        30
-      ],
-      "per_axis_percent": [
-        0,
-        7
-      ],
+      "model": "E07",
       "gmac_30s": [
-        27.68,
-        5.27
+        27.679450112,
+        26.499047712
       ],
       "per_percent": [
-        5.743,
-        5.688
+        5.742687397829894,
+        4.8602551012310675
       ],
-      "reference_over_model_gmac": 5.25,
-      "delta_per_pp_model_minus_reference": -0.054,
-      "paired_95_percent_speaker_interval_pp": [
-        -0.192,
-        0.076
+      "gmac_change_percent": -4.2645,
+      "per_difference_pp": -0.8824,
+      "paired_speaker_interval_pp": [
+        -1.0528,
+        -0.72
       ]
-    }
+    },
+    "similar_per": {
+      "reference": "E09",
+      "model": "E10",
+      "gmac_30s": [
+        27.679450112,
+        5.267983696
+      ],
+      "per_percent": [
+        5.742687397829894,
+        5.6881966744787675
+      ],
+      "gmac_change_percent": -80.9679,
+      "per_difference_pp": -0.0545,
+      "paired_speaker_interval_pp": [
+        -0.1916,
+        0.0761
+      ]
+    },
+    "best_fixed_near_cost_control": {
+      "reference": "S2",
+      "model": "E07",
+      "gmac_30s": [
+        26.539014656,
+        26.499047712
+      ],
+      "per_percent": [
+        4.898874740110992,
+        4.8602551012310675
+      ],
+      "gmac_change_percent": -0.1506,
+      "per_difference_pp": -0.0386,
+      "paired_speaker_interval_pp": [
+        -0.162,
+        0.081
+      ]
+    },
+    "paired_contrasts_in_table": 7
   }
 }

@@ -18,7 +18,7 @@
 \maketitle
 
 \begin{abstract}
-A speech encoder can merge frames early to save computation or wait for more phonetic context. ExtremaFuse selects peaks and valleys in the distance between adjacent frames and learns how to combine five frames around each center. We compare twelve offline Conformer transducers trained on 460 hours of LibriSpeech. We measure phone error rate (PER) on whole test-clean utterances and estimate encoder and fusion cost for a common 30-second input. Fusion after layer 5 gives the lowest observed PER, 4.78\% at 21.38 GMAC, versus 4.99\% at 34.61 GMAC without compression at the same width. Adding fusion at the Mel input gives 5.69\% PER at 5.27 GMAC. The wider stride-4 model costs 5.25 times as much at 5.74\% PER. Moving the second fusion from layer 5 to layer 3 leaves slightly more output frames yet cuts computation by 20.8\% and raises PER by 0.332 percentage points. The cost difference comes from which layers still process the longer sequence.
+Where should a speech encoder merge frames? ExtremaFuse selects peaks and valleys in adjacent-frame distance and learns how to combine five neighboring frames. For twelve offline Conformer transducers trained on 460 hours of LibriSpeech, we measure whole-utterance test-clean phone error rate (PER) and estimate encoder and fusion cost for a 30-second input. Layer-5 fusion gives 4.78\% PER at 21.38 GMAC versus 4.99\% at 34.61 GMAC without compression at the same width. Against stride~4 (5.74\% PER, 27.68 GMAC), layer-7 fusion reaches 4.86\% PER at similar cost (26.50 GMAC), while Mel plus layer-5 fusion costs 5.27 GMAC at similar PER (5.69\%). Stride~2 reaches 4.90\% at 26.54 GMAC. Moving the second site from layer 5 to layer 3 leaves slightly more outputs but shortens two additional layers. Cost falls by 20.8\% and PER rises by 0.332 points.
 \end{abstract}
 
 \section{Introduction}
@@ -26,18 +26,18 @@ A phone recognizer can emit fewer frames yet require more computation. In our ca
 
 To study placement, we use the same fusion rule at every site. ExtremaFuse selects centers at peaks and valleys of adjacent-frame distance and learns how to combine each center with its neighbors. We apply it to Mel features, after individual encoder layers, or at both sites. We evaluate phone sequences, so a deletion that removes a reference phone counts as an error even if the remaining sequence is plausible. The method neither consumes nor predicts phone boundaries.
 
-Figure~\ref{fig:budget} plots the twelve systems and the least computation needed to meet each observed PER ceiling. We first compare recognizers of the same encoder width. We then track the lowest cost in each family as the limit is relaxed and report the observed PER at each operating point. We return to the 474- and 483-frame systems to trace the cost gap to individual layers and examine which phone errors change.
+Figure~\ref{fig:budget} asks two questions of the same fixed-stride baseline. At a similar cost, how much does PER change? At a similar PER, how much computation can fusion save? We select the closest evaluated fusion model on each axis and also compare with stride~2, the best fixed-stride operating point. We then return to the 474- and 483-frame systems to trace their cost difference to individual layers.
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/quality_budget_30s.pdf}
-\caption{\textbf{(a)} Steps give the lowest 30-second encoder and fusion cost meeting each test-clean PER limit for fixed stride (dashed) and fusion (solid). Each vertical tick doubles cost. L7 and stride~2 nearly coincide. \textbf{(b)} Mel+L5 (width 128) minus stride~4 (width 512) gives a PER difference of $-0.054$ percentage points (paired 95\% speaker-bootstrap interval $[-0.192,+0.076]$).}
+\caption{From stride~4 (width 512), arrows join the closest of the nine fusion models (width 128) in GMAC (left) or PER (down). Pale steps give the minimum cost at each PER limit for fixed stride (dashed) and fusion (solid). Stride~2 and L7 differ by 0.15\% in cost and $-0.039$ PER points (L7 minus stride~2, paired 95\% interval $[-0.162,+0.081]$).}
 \label{fig:budget}
 \end{figure*}
 
 \section{Related Work}
 \paragraph{Reducing the time resolution.}
-Fast Conformer compresses the input early \citep{rekesh-etal-2023-fast}; funnel pooling reduces resolution inside large speech encoders \citep{wang-etal-2024-massive}; and Zipformer distributes computation across stacks at different frame rates \citep{yao-etal-2024-zipformer}. All three make depth relevant to the price of a time step. We keep a ten-layer backbone and move a local operator through it, including the case in which its output feeds a second instance of the same operator.
+Fast Conformer compresses the input early \citep{rekesh-etal-2023-fast}, while funnel pooling reduces resolution inside a large speech encoder \citep{wang-etal-2024-massive}. Zipformer distributes computation across stacks at different frame rates \citep{yao-etal-2024-zipformer}. Squeezeformer compares its encoder redesign with Conformer at similar FLOP budgets \citep{kim-etal-2022-squeezeformer}. We keep a ten-layer backbone and move a local operator through it, including the case in which its output feeds a second instance of the same operator.
 
 \paragraph{Using local similarity.}
 A-ToMe merges adjacent tokens in a transducer using similarity between attention keys \citep{li23i_interspeech}. Related work studies neighboring-frame distances and pooling in audio language models \citep{bhati-etal-2025-compression,xiang-etal-2026-need}. A change between adjacent frames can also cue a phonetic boundary \citep{kreuk20_interspeech,yantosca-cheng-2025-phonotomizer}. Our unit of selection is a \emph{center}, not a partition: a peak and a valley can each generate an output, and the same input can contribute to more than one output. We test this construction by recognizing reference phones, without assuming that every center corresponds to a boundary.
@@ -91,14 +91,17 @@ Here $N_{ij}$ and $K_{ij}$ count frames entering and leaving that site. We propa
 
 One multiply--accumulate counts as one MAC. The main figure counts encoder projections, feed-forward and convolution weights, both attention matrix products, detector dot products, mixing networks and weighted sums. We exclude feature extraction, normalization, softmax, activations, extrema comparisons and memory traffic. A fixed input length does not determine how many prefixes beam search expands. We therefore count predictor and joiner operations on the \emph{actual} decodes and report those separately with their corresponding encoder counts in Appendix~\ref{app:counts}.
 
-\section{Results: Cost at a Target PER}
+\section{Error and Compute at Matched Operating Points}
 \label{sec:results}
 
 \paragraph{One stage: compare at the same width first.}
 L5 makes 9,037 errors, against 9,424 for stride~1. It uses 21.380 rather than 34.612 GMAC per 30 seconds, a 38.2\% reduction at the same encoder width (Table~\ref{tab:points}). To quantify sampling variation, we resample the 40 speakers jointly across systems 10,000 times and recompute the corpus PER difference on each draw. The L5-minus-stride-1 difference is $-0.205$ percentage points (95\% interval $[-0.315,-0.097]$). These intervals describe these checkpoints on these speakers; they do not measure variation across training seeds.
 
-\paragraph{Comparing families at a common PER ceiling.}
-Stride~2 has the lowest cost and PER among the three fixed strides at 30 seconds. It sets the fixed-stride minimum wherever a fixed model qualifies. At a 5.0\% observed PER limit, stride~2 needs 26.539 GMAC and L5 needs 21.380. The ratio is 1.24 to 1, a 19.4\% saving for L5 (Figure~\ref{fig:budget}a). L5's PER is 0.118 points lower, with a paired interval that includes zero (Table~\ref{tab:paired}). L7 offers a budget-matched comparison at 26.499 GMAC, within 0.2\% of stride~2, with an observed PER difference of $-0.039$ points. Stride~4 runs fewer steps than stride~2, but its wider projections increase its cost.
+\paragraph{PER at similar compute.}
+L7 is the closest fusion model to stride~4 in 30-second cost (26.499 versus 27.679 GMAC, 4.3\% apart relative to stride~4). Test-clean PER falls from 5.743\% to 4.860\%, or 1,668 fewer phone errors (leftward arrow in Figure~\ref{fig:budget}). The paired difference is $-0.882$ percentage points, with a 95\% interval of $[-1.053,-0.720]$. Stride~2 is the stronger fixed reference. At almost exactly L7's cost (26.539 GMAC), its PER is 4.899\%. L7's observed advantage here is only 0.039 points, with an interval that spans zero (Table~\ref{tab:paired}).
+
+\paragraph{Cost at a common PER limit.}
+Stride~2 has the lowest cost and PER among the three fixed strides. At its observed PER limit of 4.899\%, the cheapest qualifying fusion model is L5 at 21.380 GMAC, a 19.4\% saving relative to stride~2. L5's measured PER is 4.781\%. The same two models set their respective family minima at a 5.0\% limit.
 
 \begin{table}[t]
 \centering
@@ -125,7 +128,7 @@ Fusion at deeper layers does not invariably improve recognition. L1 uses less co
 \end{figure*}
 
 \paragraph{Two stages: where the low-cost end comes from.}
-At a 5.7\% observed PER limit, Mel+L5 qualifies at 5.268 GMAC. Stride~2 still costs 26.539 GMAC, or 5.04 times as much, but its PER is lower (4.899\% versus 5.688\%, a 0.789-point gap). Relaxing the limit to 6.1\% admits Mel+L3 at 4.174 GMAC. Figure~\ref{fig:budget}b compares Mel+L5 with stride~4, whose observed PER is much closer. Stride~4 costs 27.679 GMAC, or 5.25 times as much as Mel+L5, at 5.743\% versus 5.688\% PER. These systems have widths 512 and 128, respectively. The paired PER difference is $-0.054$ points for Mel+L5, with a 95\% interval of $[-0.192,+0.076]$.
+The downward arrow in Figure~\ref{fig:budget} compares the closest fusion model to stride~4 in observed PER. Mel+L5 gives 5.688\% versus 5.743\% PER at 5.268 versus 27.679 GMAC, an 81.0\% cost reduction. The paired PER difference is $-0.054$ points, with a 95\% interval of $[-0.192,+0.076]$. The models have widths 128 and 512. Under a common, looser PER limit of 5.7\%, Mel+L5 also qualifies against stride~2, which costs 5.04 times as much but has 0.789 points lower PER. Relaxing the limit to 6.1\% admits Mel+L3 at 4.174 GMAC.
 
 \section{What Changes at a Second Fusion Site?}
 \paragraph{Nearly equal outputs, different costs.}

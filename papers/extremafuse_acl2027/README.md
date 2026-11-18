@@ -2,9 +2,13 @@
 
 **英文稿：[ExtremaFuse: Where to Fuse Speech Frames for Phone Recognition](main.tex)**。当前稿按 2026-11-17 最终入选的 12 个系统重写。查看新版排版请打开英文稿的编辑器预览；[本轮编译核验](build_20261118.json)：正文至第 5 页，连参考文献和附录共 7 页。目录中的 `main.pdf` 是 11 月 12 日的历史导出。
 
-**论文问题。** 要把音素错误率控制在给定上限内，五帧融合放在哪些位置，所需的编码器计算量最少？图 a 给出全部 12 个模型。横轴显示完整 test-clean 的 PER，线性范围为 4%–7%。纵轴是统一 30 秒输入的编码器＋融合理论 GMAC，刻度从 4 到 32，每格翻倍。两条阶梯线分别取固定步长组与融合组在各 PER 上限下的最低成本。图 b 用两组从零起算的条形，分别对照 stride 4 和 Mel+L5 的计算量与 PER。图注给出两者的主干宽度和配对区间。[主图 PDF](figures/quality_budget_30s.pdf) · [PNG 预览](figures/quality_budget_30s.png)
+**论文问题。** 在接近的 30 秒计算量下，融合能降低多少实测 PER？在接近的实测 PER 下，又需要多少计算？主图用 12 种形状与填充组合标出 12 个验证选模结果，所有模型名和读数都排在坐标轴下方。横轴为完整 test-clean 的 PER（4%–7% 线性刻度），纵轴为统一 30 秒输入的编码器＋融合理论 GMAC，每格翻倍。淡色阶梯线给出各组在每个 PER 上限下的最低成本。[主图 PDF](figures/quality_budget_30s.pdf) · [PNG 预览](figures/quality_budget_30s.png)
 
-**从引言写到结论。** 用一个反直觉观察开篇。在同一 30 秒口径下，输出 474 帧的系统比输出 483 帧的系统更费计算。由此引出融合位置决定哪些层还在处理长序列，再交代余弦距离峰谷选中心与五帧加权。结果先给同宽对照，再追问放宽 PER 上限能换回多少计算。5.0% 上限时固定组最低成本是融合组的 1.24 倍，5.7% 时为 5.04 倍，此时 Mel+L5 的实测 PER 比 stride 2 高 0.789 个百分点。另列实测 PER 接近的一对，stride 4 的计算量是 Mel+L5 的 5.25 倍。最后回到开篇。把第二次融合从 L5 提前到 L3，第 4、5 层从各处理 1,179 帧变为各处理 483 帧，计算再降 20.8%，完整语料多出 628 个音素错误。
+**主图的两个方向。** 两支箭头都从空心方块 stride 4 出发。在九个融合模型中，按原始值分别取 GMAC 绝对差最小、音素错误数绝对差最小者。向左到 L7，计算量为 27.679 对 26.499 GMAC，实测 PER 从 5.743% 降到 4.860%。向下到 Mel+L5，实测 PER 为 5.743% 对 5.688%，计算量从 27.679 降到 5.268 GMAC。stride 4 为 512 维，融合模型均为 128 维。stride 2 是固定组中算量最低且 PER 最低的对照。它与 L7 的计算量只差 0.15%，PER 差值的 95% 配对区间跨零。
+
+**图示参考。** Squeezeformer 图 1 把近似 FLOPs 下的错误率对照与各模型的 WER–FLOPs 曲线放在一起。EfficientNet 图 5 展示准确率与 FLOPs，表 2 按接近的准确率列出计算量。本文借用两种读图方向，数值全部来自本项目的 Phone69 评估。[Squeezeformer 图 1，第 2 页](https://proceedings.neurips.cc/paper_files/paper/2022/file/3ccf6da39eeb8fefc8bbb1b0124adbd1-Paper-Conference.pdf#page=2) · [EfficientNet 图 5 和表 2，第 6 页](https://proceedings.mlr.press/v97/tan19a/tan19a.pdf#page=6)
+
+**从引言写到结论。** 用 474 和 483 个输出帧的反例引出融合位置，再用同宽对照和主图的两支箭头回答给定计算或识别要求时如何选模型。最后回到逐层长度。把第二次融合从 L5 提前到 L3，第 4、5 层从各处理 1,179 帧变为各处理 483 帧，计算再降 20.8%，完整语料多出 628 个音素错误。
 
 ## 七节正文与论证顺序
 
@@ -14,7 +18,7 @@
 | 2 · Related Work | 固定降采样、相邻 token 合并与本文的差别在哪里？ | 区分按层改变分辨率、合并相似 token、用声学变化线索做边界检测；说明可重叠的融合窗口不是音素分段。 |
 | 3 · ExtremaFuse | 给一段帧序列，哪些位置产生输出、哪些邻居参与？ | 相邻余弦距离的峰谷选中心，五帧学习权重决定输出；交代平台、两端、不足一窗、重复中心及层号约定。 |
 | 4 · Evaluation Protocol | 哪些条件相同，哪些会影响归因？ | 固定的 460h Phone69、验证损失选模、相同 2,620 句与 beam 20；分开写主干宽度、更新步数和两种 MAC 口径。 |
-| 5 · Results | 先匹配主干宽度，再给同一误差上限，最少要多少计算？ | 先看 L5 对 stride 1；再在 5.0% 上限处比较 L5 对 stride 2，用 L7 补充近等计算量对照；放宽上限后再看 Mel 系列。保留单阶段 L3 的反例，六个配对差值有说话人区间。 |
+| 5 · Results | 先匹配主干宽度，再给同一误差上限，最少要多少计算？ | 先看 L5 对同宽 stride 1，再用 L7 与 stride 4 比较接近预算下的 PER，并核对 stride 2。达到 stride 2 的 PER 上限时由 L5 给出最低计算量。表 2 列七个配对差值及说话人区间。 |
 | 6 · What Changes at a Second Fusion Site? | 为什么输出帧数几乎相同，成本和识别错误仍不同？ | 直接比较 Mel+L3 和 Mel+L5 的逐层长度；用真实窗口覆盖、冻结同长度均值替换和错误类型解释能说到哪一步。 |
 | 7 · Conclusion | 结果对压缩位置的选择意味着什么？ | 回答严格和宽松两种误差要求下分别选什么位置；把独立数据、训练强度和可归因性留给单独的 Limitations。 |
 
@@ -22,7 +26,7 @@
 
 ## 三个决定结论的对照
 
-图 a 比较两组在同一 PER 上限下达标的最低成本。在 5.0% 处，stride 2 的 26.539 GMAC 是 L5 的 21.380 GMAC 的 1.24 倍。在 5.7% 处，26.539 对 5.268 GMAC，前者是后者的 5.04 倍，对应的实测 PER 分别为 4.899% 与 5.688%。图 b 单列实测 PER 接近的一对。stride 4 和 Mel+L5 分别用 27.679 和 5.268 GMAC，前者是后者的 5.25 倍。Mel+L5 的 PER 低 0.054 个百分点，95% 说话人配对区间为 [−0.192, +0.076]。逐系统绝对值和六组配对差值见正文表 1、表 2。
+L7 对 stride 4 少 1,668 个音素错误，PER 低 0.882 个百分点，95% 说话人配对区间为 [−1.053, −0.720]。Mel+L5 对 stride 4 少用 81.0% 的理论 MAC，实测 PER 差值为 −0.054 个百分点，区间为 [−0.192, +0.076]。在更强的 stride 2 对照下，L7 与它近等计算量，而 L5 在满足 stride 2 的实测 PER 上限时用 21.380 GMAC，比 26.539 GMAC 少 19.4%。逐系统绝对值和七组配对差值见表 1、表 2。
 
 | 对照 | 完整 test-clean PER | 理论 GMAC / 30 s | 可以写进论文的结论 |
 | --- | --- | --- | --- |
@@ -38,7 +42,7 @@
 - **固定输入：** 按[计数协议](../../docs/phone69_fixed_duration_macs.md)，对每个 checkpoint 的每个压缩位置，以全部 2,620 句的输出帧数之和除以该位置输入帧数之和；依网络顺序传播 3,001 帧，逐层计算算子。GMAC/30 s 除以 30 得主表最后一列，不能由变长解码成本外推。30 秒见 [Fast Conformer](https://arxiv.org/html/2305.05084v4) 和 [Zipformer](https://arxiv.org/html/2310.11230v4)；各论文的 MAC/FLOP 范围不相同。
 - **真实解码：** 用整句 FP32、batch 1、beam 20 的实际计数，分别给 encoder＋fusion、predictor、joiner、总量。说明是每个真实音频秒的主要 MAC，不把它当固定输入理论值、设备耗时或速度倍数。
 - **配对与分组：** [生成脚本](build_current_results.py)校验预测文件哈希、全部 UID、参考转写和错误数；按说话人配对重采样 10,000 次（种子 42）。同一脚本复用冻结语速十等分的成员，校验三组重新合并后复现整集错误数与实际 MAC。[配对区间及三组完整计数](generated/analysis.json)可独立核查。窗口与冻结替换数值来自[100 句 / 37 人机制诊断](../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json)。
-- 从项目根运行 `python papers/extremafuse_acl2027/build_current_results.py`（NumPy、Matplotlib），生成同一主图的矢量 PDF、高清 PNG 及四份 LaTeX 表行。两个面板的工作点、配对和倍数均取自同一组未舍入数值。编译入口为 `main.tex`，保留同目录的 `generated/`、`figures/`、ACL 样式与参考文献。旧的[11 月 12 日九点图](fixed_duration_curve_20261112/REPORT.md)和[历史导出记录](build_20261112.json)仅供溯源。
+- 从项目根运行 `python papers/extremafuse_acl2027/build_current_results.py`（NumPy、Matplotlib），生成同一主图的矢量 PDF、高清 PNG 及四份 LaTeX 表行。工作点、两支箭头的端点和各组差值均取自未舍入的记录。编译入口为 `main.tex`，保留同目录的 `generated/`、`figures/`、ACL 样式与参考文献。旧的[11 月 12 日九点图](fixed_duration_curve_20261112/REPORT.md)和[历史导出记录](build_20261112.json)仅供溯源。
 
 ## 投稿前优先补的证据
 

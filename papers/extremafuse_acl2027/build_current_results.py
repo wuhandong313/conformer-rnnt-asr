@@ -27,7 +27,7 @@ NAMES = {
     "E06": "L5", "E07": "L7", "P_L9": "L9",
     "P_MEL_L3": "Mel+L3", "E10": "Mel+L5",
 }
-PAIRS = [("E06", "S1"), ("E06", "S2"), ("E07", "S2"),
+PAIRS = [("E06", "S1"), ("E06", "S2"), ("E07", "S2"), ("E07", "E09"),
          ("E10", "E09"), ("E10", "E05"), ("P_MEL_L3", "E10")]
 COST = "encoder_compression_gmac_30s"
 ERROR = "per_percent"
@@ -186,95 +186,111 @@ def figure_comparisons(rows, pairs):
     ]
 
 
-def make_figure(rows, edges, comparisons):
-    """Plot the complete trade-off and show both magnitudes for one named pair."""
-    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9,
-                         "axes.unicode_minus": True, "pdf.fonttype": 42})
-    ink, muted, grid = "#1f3038", "#485a63", "#dce3e5"
-    fixed, single, double = "#51636f", "#007673", "#aa4c1e"
-    colors, shapes = (fixed, single, double), ("s", "o", "D")
+def measured_matches(rows, comparisons):
+    """Find observed nearest neighbours without interpolating between checkpoints."""
+    fixed = {r["id"]: r for r in rows if not r["stage_rates"]}
+    fusion = [r for r in rows if r["stage_rates"]]
+    reference = fixed["E09"]
+    best = min(fixed.values(), key=lambda r: (r[COST], r["phone_errors"]))
+    if best["phone_errors"] != min(r["phone_errors"] for r in fixed.values()):
+        raise ValueError("No single fixed stride minimizes both cost and error; review the figure.")
+
+    def nearest(base, field):
+        return min(fusion, key=lambda r: (abs(r[field] - base[field]), r["id"]))["id"]
+
+    cheapest = next(p["a"] for p in comparisons
+                    if p["selection"] == "baseline ceiling" and p["b"] == best["id"])
+    return {"reference": reference["id"], "nearest_cost": nearest(reference, COST),
+            "nearest_error": nearest(reference, "phone_errors"), "best_fixed": best["id"],
+            "best_fixed_nearest_cost": nearest(best, COST), "best_fixed_per_limit": cheapest}
+
+
+def make_figure(rows, edges, match, pairs):
+    """Draw the measured pairs with a symbol key and comparison text below the plot."""
+    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "pdf.fonttype": 42})
+    ink, muted, grid = "#22323a", "#465861", "#dfe5e6"
+    colors = ("#4b5e6d", "#006c6b", "#a24619")
+    markers = {"S1": "o", "S2": "D", "E09": "s", "E05": ">", "P_L1": "^", "E02": "P",
+               "P_L3": "X", "E06": "o", "E07": "*", "P_L9": "s", "P_MEL_L3": "v", "E10": "D"}
     models = {r["id"]: r for r in rows}
-    contrast = next(p for p in comparisons if p["a"] == "E10" and p["b"] == "E09")
-    ref, fusion = models[contrast["b"]], models[contrast["a"]]
-    ratio = ref[COST] / fusion[COST]
-    fig = plt.figure(figsize=(6.36, 3.20), facecolor="white")
+    ref = models[match["reference"]]
+    near_cost, near_error = models[match["nearest_cost"]], models[match["nearest_error"]]
+    gap = next(p["delta_pp"] for p in pairs if (p["a"], p["b"]) == (near_cost["id"], ref["id"]))
+    saving = 100 * (1 - near_error[COST] / ref[COST])
 
-    def heading(x, letter, title):
-        fig.text(x, .951, f"({letter})  {title}", family="STIXGeneral", fontsize=11.8,
-                 weight="bold", color=ink, va="center")
-
-    heading(.014, "a", "Compute at a target PER")
-    heading(.586, "b", f"Stride 4 costs {ratio:.2f}× as much")
-    ax = fig.add_axes([.089, .231, .443, .604])
+    fig = plt.figure(figsize=(6.36, 3.92), facecolor="white")
+    ax = fig.add_axes([.112, .435, .853, .529])
     ax.set_yscale("log", base=2)
-    ax.set(xlim=(4, 7), ylim=(3.25, 44), xticks=[4, 5, 6, 7], yticks=[4, 8, 16, 32],
+    ax.set(xlim=(4, 7), ylim=(3.45, 44), xticks=[4, 4.5, 5, 5.5, 6, 6.5, 7],
+           xticklabels=["4", "4.5", "5", "5.5", "6", "6.5", "7"], yticks=[4, 8, 16, 32],
            yticklabels=["4", "8", "16", "32"])
     ax.yaxis.set_minor_locator(NullLocator())
-    ax.set_xlabel("Test-clean PER (%)", labelpad=5, color=ink, fontsize=9.4)
-    ax.set_ylabel("GMAC per 30 s", labelpad=3, color=ink, fontsize=9.4)
-    ax.grid(axis="y", color=grid, linewidth=.65)
+    ax.set_xlabel("Test-clean phone error rate (%)", labelpad=3, color=ink, fontsize=9.2)
+    ax.set_ylabel("Encoder + fusion\n(GMAC per 30 s)", color=ink, fontsize=9.2)
+    ax.grid(axis="y", color=grid, linewidth=.6)
     ax.set_axisbelow(True)
-    ax.tick_params(labelsize=8.7, colors=muted, length=2.7, pad=3)
+    ax.tick_params(labelsize=8.4, colors=muted, length=2.6, pad=3)
     for side in ("top", "right"):
         ax.spines[side].set_visible(False)
     for side in ("bottom", "left"):
-        ax.spines[side].set_color("#9ca9ae")
-        ax.spines[side].set_linewidth(.65)
+        ax.spines[side].set_color("#8f9fa7")
+        ax.spines[side].set_linewidth(.7)
 
     stop = max(r[ERROR] for r in rows)
-    for family, color, style in (("fixed_stride", fixed, (0, (3.5, 2.8))),
-                                 ("fusion", single, "-")):
+    for family, style in (("fixed_stride", (0, (3, 2.4))), ("fusion", "-")):
         edge = edges[family]
         ax.step([r[ERROR] for r in edge] + [stop], [r[COST] for r in edge] + [edge[-1][COST]],
-                where="post", linestyle=style, color=color, lw=1.05, alpha=.83, zorder=1.5)
-    # Only the labels move. The two near-coincident L7 and stride-2 markers are drawn at
-    # their original measurements, with the smaller circle visible inside the open square.
-    offsets = {"S1": (5, 6), "S2": (9, -6), "E09": (6, 6), "E05": (6, 5),
-               "P_L1": (-6, 0), "E02": (6, 0), "P_L3": (6, 3), "E06": (-6, -3),
-               "E07": (-8, 0), "P_L9": (-6, 5), "P_MEL_L3": (5, 6), "E10": (-7, 0)}
-    handles = []
-    for n, (color, shape, label) in enumerate(zip(colors, shapes,
-                                                  ("Fixed stride", "One site", "Two sites"))):
-        group = [r for r in rows if len(r["stage_rates"]) == n]
-        ax.scatter([r[ERROR] for r in group], [r[COST] for r in group], s=49 if n == 0 else 30,
-                   marker=shape, facecolor="white" if n == 0 else color,
-                   edgecolor=color if n == 0 else "white", linewidth=1.25 if n == 0 else .6,
-                   zorder=3+n)
-        for r in group:
-            dx, dy = offsets[r["id"]]
-            leader = ({"arrowstyle": "-", "color": color, "lw": .6, "shrinkA": 1, "shrinkB": 3}
-                      if r["id"] in ("S2", "E07") else None)
-            ax.annotate(NAMES[r["id"]], (r[ERROR], r[COST]), (dx, dy), textcoords="offset points",
-                        va="center", ha="left" if dx > 0 else "right",
-                        color=color, fontsize=8.1, zorder=6, arrowprops=leader)
-        handles.append(Line2D([], [], linestyle="none", marker=shape, markeredgecolor=color,
-                              markerfacecolor="white" if n == 0 else color, markersize=5, label=label))
-    fig.legend(handles=handles, loc="center", bbox_to_anchor=(.29, .046), ncol=3, frameon=False,
-               handlelength=.9, handletextpad=.32, columnspacing=1.05, fontsize=8.2)
+                where="post", linestyle=style, color="#9aaeb0", lw=.95, zorder=1.5)
 
-    def paired_bars(bottom, title, field, maximum, ticks, precision):
-        # Both bars in a metric have a common zero. The values have their own column so the
-        # nearly equal error rates can be compared at print size.
-        left, width, height = .718, .196, .200
-        panel = fig.add_axes([left, bottom, width, height])
-        panel.set(xlim=(0, maximum), ylim=(-.57, 1.55), yticks=[])
-        panel.set_xticks(ticks, [f"{t:g}" for t in ticks])
-        panel.spines[["left", "right", "top"]].set_visible(False)
-        panel.spines["bottom"].set_color("#aab5b9")
-        panel.spines["bottom"].set_linewidth(.65)
-        panel.tick_params(axis="x", colors=muted, labelsize=8, length=2.3, pad=2)
-        panel.axvline(0, lw=.7, color="#50616a", zorder=1)
-        fig.text(.588, bottom+height+.047, title, fontsize=9.5, weight="semibold", color=ink)
-        for y, model, color in ((1, ref, fixed), (0, fusion, double)):
-            value = model[field]
-            panel.barh(y, value, height=.39, color=color, zorder=2)
-            fy = bottom + height * (y+.57) / 2.12
-            fig.text(.588, fy, NAMES[model["id"]], va="center", color=ink, fontsize=8.8)
-            fig.text(.989, fy, f"{value:.{precision}f}", ha="right", va="center",
-                     fontsize=9.1, weight="semibold", color=color)
+    # The connector reaches both measured points. The arrowhead sits inside the segment
+    # so it stays distinct from the L7 symbol and the neighbouring stride-2 symbol.
+    for target, color in ((near_cost, colors[1]), (near_error, colors[2])):
+        ax.plot([ref[ERROR], target[ERROR]], [ref[COST], target[COST]], color=color,
+                lw=1.65, solid_capstyle="round", zorder=2)
+        positions = [(ref[ERROR] + t*(target[ERROR]-ref[ERROR]),
+                      ref[COST] * (target[COST]/ref[COST])**t) for t in (.48, .71)]
+        ax.annotate("", xy=positions[1], xytext=positions[0],
+                    arrowprops={"arrowstyle": "->", "color": color, "lw": 1.8,
+                                "mutation_scale": 14, "shrinkA": 0, "shrinkB": 0}, zorder=2.5)
 
-    paired_bars(.558, "Encoder + fusion (GMAC / 30 s)", COST, 30, [0, 15, 30], 2)
-    paired_bars(.183, "Test-clean PER (%)", ERROR, 7, [0, 3.5, 7], 3)
+    handles = {}
+    featured = {ref["id"], near_cost["id"], near_error["id"]}
+    for r in rows:
+        key, n = r["id"], len(r["stage_rates"])
+        color = colors[n]
+        style = dict(marker=markers[key], markerfacecolor="white" if n == 0 else color,
+                     markeredgecolor=color if n == 0 else "white",
+                     markeredgewidth=1.3 if n == 0 else .65, linestyle="none")
+        size = 10 if markers[key] == "*" else 8 if key in featured else 6.4
+        ax.plot(r[ERROR], r[COST], markersize=size, zorder=4+n, **style)
+        handles[key] = Line2D([], [], markersize=8 if markers[key] == "*" else 6.1, **style)
+
+    # A single symbol/style definition drives both the data and its external key.
+    groups = [
+        ("Fixed stride", .021, .170, .295, ["S1", "S2", "E09"], ["1", "2", "4"]),
+        ("Two sites", .52, .645, .295, ["P_MEL_L3", "E10"], None),
+        ("One site", .021, .170, .233, ["E05", "P_L1", "E02", "P_L3", "E06", "E07", "P_L9"], None),
+    ]
+    for family, text_x, key_x, y, ids, labels in groups:
+        fig.text(text_x, y, family, va="center", fontsize=8.7, color=ink, weight="semibold")
+        fig.legend([handles[k] for k in ids], labels or [NAMES[k] for k in ids],
+                   loc="center left", bbox_to_anchor=(key_x, y), ncol=len(ids), frameon=False,
+                   borderpad=0, borderaxespad=0, handlelength=.95, handletextpad=.33,
+                   columnspacing=1.05, fontsize=8.6, labelcolor=ink)
+
+    fig.add_artist(Line2D([.021, .977], [.192, .192], color=grid, lw=.75, transform=fig.transFigure))
+    for x, color, heading, description, outcome in (
+        (.021, colors[1], "←  Similar compute",
+         f"{NAMES[ref['id']]} → {NAMES[near_cost['id']]}   ·   {ref[COST]:.2f} vs. {near_cost[COST]:.2f} GMAC",
+         f"{ref[ERROR]:.3f}% → {near_cost[ERROR]:.3f}% PER  ({gap:+.3f} pp)"),
+        (.515, colors[2], "↓  Similar PER",
+         f"{NAMES[ref['id']]} → {NAMES[near_error['id']]}   ·   {ref[ERROR]:.3f}% vs. {near_error[ERROR]:.3f}%",
+         f"{ref[COST]:.2f} → {near_error[COST]:.2f} GMAC  (−{saving:.1f}%)")):
+        fig.text(x, .145, heading, va="center", weight="bold", fontsize=10.0, color=color)
+        fig.text(x, .087, description, va="center", fontsize=8.4, color=muted)
+        fig.text(x, .031, outcome.replace("-", "−"), va="center", weight="semibold",
+                 fontsize=9.1, color=ink)
+
     output = PAPER / "figures"
     fig.savefig(output / "quality_budget_30s.pdf",
                 metadata={"Creator": "Matplotlib", "CreationDate": None, "ModDate": None})
@@ -302,6 +318,7 @@ def main():
     edge = frontier(rows)
     edges, examples = cost_at_error_ceilings(rows, (5.0, 5.7, 6.1))
     comparisons = figure_comparisons(rows, pairs)
+    match = measured_matches(rows, comparisons)
     OUTPUT.mkdir(exist_ok=True)
     summary, decode = [], []
     for x in rows:
@@ -335,10 +352,10 @@ def main():
                   observed_frontier=[r["id"] for r in edge], contrasts=pairs,
                   minimum_cost_at_per_ceiling={k: [r["id"] for r in e] for k, e in edges.items()},
                   example_per_ceilings=examples,
-                  figure_comparisons=comparisons,
+                  figure_comparisons=comparisons, measured_matches=match,
                   natural_rate_groups=rate_groups(rows))
     (OUTPUT / "analysis.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
-    make_figure(rows, edges, comparisons)
+    make_figure(rows, edges, match, pairs)
 
 
 if __name__ == "__main__":

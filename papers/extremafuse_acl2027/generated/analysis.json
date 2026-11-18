@@ -36,6 +36,13 @@
       "hi": 0.0810121282268477
     },
     {
+      "a": "E07",
+      "b": "E09",
+      "delta_pp": -0.8824322965988266,
+      "lo": -1.05279733072043,
+      "hi": -0.7200097684382676
+    },
+    {
       "a": "E10",
       "b": "E09",
       "delta_pp": -0.054490723351126584,
@@ -141,6 +148,14 @@
       "gmac_saved_percent": 20.760951724858945
     }
   ],
+  "measured_matches": {
+    "reference": "E09",
+    "nearest_cost": "E07",
+    "nearest_error": "E10",
+    "best_fixed": "S2",
+    "best_fixed_nearest_cost": "E07",
+    "best_fixed_per_limit": "E06"
+  },
   "natural_rate_groups": {
     "S1": {
       "slow": {
