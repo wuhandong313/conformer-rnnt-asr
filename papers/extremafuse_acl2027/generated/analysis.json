@@ -87,7 +87,8 @@
   ],
   "minimum_cost_at_per_ceiling": {
     "fixed_stride": [
-      "S2"
+      "S2",
+      "E01"
     ],
     "fusion": [
       "E06",
@@ -121,6 +122,14 @@
       "fixed_gmac_30s": 26.539014656,
       "fusion_gmac_30s": 4.174300144,
       "fixed_over_fusion": 6.357715962074815
+    },
+    {
+      "per_ceiling_percent": 6.13,
+      "fixed_id": "E01",
+      "fusion_id": "P_MEL_L3",
+      "fixed_gmac_30s": 4.335941888,
+      "fusion_gmac_30s": 4.174300144,
+      "fixed_over_fusion": 1.0387230765454991
     }
   ],
   "figure_comparisons": [
@@ -159,6 +168,17 @@
     },
     {
       "a": "P_MEL_L3",
+      "b": "E01",
+      "delta_pp": -0.1084524105532131,
+      "lo": -0.24111677134596884,
+      "hi": 0.03418068477337891,
+      "selection": "baseline ceiling",
+      "gmac_30s_a": 4.174300144,
+      "gmac_30s_b": 4.335941888,
+      "gmac_saved_percent": 3.7279499627832613
+    },
+    {
+      "a": "P_MEL_L3",
       "b": "E10",
       "delta_pp": 0.3322347015971601,
       "lo": 0.20876878886507427,
@@ -169,13 +189,25 @@
       "gmac_saved_percent": 20.760951724858945
     }
   ],
-  "measured_matches": {
-    "reference": "E09",
+  "figure_points": [
+    "S1",
+    "S2",
+    "E09",
+    "E01",
+    "E05",
+    "P_L1",
+    "E02",
+    "P_L3",
+    "E06",
+    "E07",
+    "P_L9",
+    "P_MEL_L3",
+    "E10"
+  ],
+  "figure_highlights": {
+    "fixed": "S2",
     "nearest_cost": "E07",
-    "nearest_error": "E10",
-    "best_fixed": "S2",
-    "best_fixed_nearest_cost": "E07",
-    "best_fixed_per_limit": "E06"
+    "least_cost_at_observed_per": "E06"
   },
   "matched_table": [
     {
@@ -245,7 +277,6 @@
       "change_gmac_percent": 19.974831246425005
     }
   ],
-  "table_only_reference": "E01",
   "natural_rate_groups": {
     "S1": {
       "slow": {

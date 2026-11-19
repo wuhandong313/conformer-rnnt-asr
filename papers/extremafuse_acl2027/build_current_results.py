@@ -11,7 +11,6 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.patheffects as path_effects
 from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle
 from matplotlib.ticker import NullLocator
@@ -295,137 +294,92 @@ def figure_comparisons(rows, pairs):
     ]
 
 
-def measured_matches(rows, comparisons):
-    """Find observed nearest neighbours without interpolating between checkpoints."""
-    fixed = {r["id"]: r for r in rows if not r["stage_rates"]}
-    fusion = [r for r in rows if r["stage_rates"]]
-    reference = fixed["E09"]
-    best = min(fixed.values(), key=lambda r: (r[COST], r["phone_errors"]))
-    if best["phone_errors"] != min(r["phone_errors"] for r in fixed.values()):
-        raise ValueError("No single fixed stride minimizes both cost and error; review the figure.")
-
-    def nearest(base, field):
-        return min(fusion, key=lambda r: (abs(r[field] - base[field]), r["id"]))["id"]
-
-    cheapest = next(p["a"] for p in comparisons
-                    if p["selection"] == "baseline ceiling" and p["b"] == best["id"])
-    return {"reference": reference["id"], "nearest_cost": nearest(reference, COST),
-            "nearest_error": nearest(reference, "phone_errors"), "best_fixed": best["id"],
-            "best_fixed_nearest_cost": nearest(best, COST), "best_fixed_per_limit": cheapest}
-
-
-def make_figure(rows, edges, match, pairs):
-    """Draw the measured pairs with a symbol key and comparison text below the plot."""
+def make_figure(rows, edges, fixed, same_cost, at_ceiling):
+    """Show all measured configurations and the two observed cost envelopes."""
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "pdf.fonttype": 42})
-    ink, muted, grid = "#22323a", "#465861", "#dfe5e6"
-    colors = ("#4b5e6d", "#006c6b", "#a24619")
-    markers = {"S1": "o", "S2": "d", "E09": "s", "E05": ">", "P_L1": "^", "E02": "P",
-               "P_L3": "X", "E06": "o", "E07": "*", "P_L9": "s", "P_MEL_L3": "v", "E10": "D"}
-    models = {r["id"]: r for r in rows}
-    ref = models[match["reference"]]
-    near_cost, near_error = models[match["nearest_cost"]], models[match["nearest_error"]]
-    gap = next(p["delta_pp"] for p in pairs if (p["a"], p["b"]) == (near_cost["id"], ref["id"]))
-    saving = 100 * (1 - near_error[COST] / ref[COST])
-
-    fig = plt.figure(figsize=(6.36, 4.46), facecolor="white")
-    ax = fig.add_axes([.105, .516, .867, .453])
-    ax.set_yscale("log", base=2)
-    ax.set(xlim=(4.70, 6.50), ylim=(3.5, 40), xticks=np.arange(4.75, 6.51, .25),
-           yticks=[4, 8, 16, 32],
-           yticklabels=["4", "8", "16", "32"])
-    ax.yaxis.set_minor_locator(NullLocator())
-    ax.set_xlabel("Test-clean phone error rate (%)", labelpad=3, color=ink, fontsize=9.2)
-    ax.set_ylabel("Encoder + fusion\n(GMAC per 30 s)", color=ink, fontsize=9.2)
-    ax.grid(axis="y", color=grid, linewidth=.6)
-    ax.set_axisbelow(True)
-    ax.tick_params(labelsize=8.4, colors=muted, length=2.6, pad=3)
-    for side in ("top", "right"):
-        ax.spines[side].set_visible(False)
-    for side in ("bottom", "left"):
-        ax.spines[side].set_color("#8f9fa7")
-        ax.spines[side].set_linewidth(.7)
-
+    ink, muted, grid = "#213239", "#455a64", "#dbe2e5"
+    colors = ("#455766", "#006f70", "#ab5121")
+    markers = {"S1": "o", "S2": "d", NARROW: "^", "E09": "s", "E05": ">", "P_L1": "^",
+               "E02": "P", "P_L3": "X", "E06": "o", "E07": "*", "P_L9": "s",
+               "P_MEL_L3": "v", "E10": "D"}
+    fig = plt.figure(figsize=(6.45, 4.48), facecolor="white")
+    ax = fig.add_axes([.103, .504, .868, .469])
+    detail = fig.add_axes([.103, .243, .292, .125])
+    left, right, bottom, top = 4.735, 5.035, 17, 39
+    ax.set(xlim=(4.70, 6.50), ylim=(3.45, 40), xticks=np.arange(4.75, 6.51, .25))
+    detail.set(xlim=(left, right), ylim=(bottom, top), xticks=[4.8, 4.9, 5.0])
+    line_styles = {"fixed_stride": (colors[0], (0, (4.2, 2.6))),
+                   "fusion": (colors[1], "-")}
     stop = max(r[ERROR] for r in rows)
-    for family, style in (("fixed_stride", (0, (3, 2.4))), ("fusion", "-")):
-        edge = edges[family]
-        ax.step([r[ERROR] for r in edge] + [stop], [r[COST] for r in edge] + [edge[-1][COST]],
-                where="post", linestyle=style, color="#9aaeb0", lw=.95, zorder=1.5)
-
-    # The connector reaches both measured points. The arrowhead sits inside the segment
-    # so it stays distinct from the L7 symbol and the neighbouring stride-2 symbol.
-    for target, color in ((near_cost, colors[1]), (near_error, colors[2])):
-        ax.plot([ref[ERROR], target[ERROR]], [ref[COST], target[COST]], color=color,
-                lw=1.65, solid_capstyle="round", zorder=2)
-        positions = [(ref[ERROR] + t*(target[ERROR]-ref[ERROR]),
-                      ref[COST] * (target[COST]/ref[COST])**t) for t in (.48, .71)]
-        ax.annotate("", xy=positions[1], xytext=positions[0],
-                    arrowprops={"arrowstyle": "->", "color": color, "lw": 1.8,
-                                "mutation_scale": 14, "shrinkA": 0, "shrinkB": 0}, zorder=2.5)
+    for panel, ticks in ((ax, [4, 8, 16, 32]), (detail, [20, 30])):
+        panel.set_yscale("log", base=2)
+        panel.set_yticks(ticks, labels=[str(t) for t in ticks])
+        panel.yaxis.set_minor_locator(NullLocator())
+        panel.tick_params(labelsize=8.3 if panel is ax else 7.6, colors=muted,
+                          length=2.5, pad=3)
+        panel.grid(axis="y", color=grid, linewidth=.55)
+        panel.set_axisbelow(True)
+        for side in ("top", "right"):
+            panel.spines[side].set_visible(False)
+        for side in ("left", "bottom"):
+            panel.spines[side].set(color="#87999f", linewidth=.7)
+        for family, edge in edges.items():
+            color, style = line_styles[family]
+            panel.step([r[ERROR] for r in edge] + [stop],
+                       [r[COST] for r in edge] + [edge[-1][COST]],
+                       where="post", color=color, linestyle=style, linewidth=1.1,
+                       alpha=.75, zorder=2)
+    ax.set_xlabel("Test-clean phone error rate (%)", labelpad=2, color=ink, fontsize=9.2)
+    ax.set_ylabel("Encoder + fusion\n(GMAC per 30 s)", color=ink, fontsize=9.2)
+    ax.add_patch(Rectangle((left, bottom), right-left, top-bottom, fill=False,
+                           edgecolor="#8b9ca0", linewidth=.7, linestyle=(0, (1.6, 2.8))))
 
     handles = {}
-    featured = {ref["id"], near_cost["id"], near_error["id"]}
-    # Keep the almost cost-matched stride-2 and L7 symbols distinct at their
-    # measured coordinates, including their outlines at the printed size.
-    close_pair_sizes = {"S2": 5.6, "E07": 6.4}
-    # The external detail repeats the measurements inside this box with a
-    # wider horizontal scale. The two panels use the same log base.
-    left, right, bottom, top = 4.74, 5.03, 16, 39
-    outline = "#7c8d94"
-    ax.add_patch(Rectangle((left, bottom), right-left, top-bottom, fill=False,
-                           edgecolor=outline, linewidth=.7, linestyle=(0, (1.8, 2.4))))
-    detail = fig.add_axes([.105, .257, .274, .130])
-    detail.set_yscale("log", base=2)
-    detail.set(xlim=(left, right), ylim=(bottom, top), xticks=[4.8, 4.9, 5.0],
-               xticklabels=["4.8", "4.9", "5.0"], yticks=[16, 32], yticklabels=["16", "32"])
-    detail.yaxis.set_minor_locator(NullLocator())
-    detail.tick_params(labelsize=7.4, colors=muted, length=2.2, pad=2)
-    detail.grid(axis="y", color=grid, linewidth=.55)
-    detail.set_axisbelow(True)
-    for spine in detail.spines.values():
-        spine.set(color=outline, linewidth=.7, linestyle=(0, (1.8, 2.4)))
-    for r in rows:
-        key, n = r["id"], len(r["stage_rates"])
-        color = colors[n]
-        edge_width = 1.05 if key == "S2" else 1.3
-        style = dict(marker=markers[key], markerfacecolor="white" if n == 0 else color,
-                     markeredgecolor=color if n == 0 else "white",
-                     markeredgewidth=edge_width if n == 0 else .65, linestyle="none")
-        size = close_pair_sizes.get(key, 8 if key in featured else 6.4)
-        point, = ax.plot(r[ERROR], r[COST], markersize=size, zorder=4+n, **style)
-        if key == "S2":
-            point.set_path_effects([path_effects.withStroke(linewidth=3.4, foreground="white")])
-        if left <= r[ERROR] <= right and bottom <= r[COST] <= top:
-            detail.plot(r[ERROR], r[COST], markersize=8 if key == "E07" else 6.3, **style)
-        handles[key] = Line2D([], [], markersize=8 if markers[key] == "*" else 6.1, **style)
+    for row in rows:
+        key, n = row["id"], len(row["stage_rates"])
+        size = {"S2": 5.9, "E07": 7.3}.get(key, 6.7)
+        style = dict(marker=markers[key], markerfacecolor=colors[n] if n else "white",
+                     markeredgecolor="white" if n else colors[n], linestyle="none",
+                     markeredgewidth=.58 if n else 1.2)
+        ax.plot(row[ERROR], row[COST], markersize=size, zorder=4, **style)
+        if left <= row[ERROR] <= right and bottom <= row[COST] <= top:
+            detail.plot(row[ERROR], row[COST], markersize=size, zorder=4, **style)
+        handles[key] = Line2D([], [], markersize=size, **style)
 
-    # A single symbol/style definition drives both the data and its external key.
-    fig.text(.242, .194, "Low-PER region, enlarged", ha="center", va="center",
-             fontsize=8.3, color=ink)
+    fig.text(.249, .174, "Low-PER region, enlarged", ha="center", va="center",
+             fontsize=8, color=muted)
     groups = [
-        ("Fixed stride", .453, .621, .389, ["S1", "S2", "E09"], ["1", "2", "4"]),
-        ("One site", .453, .621, .335, ["E05", "P_L1", "E02", "P_L3"], None),
-        ("", .453, .621, .288, ["E06", "E07", "P_L9"], None),
-        ("Two sites", .453, .621, .231, ["P_MEL_L3", "E10"], None),
+        ("Stride / width", .395, ["S1", "S2", NARROW, "E09"],
+         ["1/128", "2/256", "4/128", "4/512"]),
+        ("One site", .347, ["E05", "P_L1", "E02", "P_L3", "E06", "E07", "P_L9"], None),
+        ("Two sites", .299, ["P_MEL_L3", "E10"], None),
     ]
-    for family, text_x, key_x, y, ids, labels in groups:
-        fig.text(text_x, y, family, va="center", fontsize=8.7, color=ink, weight="semibold")
-        fig.legend([handles[k] for k in ids], labels or [NAMES[k] for k in ids],
-                   loc="center left", bbox_to_anchor=(key_x, y), ncol=len(ids), frameon=False,
-                   borderpad=0, borderaxespad=0, handlelength=.95, handletextpad=.33,
-                   columnspacing=1.05, fontsize=8.6, labelcolor=ink)
+    legend_style = dict(loc="center left", frameon=False, borderpad=0, borderaxespad=0,
+                        handlelength=.9, handletextpad=.24, columnspacing=.56,
+                        fontsize=7.9, labelcolor=ink)
+    for label, y, ids, names in groups:
+        fig.text(.445, y, label, va="center", fontsize=8.1, color=ink, weight="semibold")
+        fig.legend([handles[k] for k in ids], names or [NAMES[k] for k in ids],
+                   bbox_to_anchor=(.598, y), ncol=len(ids), **legend_style)
+    fig.text(.445, .249, "Lowest cost", va="center", fontsize=8.1, color=ink, weight="semibold")
+    lines = [Line2D([], [], color=color, linestyle=style, linewidth=1.1)
+             for color, style in line_styles.values()]
+    fig.legend(lines, ["Fixed stride", "Fusion"], ncol=2, bbox_to_anchor=(.598, .249),
+               **dict(legend_style, handlelength=2, columnspacing=1.15))
 
-    fig.add_artist(Line2D([.021, .977], [.162, .162], color=grid, lw=.75, transform=fig.transFigure))
-    for x, color, heading, description, outcome in (
-        (.021, colors[1], "←  Similar compute",
-         f"{NAMES[ref['id']]} → {NAMES[near_cost['id']]}   ·   {ref[COST]:.2f} vs. {near_cost[COST]:.2f} GMAC",
-         f"{ref[ERROR]:.3f}% → {near_cost[ERROR]:.3f}% PER  ({gap:+.3f} pp)"),
-        (.515, colors[2], "↓  Similar PER",
-         f"{NAMES[ref['id']]} → {NAMES[near_error['id']]}   ·   {ref[ERROR]:.3f}% vs. {near_error[ERROR]:.3f}%",
-         f"{ref[COST]:.2f} → {near_error[COST]:.2f} GMAC  (−{saving:.1f}%)")):
-        fig.text(x, .122, heading, va="center", weight="bold", fontsize=10.0, color=color)
-        fig.text(x, .073, description, va="center", fontsize=8.4, color=muted)
-        fig.text(x, .025, outcome.replace("-", "−"), va="center", weight="semibold",
-                 fontsize=9.1, color=ink)
+    fig.add_artist(Line2D([.03, .97], [.142, .142], color=grid, linewidth=.8,
+                          transform=fig.transFigure))
+    saving = 100 * (1 - at_ceiling[COST] / fixed[COST])
+    for x, heading, description, result in (
+        (.03, f"Near {fixed[COST]:.1f} GMAC",
+         f"{NAMES[fixed['id']]} and {NAMES[same_cost['id']]}",
+         f"{fixed[ERROR]:.3f}%  vs.  {same_cost[ERROR]:.3f}% PER"),
+        (.50, f"At the {NAMES[fixed['id']].lower()} PER ceiling",
+         f"{NAMES[fixed['id']]} and {NAMES[at_ceiling['id']]}",
+         f"{fixed[COST]:.2f}  vs.  {at_ceiling[COST]:.2f} GMAC   (−{saving:.1f}%)")):
+        fig.text(x, .108, heading, color=ink, weight="semibold", fontsize=9, va="center")
+        fig.text(x, .067, description, color=muted, fontsize=8.2, va="center")
+        fig.text(x, .024, result, color=ink, fontsize=8.9, va="center")
 
     output = PAPER / "figures"
     fig.savefig(output / "quality_budget_30s.pdf",
@@ -445,16 +399,20 @@ def write_rows(name, rows):
 
 def main():
     data = json.loads(SELECTION.read_text(encoding="utf-8"))
-    rows = data["models"]
     all_rows = sorted(comparison_rows(data), key=lambda r: len(r["stage_rates"]))
     matches = table_matches(all_rows)
     matched_ids = [(partner["id"], base["id"]) for _, base, partner in matches]
     pair_ids = dict.fromkeys(PAIRS + matched_ids)
     pairs, n = trials(all_rows, pair_ids)
-    edge = frontier(rows)
-    edges, examples = cost_at_error_ceilings(rows, (5.0, 5.7, 6.1))
-    comparisons = figure_comparisons(rows, pairs)
-    match = measured_matches(rows, comparisons)
+    edge = frontier(all_rows)
+    edges, examples = cost_at_error_ceilings(all_rows, (5.0, 5.7, 6.1, 6.13))
+    comparisons = figure_comparisons(all_rows, pairs)
+    best_fixed = edges["fixed_stride"][0]
+    same_cost = next(partner for field, base, partner in matches
+                     if field == COST and base["id"] == best_fixed["id"])
+    ceiling_id = next(p["a"] for p in comparisons
+                      if p["selection"] == "baseline ceiling" and p["b"] == best_fixed["id"])
+    at_ceiling = next(r for r in all_rows if r["id"] == ceiling_id)
     OUTPUT.mkdir(exist_ok=True)
     matched_table = write_matched_points(matches, pairs)
     summary, decode = [], []
@@ -486,12 +444,15 @@ def main():
                   observed_frontier=[r["id"] for r in edge], contrasts=pairs,
                   minimum_cost_at_per_ceiling={k: [r["id"] for r in e] for k, e in edges.items()},
                   example_per_ceilings=examples,
-                  figure_comparisons=comparisons, measured_matches=match,
-                  matched_table=matched_table, table_only_reference=NARROW,
+                  figure_comparisons=comparisons,
+                  figure_points=[r["id"] for r in all_rows],
+                  figure_highlights=dict(fixed=best_fixed["id"], nearest_cost=same_cost["id"],
+                                         least_cost_at_observed_per=at_ceiling["id"]),
+                  matched_table=matched_table,
                   natural_rate_groups=groups, front_end_at_equal_input_length=lengths)
     (OUTPUT / "analysis.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
-    make_figure(rows, edges, match, pairs)
-    make_method_figure(next(x for x in rows if x["id"] == "E10"), PAPER / "figures")
+    make_figure(all_rows, edges, best_fixed, same_cost, at_ceiling)
+    make_method_figure(next(x for x in all_rows if x["id"] == "E10"), PAPER / "figures")
 
 
 if __name__ == "__main__":
