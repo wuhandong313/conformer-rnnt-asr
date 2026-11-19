@@ -6,6 +6,10 @@
 
 现有 stride 2／256 维保留为强参照；若研究问题转向同宽主干下步长本身的影响，再补 stride 8／256 维。原图的三个固定点保持相同的 128 维每帧投影，stride 1、2、4 同时对应不同主干宽度。相近预算或相近 PER 的描述性比较见正文配对表。每个参照独立按指定指标的绝对差选取融合模型，另一指标在配对内比较。新实验的预算和开发集选点规则见下文。[正文配对表](generated/matched_points.tex) · [全部 13 组读数](generated/operating_points.tex)
 
+### 2026-11-19 追加 stride 4／256 维
+
+新配方沿用已训练的 stride 2／256 维的 8,800 个目标音素批上限、460 小时数据、seed 42 和 50 轮，其余训练参数相同。每帧投影改为 64 维，拼接四帧得 256 维主干。队列入口等待现有 Mel+L3、Mel+L7、L2+L7 的完成记录与最后控制进程退出，再持有共用 GPU 锁验证实际训练批，候选通过后从头训练。服务器状态写在 `output/phone69_460h_stride4_dim256_20261119/queue_state.json`，最终按 dev-clean 验证损失取 checkpoint。30 秒的 10.394 GMAC 为理论编码器算量，PER 在全量评估后补入。[新配方](../../configs/server_phone69_460h_offline_native_stride4_none_dim256_s42_e50.yaml) · [排队入口](../../scripts/server/phone69_stride4_dim256.py)
+
 ### 补回已有的 stride 4／128 维
 
 比较图在现有十二个系统上加入归档的 stride 4／128 维，沿用同一完整 test-clean、按 dev-clean 验证损失选出的 checkpoint 和 30 秒编码器计数。紫色空心三角为补入点，位置稍偏 Mel+L3 右上。两条阶梯分别表示各家族在给定 PER 上限内已经观测到的最低成本。固定组现在有两个前沿点，即 stride 2／256 维（4.8989%，26.539 GMAC）和 stride 4／128 维（6.1289%，4.336 GMAC）。中间仍缺少固定组的低成本、高精度工作点。[比较图 PDF](figures/stride4_128_comparison.pdf) · [PNG](figures/stride4_128_comparison.png) · [重建脚本](plot_stride4_128_comparison.py)
