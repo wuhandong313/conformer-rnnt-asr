@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "study": "repeat_single_stage_layer3_20261119",
+  "runtime_dir": "output/phone69_460h_layer3_rerun_20261119",
+  "batch_search": {
+    "initial": 8800,
+    "minimum": 8800,
+    "maximum": 8800,
+    "quantum": 100,
+    "growth": 1.4,
+    "max_reserved_fraction": 0.96
+  },
+  "experiments": [
+    {
+      "name": "layer3_rerun",
+      "action": "train",
+      "config": "configs/server_phone69_460h_placement_layer3_stride1_s42_e50_rerun20261119.yaml",
+      "baseline_config": "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer3/training_config.yaml",
+      "positions": [3]
+    }
+  ]
+}
