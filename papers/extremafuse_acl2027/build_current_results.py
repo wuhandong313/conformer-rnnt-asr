@@ -12,8 +12,6 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
-from matplotlib.patches import Rectangle
-from matplotlib.ticker import NullLocator
 import numpy as np
 
 
@@ -308,16 +306,14 @@ def make_figure(rows, edges, fixed, same_cost, at_ceiling):
     fig = plt.figure(figsize=(6.45, 4.48), facecolor="white")
     ax = fig.add_axes([.103, .504, .868, .469])
     detail = fig.add_axes([.103, .243, .292, .125])
-    left, right, bottom, top = 4.735, 5.035, 17, 39
-    ax.set(xlim=(4.70, 6.50), ylim=(3.45, 40), xticks=np.arange(4.75, 6.51, .25))
-    detail.set(xlim=(left, right), ylim=(bottom, top), xticks=[4.8, 4.9, 5.0])
+    left, right = 4.74, 4.94
+    ax.set(xlim=(4.70, 6.50), ylim=(0, 32), xticks=np.arange(4.75, 6.51, .25))
+    detail.set(xlim=(left, right), ylim=ax.get_ylim(), xticks=[4.75, 4.80, 4.85, 4.90])
     line_styles = {"fixed_stride": (colors[0], (0, (4.2, 2.6))),
                    "fusion": (colors[1], "-")}
     stop = max(r[ERROR] for r in rows)
-    for panel, ticks in ((ax, [4, 8, 16, 32]), (detail, [20, 30])):
-        panel.set_yscale("log", base=2)
+    for panel, ticks in ((ax, range(0, 33, 4)), (detail, [0, 16, 32])):
         panel.set_yticks(ticks, labels=[str(t) for t in ticks])
-        panel.yaxis.set_minor_locator(NullLocator())
         panel.tick_params(labelsize=8.3 if panel is ax else 7.6, colors=muted,
                           length=2.5, pad=3)
         panel.grid(axis="y", color=grid, linewidth=.55)
@@ -334,8 +330,7 @@ def make_figure(rows, edges, fixed, same_cost, at_ceiling):
                        alpha=.75, zorder=2)
     ax.set_xlabel("Test-clean phone error rate (%)", labelpad=2, color=ink, fontsize=9.2)
     ax.set_ylabel("Encoder + fusion\n(GMAC per 30 s)", color=ink, fontsize=9.2)
-    ax.add_patch(Rectangle((left, bottom), right-left, top-bottom, fill=False,
-                           edgecolor="#8b9ca0", linewidth=.7, linestyle=(0, (1.6, 2.8))))
+    ax.axvspan(left, right, facecolor="#eff3f4", edgecolor="none", zorder=0)
 
     handles = {}
     for row in rows:
@@ -345,11 +340,11 @@ def make_figure(rows, edges, fixed, same_cost, at_ceiling):
                      markeredgecolor="white" if n else colors[n], linestyle="none",
                      markeredgewidth=.58 if n else 1.2)
         ax.plot(row[ERROR], row[COST], markersize=size, zorder=4, **style)
-        if left <= row[ERROR] <= right and bottom <= row[COST] <= top:
+        if left <= row[ERROR] <= right:
             detail.plot(row[ERROR], row[COST], markersize=size, zorder=4, **style)
         handles[key] = Line2D([], [], markersize=size, **style)
 
-    fig.text(.249, .174, "Low-PER region, enlarged", ha="center", va="center",
+    fig.text(.249, .174, "Shaded PER range, enlarged", ha="center", va="center",
              fontsize=8, color=muted)
     groups = [
         ("Stride / width", .395, ["S2", NARROW, "E09"], ["2/256", "4/128", "4/512"]),
