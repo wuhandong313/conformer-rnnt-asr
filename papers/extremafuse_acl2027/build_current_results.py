@@ -30,7 +30,8 @@ NAMES = {
     "E06": "L5", "E07": "L7", "P_L9": "L9",
     "P_MEL_L3": "Mel+L3", "E10": "Mel+L5",
 }
-PAIRS = [("E05", "E09"), ("E06", "S1"), ("E06", "S2"), ("E07", "S2"), ("E07", "E09"),
+MANUSCRIPT_EXCLUSIONS = {"S1", "P_L9"}
+PAIRS = [("E05", "E09"), ("E06", "S2"), ("E07", "S2"), ("E07", "E09"),
          ("E10", "E09"), ("E10", "E05"), ("P_MEL_L3", "E10")]
 COST = "encoder_compression_gmac_30s"
 ERROR = "per_percent"
@@ -44,7 +45,7 @@ def sha(path):
 
 
 def comparison_rows(selection=None):
-    """Load the projection-128 figure sample plus its narrow stride-4 control."""
+    """Load the November 17 selection and the archived narrow stride-4 control."""
     if selection is None:
         selection = json.loads(SELECTION.read_text(encoding="utf-8"))
     source = ROOT / selection["source"]
@@ -78,7 +79,7 @@ def equal_length_outputs(input_frames, fixed_steps, fusion_steps):
     # Pick the most frequent input length without inspecting the fusion outputs.
     example = min(repeated, key=lambda length: (-len(repeated[length]), length))
     steps = repeated[example]
-    return dict(input_reference="S1", fixed="E09", fusion="E05",
+    return dict(input_reference="P_L1", input_field="input_mel_frames", fixed="E09", fusion="E05",
                 repeated_input_lengths=len(repeated),
                 utterances_at_repeated_lengths=sum(map(len, repeated.values())),
                 groups_with_varying_fusion_steps=sum(min(g) < max(g) for g in repeated.values()),
@@ -100,6 +101,7 @@ def corpus_analyses(models):
     if len(set(flat)) != len(flat):
         raise ValueError("Speaking-rate groups overlap")
     rendered, groups, front_end_steps = [], {}, {}
+    input_frames = {}
     for x in models:
         sources = x["sources"]
         csv_path, = [p for p in sources if p.endswith("/utterances.csv")]
@@ -123,7 +125,9 @@ def corpus_analyses(models):
             raise ValueError("Speaking-rate groups do not reproduce corpus scores")
         uid = x["id"]
         groups[uid] = dict(zip(("slow", "middle", "fast"), parts))
-        if uid in ("S1", "E09", "E05"):
+        if uid == "P_L1":
+            input_frames = {u: int(row["input_mel_frames"]) for u, row in counts.items()}
+        if uid in ("E09", "E05"):
             steps = {}
             for utterance, row in counts.items():
                 frames = row["layer_frames"]
@@ -138,8 +142,7 @@ def corpus_analyses(models):
             fields.extend([f"{100*g['corpus_PER']:.3f}", f"{g['total_gmac_per_audio_second']:.3f}"])
         rendered.append(" & ".join(fields) + r" \\")
     write_rows("speaking_rate.tex", rendered)
-    lengths = equal_length_outputs(front_end_steps["S1"], front_end_steps["E09"],
-                                   front_end_steps["E05"])
+    lengths = equal_length_outputs(input_frames, front_end_steps["E09"], front_end_steps["E05"])
     return groups, lengths
 
 
@@ -299,8 +302,8 @@ def make_figure(rows, edges, fixed, same_cost, at_ceiling):
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "pdf.fonttype": 42})
     ink, muted, grid = "#213239", "#455a64", "#dbe2e5"
     colors = ("#455766", "#006f70", "#ab5121")
-    markers = {"S1": "o", "S2": "d", NARROW: "^", "E09": "s", "E05": ">", "P_L1": "^",
-               "E02": "P", "P_L3": "X", "E06": "o", "E07": "*", "P_L9": "s",
+    markers = {"S2": "d", NARROW: "^", "E09": "s", "E05": ">", "P_L1": "^",
+               "E02": "P", "P_L3": "X", "E06": "o", "E07": "*",
                "P_MEL_L3": "v", "E10": "D"}
     fig = plt.figure(figsize=(6.45, 4.48), facecolor="white")
     ax = fig.add_axes([.103, .504, .868, .469])
@@ -349,9 +352,8 @@ def make_figure(rows, edges, fixed, same_cost, at_ceiling):
     fig.text(.249, .174, "Low-PER region, enlarged", ha="center", va="center",
              fontsize=8, color=muted)
     groups = [
-        ("Stride / width", .395, ["S1", "S2", NARROW, "E09"],
-         ["1/128", "2/256", "4/128", "4/512"]),
-        ("One site", .347, ["E05", "P_L1", "E02", "P_L3", "E06", "E07", "P_L9"], None),
+        ("Stride / width", .395, ["S2", NARROW, "E09"], ["2/256", "4/128", "4/512"]),
+        ("One site", .347, ["E05", "P_L1", "E02", "P_L3", "E06", "E07"], None),
         ("Two sites", .299, ["P_MEL_L3", "E10"], None),
     ]
     legend_style = dict(loc="center left", frameon=False, borderpad=0, borderaxespad=0,
@@ -399,7 +401,8 @@ def write_rows(name, rows):
 
 def main():
     data = json.loads(SELECTION.read_text(encoding="utf-8"))
-    all_rows = sorted(comparison_rows(data), key=lambda r: len(r["stage_rates"]))
+    selected = [r for r in comparison_rows(data) if r["id"] not in MANUSCRIPT_EXCLUSIONS]
+    all_rows = sorted(selected, key=lambda r: len(r["stage_rates"]))
     matches = table_matches(all_rows)
     matched_ids = [(partner["id"], base["id"]) for _, base, partner in matches]
     pair_ids = dict.fromkeys(PAIRS + matched_ids)
