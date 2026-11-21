@@ -1,20 +1,20 @@
 # ExtremaFuse · ACL 2027 长文初稿
 
-[阅读英文初稿 PDF](main.pdf) · [LaTeX 源文件](main.tex) · [10 组结果主图](figures/quality_budget_30s.pdf)
+[阅读英文初稿 PDF](main.pdf) · [LaTeX 源文件](main.tex) · [7 组结果主图](figures/quality_budget_30s.pdf)
 
 本文研究离线音素识别中的一个设计选择：编码器能否根据声学变化决定下一步的位置，并在相同的误差要求下减少计算？实验覆盖 460 小时 LibriSpeech 训练数据和 2,620 条完整 test-clean 录音。
 
 ## 近期 ACL 论文如何影响本稿
 
 - Feher 等从同一段文本在不同切分规则下会变成多少个 token 写起，再检验压短后能保留多少任务性能。引言采用同样可直接观察的切入点。11 条均为 272 帧的录音经 stride 4 都得到 68 步，经 Mel 融合得到 97–115 步。这个例子说明时间网格会随内容改变，识别质量交给后续实验检验。[Feher 等，ACL 2025](https://aclanthology.org/2025.acl-long.1444/)
-- Ji 等研究视觉 token 在不同层的裁剪配置，按预算与实测前沿核对结果。本文对每个已训练的放置方案逐层计数，用两条阶梯回答给定 PER 上限时每一组最少花多少 GMAC。固定步长目前只有两个非支配点，图上的大台阶反映基线覆盖稀疏。[Ji 等，ACL 2026](https://aclanthology.org/2026.acl-long.420/)
+- Ji 等研究视觉 token 在不同层的裁剪配置，按预算与实测前沿核对结果。本文对每个已训练的放置方案逐层计数。主图按算量直连融合组的五个非支配工作点，用独立方点标出两组 stride 4 参照。[Ji 等，ACL 2026](https://aclanthology.org/2026.acl-long.420/)
 - Liao 等发现简单图像降采样在多项基准上能超过复杂压缩。对应到本文，宽、窄 stride 4 都进主图，并保留逐句输出长度完全一致的均匀池化对照。前者检验完整识别器，后者检验训练好的模型对汇聚规则有多敏感。[Liao 等，ACL 2026](https://aclanthology.org/2026.acl-long.195/)
 
 ## 正文如何推进
 
 1. **从固定堆叠提出问题。** 四帧拼接保留帧里的数值，但堆叠边界跟着步长走。在相邻帧余弦距离的峰谷取中心、学习五帧混合权重，同一模块就可以在 Mel 输入或 Conformer 隐层工作。方法紧接引言，网络图展示中心位置、重叠窗口及各层所见的序列长度。[方法图](figures/extremafuse_network.pdf)
-2. **用同一口径衡量替代效果。** 整句解码得到 PER，以实测保留率推算 30 秒参考输入的编码器与融合 GMAC。主图含两个 stride 4 配置和八个融合配置。表 1 按未舍入的算量或 PER 选择最接近的配对，再比较另一项指标。正文另外用两组 stride 4 的实测 PER 作为误差上限，找出达标的最低算量。[配对表](generated/matched_points.tex) · [完整数值](generated/operating_points.tex)
-3. **对照四帧拼接的两个预算。** 128 维 stride 4 为 4.336 GMAC，最接近的是 Mel+L3。512 维 stride 4 为 27.679 GMAC，最接近的是 L7。两个固定配置都输出 751 步，主图分别标出两种主干宽度。[结果曲线](figures/quality_budget_30s.pdf)
+2. **用同一口径衡量替代效果。** 整句解码得到 PER，以实测保留率推算 30 秒参考输入的编码器与融合 GMAC。主图含两个 stride 4 参照和五个融合工作点。表 1 分别用各参照的算量作上限寻找最低 PER，用各参照的实测 PER 作上限寻找最低算量。[配对表](generated/matched_points.tex) · [完整数值](generated/operating_points.tex)
+3. **对照四帧拼接的两个预算。** 在 128 维 stride 4 的 4.336 GMAC 预算内，Mel+L3 的观测 PER 最低。在 512 维 stride 4 的 27.679 GMAC 预算内，融合组的最低观测 PER 来自 L5。两个固定配置都输出 751 步。[结果图](figures/quality_budget_30s.pdf)
 4. **用具体帧数解释位置和误差。** 第二处融合从 L5 提前到 L3，最终步数很接近，但第 4、5 层各从 1,179 步降至 483 步。再问压缩后的向量是否仍在利用输入。100 句冻结实验将第二阶段换成每句等长的均匀池化后，参考转写负对数似然差的区间跨零。它还不能确定峰谷选点本身贡献了多少 PER。[机制诊断记录](../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json)
 5. **把结论放回既有研究。** 相关工作交代固定网格、预设总压缩率的自适应步长和本文由极值数量确定步数的区别。结论落到离线 Phone69 这一任务，同时给出下一项能检验机制归因的训练对照。[TadaStride](https://doi.org/10.1016/j.csl.2024.101678) · [Stride-k](https://aclanthology.org/2026.emnlp-main.1608/)
 
@@ -23,18 +23,18 @@
 | 问题 | 实测结果 | 解释 |
 | --- | --- | --- |
 | 只替换前端能否工作？ | 同为 128 维时，Mel 对 stride 4 为 5.578% 对 6.129% PER，8.115 对 4.336 GMAC。将 stride 4 主干扩大到 512 维，得到 5.743% 和 27.679 GMAC。 | 两个 stride 4 都处理 751 步，Mel 处理 1,179 步。Mel 相对窄基线用更多算量降低 PER，相对宽基线节省 70.7% 的计算量。 |
-| 在相近实测 PER 下哪一侧省算量？ | 与宽 stride 4 最接近的是单阶段 L3，PER 为 5.7374% 对 5.7427%，算量低 40.9%。相对窄 stride 4，Mel+L3 低 3.7%。 | 按实测 PER 绝对差选择配对。若按宽 stride 4 的实测 PER 设上限，再找算量最低的达标配置，则选中 Mel+L5，算量低 81.0%。[配对表](generated/matched_points.tex) |
+| 达到参照的实测 PER 需要多少算量？ | 窄 stride 4 对应的最低算量融合点是 Mel+L3，低 3.7%。宽 stride 4 对应的是 Mel+L5，低 81.0%。 | 前者的主干同为 128 维，后者比较 128 维融合主干与 512 维固定主干。这里使用观测 PER 上限。[配对表](generated/matched_points.tex) |
 
-固定组包括 stride 4／128、512 维。融合组包括单阶段 Mel、L1、L2、L3、L5、L7，以及双阶段 Mel+L3、Mel+L5。单阶段 L3 使用原训练第 31 轮（第 57,500 步）的全量评测。[L3 第 31 轮评测](../../artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/REPORT.md) · [60 秒成本表](compute_quality_curve_plan.md)
+固定组包括 stride 4／128、512 维。融合组包括单阶段 Mel、L1、L5，以及双阶段 Mel+L3、Mel+L5。 · [60 秒成本表](compute_quality_curve_plan.md)
 
 ## 读数与复现
 
 - **同输入长度核验。** 从 L1 的全量逐句归档读取原始 Mel 帧数（`input_mel_frames`），按 UID 对齐宽 stride 4 和 Mel-only 的首层输入步数。逐句核对宽 stride 4 的步数等于原始帧数除以 4 向上取整。示例选择出现次数最多的输入帧数，记录中保留了该组全部 11 个输出步数。[复核数据及统计](generated/analysis.json)
-- **数据入口。** 当前生成器以 11 月 17 日清单为起点，从完整归档补入窄 stride 4（E01）并采用第 31 轮的单阶段 L3 记录（`D_L3_TRAIN`）。主图、主表和附录共用这 10 个配置。生成器校验归档哈希、逐句参考转写、检查点标识和错误总数。[当前分析和入稿 ID](generated/analysis.json) · [11 月 17 日历史清单](../../artifacts/research/phone69_paper_results_table_20261117/data.json) · [完整归档](../../artifacts/research/phone69_all_results_20261117/REPORT.md)
+- **数据入口。** 当前生成器以 11 月 17 日清单为起点，从完整归档补入窄 stride 4（E01）。主图、主表和附录共用这 7 个配置。生成器校验归档哈希、逐句参考转写、检查点标识和错误总数。[当前分析和入稿 ID](generated/analysis.json) · [11 月 17 日历史清单](../../artifacts/research/phone69_paper_results_table_20261117/data.json) · [完整归档](../../artifacts/research/phone69_all_results_20261117/REPORT.md)
 - **固定输入：** 按[计数协议](../../docs/phone69_fixed_duration_macs.md)，对每个 checkpoint 的每个压缩位置，以全部 2,620 句的输出帧数之和除以该位置输入帧数之和；依网络顺序传播 3,001 帧，逐层计算算子。附录绝对值表的 GMAC/s 列将 30 秒成本除以 30。30 秒见 [Fast Conformer](https://arxiv.org/html/2305.05084v4) 和 [Zipformer](https://arxiv.org/html/2310.11230v4)；各论文的 MAC/FLOP 范围不相同。
 - **真实解码：** 用整句 FP32、batch 1、beam 20 的实际计数，分别给 encoder＋fusion、predictor、joiner、总量。说明是每个真实音频秒的主要 MAC，不把它当固定输入理论值、设备耗时或速度倍数。
 - **配对与分组：** [生成脚本](build_current_results.py)校验预测文件哈希、全部 UID、参考转写和错误数；按说话人配对重采样 10,000 次（种子 42）。同一脚本复用冻结语速十等分的成员，校验三组重新合并后复现整集错误数与实际 MAC。[配对区间及三组完整计数](generated/analysis.json)可独立核查。窗口与冻结替换数值来自[100 句 / 37 人机制诊断](../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json)。
-- 从项目根运行 `python papers/extremafuse_acl2027/build_current_results.py`（NumPy、Matplotlib），生成结果曲线、方法网络图的矢量 PDF 和高清 PNG，以及五份 LaTeX 表行。曲线按未舍入数值选点，方法图读取 Mel+L5 的 30 秒逐层帧数。编译入口为 `main.tex`。用 Tectonic 在本目录编译即能更新整稿 PDF。表 1 的 PNG 取自当前编译稿。[当前配对表预览](figures/matched_operating_points.png) · [11 月 12 日历史八点图](fixed_duration_curve_20261112/REPORT.md)
+- 从项目根运行 `python papers/extremafuse_acl2027/build_current_results.py`（NumPy、Matplotlib），生成结果图、方法网络图的矢量 PDF 和高清 PNG，以及五份 LaTeX 表行。结果图按未舍入数值选点，方法图读取 Mel+L5 的 30 秒逐层帧数。编译入口为 `main.tex`。用 Tectonic 在本目录编译即能更新整稿 PDF。表 1 的 PNG 取自当前编译稿。[当前配对表预览](figures/matched_operating_points.png) · [11 月 12 日历史八点图](fixed_duration_curve_20261112/REPORT.md)
 
 ## 投稿前优先补的证据
 
