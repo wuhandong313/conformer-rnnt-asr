@@ -26,7 +26,7 @@
 | 面对最强固定步长呢？ | 用 stride 2 的实测 PER 作上限，L5 以 21.380 对 26.539 GMAC 达标，少 19.4%。 | PER 为 4.781% 对 4.899%。对照的区间 [−0.247, +0.004] 跨零。若把计算量也拉到几乎相同，L7 与 stride 2 只有 0.039 个百分点的 PER 差。 |
 | 在相近实测 PER 下哪一侧省算量？ | 相对宽 stride 4，Mel+L5 的 GMAC 低 81.0%。相对窄 stride 4，Mel+L3 低 3.7%。与 stride 2 的 PER 最接近的是 L7。两者的 30 秒成本为 26.539 和 26.499 GMAC，相差 0.15%。 | 三行均按实测 PER 绝对差选择配对，方向由各对的实测成本决定。[配对区间](generated/paired_per.tex) |
 
-固定组包括 stride 2／256 维和 stride 4／128、512 维。融合组包括单阶段 Mel、L1、L2、L3、L5、L7，以及双阶段 Mel+L3、Mel+L5。11 组均按 dev-clean 验证损失选 checkpoint。单阶段 L3 使用第 27,324 步的原验证最佳。stride 4／256 维和 L3 重训尚无新一轮完整评估读数。[后续实验及 60 秒成本表](compute_quality_curve_plan.md)
+固定组包括 stride 2／256 维和 stride 4／128、512 维。融合组包括单阶段 Mel、L1、L2、L3、L5、L7，以及双阶段 Mel+L3、Mel+L5。11 组均按 dev-clean 验证损失选 checkpoint。单阶段 L3 使用第 27,324 步的原验证最佳。11 月 21 日完成的 stride 4（投影 64、主干 256 维）保留为内部结果，L3 重训用于核对原结果。[全量评测归档](../../artifacts/evaluations/phone69_remaining_local_cpu_20261121/REPORT.md) · [60 秒成本表](compute_quality_curve_plan.md)
 
 ## 读数与复现
 

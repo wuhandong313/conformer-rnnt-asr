@@ -2,17 +2,17 @@
 
 ## 2026-11-18 固定步长的后续实验
 
-**固定 4∶1 的主基线先补 stride 4／256 维。** 在原生拼接实现中，每帧投影 32、64、128 维给出 128、256、512 维主干。三者在 30 秒输入上都输出 751 步，计算量分别为 4.336、10.394、27.679 GMAC。两端已有整句 PER，中间的 256 维只列理论成本，留待训练。统一层数、FFN、训练和解码配方，比较固定时间网格在不同容量下的性能。原始 Conformer 的小、中、大模型都采用两层 stride-2 卷积获得 4∶1，宽度分别是 144、256、512，模型深度和头数等也有调整。本文的参照采用帧拼接。Fast Conformer 在输入端使用 8∶1。[Gulati 等，§3.2、表 1](https://www.isca-archive.org/interspeech_2020/gulati20_interspeech.pdf#page=3) · [Rekesh 等，§2](https://arxiv.org/html/2305.05084v4#S2)
+**固定 4∶1 的宽度对照。** 在原生拼接实现中，每帧投影 32、64、128 维给出 128、256、512 维主干。三者在 30 秒输入上都输出 751 步，计算量分别为 4.336、10.394、27.679 GMAC。11 月 21 日完成投影 64、主干 256 维的全量评测。该配置作为内部结果归档，论文采用下列 11 个工作点。原始 Conformer 的小、中、大模型都采用两层 stride-2 卷积获得 4∶1，宽度分别是 144、256、512，模型深度和头数等也有调整。本文的参照采用帧拼接。Fast Conformer 在输入端使用 8∶1。[Gulati 等，§3.2、表 1](https://www.isca-archive.org/interspeech_2020/gulati20_interspeech.pdf#page=3) · [Rekesh 等，§2](https://arxiv.org/html/2305.05084v4#S2)
 
 当前入稿比较涵盖 11 个模型。固定组为 stride 2／256 维、stride 4／128 维和 stride 4／512 维。融合组为 Mel、L1、L2、L3、L5、L7、Mel+L3 和 Mel+L5。若研究问题转向同宽主干下步长本身的影响，再补 stride 8／256 维。相近预算或相近 PER 的描述性比较见正文配对表。每个参照独立按指定指标的绝对差选取融合模型，另一指标在配对内比较。新实验的预算和开发集选点规则见下文。[正文配对表](generated/matched_points.tex) · [全部 11 组读数](generated/operating_points.tex)
 
 ### 2026-11-19 追加 stride 4／256 维
 
-新配方沿用已训练的 stride 2／256 维的 8,800 个目标音素批上限、460 小时数据、seed 42 和 50 轮，其余训练参数相同。每帧投影改为 64 维，拼接四帧得 256 维主干。队列入口等待前一批训练完成并释放 GPU，再持有共用 GPU 锁验证实际训练批，候选通过后从头训练。服务器状态写在 `output/phone69_460h_stride4_dim256_20261119/queue_state.json`，最终按 dev-clean 验证损失取 checkpoint。30 秒的 10.394 GMAC 为理论编码器算量，PER 在全量评估后补入。[新配方](../../configs/server_phone69_460h_offline_native_stride4_none_dim256_s42_e50.yaml) · [排队入口](../../scripts/server/phone69_stride4_dim256.py)
+新配方沿用已训练的 stride 2／256 维的 8,800 个目标音素批上限、460 小时数据、seed 42 和 50 轮，其余训练参数相同。每帧投影改为 64 维，拼接四帧得 256 维主干。队列入口等待前一批训练完成并释放 GPU，再持有共用 GPU 锁验证实际训练批，候选通过后从头训练。服务器状态写在 `output/phone69_460h_stride4_dim256_20261119/queue_state.json`，最终按 dev-clean 验证损失取 checkpoint。全量结果留在实验归档。[评测记录](../../artifacts/evaluations/phone69_remaining_local_cpu_20261121/REPORT.md) · [训练配方](../../configs/server_phone69_460h_offline_native_stride4_none_dim256_s42_e50.yaml) · [排队入口](../../scripts/server/phone69_stride4_dim256.py)
 
 ### stride 4／128 维的低预算对照
 
-当前主图使用同一完整 test-clean、按 dev-clean 验证损失选出的 checkpoint 和 30 秒编码器与融合计数。两条阶梯分别表示各家族在给定 PER 上限内已观察到的最低成本。固定组有两个前沿点，即 stride 2／256 维（4.8989%，26.539 GMAC）和 stride 4／128 维（6.1289%，4.336 GMAC）。两者之间尚缺固定组的中预算工作点。[当前结果图](figures/quality_budget_30s.pdf) · [11 月 18 日补入窄 stride 4 时的历史 13 点图](figures/stride4_128_comparison.pdf)
+当前主图使用同一完整 test-clean、按 dev-clean 验证损失选出的 checkpoint 和 30 秒编码器与融合计数。两条阶梯分别表示各家族在给定 PER 上限内已观察到的最低成本。固定组有两个前沿点，即 stride 2／256 维（4.8989%，26.539 GMAC）和 stride 4／128 维（6.1289%，4.336 GMAC）。稿件选定的固定组在两个前沿点之间仍是一段离散预算区间。[当前结果图](figures/quality_budget_30s.pdf) · [11 月 18 日补入窄 stride 4 时的历史 13 点图](figures/stride4_128_comparison.pdf)
 
 | 低预算模型 | 整句 PER | 编码器与融合 GMAC／30 秒 | 错误音素数 |
 | --- | ---: | ---: | ---: |
@@ -22,11 +22,11 @@
 
 同为 128 维、同在 4.5 GMAC 上限内，Mel+L3 的计算量比窄 stride 4 低 3.73%，少 205 个错误。按 40 位说话人配对重采样 10,000 次（seed 42），stride 4 减 Mel+L3 的 PER 差值为 +0.108 个百分点，95% 区间为 [−0.034, +0.241]，包含零。若预算放宽到 5.5 GMAC，Mel+L5 比窄 stride 4 多花 0.932 GMAC，PER 低 0.441 个百分点，配对区间为 [0.303, 0.586]（同一减法方向）。预算上限与原始点都值得给出。[逐句评测来源及算量归档](../../artifacts/research/phone69_all_results_20261117/results.json)
 
-横轴的 PER 上限从 6.10% 放宽到 6.13% 时，已测固定组的最小成本从 26.539 降至 4.336 GMAC，融合组均为 4.174 GMAC。两家族的成本比随之从 6.36 倍降到 1.04 倍。这一陡降由两个离散基线的间距决定，最值得补测的是两者之间固定步长能达到的 PER。
+横轴的 PER 上限从 6.10% 放宽到 6.13% 时，已测固定组的最小成本从 26.539 降至 4.336 GMAC，融合组均为 4.174 GMAC。两家族的成本比随之从 6.36 倍降到 1.04 倍。这一陡降由两个离散基线的间距决定，当时据此安排了两点之间的固定步长补测。
 
-### 实验顺序与算量
+### 历史补测计划与算量
 
-沿用离线原生拼接和 10 层 Conformer。表中 P 是每帧投影维度（`model.time_reduction_input_dim`），s 是步长（`model.time_reduction_stride`），D = s × P 是 Conformer 主干宽度。保持 8 头、FFN 512、卷积核 31、编码器输出 256 和相同的 predictor、joiner。第一轮锁定 D = 256，第二轮用 P 匹配论文关心的算量。所有新行均为训练计划，PER 待测。
+沿用离线原生拼接和 10 层 Conformer。表中 P 是每帧投影维度（`model.time_reduction_input_dim`），s 是步长（`model.time_reduction_stride`），D = s × P 是 Conformer 主干宽度。保持 8 头、FFN 512、卷积核 31、编码器输出 256 和相同的 predictor、joiner。第一轮锁定 D = 256，第二轮用 P 匹配论文关心的算量。下表保留当时的补测计划及固定输入理论算量。
 
 | 轮次和用途 | s | P | D | 30 秒输出步 | 编码器 GMAC/30 秒 | GMAC/音频秒¹ |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
