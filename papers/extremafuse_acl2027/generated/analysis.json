@@ -1,6 +1,13 @@
 {
   "selection": "artifacts/research/phone69_paper_results_table_20261117/data.json",
   "sha256": "06af20f0d958f0a17a3d0c363587eff6633428b50c54cf19e0fa5883704b3b1e",
+  "l3_checkpoint": {
+    "archive_id": "D_L3_TRAIN",
+    "replaces_archive_id": "P_L3",
+    "checkpoint": "train-none-epoch=30-step=57500.ckpt",
+    "sha256": "238c3e4afdb552d0d27b9f722aa38d3e066d167cea7f6746a45b5d018550e0e0",
+    "selection": "saved training callback batch loss"
+  },
   "paired_unit": "speaker",
   "speakers": 40,
   "draws": 10000,
@@ -69,6 +76,13 @@
       "delta_pp": -0.1084524105532131,
       "lo": -0.24111677134596884,
       "hi": 0.03418068477337891
+    },
+    {
+      "a": "D_L3_TRAIN",
+      "b": "E09",
+      "delta_pp": -0.005290361490400639,
+      "lo": -0.1370188398747862,
+      "hi": 0.11988451711625614
     }
   ],
   "minimum_cost_at_per_ceiling": {
@@ -171,7 +185,7 @@
     "E05",
     "P_L1",
     "E02",
-    "P_L3",
+    "D_L3_TRAIN",
     "E06",
     "E07",
     "P_MEL_L3",
@@ -230,13 +244,13 @@
     {
       "match_on": "phone_errors",
       "fixed": "E09",
-      "fusion": "E10",
-      "delta_per_pp": -0.054490723351126584,
+      "fusion": "D_L3_TRAIN",
+      "delta_per_pp": -0.005290361490400639,
       "interval_pp": [
-        -0.19161846545928124,
-        0.07612272467397013
+        -0.1370188398747862,
+        0.11988451711625614
       ],
-      "change_gmac_percent": -80.96788890428085
+      "change_gmac_percent": -40.94148686532982
     },
     {
       "match_on": "phone_errors",
@@ -677,75 +691,75 @@
         "joiner_gmac_per_audio_second": 0.025083385475183923
       }
     },
-    "P_L3": {
+    "D_L3_TRAIN": {
       "slow": {
         "utterances": 786,
         "speakers": 39,
         "reference_phones": 36624,
-        "phone_errors": 2357,
+        "phone_errors": 1994,
         "audio_seconds": 4851.1051875,
-        "corpus_PER": 0.06435670598514635,
+        "corpus_PER": 0.05444517256443862,
         "components_macs": {
-          "encoder_weights": 1083103347200,
-          "attention_products": 540936011264,
-          "projections": 11467102208,
-          "fusion_mlp": 4090043040,
+          "encoder_weights": 1083300601600,
+          "attention_products": 541626264576,
+          "projections": 11469527040,
+          "fusion_mlp": 4091570400,
           "detector_dots": 62071424,
-          "fusion_weighted_sum": 126823040,
-          "predictor": 727779115008,
-          "joiner": 114961889280
+          "fusion_weighted_sum": 126870400,
+          "predictor": 725591457792,
+          "joiner": 114855480320
         },
-        "total_major_macs": 2482526402464,
-        "total_gmac_per_audio_second": 0.5117445007914498,
-        "encoder_compression_gmac_per_audio_second": 0.33802305552996215,
-        "predictor_gmac_per_audio_second": 0.15002336310564696,
-        "joiner_gmac_per_audio_second": 0.0236980821558407
+        "total_major_macs": 2481123843552,
+        "total_gmac_per_audio_second": 0.5114553792701079,
+        "encoder_compression_gmac_per_audio_second": 0.3382068295834082,
+        "predictor_gmac_per_audio_second": 0.14957240252420315,
+        "joiner_gmac_per_audio_second": 0.023676147162496462
       },
       "middle": {
         "utterances": 1048,
         "speakers": 40,
         "reference_phones": 83207,
-        "phone_errors": 5084,
+        "phone_errors": 4598,
         "audio_seconds": 8558.8204375,
-        "corpus_PER": 0.06110062855288618,
+        "corpus_PER": 0.055259773817106735,
         "components_macs": {
-          "encoder_weights": 1900566707200,
-          "attention_products": 1061414016512,
-          "projections": 20105168896,
-          "fusion_mlp": 7138282080,
+          "encoder_weights": 1904386512000,
+          "attention_products": 1063530144512,
+          "projections": 20152125440,
+          "fusion_mlp": 7167859200,
           "detector_dots": 109521536,
-          "fusion_weighted_sum": 221342080,
-          "predictor": 1389351075840,
-          "joiner": 207998336000
+          "fusion_weighted_sum": 222259200,
+          "predictor": 1394274041856,
+          "joiner": 208811061760
         },
-        "total_major_macs": 4586904450144,
-        "total_gmac_per_audio_second": 0.5359271740351896,
-        "encoder_compression_gmac_per_audio_second": 0.3492952165704318,
-        "predictor_gmac_per_audio_second": 0.1623297376064387,
-        "joiner_gmac_per_audio_second": 0.024302219858319117
+        "total_major_macs": 4598653525504,
+        "total_gmac_per_audio_second": 0.537299918731237,
+        "encoder_compression_gmac_per_audio_second": 0.34999781146980047,
+        "predictor_gmac_per_audio_second": 0.16290492971987883,
+        "joiner_gmac_per_audio_second": 0.024397177541557694
       },
       "fast": {
         "utterances": 786,
         "speakers": 36,
         "reference_phones": 69192,
-        "phone_errors": 4645,
+        "phone_errors": 4253,
         "audio_seconds": 6042.555,
-        "corpus_PER": 0.06713203838594058,
+        "corpus_PER": 0.06146664354260608,
         "components_macs": {
-          "encoder_weights": 1338537894400,
-          "attention_products": 671222927872,
-          "projections": 14154092544,
-          "fusion_mlp": 5014240320,
+          "encoder_weights": 1343293324800,
+          "attention_products": 674054470656,
+          "projections": 14212550656,
+          "fusion_mlp": 5051062080,
           "detector_dots": 77318144,
-          "fusion_weighted_sum": 155480320,
-          "predictor": 1037311672320,
-          "joiner": 149818368000
+          "fusion_weighted_sum": 156622080,
+          "predictor": 1046409707520,
+          "joiner": 151010585600
         },
-        "total_major_macs": 3216291993920,
-        "total_gmac_per_audio_second": 0.5322735157429266,
-        "encoder_compression_gmac_per_audio_second": 0.3358119129408007,
-        "predictor_gmac_per_audio_second": 0.17166772537775826,
-        "joiner_gmac_per_audio_second": 0.024793877424367672
+        "total_major_macs": 3234265641536,
+        "total_gmac_per_audio_second": 0.5352480269581328,
+        "encoder_compression_gmac_per_audio_second": 0.33708346029386577,
+        "predictor_gmac_per_audio_second": 0.17317338568205007,
+        "joiner_gmac_per_audio_second": 0.02499118098221696
       }
     },
     "E06": {

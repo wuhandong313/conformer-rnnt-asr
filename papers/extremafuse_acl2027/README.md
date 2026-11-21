@@ -24,14 +24,14 @@
 | --- | --- | --- |
 | 只替换前端能否工作？ | 同为 128 维时，Mel 对 stride 4 为 5.578% 对 6.129% PER，8.115 对 4.336 GMAC。将 stride 4 主干扩大到 512 维，得到 5.743% 和 27.679 GMAC。 | 两个 stride 4 都处理 751 步，Mel 处理 1,179 步。Mel 相对窄基线用更多算量降低 PER，相对宽基线节省 70.7% 的计算量。 |
 | 面对最强固定步长呢？ | 用 stride 2 的实测 PER 作上限，L5 以 21.380 对 26.539 GMAC 达标，少 19.4%。 | PER 为 4.781% 对 4.899%。对照的区间 [−0.247, +0.004] 跨零。若把计算量也拉到几乎相同，L7 与 stride 2 只有 0.039 个百分点的 PER 差。 |
-| 在相近实测 PER 下哪一侧省算量？ | 相对宽 stride 4，Mel+L5 的 GMAC 低 81.0%。相对窄 stride 4，Mel+L3 低 3.7%。与 stride 2 的 PER 最接近的是 L7。两者的 30 秒成本为 26.539 和 26.499 GMAC，相差 0.15%。 | 三行均按实测 PER 绝对差选择配对，方向由各对的实测成本决定。[配对区间](generated/paired_per.tex) |
+| 在相近实测 PER 下哪一侧省算量？ | 与宽 stride 4 最接近的是单阶段 L3，PER 为 5.7374% 对 5.7427%，算量低 40.9%。相对窄 stride 4，Mel+L3 低 3.7%。与 stride 2 最接近的 L7 算量低 0.15%。 | 按实测 PER 绝对差选择配对。若按宽 stride 4 的实测 PER 设上限，再找算量最低的达标配置，则选中 Mel+L5，算量低 81.0%。[配对表](generated/matched_points.tex) |
 
-固定组包括 stride 2／256 维和 stride 4／128、512 维。融合组包括单阶段 Mel、L1、L2、L3、L5、L7，以及双阶段 Mel+L3、Mel+L5。11 组均按 dev-clean 验证损失选 checkpoint。单阶段 L3 使用第 27,324 步的原验证最佳。11 月 21 日完成的 stride 4（投影 64、主干 256 维）保留为内部结果，L3 重训用于核对原结果。[全量评测归档](../../artifacts/evaluations/phone69_remaining_local_cpu_20261121/REPORT.md) · [60 秒成本表](compute_quality_curve_plan.md)
+固定组包括 stride 2／256 维和 stride 4／128、512 维。融合组包括单阶段 Mel、L1、L2、L3、L5、L7，以及双阶段 Mel+L3、Mel+L5。每组报告一个检查点，单阶段 L3 使用原训练第 31 轮（第 57,500 步）的全量评测。11 月 21 日完成的 stride 4（投影 64、主干 256 维）保留为内部结果。[L3 第 31 轮评测](../../artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/REPORT.md) · [11 月 21 日评测归档](../../artifacts/evaluations/phone69_remaining_local_cpu_20261121/REPORT.md) · [60 秒成本表](compute_quality_curve_plan.md)
 
 ## 读数与复现
 
 - **同输入长度核验。** 从 L1 的全量逐句归档读取原始 Mel 帧数（`input_mel_frames`），按 UID 对齐宽 stride 4 和 Mel-only 的首层输入步数。逐句核对宽 stride 4 的步数等于原始帧数除以 4 向上取整。示例选择出现次数最多的输入帧数，记录中保留了该组全部 11 个输出步数。[复核数据及统计](generated/analysis.json)
-- **数据入口。** 当前生成器取 11 月 17 日清单中的十个入稿配置，再从同一来源归档取窄 stride 4（E01）。主图、主表和附录共用这 11 个配置。生成器校验归档哈希、逐句参考转写、验证选模和错误总数。[当前分析和入稿 ID](generated/analysis.json) · [11 月 17 日历史清单](../../artifacts/research/phone69_paper_results_table_20261117/data.json) · [完整归档](../../artifacts/research/phone69_all_results_20261117/REPORT.md)
+- **数据入口。** 当前生成器以 11 月 17 日清单为起点，从完整归档补入窄 stride 4（E01）并采用第 31 轮的单阶段 L3 记录（`D_L3_TRAIN`）。主图、主表和附录共用这 11 个配置。生成器校验归档哈希、逐句参考转写、检查点标识和错误总数。[当前分析和入稿 ID](generated/analysis.json) · [11 月 17 日历史清单](../../artifacts/research/phone69_paper_results_table_20261117/data.json) · [完整归档](../../artifacts/research/phone69_all_results_20261117/REPORT.md)
 - **固定输入：** 按[计数协议](../../docs/phone69_fixed_duration_macs.md)，对每个 checkpoint 的每个压缩位置，以全部 2,620 句的输出帧数之和除以该位置输入帧数之和；依网络顺序传播 3,001 帧，逐层计算算子。附录绝对值表的 GMAC/s 列将 30 秒成本除以 30。30 秒见 [Fast Conformer](https://arxiv.org/html/2305.05084v4) 和 [Zipformer](https://arxiv.org/html/2310.11230v4)；各论文的 MAC/FLOP 范围不相同。
 - **真实解码：** 用整句 FP32、batch 1、beam 20 的实际计数，分别给 encoder＋fusion、predictor、joiner、总量。说明是每个真实音频秒的主要 MAC，不把它当固定输入理论值、设备耗时或速度倍数。
 - **配对与分组：** [生成脚本](build_current_results.py)校验预测文件哈希、全部 UID、参考转写和错误数；按说话人配对重采样 10,000 次（种子 42）。同一脚本复用冻结语速十等分的成员，校验三组重新合并后复现整集错误数与实际 MAC。[配对区间及三组完整计数](generated/analysis.json)可独立核查。窗口与冻结替换数值来自[100 句 / 37 人机制诊断](../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json)。

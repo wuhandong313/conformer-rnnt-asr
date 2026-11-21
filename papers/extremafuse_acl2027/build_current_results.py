@@ -22,9 +22,11 @@ OUTPUT = PAPER / "generated"
 sys.path.insert(0, str(ROOT))
 from papers.extremafuse_acl2027.method_figure import make_method_figure
 from scripts.evaluation.analyze_phone69_speech_rate_groups import aggregate
+L3_TRAIN = "D_L3_TRAIN"
+L3_TRAIN_CHECKPOINT = "train-none-epoch=30-step=57500.ckpt"
 NAMES = {
     "S1": "Stride 1", "S2": "Stride 2", "E09": "Stride 4",
-    "E05": "Mel", "P_L1": "L1", "E02": "L2", "P_L3": "L3",
+    "E05": "Mel", "P_L1": "L1", "E02": "L2", "P_L3": "L3", L3_TRAIN: "L3",
     "E06": "L5", "E07": "L7", "P_L9": "L9",
     "P_MEL_L3": "Mel+L3", "E10": "Mel+L5",
 }
@@ -42,8 +44,12 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def comparison_rows(selection=None):
-    """Load the November 17 selection and the archived narrow stride-4 control."""
+def comparison_rows(selection=None, *, manuscript=False):
+    """Load the November 17 selection and the archived narrow stride-4 control.
+
+    The historical stride-width figure uses those original points. The current
+    manuscript uses the separately archived training-callback L3 checkpoint.
+    """
     if selection is None:
         selection = json.loads(SELECTION.read_text(encoding="utf-8"))
     source = ROOT / selection["source"]
@@ -52,16 +58,50 @@ def comparison_rows(selection=None):
     archived = {r["id"]: r for r in json.loads(source.read_text(encoding="utf-8"))["models"]}
     ids = selection["selected_ids"]
     narrow = archived[NARROW]
-    if (len(ids) != len(NAMES) or set(ids) != set(NAMES) or NARROW in ids or
+    historical_ids = set(NAMES) - {L3_TRAIN}
+    if (len(ids) != len(historical_ids) or set(ids) != historical_ids or NARROW in ids or
             narrow["backbone"] != 128 or narrow["stage_rates"]):
         raise ValueError("Review the fixed-stride control after changing the selection")
     rows = [archived[key] for key in ids]
     if rows != selection["models"]:
         raise ValueError("The selected operating points differ from the full evaluation archive")
+    if manuscript:
+        rows[ids.index("P_L3")] = archived[L3_TRAIN]
     rows.append(narrow)
-    if len({(r["utterances"], r["reference_phones"], r["checkpoint_selection"]) for r in rows}) != 1:
-        raise ValueError("The evaluations must use the same corpus and checkpoint selection")
+    if len({(r["utterances"], r["reference_phones"]) for r in rows}) != 1:
+        raise ValueError("The evaluations must use the same corpus")
+    for row in rows:
+        expected = "saved training callback batch loss" if row["id"] == L3_TRAIN else "dev-clean validation loss"
+        if row["checkpoint_selection"] != expected:
+            raise ValueError(f"{row['id']}: unexpected checkpoint selection")
+    if manuscript:
+        verify_l3_training_checkpoint(archived[L3_TRAIN])
     return rows
+
+
+def verify_l3_training_checkpoint(row):
+    """Bind the manuscript's single checkpoint exception to the verified full run."""
+    base = Path("artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117")
+    attempt = base / "layer3_train_best/attempt_02"
+    source_paths = (attempt / "result.json", attempt / "utterances.csv", base / "verification.json")
+    for path in source_paths:
+        if sha(ROOT / path) != row["sources"][path.as_posix()]:
+            raise ValueError(f"{L3_TRAIN}: changed checkpoint evidence at {path}")
+    result = json.loads((ROOT / source_paths[0]).read_text())
+    verification = json.loads((ROOT / source_paths[2]).read_text())
+    checked = verification["comparison"]["training_best"]
+    if not (row["checkpoint"] == L3_TRAIN_CHECKPOINT == Path(result["model"]["checkpoint"]).name
+            and row["checkpoint_sha256"] == result["model"]["checkpoint_sha256"] == checked["checkpoint_sha256"]
+            and row["sources"][source_paths[1].as_posix()] == result["csv_sha256"] == checked["csv_sha256"]
+            and result["model"]["selection_monitor"] == "Losses/train_loss"
+            and result["checkpoint_epoch"] == 30 and result["checkpoint_global_step"] == 57_500
+            and verification["complete"] and verification["evaluation_attempt"] == "attempt_02"
+            and result["verified_full_corpus"]
+            and row["phone_errors"] == result["phone_errors"] == checked["phone_errors"]
+            and row[ERROR] == checked["per_percent"]
+            and row[COST] == checked[COST]
+            and row["trace_30s"]["stages"][0]["after_layer"] == 3):
+        raise ValueError(f"{L3_TRAIN}: expected the verified epoch-31 L3 evaluation")
 
 
 def equal_length_outputs(input_frames, fixed_steps, fusion_steps):
@@ -153,8 +193,6 @@ def trials(rows, pair_ids=None):
         path = ROOT / csv_path
         if sha(path) != model["sources"][csv_path]:
             raise ValueError(f"{uid}: utterance archive hash changed")
-        if model["checkpoint_selection"] != "dev-clean validation loss":
-            raise ValueError(f"{uid}: checkpoint was not selected on validation loss")
         targets, errors = {}, {}
         with path.open(newline="", encoding="utf-8") as handle:
             for r in csv.DictReader(handle):
@@ -301,7 +339,7 @@ def make_figure(rows, edges, fixed, same_cost, at_ceiling):
     ink, muted, grid = "#213239", "#455a64", "#dbe2e5"
     colors = ("#455766", "#006f70", "#ab5121")
     markers = {"S2": "d", NARROW: "^", "E09": "s", "E05": ">", "P_L1": "^",
-               "E02": "P", "P_L3": "X", "E06": "o", "E07": "*",
+               "E02": "P", L3_TRAIN: "X", "E06": "o", "E07": "*",
                "P_MEL_L3": "v", "E10": "D"}
     fig = plt.figure(figsize=(6.45, 4.48), facecolor="white")
     ax = fig.add_axes([.103, .504, .868, .469])
@@ -348,7 +386,7 @@ def make_figure(rows, edges, fixed, same_cost, at_ceiling):
              fontsize=8, color=muted)
     groups = [
         ("Stride / width", .395, ["S2", NARROW, "E09"], ["2/256", "4/128", "4/512"]),
-        ("One site", .347, ["E05", "P_L1", "E02", "P_L3", "E06", "E07"], None),
+        ("One site", .347, ["E05", "P_L1", "E02", L3_TRAIN, "E06", "E07"], None),
         ("Two sites", .299, ["P_MEL_L3", "E10"], None),
     ]
     legend_style = dict(loc="center left", frameon=False, borderpad=0, borderaxespad=0,
@@ -396,7 +434,7 @@ def write_rows(name, rows):
 
 def main():
     data = json.loads(SELECTION.read_text(encoding="utf-8"))
-    selected = [r for r in comparison_rows(data) if r["id"] not in MANUSCRIPT_EXCLUSIONS]
+    selected = [r for r in comparison_rows(data, manuscript=True) if r["id"] not in MANUSCRIPT_EXCLUSIONS]
     all_rows = sorted(selected, key=lambda r: len(r["stage_rates"]))
     matches = table_matches(all_rows)
     matched_ids = [(partner["id"], base["id"]) for _, base, partner in matches]
@@ -436,7 +474,11 @@ def main():
                                   f"${p['delta_pp']:+.3f}$ & "
                                   f"$[{p['lo']:+.3f}, {p['hi']:+.3f}]$" + r" \\" for p in pairs])
     groups, lengths = corpus_analyses(all_rows)
+    l3 = next(x for x in all_rows if x["id"] == L3_TRAIN)
     record = dict(selection=str(SELECTION.relative_to(ROOT)), sha256=sha(SELECTION),
+                  l3_checkpoint=dict(archive_id=L3_TRAIN, replaces_archive_id="P_L3",
+                                     checkpoint=l3["checkpoint"], sha256=l3["checkpoint_sha256"],
+                                     selection=l3["checkpoint_selection"]),
                   paired_unit="speaker", speakers=n, draws=10_000, seed=42,
                   interval="percentile; exploratory, not adjusted for multiple comparisons",
                   observed_frontier=[r["id"] for r in edge], contrasts=pairs,
