@@ -143,6 +143,12 @@ Adding a layer-5 fusion site to Mel fusion reduces the 30-second cost by a furth
 \paragraph{Which input frames contribute?}
 We inspect Mel+L5 on 100 test-clean utterances, sampled by a deterministic hash, ten per reference speaking-rate decile (37 speakers). At its second site, 40.19\% of positions become centers and 98.24\% fall inside at least one window. In total, 97.03\% receive weight at least 0.05 in at least one output. Each output combines 3.89 effective inputs on average, with effective count $1/\sum_j\alpha_{cj}^2$. Overlap allows a small set of output steps to draw on almost all input positions (Figure~\ref{fig:weights}).
 
+\paragraph{Planned analysis of local distortion and phone transitions.}
+By convexity, Eq.~\ref{eq:fuse} gives
+$\|z_c-h_c\|_2^2 \leq \sum_{j\in W_c}\alpha_{cj}\|h_j-h_c\|_2^2$.
+We plan to report this bound relative to the mean input-frame energy at each site, together with weighted coverage at both the Mel and layer-5 sites. This tests whether the overlapping windows combine similar representations at both stages. Given independent phone alignments, we will compare the proximity of peak and valley centers to phone boundaries against equally spaced centers at matched counts. We will use the corresponding Mel center as the time anchor for each layer-5 position.
+\emph{[Add per-stage distortion and coverage statistics and the phone-boundary comparison.]}
+
 \paragraph{What happens if each utterance keeps exactly as many steps?}
 We freeze this checkpoint and, on the same 100 utterances, replace only its second fusion stage. If the native stage emits $K$ vectors for an utterance, we partition its input into $K$ contiguous bins and take each mean. This changes both the positions and the weights while preserving the output length utterance by utterance. Reference-transcript negative log-likelihood rises from 0.1423 to 0.1435 nats per phone under uniform pooling (difference $+0.00117$, paired 95\% interval $[-0.00241,+0.00499]$). At this contextual layer the diagnostic leaves the contribution of adaptive center selection and weighting unresolved. A separately trained uniform reducer at the same width and frame budget would test that contribution on decoded PER.
 
