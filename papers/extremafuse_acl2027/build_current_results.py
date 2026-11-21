@@ -12,6 +12,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
+import yaml
 
 
 PAPER = Path(__file__).resolve().parent
@@ -21,6 +22,7 @@ OUTPUT = PAPER / "generated"
 sys.path.insert(0, str(ROOT))
 from papers.extremafuse_acl2027.method_figure import make_method_figure
 from scripts.evaluation.analyze_phone69_speech_rate_groups import aggregate
+from scripts.evaluation.theoretical_phone69_macs import encoder_macs, mel_frames, projected_trace
 L3_TRAIN = "D_L3_TRAIN"
 L3_TRAIN_CHECKPOINT = "train-none-epoch=30-step=57500.ckpt"
 NAMES = {
@@ -34,8 +36,11 @@ PAIRS = [("E05", "E09"), ("E10", "E05"), ("P_MEL_L3", "E10")]
 COST = "encoder_compression_gmac_30s"
 ERROR = "per_percent"
 NARROW = "E01"
-TABLE_STRIDES = {NARROW: 4, "E09": 4}
-REPORT_NAMES = {**NAMES, NARROW: "Stride 4 (128)", "E09": "Stride 4 (512)"}
+MID = "S4_D256"
+WIDE_CHECKPOINT = "train-none-epoch=30-step=70700.ckpt"
+TABLE_STRIDES = {NARROW: 4, MID: 4, "E09": 4}
+REPORT_NAMES = {**NAMES, NARROW: "Stride 4 (128)", MID: "Stride 4 (256)",
+                "E09": "Stride 4 (512)"}
 
 
 def sha(path):
@@ -46,7 +51,7 @@ def comparison_rows(selection=None, *, manuscript=False):
     """Load the November 17 selection and the archived narrow stride-4 control.
 
     The historical stride-width figure uses those original points. The current
-    manuscript candidate set considers the separately archived training-callback L3 checkpoint.
+    manuscript draws its mid and updated wide references from verified November 21 runs.
     """
     if selection is None:
         selection = json.loads(SELECTION.read_text(encoding="utf-8"))
@@ -74,7 +79,77 @@ def comparison_rows(selection=None, *, manuscript=False):
             raise ValueError(f"{row['id']}: unexpected checkpoint selection")
     if manuscript:
         verify_l3_training_checkpoint(archived[L3_TRAIN])
+        rows[ids.index("E09")] = verified_stride_4(
+            "phone69_stride4_dim512_train_best_local_cpu_20261121",
+            "stride4_dim512_train_epoch31", "E09", 512, WIDE_CHECKPOINT,
+        )
+        rows.append(verified_stride_4(
+            "phone69_remaining_local_cpu_20261121", "stride4_dim256", MID, 256,
+            "val-none-epoch=38-step=72470.ckpt",
+        ))
     return rows
+
+
+def verified_stride_4(archive, name, identity, width, checkpoint):
+    """Load a stride-4 point from its independently verified full CPU evaluation."""
+    root = ROOT / "artifacts/evaluations" / archive
+    verification_path = root / "verification.json"
+    verification = json.loads(verification_path.read_text())
+    checked = next(row for row in verification["models"] if row["name"] == name)
+    folder = root / name
+    attempt = folder / checked.get("attempt", "attempt_01")
+    result_path = attempt / "result.json"
+    csv_path = attempt / "utterances.csv"
+    manifest_path = folder / "manifest.json"
+    config_path = folder / "config.yaml"
+    theory_path = folder / "fixed_duration_30s.json"
+    result = json.loads(result_path.read_text())
+    manifest = json.loads(manifest_path.read_text())
+    theory = json.loads(theory_path.read_text())
+    model = yaml.safe_load(config_path.read_text())["model"]
+    entry = result["model"]
+    epoch, step = map(int, re.search(r"epoch=(\d+)-step=(\d+)", checkpoint).groups())
+    if not (
+        verification["complete"] and result["verified_full_corpus"]
+        and checked["independent_edit_distance_checked"] == result["utterances"] == 2_620
+        and result["reference_phones"] == checked["reference_phones"] == 189_023
+        and result["phone_errors"] == checked["phone_errors"]
+        and Path(entry["checkpoint"]).name == checkpoint
+        and (result["checkpoint_epoch"], result["checkpoint_global_step"]) == (epoch, step)
+        and entry["checkpoint_sha256"] == checked["checkpoint_sha256"] == theory["checkpoint_sha256"]
+        and sha(csv_path) == result["csv_sha256"] == checked["csv_sha256"]
+        and sha(manifest_path) == result["manifest_sha256"] == theory["manifest_sha256"]
+        and sha(config_path) == manifest["model"]["config_sha256"] == entry["config_sha256"]
+        and model["time_reduction_stride"] == 4 and model["time_reduction_input_dim"] * 4 == width
+        and model["compression"] == {"filter": "none"}
+    ):
+        raise ValueError(f"{name}: archive differs from the selected stride-4 evaluation")
+    trace = projected_trace(model, mel_frames(30), [])
+    parts = encoder_macs(model, trace)
+    per = 100 * result["phone_errors"] / result["reference_phones"]
+    cost = sum(parts.values()) / 1e9
+    if not (
+        trace == theory["trace"] and parts == theory["components_macs"]
+        and cost == checked[COST] == theory["encoder_compression_gmac"]
+        and math.isclose(per, checked[ERROR], abs_tol=1e-12)
+        and result["gmac_per_audio_second"] == checked["full_corpus_total_gmac_per_audio_s"]
+    ):
+        raise ValueError(f"{name}: archive disagrees on PER or GMAC")
+    paths = (verification_path, result_path, csv_path, manifest_path, config_path, theory_path)
+    return dict(id=identity, backbone=width, checkpoint=checkpoint, checkpoint_sha256=entry["checkpoint_sha256"],
+                checkpoint_selection=("saved training callback batch loss" if checkpoint == WIDE_CHECKPOINT
+                                      else "dev-clean validation loss"),
+                utterances=result["utterances"], reference_phones=result["reference_phones"],
+                phone_errors=result["phone_errors"], per_percent=per, encoder_compression_gmac_30s=cost,
+                encoder_compression_gmac_per_audio_s_30s=cost / 30, stage_rates=[], trace_30s=trace,
+                components_macs_30s=parts,
+                actual_beam20_gmac_per_audio_s=dict(
+                    encoder_compression=result["encoder_compression_gmac_per_audio_second"],
+                    predictor=result["predictor_gmac_per_audio_second"],
+                    joiner=result["joiner_gmac_per_audio_second"],
+                    total=result["gmac_per_audio_second"],
+                ),
+                sources={str(path.relative_to(ROOT)): sha(path) for path in paths})
 
 
 def verify_l3_training_checkpoint(row):
@@ -335,18 +410,30 @@ def make_figure(rows):
         ("Two fusion sites", "D", fusion_color, fusion_color),
     ]
     for sites, (label, marker, color, fill) in enumerate(series):
-        group = [r for r in rows if len(r["stage_rates"]) == sites]
+        group = [r for r in rows if len(r["stage_rates"]) == sites and r["id"] != MID]
         ax.scatter([r[COST] for r in group], [r[ERROR] for r in group],
                    marker=marker, s=30, facecolors=fill, edgecolors=color,
                    linewidths=1, zorder=4, label=label)
 
     for row in rows:
         key = row["id"]
+        coords = (row[COST], row[ERROR])
+        label = REPORT_NAMES[key]
         offset = (-7, 0) if key == "E09" else (7, 0)
-        ax.annotate(REPORT_NAMES[key], (row[COST], row[ERROR]),
+        color = ink
+        if key == MID:
+            color = "#9b481c"
+            ax.scatter(*coords, marker="s", s=44, facecolors="#fff1e5",
+                       edgecolors=color, linewidths=1.25, zorder=5)
+            label += f"\n{row[COST]:.3f} GMAC, {row[ERROR]:.3f}% PER"
+            offset = (9, 12)
+        elif key == "E09" and row["checkpoint"] == WIDE_CHECKPOINT:
+            label += f", epoch 31\n{row[COST]:.3f} GMAC, {row[ERROR]:.3f}% PER"
+            offset = (-9, -11)
+        ax.annotate(label, coords,
                     xytext=offset, textcoords="offset points",
                     ha="right" if offset[0] < 0 else "left", va="center",
-                    color=ink, fontsize=8.5)
+                    color=color, fontsize=8.5)
     ax.legend(loc="upper right", ncol=3, facecolor="white", edgecolor="none",
               framealpha=1, fontsize=8.2, handletextpad=.3, columnspacing=1, labelcolor=ink)
     fig.tight_layout(pad=.85)
@@ -365,7 +452,7 @@ def write_rows(name, rows):
 def main():
     data = json.loads(SELECTION.read_text(encoding="utf-8"))
     selected = [r for r in comparison_rows(data, manuscript=True) if r["id"] not in MANUSCRIPT_EXCLUSIONS]
-    all_rows = sorted(selected, key=lambda r: len(r["stage_rates"]))
+    all_rows = sorted(selected, key=lambda r: (len(r["stage_rates"]), r["backbone"]))
     matches = table_matches(all_rows)
     matched_ids = [(partner["id"], base["id"]) for _, base, partner in matches]
     pair_ids = dict.fromkeys(PAIRS + matched_ids)
@@ -398,6 +485,8 @@ def main():
     groups, lengths = corpus_analyses(all_rows)
     record = dict(selection=str(SELECTION.relative_to(ROOT)), sha256=sha(SELECTION),
                   manuscript_exclusions=sorted(MANUSCRIPT_EXCLUSIONS),
+                  stride4_references={r["id"]: {k: r[k] for k in ("checkpoint", "checkpoint_sha256", "sources")}
+                                      for r in all_rows if r["id"] in TABLE_STRIDES},
                   paired_unit="speaker", speakers=n, draws=10_000, seed=42,
                   interval="percentile; exploratory, not adjusted for multiple comparisons",
                   observed_frontier=[r["id"] for r in edge], contrasts=pairs,
