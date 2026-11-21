@@ -1,0 +1,172 @@
+{
+  "models": [
+    {
+      "name": "stride4_dim512_train_epoch31",
+      "stride": 4,
+      "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50/checkpoints/train-none-epoch=30-step=70700.ckpt",
+      "checkpoint_bytes": 118545386,
+      "checkpoint_sha256": "df1997533372963b2848991a411681cc4f272f97689abecc71ae396157b602e9",
+      "expected_parameters": 29584966,
+      "checkpoint_epoch": 30,
+      "checkpoint_global_step": 70700,
+      "selection_monitor": "Losses/train_loss",
+      "selection_score": 6.596800804138184,
+      "selection_rank": 1,
+      "optimizer_state_present": false,
+      "run": {
+        "status": "trained",
+        "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride4_none_dim512_s42_e50.yaml",
+        "config_sha256": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351",
+        "code_commit": "06de63433110081c89e8b823a20b7a694ec76d51",
+        "pid": 9167,
+        "started_at": "2026-11-03T05:58:14.369266+00:00",
+        "epochs": 50,
+        "early_stopping": false,
+        "max_token_limit": 7000,
+        "train_subset": [
+          "train-clean-100",
+          "train-clean-360"
+        ],
+        "val_subset": "dev-clean",
+        "test_subset": "test-clean",
+        "tokenizer": "phone69",
+        "resume_checkpoint": null,
+        "internal_dim": 512,
+        "num_heads": 8,
+        "sequence_mode": "offline",
+        "compression": {
+          "filter": "none"
+        },
+        "output_dim": 256,
+        "ffn_dim": 512,
+        "time_reduction_stride": 4,
+        "updated_at": "2026-11-03T20:16:22.635466+00:00",
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50/checkpoints/epoch-boundary-epoch=50-step=117500-d250e3acf745.ckpt",
+        "epoch_boundary_metadata": {
+          "previous_max_token_limit": 7000,
+          "resume_global_step": 117500,
+          "resume_completed_epochs": 50,
+          "resume_at_epoch_boundary": true
+        },
+        "epoch": 50,
+        "global_step": 117500,
+        "observed_compression_lengths": null,
+        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50/checkpoints/val-none-epoch=09-step=23150.ckpt"
+      },
+      "offline_native_definition": {
+        "version": 1,
+        "sequence_mode": "offline",
+        "tail_alignment": "zero_pad_ceil",
+        "stride": 4,
+        "input_projection": 128,
+        "encoding_dim": 256,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "layers": [
+          2,
+          8
+        ],
+        "detector": null,
+        "mixer": null,
+        "filter": "none",
+        "window_size": 5,
+        "weight_predictor_mode": "diff5"
+      },
+      "training_config_text": "# Stride-4 no-compression baseline with a 512-wide trunk (128 x 4); fresh 50-epoch run.\n# 23500-token batches exceed 80 GiB at this width; 7000 is the probed maximum.\npaths:\n  dataset_path: /test21/librispeech\n  global_stats_path: /test21/librispeech/global_stats.json\n  exp_dir: /test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50\n  from_checkpoint: null\ntokenizer:\n  type: phone69\n  vocab_path: configs/phone69_vocab.json\nmodel:\n  sequence_mode: offline\n  input_dim: 80\n  encoding_dim: 256\n  num_symbols: 69\n  time_reduction_input_dim: 128\n  time_reduction_stride: 4\n  num_heads: 8\n  ffn_dim: 512\n  num_layers_block1: 2\n  num_layers_block2: 8\n  depthwise_conv_kernel_size: 31\n  dropout: 0.1\n  compression:\n    filter: none\n  predictor:\n    symbol_embedding_dim: 128\n    num_lstm_layers: 2\n    lstm_hidden_dim: 128\n    lstm_layer_norm: true\n    lstm_layer_norm_epsilon: 0.001\n    lstm_dropout: 0.3\n  joiner:\n    activation: relu\ntraining:\n  learning_rate: 0.0005\n  adam_betas:\n  - 0.9\n  - 0.999\n  adam_eps: 1.0e-08\n  warmup_steps: 10000\n  rnnt_loss_reduction: sum\n  rnnt_loss_clamp: 1.0\n  rnnt_loss_chunk: batch\n  gradient_clip_val: 10.0\n  epochs: 50\ndata:\n  sample_rate: 16000\n  n_fft: 400\n  n_mels: 80\n  hop_length: 160\n  spec_augment:\n    freq_mask_param: 27\n    time_mask_param: 100\n    time_mask_prob: 0.2\n  transcript_suffix: -ph\n  strip_spaces: false\n  max_token_limit: 7000\n  rnnt_numel_limit: 1900000000\n  rnnt_frames_per_char: 3.0\n  num_workers: 20\n  prefetch_factor: 2\n  train_subset:\n  - train-clean-100\n  - train-clean-360\n  val_subset: dev-clean\n  test_subset: test-clean\ntrainer:\n  accelerator: cuda\n  strategy: auto\n  devices: 1\n  num_nodes: 1\n  log_every_n_steps: 10\n  val_check_interval: 200\n  num_sanity_val_steps: 0\n  fast_dev_run: false\n  matmul_precision: high\n  accumulate_grad_batches: 1\n  checkpoint:\n    save_top_k: 2\n    save_weights_only: true\n    save_last: true\n    save_on_validation_end: true\n    val_checkpoint_interval: 200\n    train_checkpoint_interval: 500\ndecoding:\n  beam_width: 20\ndebug: false\nseed: 42\n",
+      "training_config_sha256": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351"
+    },
+    {
+      "name": "stride4_dim512_train_epoch47",
+      "stride": 4,
+      "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50/checkpoints/train-none-epoch=46-step=110000.ckpt",
+      "checkpoint_bytes": 118545386,
+      "checkpoint_sha256": "f0e963b0ef0c95dac7bc77df2ae3b1a0ef1e2f9e8d473dbb0844f1b1426bff8d",
+      "expected_parameters": 29584966,
+      "checkpoint_epoch": 46,
+      "checkpoint_global_step": 110000,
+      "selection_monitor": "Losses/train_loss",
+      "selection_score": 6.670242786407471,
+      "selection_rank": 2,
+      "optimizer_state_present": false,
+      "run": {
+        "status": "trained",
+        "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride4_none_dim512_s42_e50.yaml",
+        "config_sha256": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351",
+        "code_commit": "06de63433110081c89e8b823a20b7a694ec76d51",
+        "pid": 9167,
+        "started_at": "2026-11-03T05:58:14.369266+00:00",
+        "epochs": 50,
+        "early_stopping": false,
+        "max_token_limit": 7000,
+        "train_subset": [
+          "train-clean-100",
+          "train-clean-360"
+        ],
+        "val_subset": "dev-clean",
+        "test_subset": "test-clean",
+        "tokenizer": "phone69",
+        "resume_checkpoint": null,
+        "internal_dim": 512,
+        "num_heads": 8,
+        "sequence_mode": "offline",
+        "compression": {
+          "filter": "none"
+        },
+        "output_dim": 256,
+        "ffn_dim": 512,
+        "time_reduction_stride": 4,
+        "updated_at": "2026-11-03T20:16:22.635466+00:00",
+        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50/checkpoints/epoch-boundary-epoch=50-step=117500-d250e3acf745.ckpt",
+        "epoch_boundary_metadata": {
+          "previous_max_token_limit": 7000,
+          "resume_global_step": 117500,
+          "resume_completed_epochs": 50,
+          "resume_at_epoch_boundary": true
+        },
+        "epoch": 50,
+        "global_step": 117500,
+        "observed_compression_lengths": null,
+        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50/checkpoints/val-none-epoch=09-step=23150.ckpt"
+      },
+      "offline_native_definition": {
+        "version": 1,
+        "sequence_mode": "offline",
+        "tail_alignment": "zero_pad_ceil",
+        "stride": 4,
+        "input_projection": 128,
+        "encoding_dim": 256,
+        "num_heads": 8,
+        "ffn_dim": 512,
+        "layers": [
+          2,
+          8
+        ],
+        "detector": null,
+        "mixer": null,
+        "filter": "none",
+        "window_size": 5,
+        "weight_predictor_mode": "diff5"
+      },
+      "training_config_text": "# Stride-4 no-compression baseline with a 512-wide trunk (128 x 4); fresh 50-epoch run.\n# 23500-token batches exceed 80 GiB at this width; 7000 is the probed maximum.\npaths:\n  dataset_path: /test21/librispeech\n  global_stats_path: /test21/librispeech/global_stats.json\n  exp_dir: /test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50\n  from_checkpoint: null\ntokenizer:\n  type: phone69\n  vocab_path: configs/phone69_vocab.json\nmodel:\n  sequence_mode: offline\n  input_dim: 80\n  encoding_dim: 256\n  num_symbols: 69\n  time_reduction_input_dim: 128\n  time_reduction_stride: 4\n  num_heads: 8\n  ffn_dim: 512\n  num_layers_block1: 2\n  num_layers_block2: 8\n  depthwise_conv_kernel_size: 31\n  dropout: 0.1\n  compression:\n    filter: none\n  predictor:\n    symbol_embedding_dim: 128\n    num_lstm_layers: 2\n    lstm_hidden_dim: 128\n    lstm_layer_norm: true\n    lstm_layer_norm_epsilon: 0.001\n    lstm_dropout: 0.3\n  joiner:\n    activation: relu\ntraining:\n  learning_rate: 0.0005\n  adam_betas:\n  - 0.9\n  - 0.999\n  adam_eps: 1.0e-08\n  warmup_steps: 10000\n  rnnt_loss_reduction: sum\n  rnnt_loss_clamp: 1.0\n  rnnt_loss_chunk: batch\n  gradient_clip_val: 10.0\n  epochs: 50\ndata:\n  sample_rate: 16000\n  n_fft: 400\n  n_mels: 80\n  hop_length: 160\n  spec_augment:\n    freq_mask_param: 27\n    time_mask_param: 100\n    time_mask_prob: 0.2\n  transcript_suffix: -ph\n  strip_spaces: false\n  max_token_limit: 7000\n  rnnt_numel_limit: 1900000000\n  rnnt_frames_per_char: 3.0\n  num_workers: 20\n  prefetch_factor: 2\n  train_subset:\n  - train-clean-100\n  - train-clean-360\n  val_subset: dev-clean\n  test_subset: test-clean\ntrainer:\n  accelerator: cuda\n  strategy: auto\n  devices: 1\n  num_nodes: 1\n  log_every_n_steps: 10\n  val_check_interval: 200\n  num_sanity_val_steps: 0\n  fast_dev_run: false\n  matmul_precision: high\n  accumulate_grad_batches: 1\n  checkpoint:\n    save_top_k: 2\n    save_weights_only: true\n    save_last: true\n    save_on_validation_end: true\n    val_checkpoint_interval: 200\n    train_checkpoint_interval: 500\ndecoding:\n  beam_width: 20\ndebug: false\nseed: 42\n",
+      "training_config_sha256": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351"
+    }
+  ],
+  "stats_b64": "ewogICJtZWFuIjogWwogICAgMTUuNjM3NTUxMzA3Njc4MjIzLAogICAgMTYuOTIzMTM3NjY0Nzk0OTIyLAogICAgMTYuODIyMzkxNTEwMDA5NzY2LAogICAgMTYuNzE5OTU3MzUxNjg0NTcsCiAgICAxNy43OTg4MTg1ODgyNTY4MzYsCiAgICAxNy43NzM1MDk5NzkyNDgwNDcsCiAgICAxNy44MzcyOTM2MjQ4Nzc5MywKICAgIDE4LjM1ODQ3ODU0NjE0MjU3OCwKICAgIDE3LjkyMTI2NDY0ODQzNzUsCiAgICAxNy44OTMyODk1NjYwNDAwNCwKICAgIDE3LjM5MTU4ODIxMTA1OTU3LAogICAgMTcuMjk5MzU2NDYwNTcxMjksCiAgICAxNy4zNjg2MDI3NTI2ODU1NDcsCiAgICAxNy41MDY5NTYxMDA0NjM4NjcsCiAgICAxNy40ODU5NzcxNzI4NTE1NjIsCiAgICAxNy4zNTAwNTM3ODcyMzE0NDUsCiAgICAxNy4xNDQyMDMxODYwMzUxNTYsCiAgICAxNi45MTcyMzI1MTM0Mjc3MzQsCiAgICAxNi42NjQwMTg2MzA5ODE0NDUsCiAgICAxNi4zOTE2ODU0ODU4Mzk4NDQsCiAgICAxNi4xNDU2ODMyODg1NzQyMiwKICAgIDE1Ljk0MDYzNDcyNzQ3ODAyNywKICAgIDE1Ljc3MDI5ODk1NzgyNDcwNywKICAgIDE1LjYxODA0NDg1MzIxMDQ1LAogICAgMTUuNDY0MDIxNjgyNzM5MjU4LAogICAgMTUuMzU3MTkyMDM5NDg5NzQ2LAogICAgMTUuMzgxODI5MjYxNzc5Nzg1LAogICAgMTUuMDc5MTkxMjA3ODg1NzQyLAogICAgMTUuMDAwODA5NjY5NDk0NjI5LAogICAgMTUuMTcwODY2MDEyNTczMjQyLAogICAgMTQuODE1NTU2NTI2MTg0MDgyLAogICAgMTQuOTk3MzU3MzY4NDY5MjM4LAogICAgMTQuODQ5MTE2MzI1Mzc4NDE4LAogICAgMTUuMDM2MzkxMjU4MjM5NzQ2LAogICAgMTQuOTk3NDk1NjUxMjQ1MTE3LAogICAgMTUuMDk1MTc5NTU3ODAwMjkzLAogICAgMTUuMTAxNzQwODM3MDk3MTY4LAogICAgMTUuMTQ1MTkyMTQ2MzAxMjcsCiAgICAxNS4xODA3NDMyMTc0NjgyNjIsCiAgICAxNS4xNTY0MDM1NDE1NjQ5NDEsCiAgICAxNS4xMDUzMjI4Mzc4Mjk1OSwKICAgIDE1LjA1MjkyNDE1NjE4ODk2NSwKICAgIDE1LjAwMDc4NTgyNzYzNjcxOSwKICAgIDE0LjkyMjg3MDYzNTk4NjMyOCwKICAgIDE0Ljg0NTk1NjgwMjM2ODE2NCwKICAgIDE0LjgwODEwMDcwMDM3ODQxOCwKICAgIDE0Ljg3MTc2MzIyOTM3MDExNywKICAgIDE0LjgxMTU0NzI3OTM1NzkxLAogICAgMTQuOTAxNDA4MTk1NDk1NjA1LAogICAgMTQuODMxNTM2MjkzMDI5Nzg1LAogICAgMTQuODU1MTM0MDEwMzE0OTQxLAogICAgMTQuNzc4NzM4OTc1NTI0OTAyLAogICAgMTQuNzcxMTIyOTMyNDM0MDgyLAogICAgMTQuNzMyMTM4NjMzNzI4MDI3LAogICAgMTQuNjQ3NDc3MTQ5OTYzMzc5LAogICAgMTQuNTYxNDQ0MjgyNTMxNzM4LAogICAgMTQuNDgxMDkxNDk5MzI4NjEzLAogICAgMTQuNDIyODE5MTM3NTczMjQyLAogICAgMTQuMzYwNjUwMDYyNTYxMDM1LAogICAgMTQuMzIwOTg1Nzk0MDY3MzgzLAogICAgMTQuMjY5NTA4MzYxODE2NDA2LAogICAgMTQuMTk0NzQ1MDYzNzgxNzM4LAogICAgMTQuMDE1MDA3OTcyNzE3Mjg1LAogICAgMTMuODY0ODgyNDY5MTc3MjQ2LAogICAgMTMuNzE4NDc4MjAyODE5ODI0LAogICAgMTMuNTcyMzUyNDA5MzYyNzkzLAogICAgMTMuNDE2NTIwMTE4NzEzMzc5LAogICAgMTMuMjY0OTAzMDY4NTQyNDgsCiAgICAxMy4xNDE1NTY3Mzk4MDcxMjksCiAgICAxMy4wNTkxMDIwNTg0MTA2NDUsCiAgICAxMi45NTgzMTk2NjQwMDE0NjUsCiAgICAxMi44OTMyMTQyMjU3NjkwNDMsCiAgICAxMi44NjI1NDQwNTk3NTM0MTgsCiAgICAxMi44MDkxMjAxNzgyMjI2NTYsCiAgICAxMi43NjQyNDAyNjQ4OTI1NzgsCiAgICAxMi42OTUzODc4NDAyNzA5OTYsCiAgICAxMi42NjM2ODc3MDU5OTM2NTIsCiAgICAxMi41Nzc4MzY5OTAzNTY0NDUsCiAgICAxMi41MTYwMjE3Mjg1MTU2MjUsCiAgICAxMi40MzEyOTUzOTQ4OTc0NjEKICBdLAogICJpbnZzdGRkZXYiOiBbCiAgICAwLjI5MDc0NDEyNTg0MzA0ODEsCiAgICAwLjI5MDIxMzI1NzA3NDM1NjEsCiAgICAwLjI2OTI4MTI5NzkyMjEzNDQsCiAgICAwLjI2OTI4ODE1MjQ1NjI4MzU3LAogICAgMC4yMzUwMzgzMjUxOTA1NDQxMywKICAgIDAuMjI1NTM4NDc3MzAxNTk3NiwKICAgIDAuMjE2NDczNjM5MDExMzgzMDYsCiAgICAwLjIwODYyODYzOTU3ODgxOTI3LAogICAgMC4yMTI5MjAxNTkxMDE0ODYyLAogICAgMC4yMTQ1MDM2MzA5OTU3NTA0MywKICAgIDAuMjE1ODg1MzcwOTY5NzcyMzQsCiAgICAwLjIxNjM4OTYyNjI2NDU3MjE0LAogICAgMC4yMTU0MjE5ODk1NjAxMjcyNiwKICAgIDAuMjEzODI5MTI5OTM0MzEwOSwKICAgIDAuMjEyOTA1NDM2NzU0MjI2NjgsCiAgICAwLjIxMzQxMDEyNDE4MjcwMTEsCiAgICAwLjIxNTI3MTcyNjI1MDY0ODUsCiAgICAwLjIxNzg1NzU4NDM1NzI2MTY2LAogICAgMC4yMjAxNDA3OTk4ODAwMjc3NywKICAgIDAuMjIyMjk1OTI1MDIxMTcxNTcsCiAgICAwLjIyNTgxODIzMTcwMTg1MDksCiAgICAwLjIyOTU5MDUwNTM2MTU1NywKICAgIDAuMjMzMjUyNTg0OTM0MjM0NjIsCiAgICAwLjIzNzAyMTEwMzUwMTMxOTg5LAogICAgMC4yNDA1NTI5NjE4MjYzMjQ0NiwKICAgIDAuMjQ0MzIwOTczNzUzOTI5MTQsCiAgICAwLjI0Nzk3NTQyMzkzMjA3NTUsCiAgICAwLjI1MDc5NTQ1Mzc4Njg1LAogICAgMC4yNTIyNTE4OTMyODE5MzY2NSwKICAgIDAuMjUyOTE4MzYyNjE3NDkyNywKICAgIDAuMjUzNDI5NDQyNjQ0MTE5MjYsCiAgICAwLjI1NDQ0OTE1ODkwNjkzNjY1LAogICAgMC4yNTUwODk4MTk0MzEzMDQ5MywKICAgIDAuMjY0NDAxMDE4NjE5NTM3MzUsCiAgICAwLjI3MTMzNzY1ODE2Njg4NTQsCiAgICAwLjI2NDQ5OTc4MzUxNTkzMDIsCiAgICAwLjI1NzE1OTU2MDkxODgwOCwKICAgIDAuMjU3MTY5NDU1Mjg5ODQwNywKICAgIDAuMjU3NTQxMjM5MjYxNjI3MiwKICAgIDAuMjU4NTE5MTQyODY2MTM0NjQsCiAgICAwLjI1OTkwNDY1MjgzMzkzODYsCiAgICAwLjI2MTAwODI2MjYzNDI3NzM0LAogICAgMC4yNjMyODc5NjE0ODMwMDE3LAogICAgMC4yNjQ2MzM0NDY5MzE4MzksCiAgICAwLjI2NDM4MzU1NDQ1ODYxODE2LAogICAgMC4yNjMzNzU0NjExMDE1MzIsCiAgICAwLjI2MjA1MTk5OTU2ODkzOTIsCiAgICAwLjI1OTc5MDcxODU1NTQ1MDQ0LAogICAgMC4yNTg0MDI5NDM2MTExNDUsCiAgICAwLjI1NzkxOTEwMjkwNzE4MDgsCiAgICAwLjI1OTE1NzYyNzgyMDk2ODYzLAogICAgMC4yNTk0OTQ2NjIyODQ4NTExLAogICAgMC4yNjAzNzY5MDA0MzQ0OTQsCiAgICAwLjI2MTQwNDE4NjQ4NzE5NzksCiAgICAwLjI2MjMxNTAzNDg2NjMzMywKICAgIDAuMjYzOTE3OTUyNzc1OTU1MiwKICAgIDAuMjY0NjQ3MTU2MDAwMTM3MzMsCiAgICAwLjI2NDQwOTg5OTcxMTYwODksCiAgICAwLjI2Mzk4MzQ1ODI4MDU2MzM1LAogICAgMC4yNjM2MTQyNjcxMTA4MjQ2LAogICAgMC4yNjQ0ODYzNzI0NzA4NTU3LAogICAgMC4yNjkxNDgzNzk1NjQyODUzLAogICAgMC4yNjUzNDQ1MzAzNDQwMDk0LAogICAgMC4yNjUwNzU0MTUzNzI4NDg1LAogICAgMC4yNjU2ODIxMzEwNTIwMTcyLAogICAgMC4yNjY4MTE2MDkyNjgxODg1LAogICAgMC4yNjc5MjY2OTI5NjI2NDY1LAogICAgMC4yNjgzNjgxNTQ3NjQxNzU0LAogICAgMC4yNjg4OTgwNjk4NTg1NTEsCiAgICAwLjI3MDY2OTM3MDg4OTY2MzcsCiAgICAwLjI3MTU1NjE2ODc5NDYzMTk2LAogICAgMC4yNzM4MjA2MDg4NTQyOTM4LAogICAgMC4yNzU4MzI5MjEyNjY1NTU4LAogICAgMC4yNzY2OTQ4MzQyMzIzMzAzLAogICAgMC4yNzgzNTE0ODU3MjkyMTc1MywKICAgIDAuMjgwNDgxNDg3NTEyNTg4NSwKICAgIDAuMjgyMTM0ODMwOTUxNjkwNywKICAgIDAuMjgwMTk4OTAxODkxNzA4NCwKICAgIDAuMjc5NjA0MzE1NzU3NzUxNDYsCiAgICAwLjI3OTQyNTg1OTQ1MTI5Mzk1CiAgXQp9",
+  "stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457",
+  "vocab_b64": "ewogICJ2ZXJzaW9uIjogMSwKICAidHlwZSI6ICJwaG9uZTY5IiwKICAidG9rZW5pemF0aW9uIjogIndoaXRlc3BhY2UiLAogICJjYXNlIjogInVwcGVyY2FzZSBBUlBBQkVUOyBsb3dlcmNhc2Ugc3BuIiwKICAic3RyZXNzIjogIlByZXNlcnZlIHZvd2VsIHN0cmVzcyBkaWdpdHMgMCwgMSwgMiBhcyBkaXN0aW5jdCBwaG9uZXMiLAogICJub2lzZV9wb2xpY3kiOiAiRmlsdGVyIG9ubHkgc3BuIGR1cmluZyBlbmNvZGluZzsgbmV2ZXIgbW9kaWZ5IHNvdXJjZSBhbm5vdGF0aW9uIGZpbGVzIiwKICAidG9rZW5zIjogWwogICAgIkFBMCIsCiAgICAiQUExIiwKICAgICJBQTIiLAogICAgIkFFMCIsCiAgICAiQUUxIiwKICAgICJBRTIiLAogICAgIkFIMCIsCiAgICAiQUgxIiwKICAgICJBSDIiLAogICAgIkFPMCIsCiAgICAiQU8xIiwKICAgICJBTzIiLAogICAgIkFXMCIsCiAgICAiQVcxIiwKICAgICJBVzIiLAogICAgIkFZMCIsCiAgICAiQVkxIiwKICAgICJBWTIiLAogICAgIkIiLAogICAgIkNIIiwKICAgICJEIiwKICAgICJESCIsCiAgICAiRUgwIiwKICAgICJFSDEiLAogICAgIkVIMiIsCiAgICAiRVIwIiwKICAgICJFUjEiLAogICAgIkVSMiIsCiAgICAiRVkwIiwKICAgICJFWTEiLAogICAgIkVZMiIsCiAgICAiRiIsCiAgICAiRyIsCiAgICAiSEgiLAogICAgIklIMCIsCiAgICAiSUgxIiwKICAgICJJSDIiLAogICAgIklZMCIsCiAgICAiSVkxIiwKICAgICJJWTIiLAogICAgIkpIIiwKICAgICJLIiwKICAgICJMIiwKICAgICJNIiwKICAgICJOIiwKICAgICJORyIsCiAgICAiT1cwIiwKICAgICJPVzEiLAogICAgIk9XMiIsCiAgICAiT1kwIiwKICAgICJPWTEiLAogICAgIk9ZMiIsCiAgICAiUCIsCiAgICAiUiIsCiAgICAiUyIsCiAgICAiU0giLAogICAgIlQiLAogICAgIlRIIiwKICAgICJVSDAiLAogICAgIlVIMSIsCiAgICAiVUgyIiwKICAgICJVVzAiLAogICAgIlVXMSIsCiAgICAiVVcyIiwKICAgICJWIiwKICAgICJXIiwKICAgICJZIiwKICAgICJaIiwKICAgICJaSCIKICBdLAogICJpZ25vcmVkX3Rva2VucyI6IFsKICAgICJzcG4iCiAgXQp9Cg==",
+  "vocab_sha256": "381f0fa6dd78e828ccf68c0f4b5d3988aabb3976753d4ae62ffea7f0359876e6",
+  "selection": {
+    "source_boundary": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50/checkpoints/epoch-boundary-epoch=50-step=117500-d250e3acf745.ckpt",
+    "source_boundary_sha256": "f0d2254772661f5fa1e40c9df46088d32bd7930e96559a923beffe715d38a4d7",
+    "completed_epochs": 50,
+    "source_global_step": 117500,
+    "validation_best": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim512_s42_e50/checkpoints/val-none-epoch=09-step=23150.ckpt",
+    "validation_best_score": 10.754104614257812
+  },
+  "continuation": {
+    "status": "interrupted",
+    "epoch": 51,
+    "global_step": 117800,
+    "pid": 29502
+  }
+}

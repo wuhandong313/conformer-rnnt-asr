@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/scripts/evaluation/eval_phone69_placement_checkpoint.py", line 261, in <module>
+    main()
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/scripts/evaluation/eval_phone69_placement_checkpoint.py", line 257, in main
+    run(args.manifest.resolve(), args.out.resolve())
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/scripts/evaluation/eval_phone69_placement_checkpoint.py", line 136, in run
+    from conformer_rnnt.lightning_module import LibriSpeechRNNTModule
+  File "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_stride4_dim512_train_best_local_cpu_20261121/stride4_dim512_train_epoch31/model_source/conformer_rnnt/lightning_module.py", line 34, in <module>
+    from ipa_tokenizer import DEFAULT_VOCAB, FixedIPATokenizer, encode_transcript
+ModuleNotFoundError: No module named 'ipa_tokenizer'

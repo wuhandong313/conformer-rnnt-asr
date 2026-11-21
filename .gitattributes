@@ -2,6 +2,9 @@
 artifacts/evaluations/phone69_460h_cpu_serial_20261108/** -text
 artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/** -text
 artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/utterances.csv whitespace=cr-at-eol
+artifacts/evaluations/phone69_stride4_dim512_train_best_local_cpu_20261121/** -text
+artifacts/evaluations/phone69_stride4_dim512_train_best_local_cpu_20261121/*/attempt_*/utterances.csv whitespace=cr-at-eol
+artifacts/evaluations/phone69_stride4_dim512_train_best_local_cpu_20261121/*/attempt_*/run.log -whitespace
 papers/phone69_460h_cpu_authoritative_20261108/** -text
 # Preserve the upstream ACL bibliography style verbatim.
 papers/extremafuse_acl2027/acl_natbib.bst -text -whitespace

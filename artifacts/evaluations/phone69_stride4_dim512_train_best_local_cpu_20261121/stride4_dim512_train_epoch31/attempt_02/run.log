@@ -1,0 +1,33 @@
+/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_stride4_dim512_train_best_local_cpu_20261121/stride4_dim512_train_epoch31/model_source/conformer_rnnt/lightning_module.py:610: torchaudio.transforms._transforms.RNNTLoss has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/ffmpeg.py:88: UserWarning: torio.io._streaming_media_decoder.StreamingMediaDecoder has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+  s = torchaudio.io.StreamReader(src, format, None, buffer_size)
+stride4_dim512_train_epoch31 100 / 2620
+stride4_dim512_train_epoch31 200 / 2620
+stride4_dim512_train_epoch31 300 / 2620
+stride4_dim512_train_epoch31 400 / 2620
+stride4_dim512_train_epoch31 500 / 2620
+stride4_dim512_train_epoch31 600 / 2620
+stride4_dim512_train_epoch31 700 / 2620
+stride4_dim512_train_epoch31 800 / 2620
+stride4_dim512_train_epoch31 900 / 2620
+stride4_dim512_train_epoch31 1000 / 2620
+stride4_dim512_train_epoch31 1100 / 2620
+stride4_dim512_train_epoch31 1200 / 2620
+stride4_dim512_train_epoch31 1300 / 2620
+stride4_dim512_train_epoch31 1400 / 2620
+stride4_dim512_train_epoch31 1500 / 2620
+stride4_dim512_train_epoch31 1600 / 2620
+stride4_dim512_train_epoch31 1700 / 2620
+stride4_dim512_train_epoch31 1800 / 2620
+stride4_dim512_train_epoch31 1900 / 2620
+stride4_dim512_train_epoch31 2000 / 2620
+stride4_dim512_train_epoch31 2100 / 2620
+stride4_dim512_train_epoch31 2200 / 2620
+stride4_dim512_train_epoch31 2300 / 2620
+stride4_dim512_train_epoch31 2400 / 2620
+stride4_dim512_train_epoch31 2500 / 2620
+stride4_dim512_train_epoch31 2600 / 2620
+stride4_dim512_train_epoch31 2620 / 2620
+{"utterances": 2620, "reference_phones": 189023, "phone_errors": 10677, "corpus_PER": 0.056485189633007624, "audio_seconds": 19452.480625, "components_macs": {"encoder_weights": 14142995471360, "attention_products": 1375311800320, "projections": 83874148352, "fusion_mlp": 0, "detector_dots": 0, "fusion_weighted_sum": 0, "predictor": 2225620647936, "joiner": 309119068160}, "total_major_macs": 18136921136128, "gmac_per_audio_second": 0.9323706053622146, "encoder_compression_gmac_per_audio_second": 0.8020664161454215, "predictor_gmac_per_audio_second": 0.11441320471362762, "joiner_gmac_per_audio_second": 0.01589098450316539}
