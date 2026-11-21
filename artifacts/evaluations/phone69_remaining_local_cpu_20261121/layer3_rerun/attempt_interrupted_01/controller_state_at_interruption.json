@@ -1,0 +1,15 @@
+{
+  "status": "evaluating",
+  "completed_models": [
+    "mel_layer7",
+    "layers2_7_n3",
+    "stride4_dim256"
+  ],
+  "controller_pid": 21384,
+  "updated_at_utc": "2026-11-21T04:02:18.122911+00:00",
+  "active_model": "layer3_rerun",
+  "checkpoint_bytes": 51297216,
+  "evaluation_pid": 50364,
+  "progress": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/layer3_rerun/attempt_01/progress.json",
+  "log": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/layer3_rerun/attempt_01/run.log"
+}

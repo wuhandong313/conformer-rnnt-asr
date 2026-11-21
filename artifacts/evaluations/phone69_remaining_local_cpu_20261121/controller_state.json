@@ -1,0 +1,26 @@
+{
+  "status": "complete",
+  "completed_models": [
+    "mel_layer7",
+    "layers2_7_n3",
+    "stride4_dim256",
+    "layer3_rerun"
+  ],
+  "controller_pid": 5360,
+  "updated_at_utc": "2026-11-21T04:40:46.466039+00:00",
+  "active_model": null,
+  "checkpoint_bytes": 51297216,
+  "evaluation_pid": null,
+  "progress": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/layer3_rerun/attempt_01/progress.json",
+  "log": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/layer3_rerun/attempt_01/run.log",
+  "interruption": {
+    "model": "layer3_rerun",
+    "completed_at_last_progress": 1700,
+    "last_progress_utc": "2026-11-21T04:14:52.827166+00:00",
+    "partial_csv_sha256": "31a2c656ad5de391d923136606228ff0c5754364769c2decc8b9602b5d1f046a",
+    "preserved_attempt": "layer3_rerun/attempt_interrupted_01",
+    "retried_at_utc": "2026-11-21T04:24:11.259026+00:00",
+    "exit_reason": "not recorded"
+  },
+  "error": null
+}

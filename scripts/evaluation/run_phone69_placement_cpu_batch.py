@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Download explicitly selected completed placements and evaluate at home."""
+"""Download explicitly selected completed Phone69 models and evaluate them locally."""
 from __future__ import annotations
 
 import argparse
@@ -14,7 +14,7 @@ import subprocess
 import sys
 import traceback
 
-from eval_phone69_placement_checkpoint import THREAD_ENV, now, placement_sites, sha, verified, write_json
+from eval_phone69_placement_checkpoint import THREAD_ENV, evaluation_layout, now, sha, verified, write_json
 
 ROOT = Path(__file__).resolve().parents[2]
 ARCHIVE = ROOT / 'papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive'
@@ -126,9 +126,10 @@ def prepare(metadata, entry, checkpoint):
     cfg['trainer']['devices'] = 1
     if cfg['decoding']['beam_width'] != 20 or cfg['model']['compression'].get('execution_backend', 'reference') != 'reference':
         raise ValueError('Preserve beam20 and the reference compression backend')
-    positions = placement_sites(entry)
-    if [s['after_layer'] for s in cfg['model']['compression']['stages']] != positions:
-        raise ValueError('Wrong compression placement')
+    layout = evaluation_layout(entry, cfg['model'])
+    definition = entry.get('offline_native_definition', run.get('offline_native_definition'))
+    if not definition or run.get('offline_native_definition', definition) != definition:
+        raise ValueError('Missing or inconsistent offline encoder definition')
     config = folder / 'config.yaml'
     config.write_text(yaml.safe_dump(cfg, sort_keys=False, allow_unicode=True))
     frozen = json.loads((ARCHIVE / 'manifest.json').read_text())
@@ -137,13 +138,12 @@ def prepare(metadata, entry, checkpoint):
         raise ValueError('Training statistics differ from the comparison protocol')
     result = json.loads((ARCHIVE / 'E09/result.json').read_text())
     reference = ARCHIVE / result['csv']
-    placement = {'position': positions[0]} if len(positions) == 1 else {'positions': positions}
-    manifest = dict(schema=1, model=dict(name=entry['name'], **placement,
+    manifest = dict(schema=1, model=dict(name=entry['name'], **layout,
                     expected_parameters=entry.get('expected_parameters', 4236299), training_commit=run['code_commit'],
                     checkpoint=str(checkpoint), checkpoint_sha256=sha(checkpoint),
                     config=str(config), config_sha256=sha(config),
                     training_config=str(original), training_config_sha256=sha(original),
-                    offline_native_definition=run['offline_native_definition'], server_training=run),
+                    offline_native_definition=definition, server_training=run),
                     source=str(source), code_sha256=fingerprints,
                     evaluator_sha256=sha(ROOT / 'scripts/evaluation/eval_phone69_placement_checkpoint.py'),
                     helper_sha256={name: sha(ROOT / 'scripts/evaluation' / name) for name in HELPERS},

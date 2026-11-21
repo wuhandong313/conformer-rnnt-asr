@@ -1,0 +1,125 @@
+{
+  "model": {
+    "name": "stride4_dim256",
+    "stride": 4,
+    "expected_parameters": 10373190,
+    "training_commit": "6659ad49cb034ed427f539af950274c7e6aeea91",
+    "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261121/models/stride4_dim256/val-none-epoch=38-step=72470.ckpt",
+    "checkpoint_sha256": "e7c1a2cb4de9c4a35175bd03958d23ce8e82945c5371d7c7d23ac72e075a122f",
+    "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/stride4_dim256/config.yaml",
+    "config_sha256": "5d6e8d4d5d7b120854e5846e6249b49b947a59e8398fb85f17c3dec1d08db76d",
+    "training_config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/stride4_dim256/training_config.yaml",
+    "training_config_sha256": "be87972923a8d8f20152c980edc47e442eeb88a240585a1d9c18d837a665e9b8",
+    "offline_native_definition": {
+      "version": 1,
+      "sequence_mode": "offline",
+      "tail_alignment": "zero_pad_ceil",
+      "stride": 4,
+      "input_projection": 64,
+      "encoding_dim": 256,
+      "num_heads": 8,
+      "ffn_dim": 512,
+      "layers": [
+        2,
+        8
+      ],
+      "detector": null,
+      "mixer": null,
+      "filter": "none",
+      "window_size": 5,
+      "weight_predictor_mode": "diff5"
+    },
+    "server_training": {
+      "status": "trained",
+      "config": "configs/server_phone69_460h_offline_native_stride4_none_dim256_s42_e50.yaml",
+      "config_sha256": "be87972923a8d8f20152c980edc47e442eeb88a240585a1d9c18d837a665e9b8",
+      "code_commit": "6659ad49cb034ed427f539af950274c7e6aeea91",
+      "pid": 24880,
+      "started_at": "2026-11-19T13:25:14.798009+00:00",
+      "epochs": 50,
+      "early_stopping": false,
+      "max_token_limit": 8800,
+      "train_subset": [
+        "train-clean-100",
+        "train-clean-360"
+      ],
+      "val_subset": "dev-clean",
+      "test_subset": "test-clean",
+      "tokenizer": "phone69",
+      "resume_checkpoint": null,
+      "internal_dim": 256,
+      "num_heads": 8,
+      "sequence_mode": "offline",
+      "compression": {
+        "filter": "none"
+      },
+      "output_dim": 256,
+      "ffn_dim": 512,
+      "time_reduction_stride": 4,
+      "updated_at": "2026-11-20T00:17:20.262604+00:00",
+      "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim256_s42_e50/checkpoints/epoch-boundary-epoch=50-step=93250-57ca2264b821.ckpt",
+      "epoch_boundary_metadata": {
+        "previous_max_token_limit": 8800,
+        "resume_global_step": 93250,
+        "resume_completed_epochs": 50,
+        "resume_at_epoch_boundary": true
+      },
+      "epoch": 50,
+      "global_step": 93250,
+      "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim256_s42_e50/checkpoints/val-none-epoch=38-step=72470.ckpt"
+    }
+  },
+  "utterances": 2620,
+  "reference_phones": 189023,
+  "phone_errors": 10584,
+  "corpus_PER": 0.05599318601440036,
+  "audio_seconds": 19452.480625,
+  "components_macs": {
+    "encoder_weights": 4833792642560,
+    "attention_products": 687655900160,
+    "projections": 41937074176,
+    "fusion_mlp": 0,
+    "detector_dots": 0,
+    "fusion_weighted_sum": 0,
+    "predictor": 2185358671872,
+    "joiner": 306672593920
+  },
+  "total_major_macs": 8055416882688,
+  "gmac_per_audio_second": 0.414107436371653,
+  "encoder_compression_gmac_per_audio_second": 0.2859987743540549,
+  "predictor_gmac_per_audio_second": 0.11234344421160425,
+  "joiner_gmac_per_audio_second": 0.015765217805993832,
+  "protocol": {
+    "device": "cpu",
+    "dtype": "float32",
+    "batch": 1,
+    "beam": 20,
+    "threads": 4,
+    "interop_threads": 1,
+    "data_workers": 0,
+    "openmp_max_active_levels": 1,
+    "warmup_utterances": 10,
+    "subset": "test-clean"
+  },
+  "runtime": {
+    "python": "/opt/anaconda3/envs/aligner/bin/python",
+    "python_version": "3.12.9",
+    "machine": "arm64",
+    "os": "macOS-27.3-arm64-arm-64bit",
+    "torch": "2.8.0",
+    "torchaudio": "2.8.0",
+    "openmp": {
+      "path": "/opt/anaconda3/envs/aligner/lib/libomp.dylib",
+      "sha256": "ce4985af1eb24c5cf570933a9234a54353c4b649cd1985fbe4300d67be97d76b"
+    },
+    "model_source": "snapshot"
+  },
+  "checkpoint_epoch": 38,
+  "checkpoint_global_step": 72470,
+  "manifest_sha256": "9072a353680e867718620d860a8c3e4b12fc6c93ca08f40522a5e8ac79c063da",
+  "csv_sha256": "35b99a411811fd7d3d14e5d2eef6e1ae2b666a28be6f417ce7b279371a4da442",
+  "counted_scope": "linear, convolution, attention products, compression, and actual beam-search predictor/joiner matrices",
+  "excluded_scope": "feature extraction, normalization, softmax, activations, comparisons/sorting, memory access",
+  "completed_at_utc": "2026-11-21T04:02:17.614537+00:00",
+  "verified_full_corpus": true
+}

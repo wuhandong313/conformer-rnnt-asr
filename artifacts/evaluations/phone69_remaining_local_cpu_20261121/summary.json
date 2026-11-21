@@ -1,0 +1,786 @@
+{
+  "complete": true,
+  "models": {
+    "mel_layer7": {
+      "model": {
+        "name": "mel_layer7",
+        "positions": [
+          0,
+          7
+        ],
+        "expected_parameters": 4249296,
+        "training_commit": "fc68267494d646aef3235a06eae223c61b5eafba",
+        "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261121/models/mel_layer7/val-none-epoch=49-step=90825.ckpt",
+        "checkpoint_sha256": "48bbd6f398d4f89a12b4d83f7e19036168e455767e657dfbf1bd18c3615d5c87",
+        "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/mel_layer7/config.yaml",
+        "config_sha256": "24a2a29dbf9f8785100b2a5dafe92e975304603fa21ffa7b96be9bd69490d9ba",
+        "training_config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/mel_layer7/training_config.yaml",
+        "training_config_sha256": "6c81472e64ad816a4a4cc055328b5d31265417e6e69da8fe82efd1d6ae5e3587",
+        "offline_native_definition": {
+          "version": 2,
+          "sequence_mode": "offline",
+          "tail_alignment": "zero_pad_ceil",
+          "stride": 1,
+          "input_dim": 80,
+          "input_projection": 128,
+          "encoding_dim": 256,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "num_layers": 10,
+          "layers": [
+            7,
+            3
+          ],
+          "compression_stages": [
+            {
+              "after_layer": 0,
+              "detector": {
+                "type": "cosine_diff",
+                "preprocess": "none"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "neighborhood_radius": 0,
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames",
+              "feature_dim": 80,
+              "input_domain": "model_mel_input"
+            },
+            {
+              "after_layer": 7,
+              "detector": {
+                "type": "cosine_diff",
+                "preprocess": "none"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "neighborhood_radius": 0,
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames",
+              "feature_dim": 128,
+              "input_domain": "encoder"
+            }
+          ],
+          "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+        },
+        "server_training": {
+          "status": "trained",
+          "config": "/test21/conformer-rnnt-asr/output/phone69_460h_placement_current_server_three_20261115/mel_layer7_train.yaml",
+          "config_sha256": "6c81472e64ad816a4a4cc055328b5d31265417e6e69da8fe82efd1d6ae5e3587",
+          "code_commit": "fc68267494d646aef3235a06eae223c61b5eafba",
+          "pid": 16421,
+          "started_at": "2026-11-17T10:03:21.651481+00:00",
+          "epochs": 50,
+          "early_stopping": false,
+          "max_token_limit": 9000,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean",
+          "tokenizer": "phone69",
+          "resume_checkpoint": null,
+          "internal_dim": 128,
+          "num_heads": 8,
+          "sequence_mode": "offline",
+          "compression": {
+            "stages": [
+              {
+                "after_layer": 0,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames"
+              },
+              {
+                "after_layer": 7,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames"
+              }
+            ]
+          },
+          "output_dim": 256,
+          "ffn_dim": 512,
+          "time_reduction_stride": 1,
+          "offline_native_definition": {
+            "version": 2,
+            "sequence_mode": "offline",
+            "tail_alignment": "zero_pad_ceil",
+            "stride": 1,
+            "input_dim": 80,
+            "input_projection": 128,
+            "encoding_dim": 256,
+            "num_heads": 8,
+            "ffn_dim": 512,
+            "depthwise_conv_kernel_size": 31,
+            "dropout": 0.1,
+            "num_layers": 10,
+            "layers": [
+              7,
+              3
+            ],
+            "compression_stages": [
+              {
+                "after_layer": 0,
+                "detector": {
+                  "type": "cosine_diff",
+                  "preprocess": "none"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "neighborhood_radius": 0,
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames",
+                "feature_dim": 80,
+                "input_domain": "model_mel_input"
+              },
+              {
+                "after_layer": 7,
+                "detector": {
+                  "type": "cosine_diff",
+                  "preprocess": "none"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "neighborhood_radius": 0,
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames",
+                "feature_dim": 128,
+                "input_domain": "encoder"
+              }
+            ],
+            "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+          },
+          "updated_at": "2026-11-18T05:12:52.417413+00:00",
+          "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer7_stride1_s42_e50_supp20261112/checkpoints/epoch-boundary-epoch=50-step=91250-c4aac73c4754.ckpt",
+          "epoch_boundary_metadata": {
+            "previous_max_token_limit": 9000,
+            "resume_global_step": 91250,
+            "resume_completed_epochs": 50,
+            "resume_at_epoch_boundary": true
+          },
+          "epoch": 50,
+          "global_step": 91250,
+          "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer7_stride1_s42_e50_supp20261112/checkpoints/val-none-epoch=49-step=90825.ckpt"
+        }
+      },
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10917,
+      "corpus_PER": 0.05775487639070378,
+      "audio_seconds": 19452.480625,
+      "components_macs": {
+        "encoder_weights": 2376821843200,
+        "attention_products": 631245967872,
+        "projections": 17521537024,
+        "fusion_mlp": 16016339520,
+        "detector_dots": 253147680,
+        "fusion_weighted_sum": 495207520,
+        "predictor": 1715258032128,
+        "joiner": 209254151680
+      },
+      "total_major_macs": 4966866226624,
+      "gmac_per_audio_second": 0.25533330799161247,
+      "encoder_compression_gmac_per_audio_second": 0.15639928405357298,
+      "predictor_gmac_per_audio_second": 0.08817682768559498,
+      "joiner_gmac_per_audio_second": 0.01075719625244454,
+      "protocol": {
+        "device": "cpu",
+        "dtype": "float32",
+        "batch": 1,
+        "beam": 20,
+        "threads": 4,
+        "interop_threads": 1,
+        "data_workers": 0,
+        "openmp_max_active_levels": 1,
+        "warmup_utterances": 10,
+        "subset": "test-clean"
+      },
+      "runtime": {
+        "python": "/opt/anaconda3/envs/aligner/bin/python",
+        "python_version": "3.12.9",
+        "machine": "arm64",
+        "os": "macOS-27.3-arm64-arm-64bit",
+        "torch": "2.8.0",
+        "torchaudio": "2.8.0",
+        "openmp": {
+          "path": "/opt/anaconda3/envs/aligner/lib/libomp.dylib",
+          "sha256": "ce4985af1eb24c5cf570933a9234a54353c4b649cd1985fbe4300d67be97d76b"
+        },
+        "model_source": "snapshot"
+      },
+      "checkpoint_epoch": 49,
+      "checkpoint_global_step": 90825,
+      "manifest_sha256": "0845517db275930a0dfc5ea4569df0d6769a041f13093213876f8c49c989e3da",
+      "csv_sha256": "ce7bc20a43b67febaf89b747afa90c54bcccea97325c5d9b5c46c17668da8257",
+      "counted_scope": "linear, convolution, attention products, compression, and actual beam-search predictor/joiner matrices",
+      "excluded_scope": "feature extraction, normalization, softmax, activations, comparisons/sorting, memory access",
+      "completed_at_utc": "2026-11-21T03:24:50.127396+00:00",
+      "verified_full_corpus": true
+    },
+    "layers2_7_n3": {
+      "model": {
+        "name": "layers2_7_n3",
+        "positions": [
+          2,
+          7
+        ],
+        "expected_parameters": 4236299,
+        "training_commit": "1bfa095b196d1b20a3af8784b3b1b8102a58f7c1",
+        "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261121/models/layers2_7_n3/val-none-epoch=25-step=48050.ckpt",
+        "checkpoint_sha256": "a9a44f40850e1a1bc86fc1d1356715a594392182f034d7c589d0f8daee0afeab",
+        "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/layers2_7_n3/config.yaml",
+        "config_sha256": "72a04bbf720756ff5f3948cc49ac1c5c09f41ceb7ea877d1323326f4cedb847e",
+        "training_config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/layers2_7_n3/training_config.yaml",
+        "training_config_sha256": "58835e111b00d71ae751c9d0554520597a786355be3323c80955a987b06c2351",
+        "offline_native_definition": {
+          "version": 2,
+          "sequence_mode": "offline",
+          "tail_alignment": "zero_pad_ceil",
+          "stride": 1,
+          "input_dim": 80,
+          "input_projection": 128,
+          "encoding_dim": 256,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "num_layers": 10,
+          "layers": [
+            2,
+            5,
+            3
+          ],
+          "compression_stages": [
+            {
+              "after_layer": 2,
+              "detector": {
+                "type": "cosine_diff",
+                "preprocess": "none"
+              },
+              "mixer": {
+                "type": "hard"
+              },
+              "neighborhood_radius": 1,
+              "feature_dim": 128,
+              "input_domain": "encoder"
+            },
+            {
+              "after_layer": 7,
+              "detector": {
+                "type": "cosine_diff",
+                "preprocess": "none"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "neighborhood_radius": 0,
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames",
+              "feature_dim": 128,
+              "input_domain": "encoder"
+            }
+          ],
+          "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+        },
+        "server_training": {
+          "status": "trained",
+          "config": "/test21/conformer-rnnt-asr/output/phone69_460h_placement_current_server_three_20261115/layers2_7_n3_train.yaml",
+          "config_sha256": "58835e111b00d71ae751c9d0554520597a786355be3323c80955a987b06c2351",
+          "code_commit": "1bfa095b196d1b20a3af8784b3b1b8102a58f7c1",
+          "pid": 19724,
+          "started_at": "2026-11-18T05:22:12.034067+00:00",
+          "epochs": 50,
+          "early_stopping": false,
+          "max_token_limit": 8800,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean",
+          "tokenizer": "phone69",
+          "resume_checkpoint": null,
+          "internal_dim": 128,
+          "num_heads": 8,
+          "sequence_mode": "offline",
+          "compression": {
+            "stages": [
+              {
+                "after_layer": 2,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "hard"
+                },
+                "neighborhood_radius": 1
+              },
+              {
+                "after_layer": 7,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames"
+              }
+            ]
+          },
+          "output_dim": 256,
+          "ffn_dim": 512,
+          "time_reduction_stride": 1,
+          "offline_native_definition": {
+            "version": 2,
+            "sequence_mode": "offline",
+            "tail_alignment": "zero_pad_ceil",
+            "stride": 1,
+            "input_dim": 80,
+            "input_projection": 128,
+            "encoding_dim": 256,
+            "num_heads": 8,
+            "ffn_dim": 512,
+            "depthwise_conv_kernel_size": 31,
+            "dropout": 0.1,
+            "num_layers": 10,
+            "layers": [
+              2,
+              5,
+              3
+            ],
+            "compression_stages": [
+              {
+                "after_layer": 2,
+                "detector": {
+                  "type": "cosine_diff",
+                  "preprocess": "none"
+                },
+                "mixer": {
+                  "type": "hard"
+                },
+                "neighborhood_radius": 1,
+                "feature_dim": 128,
+                "input_domain": "encoder"
+              },
+              {
+                "after_layer": 7,
+                "detector": {
+                  "type": "cosine_diff",
+                  "preprocess": "none"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "neighborhood_radius": 0,
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames",
+                "feature_dim": 128,
+                "input_domain": "encoder"
+              }
+            ],
+            "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+          },
+          "updated_at": "2026-11-19T13:23:02.832683+00:00",
+          "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_7_n3_stride1_s42_e50_supp20261112/checkpoints/epoch-boundary-epoch=50-step=93300-f4003532ffb2.ckpt",
+          "epoch_boundary_metadata": {
+            "previous_max_token_limit": 8800,
+            "resume_global_step": 93300,
+            "resume_completed_epochs": 50,
+            "resume_at_epoch_boundary": true
+          },
+          "epoch": 50,
+          "global_step": 93300,
+          "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_7_n3_stride1_s42_e50_supp20261112/checkpoints/val-none-epoch=25-step=48050.ckpt"
+        }
+      },
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10275,
+      "corpus_PER": 0.05435846431386657,
+      "audio_seconds": 19452.480625,
+      "components_macs": {
+        "encoder_weights": 5432090294400,
+        "attention_products": 3317633421056,
+        "projections": 41760550912,
+        "fusion_mlp": 13744568160,
+        "detector_dots": 462917120,
+        "fusion_weighted_sum": 426188160,
+        "predictor": 2859825364992,
+        "joiner": 411500472320
+      },
+      "total_major_macs": 12077443777120,
+      "gmac_per_audio_second": 0.6208690814269864,
+      "encoder_compression_gmac_per_audio_second": 0.4526989698419504,
+      "predictor_gmac_per_audio_second": 0.14701597293029048,
+      "joiner_gmac_per_audio_second": 0.02115413865474548,
+      "protocol": {
+        "device": "cpu",
+        "dtype": "float32",
+        "batch": 1,
+        "beam": 20,
+        "threads": 4,
+        "interop_threads": 1,
+        "data_workers": 0,
+        "openmp_max_active_levels": 1,
+        "warmup_utterances": 10,
+        "subset": "test-clean"
+      },
+      "runtime": {
+        "python": "/opt/anaconda3/envs/aligner/bin/python",
+        "python_version": "3.12.9",
+        "machine": "arm64",
+        "os": "macOS-27.3-arm64-arm-64bit",
+        "torch": "2.8.0",
+        "torchaudio": "2.8.0",
+        "openmp": {
+          "path": "/opt/anaconda3/envs/aligner/lib/libomp.dylib",
+          "sha256": "ce4985af1eb24c5cf570933a9234a54353c4b649cd1985fbe4300d67be97d76b"
+        },
+        "model_source": "snapshot"
+      },
+      "checkpoint_epoch": 25,
+      "checkpoint_global_step": 48050,
+      "manifest_sha256": "c43e76523713c127301db16839f8c45ebad46be1b5ffacf2770000f604406c3d",
+      "csv_sha256": "8a17241db33d5655c8c3e831348a81638848d407c6e142b30d63f2aeef720617",
+      "counted_scope": "linear, convolution, attention products, compression, and actual beam-search predictor/joiner matrices",
+      "excluded_scope": "feature extraction, normalization, softmax, activations, comparisons/sorting, memory access",
+      "completed_at_utc": "2026-11-21T03:47:21.996791+00:00",
+      "verified_full_corpus": true
+    },
+    "stride4_dim256": {
+      "model": {
+        "name": "stride4_dim256",
+        "stride": 4,
+        "expected_parameters": 10373190,
+        "training_commit": "6659ad49cb034ed427f539af950274c7e6aeea91",
+        "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261121/models/stride4_dim256/val-none-epoch=38-step=72470.ckpt",
+        "checkpoint_sha256": "e7c1a2cb4de9c4a35175bd03958d23ce8e82945c5371d7c7d23ac72e075a122f",
+        "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/stride4_dim256/config.yaml",
+        "config_sha256": "5d6e8d4d5d7b120854e5846e6249b49b947a59e8398fb85f17c3dec1d08db76d",
+        "training_config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/stride4_dim256/training_config.yaml",
+        "training_config_sha256": "be87972923a8d8f20152c980edc47e442eeb88a240585a1d9c18d837a665e9b8",
+        "offline_native_definition": {
+          "version": 1,
+          "sequence_mode": "offline",
+          "tail_alignment": "zero_pad_ceil",
+          "stride": 4,
+          "input_projection": 64,
+          "encoding_dim": 256,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "layers": [
+            2,
+            8
+          ],
+          "detector": null,
+          "mixer": null,
+          "filter": "none",
+          "window_size": 5,
+          "weight_predictor_mode": "diff5"
+        },
+        "server_training": {
+          "status": "trained",
+          "config": "configs/server_phone69_460h_offline_native_stride4_none_dim256_s42_e50.yaml",
+          "config_sha256": "be87972923a8d8f20152c980edc47e442eeb88a240585a1d9c18d837a665e9b8",
+          "code_commit": "6659ad49cb034ed427f539af950274c7e6aeea91",
+          "pid": 24880,
+          "started_at": "2026-11-19T13:25:14.798009+00:00",
+          "epochs": 50,
+          "early_stopping": false,
+          "max_token_limit": 8800,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean",
+          "tokenizer": "phone69",
+          "resume_checkpoint": null,
+          "internal_dim": 256,
+          "num_heads": 8,
+          "sequence_mode": "offline",
+          "compression": {
+            "filter": "none"
+          },
+          "output_dim": 256,
+          "ffn_dim": 512,
+          "time_reduction_stride": 4,
+          "updated_at": "2026-11-20T00:17:20.262604+00:00",
+          "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim256_s42_e50/checkpoints/epoch-boundary-epoch=50-step=93250-57ca2264b821.ckpt",
+          "epoch_boundary_metadata": {
+            "previous_max_token_limit": 8800,
+            "resume_global_step": 93250,
+            "resume_completed_epochs": 50,
+            "resume_at_epoch_boundary": true
+          },
+          "epoch": 50,
+          "global_step": 93250,
+          "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim256_s42_e50/checkpoints/val-none-epoch=38-step=72470.ckpt"
+        }
+      },
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10584,
+      "corpus_PER": 0.05599318601440036,
+      "audio_seconds": 19452.480625,
+      "components_macs": {
+        "encoder_weights": 4833792642560,
+        "attention_products": 687655900160,
+        "projections": 41937074176,
+        "fusion_mlp": 0,
+        "detector_dots": 0,
+        "fusion_weighted_sum": 0,
+        "predictor": 2185358671872,
+        "joiner": 306672593920
+      },
+      "total_major_macs": 8055416882688,
+      "gmac_per_audio_second": 0.414107436371653,
+      "encoder_compression_gmac_per_audio_second": 0.2859987743540549,
+      "predictor_gmac_per_audio_second": 0.11234344421160425,
+      "joiner_gmac_per_audio_second": 0.015765217805993832,
+      "protocol": {
+        "device": "cpu",
+        "dtype": "float32",
+        "batch": 1,
+        "beam": 20,
+        "threads": 4,
+        "interop_threads": 1,
+        "data_workers": 0,
+        "openmp_max_active_levels": 1,
+        "warmup_utterances": 10,
+        "subset": "test-clean"
+      },
+      "runtime": {
+        "python": "/opt/anaconda3/envs/aligner/bin/python",
+        "python_version": "3.12.9",
+        "machine": "arm64",
+        "os": "macOS-27.3-arm64-arm-64bit",
+        "torch": "2.8.0",
+        "torchaudio": "2.8.0",
+        "openmp": {
+          "path": "/opt/anaconda3/envs/aligner/lib/libomp.dylib",
+          "sha256": "ce4985af1eb24c5cf570933a9234a54353c4b649cd1985fbe4300d67be97d76b"
+        },
+        "model_source": "snapshot"
+      },
+      "checkpoint_epoch": 38,
+      "checkpoint_global_step": 72470,
+      "manifest_sha256": "9072a353680e867718620d860a8c3e4b12fc6c93ca08f40522a5e8ac79c063da",
+      "csv_sha256": "35b99a411811fd7d3d14e5d2eef6e1ae2b666a28be6f417ce7b279371a4da442",
+      "counted_scope": "linear, convolution, attention products, compression, and actual beam-search predictor/joiner matrices",
+      "excluded_scope": "feature extraction, normalization, softmax, activations, comparisons/sorting, memory access",
+      "completed_at_utc": "2026-11-21T04:02:17.614537+00:00",
+      "verified_full_corpus": true
+    },
+    "layer3_rerun": {
+      "model": {
+        "name": "layer3_rerun",
+        "position": 3,
+        "expected_parameters": 4236299,
+        "training_commit": "6659ad49cb034ed427f539af950274c7e6aeea91",
+        "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261121/models/layer3_rerun/val-none-epoch=14-step=27924.ckpt",
+        "checkpoint_sha256": "9deff40ab63aeb2347ddca0fc4f9fbd972d3c16b2bc667cd9696f385566b8834",
+        "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/layer3_rerun/config.yaml",
+        "config_sha256": "34923339a089fd908e7a440224ab77741636a983598b1a6de1912904403d9702",
+        "training_config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/layer3_rerun/training_config.yaml",
+        "training_config_sha256": "14ef3c27446389b13c9cd7f9de59db8a4e7c0a83ad7f7501cc26192d6bb057e7",
+        "offline_native_definition": {
+          "version": 2,
+          "sequence_mode": "offline",
+          "tail_alignment": "zero_pad_ceil",
+          "stride": 1,
+          "input_dim": 80,
+          "input_projection": 128,
+          "encoding_dim": 256,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "depthwise_conv_kernel_size": 31,
+          "dropout": 0.1,
+          "num_layers": 10,
+          "layers": [
+            3,
+            7
+          ],
+          "compression_stages": [
+            {
+              "after_layer": 3,
+              "detector": {
+                "type": "cosine_diff",
+                "preprocess": "none"
+              },
+              "mixer": {
+                "type": "learned"
+              },
+              "neighborhood_radius": 0,
+              "window_size": 5,
+              "weight_predictor_mode": "five_frames",
+              "feature_dim": 128,
+              "input_domain": "encoder"
+            }
+          ],
+          "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+        },
+        "server_training": {
+          "status": "trained",
+          "config": "/test21/conformer-rnnt-asr/output/phone69_460h_layer3_rerun_20261119/layer3_rerun_train.yaml",
+          "config_sha256": "14ef3c27446389b13c9cd7f9de59db8a4e7c0a83ad7f7501cc26192d6bb057e7",
+          "code_commit": "6659ad49cb034ed427f539af950274c7e6aeea91",
+          "pid": 25159,
+          "started_at": "2026-11-20T00:21:05.556241+00:00",
+          "epochs": 50,
+          "early_stopping": false,
+          "max_token_limit": 8800,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean",
+          "tokenizer": "phone69",
+          "resume_checkpoint": null,
+          "internal_dim": 128,
+          "num_heads": 8,
+          "sequence_mode": "offline",
+          "compression": {
+            "stages": [
+              {
+                "after_layer": 3,
+                "detector": {
+                  "type": "cosine_diff"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames"
+              }
+            ]
+          },
+          "output_dim": 256,
+          "ffn_dim": 512,
+          "time_reduction_stride": 1,
+          "offline_native_definition": {
+            "version": 2,
+            "sequence_mode": "offline",
+            "tail_alignment": "zero_pad_ceil",
+            "stride": 1,
+            "input_dim": 80,
+            "input_projection": 128,
+            "encoding_dim": 256,
+            "num_heads": 8,
+            "ffn_dim": 512,
+            "depthwise_conv_kernel_size": 31,
+            "dropout": 0.1,
+            "num_layers": 10,
+            "layers": [
+              3,
+              7
+            ],
+            "compression_stages": [
+              {
+                "after_layer": 3,
+                "detector": {
+                  "type": "cosine_diff",
+                  "preprocess": "none"
+                },
+                "mixer": {
+                  "type": "learned"
+                },
+                "neighborhood_radius": 0,
+                "window_size": 5,
+                "weight_predictor_mode": "five_frames",
+                "feature_dim": 128,
+                "input_domain": "encoder"
+              }
+            ],
+            "mel_input": "after_existing_data_pipeline_before_projection_and_stacking"
+          },
+          "updated_at": "2026-11-21T01:20:34.369536+00:00",
+          "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_rerun20261119/checkpoints/epoch-boundary-epoch=50-step=93300-b8991bac1306.ckpt",
+          "epoch_boundary_metadata": {
+            "previous_max_token_limit": 8800,
+            "resume_global_step": 93300,
+            "resume_completed_epochs": 50,
+            "resume_at_epoch_boundary": true
+          },
+          "epoch": 50,
+          "global_step": 93300,
+          "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer3_stride1_s42_e50_rerun20261119/checkpoints/val-none-epoch=14-step=27924.ckpt"
+        }
+      },
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 11912,
+      "corpus_PER": 0.06301878607365241,
+      "audio_seconds": 19452.480625,
+      "components_macs": {
+        "encoder_weights": 4327912332800,
+        "attention_products": 2277159331840,
+        "projections": 45796487168,
+        "fusion_mlp": 16286735040,
+        "detector_dots": 248911104,
+        "fusion_weighted_sum": 505015040,
+        "predictor": 3172080254976,
+        "joiner": 474617346560
+      },
+      "total_major_macs": 10314606414528,
+      "gmac_per_audio_second": 0.5302463276211591,
+      "encoder_compression_gmac_per_audio_second": 0.34277935763228656,
+      "predictor_gmac_per_audio_second": 0.1630681616461448,
+      "joiner_gmac_per_audio_second": 0.024398808342727753,
+      "protocol": {
+        "device": "cpu",
+        "dtype": "float32",
+        "batch": 1,
+        "beam": 20,
+        "threads": 4,
+        "interop_threads": 1,
+        "data_workers": 0,
+        "openmp_max_active_levels": 1,
+        "warmup_utterances": 10,
+        "subset": "test-clean"
+      },
+      "runtime": {
+        "python": "/opt/anaconda3/envs/aligner/bin/python",
+        "python_version": "3.12.9",
+        "machine": "arm64",
+        "os": "macOS-27.3-arm64-arm-64bit",
+        "torch": "2.8.0",
+        "torchaudio": "2.8.0",
+        "openmp": {
+          "path": "/opt/anaconda3/envs/aligner/lib/libomp.dylib",
+          "sha256": "ce4985af1eb24c5cf570933a9234a54353c4b649cd1985fbe4300d67be97d76b"
+        },
+        "model_source": "snapshot"
+      },
+      "checkpoint_epoch": 14,
+      "checkpoint_global_step": 27924,
+      "manifest_sha256": "50185864ae4f8cdb52ccb38c73e7ac4641874c8ac83b6d0d6e2986edac645617",
+      "csv_sha256": "11d717d05af022f3c9292f38955905312a05b1e75e61797d9099e2021811e611",
+      "counted_scope": "linear, convolution, attention products, compression, and actual beam-search predictor/joiner matrices",
+      "excluded_scope": "feature extraction, normalization, softmax, activations, comparisons/sorting, memory access",
+      "completed_at_utc": "2026-11-21T04:40:46.071379+00:00",
+      "verified_full_corpus": true
+    }
+  },
+  "updated_at_utc": "2026-11-21T04:40:46.464955+00:00"
+}

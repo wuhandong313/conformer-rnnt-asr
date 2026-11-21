@@ -1,0 +1,37 @@
+{
+  "duration_seconds": 30,
+  "method": "pooled observed stage retention and fixed-length structure",
+  "calibration_utterances": 2620,
+  "stage_rates": [],
+  "trace": {
+    "projected_frames": 3001,
+    "layer_frames": [
+      751,
+      751,
+      751,
+      751,
+      751,
+      751,
+      751,
+      751,
+      751,
+      751
+    ],
+    "output_frames": 751,
+    "stages": []
+  },
+  "components_macs": {
+    "encoder_weights": 7442229760,
+    "attention_products": 2887685120,
+    "projections": 64582656,
+    "fusion_mlp": 0,
+    "detector_dots": 0,
+    "fusion_weighted_sum": 0
+  },
+  "encoder_compression_gmac": 10.394497536,
+  "encoder_compression_gmac_per_audio_s": 0.3464832512,
+  "actual_beam20_macs": null,
+  "checkpoint_sha256": "e7c1a2cb4de9c4a35175bd03958d23ce8e82945c5371d7c7d23ac72e075a122f",
+  "manifest_sha256": "9072a353680e867718620d860a8c3e4b12fc6c93ca08f40522a5e8ac79c063da",
+  "theoretical_counter_sha256": "0a998ad2a931b23d157b86fb80077916501cddd6ded9134a78a8f73e941f0cb1"
+}

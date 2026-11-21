@@ -1,0 +1,33 @@
+/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_remaining_local_cpu_20261121/layer3_rerun/model_source/conformer_rnnt/lightning_module.py:555: torchaudio.transforms._transforms.RNNTLoss has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/utils.py:213: UserWarning: In 2.9, this function's implementation will be changed to use torchaudio.load_with_torchcodec` under the hood. Some parameters like ``normalize``, ``format``, ``buffer_size``, and ``backend`` will be ignored. We recommend that you port your code to rely directly on TorchCodec's decoder instead: https://docs.pytorch.org/torchcodec/stable/generated/torchcodec.decoders.AudioDecoder.html#torchcodec.decoders.AudioDecoder.
+  warnings.warn(
+/opt/anaconda3/envs/aligner/lib/python3.12/site-packages/torchaudio/_backend/ffmpeg.py:88: UserWarning: torio.io._streaming_media_decoder.StreamingMediaDecoder has been deprecated. This deprecation is part of a large refactoring effort to transition TorchAudio into a maintenance phase. The decoding and encoding capabilities of PyTorch for both audio and video are being consolidated into TorchCodec. Please see https://github.com/pytorch/audio/issues/3902 for more information. It will be removed from the 2.9 release. 
+  s = torchaudio.io.StreamReader(src, format, None, buffer_size)
+layer3_rerun 100 / 2620
+layer3_rerun 200 / 2620
+layer3_rerun 300 / 2620
+layer3_rerun 400 / 2620
+layer3_rerun 500 / 2620
+layer3_rerun 600 / 2620
+layer3_rerun 700 / 2620
+layer3_rerun 800 / 2620
+layer3_rerun 900 / 2620
+layer3_rerun 1000 / 2620
+layer3_rerun 1100 / 2620
+layer3_rerun 1200 / 2620
+layer3_rerun 1300 / 2620
+layer3_rerun 1400 / 2620
+layer3_rerun 1500 / 2620
+layer3_rerun 1600 / 2620
+layer3_rerun 1700 / 2620
+layer3_rerun 1800 / 2620
+layer3_rerun 1900 / 2620
+layer3_rerun 2000 / 2620
+layer3_rerun 2100 / 2620
+layer3_rerun 2200 / 2620
+layer3_rerun 2300 / 2620
+layer3_rerun 2400 / 2620
+layer3_rerun 2500 / 2620
+layer3_rerun 2600 / 2620
+layer3_rerun 2620 / 2620
+{"utterances": 2620, "reference_phones": 189023, "phone_errors": 11912, "corpus_PER": 0.06301878607365241, "audio_seconds": 19452.480625, "components_macs": {"encoder_weights": 4327912332800, "attention_products": 2277159331840, "projections": 45796487168, "fusion_mlp": 16286735040, "detector_dots": 248911104, "fusion_weighted_sum": 505015040, "predictor": 3172080254976, "joiner": 474617346560}, "total_major_macs": 10314606414528, "gmac_per_audio_second": 0.5302463276211591, "encoder_compression_gmac_per_audio_second": 0.34277935763228656, "predictor_gmac_per_audio_second": 0.1630681616461448, "joiner_gmac_per_audio_second": 0.024398808342727753}

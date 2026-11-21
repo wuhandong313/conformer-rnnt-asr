@@ -6,7 +6,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts/evaluation'))
-from eval_phone69_placement_checkpoint import COMPONENTS, placement_encoder_macs, placement_sites, summarize
+from eval_phone69_placement_checkpoint import COMPONENTS, evaluation_layout, placement_encoder_macs, placement_sites, summarize
 
 
 class PlacementCPUCountsTest(unittest.TestCase):
@@ -29,6 +29,22 @@ class PlacementCPUCountsTest(unittest.TestCase):
             fusion_mlp=40 * (5 * 80 * 32 + 32 * 5) + 16 * (5 * 128 * 32 + 32 * 5),
             detector_dots=99 * 80 + 39 * 128,
             fusion_weighted_sum=40 * 5 * 80 + 16 * 5 * 128))
+
+    def test_fixed_stride4_counts_projection64_and_ceil_stacked_frames(self):
+        config = ROOT / 'configs/server_phone69_460h_offline_native_stride4_none_dim256_s42_e50.yaml'
+        model = yaml.safe_load(config.read_text())['model']
+        self.assertEqual(evaluation_layout({'stride': 4}, model), {'stride': 4})
+        for wrong in ({'stride': 2}, {'positions': [4]}):
+            with self.subTest(layout=wrong), self.assertRaises(ValueError):
+                evaluation_layout(wrong, model)
+        frames = 101
+        stacked = 26
+        counts = placement_encoder_macs(model, frames, [stacked] * 10, stacked)
+        self.assertEqual(counts, dict(
+            encoder_weights=10 * stacked * (4 * 256 * 512 + 7 * 256**2 + 256 * 31),
+            attention_products=20 * stacked**2 * 256,
+            projections=frames * 80 * 64 + stacked * 256**2,
+            fusion_mlp=0, detector_dots=0, fusion_weighted_sum=0))
 
     def model(self, site):
         path = ROOT / ('configs/server_phone69_460h_placement_layer%d_stride1_s42_e50_supp20261112.yaml' % site)

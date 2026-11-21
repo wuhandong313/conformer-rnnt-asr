@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Evaluate one frozen placement checkpoint: corpus PER, stage lengths and major MACs.
+"""Evaluate one frozen offline checkpoint: corpus PER, layer lengths and major MACs.
 
 Uses the established local CPU/FP32/batch-one/beam-20 protocol. Counts the
 encoder and the actual predictor/joiner search path in the same decoding pass.
@@ -57,6 +57,23 @@ def placement_sites(entry):
     return sites
 
 
+def evaluation_layout(entry, model):
+    """Match the requested placement or fixed-stride layout to the training model."""
+    stride = model['time_reduction_stride']
+    compression = model['compression']
+    if model.get('sequence_mode') != 'offline':
+        raise ValueError('Expected the offline Phone69 encoder')
+    if compression == {'filter': 'none'}:
+        if (type(entry.get('stride')) is not int or entry['stride'] != stride or stride < 1
+                or 'position' in entry or 'positions' in entry):
+            raise ValueError('Manifest stride differs from the fixed-stride model')
+        return {'stride': stride}
+    sites = placement_sites(entry)
+    if stride != 1 or sites != [stage['after_layer'] for stage in compression.get('stages', [])]:
+        raise ValueError('Manifest compression positions differ from the training model')
+    return {'position': sites[0]} if len(sites) == 1 else {'positions': sites}
+
+
 def placement_encoder_macs(model, frames, lengths, output_frames):
     """Independent structural count using the observed per-layer lengths."""
     from theoretical_phone69_macs import encoder_macs, observed_trace
@@ -88,7 +105,6 @@ def summarize(rows, expected_uids, expected_phones=N_PHONES):
 def run(manifest_path, out):
     manifest = json.loads(manifest_path.read_text())
     entry = manifest['model']
-    positions = placement_sites(entry)
     if manifest['protocol'] != dict(
             device='cpu', dtype='float32', batch=1, beam=20, threads=4, interop_threads=1,
             data_workers=0, openmp_max_active_levels=1, warmup_utterances=10, subset='test-clean'):
@@ -130,10 +146,9 @@ def run(manifest_path, out):
     torch.set_num_interop_threads(1)
     cfg = yaml.safe_load(Path(entry['config']).read_text())
     training = yaml.safe_load(Path(entry['training_config']).read_text())
-    if cfg['model'] != training['model'] or cfg['model']['time_reduction_stride'] != 1:
+    if cfg['model'] != training['model']:
         raise ValueError('Evaluation model differs from the training recipe')
-    if [stage['after_layer'] for stage in cfg['model']['compression']['stages']] != positions:
-        raise ValueError('Manifest compression positions differ from the training recipe')
+    evaluation_layout(entry, cfg['model'])
     verified(cfg['paths']['global_stats_path'], manifest['global_stats_sha256'])
     verified(cfg['tokenizer']['vocab_path'], manifest['vocab_sha256'])
     audio = manifest['audio']
@@ -161,9 +176,9 @@ def run(manifest_path, out):
     del checkpoint
     model.cpu().eval()
     if sum(p.numel() for p in model.parameters()) != entry['expected_parameters']:
-        raise ValueError('Parameter count does not match the trained placement model')
+        raise ValueError('Parameter count does not match the trained model')
     if model.offline_native_definition != entry['offline_native_definition']:
-        raise ValueError('Placement definition differs from the actual training run')
+        raise ValueError('Offline encoder definition differs from the actual training run')
     if any(p.device.type != 'cpu' or p.dtype != torch.float32 for p in model.parameters()):
         raise ValueError('Expected FP32 parameters on CPU')
     if model.beam_width != 20 or model.tokenizer_type != 'phone69':

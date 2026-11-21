@@ -93,3 +93,6 @@ remote-access.md
 !/artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/mel_layer3/attempt_*/run.log
 /artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/runtime_lib/
 /artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/controller.lock
+!/artifacts/evaluations/phone69_remaining_local_cpu_20261121/*/attempt_*/run.log
+/artifacts/evaluations/phone69_remaining_local_cpu_20261121/controller.lock
+/artifacts/evaluations/phone69_remaining_local_cpu_20261121/runtime_lib/
