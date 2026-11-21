@@ -2,9 +2,9 @@
 
 ## 2026-11-18 固定步长的后续实验
 
-**固定 4∶1 的宽度对照。** 在原生拼接实现中，每帧投影 32、64、128 维给出 128、256、512 维主干。三者在 30 秒输入上都输出 751 步，计算量分别为 4.336、10.394、27.679 GMAC。11 月 21 日完成投影 64、主干 256 维的全量评测。该配置作为内部结果归档，论文采用下列 11 个工作点。原始 Conformer 的小、中、大模型都采用两层 stride-2 卷积获得 4∶1，宽度分别是 144、256、512，模型深度和头数等也有调整。本文的参照采用帧拼接。Fast Conformer 在输入端使用 8∶1。[Gulati 等，§3.2、表 1](https://www.isca-archive.org/interspeech_2020/gulati20_interspeech.pdf#page=3) · [Rekesh 等，§2](https://arxiv.org/html/2305.05084v4#S2)
+**固定 4∶1 的宽度对照。** 在原生拼接实现中，每帧投影 32、64、128 维给出 128、256、512 维主干。三者在 30 秒输入上都输出 751 步，计算量分别为 4.336、10.394、27.679 GMAC。11 月 21 日完成投影 64、主干 256 维的全量评测。该配置作为内部结果归档，论文采用下列 10 个工作点。原始 Conformer 的小、中、大模型都采用两层 stride-2 卷积获得 4∶1，宽度分别是 144、256、512，模型深度和头数等也有调整。本文的参照采用帧拼接。Fast Conformer 在输入端使用 8∶1。[Gulati 等，§3.2、表 1](https://www.isca-archive.org/interspeech_2020/gulati20_interspeech.pdf#page=3) · [Rekesh 等，§2](https://arxiv.org/html/2305.05084v4#S2)
 
-当前入稿比较涵盖 11 个模型。固定组为 stride 2／256 维、stride 4／128 维和 stride 4／512 维。融合组为 Mel、L1、L2、L3、L5、L7、Mel+L3 和 Mel+L5。若研究问题转向同宽主干下步长本身的影响，再补 stride 8／256 维。相近预算或相近 PER 的描述性比较见正文配对表。每个参照独立按指定指标的绝对差选取融合模型，另一指标在配对内比较。新实验的预算和开发集选点规则见下文。[正文配对表](generated/matched_points.tex) · [全部 11 组读数](generated/operating_points.tex)
+当前入稿比较涵盖 10 个模型。固定组为 stride 4／128 维和 stride 4／512 维。融合组为 Mel、L1、L2、L3、L5、L7、Mel+L3 和 Mel+L5。若研究问题转向同宽主干下步长本身的影响，再补 stride 8／256 维。相近预算或相近 PER 的描述性比较见正文配对表。每个参照独立按指定指标的绝对差选取融合模型，另一指标在配对内比较。新实验的预算和开发集选点规则见下文。[正文配对表](generated/matched_points.tex) · [全部 10 组读数](generated/operating_points.tex)
 
 ### 2026-11-19 追加 stride 4／256 维
 
@@ -12,7 +12,7 @@
 
 ### stride 4／128 维的低预算对照
 
-当前主图使用同一完整 test-clean 和 30 秒编码器与融合计数。单阶段 L3 使用原训练第 31 轮、step 57,500 的评测。两条阶梯分别表示各家族在给定 PER 上限内已观察到的最低成本。固定组有两个前沿点，即 stride 2／256 维（4.8989%，26.539 GMAC）和 stride 4／128 维（6.1289%，4.336 GMAC）。[当前结果图](figures/quality_budget_30s.pdf) · [11 月 18 日历史图](figures/stride4_128_comparison.pdf)
+当前主图使用同一完整 test-clean 和 30 秒编码器与融合计数。单阶段 L3 使用原训练第 31 轮、step 57,500 的评测。两条阶梯分别表示各家族在给定 PER 上限内已观察到的最低成本。固定组有两个前沿点，即 stride 4／512 维（5.7427%，27.679 GMAC）和 stride 4／128 维（6.1289%，4.336 GMAC）。[当前结果图](figures/quality_budget_30s.pdf) · [11 月 18 日历史图](figures/stride4_128_comparison.pdf)
 
 | 低预算模型 | 整句 PER | 编码器与融合 GMAC／30 秒 | 错误音素数 |
 | --- | ---: | ---: | ---: |
@@ -22,7 +22,7 @@
 
 同为 128 维、同在 4.5 GMAC 上限内，Mel+L3 的计算量比窄 stride 4 低 3.73%，少 205 个错误。按 40 位说话人配对重采样 10,000 次（seed 42），stride 4 减 Mel+L3 的 PER 差值为 +0.108 个百分点，95% 区间为 [−0.034, +0.241]，包含零。若预算放宽到 5.5 GMAC，Mel+L5 比窄 stride 4 多花 0.932 GMAC，PER 低 0.441 个百分点，配对区间为 [0.303, 0.586]（同一减法方向）。预算上限与原始点都值得给出。[逐句评测来源及算量归档](../../artifacts/research/phone69_all_results_20261117/results.json)
 
-横轴的 PER 上限从 6.10% 放宽到 6.13% 时，已测固定组的最小成本从 26.539 降至 4.336 GMAC，融合组均为 4.174 GMAC。两家族的成本比随之从 6.36 倍降到 1.04 倍。这一陡降由两个离散基线的间距决定，当时据此安排了两点之间的固定步长补测。
+横轴的 PER 上限从 6.10% 放宽到 6.13% 时，固定组的最小成本从 27.679 降至 4.336 GMAC，融合组均为 4.174 GMAC。这个台阶对应从 512 维到 128 维的两个 stride 4 工作点。
 
 ### 历史补测计划与算量
 
@@ -61,11 +61,10 @@
 | Li、Chen、Qian，Dual-Path Modeling With Memory Embedding Model for Continuous Speech Separation，IEEE/ACM TASLP 2022 | 60 秒 | §V-E 明确在 60 秒输入上统计连续语音分离模型的 MAC；表 I 同列分离后语音的 LibriCSS WER。这是直接使用 MAC 的语音前端先例。[§V-E、表 I，期刊第 1515 页](https://audiocc.sjtu.edu.cn/user/pages/03.research/02.publications/2022/Dual-Path%40Modeling%40With%40Memory%40Embedding%40Model%40for%40Continuous%40Speech%40Separation/paper.pdf#page=8) |
 | Lee、Chun，FastSLM，Findings of EMNLP 2026 | 300 秒 | 对五分钟输入比较语音压缩后的下游 LLM FLOPs。平均池化 30.6 TFLOPs，HTA 2.15 TFLOPs。其统计范围到语言模型，是更长时长的旁证。[§4.3、表 2](https://aclanthology.org/2026.findings-emnlp.256.pdf#page=6) |
 
-建议主表用 30 秒与 Fast Conformer 对齐，补充表统一报 60 秒并保留各论文原有的 MAC 或 FLOPs 单位。下表列出当前入稿的全部 11 个模型。读取各模型在完整归档中列出的 `config.yaml` 和 `stage_rates`，用 `projected_trace` 和 `encoder_macs` 将输入从 3,001 个 Mel 帧改为 6,001 个，累计 batch 1 整段编码器与融合的主要 MAC。全局自注意力的成本含长度的二次项。30 秒时 stride 2／256 维低于 stride 4／512 维，60 秒时二者互换。真实 test-clean 最长 34.955 秒，2,620 条中仅 9 条达到 30 秒。60 秒这列描述模型对输入长度的计算量敏感性，PER 仍来自原始整句。[计数与算子范围](../../docs/phone69_fixed_duration_macs.md) · [归档的真实时长](../phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E01/attempt_01/utterances.csv)
+建议主表用 30 秒与 Fast Conformer 对齐，补充表统一报 60 秒并保留各论文原有的 MAC 或 FLOPs 单位。下表列出当前入稿的全部 10 个模型。读取各模型在完整归档中列出的 `config.yaml` 和 `stage_rates`，用 `projected_trace` 和 `encoder_macs` 将输入从 3,001 个 Mel 帧改为 6,001 个，累计 batch 1 整段编码器与融合的主要 MAC。全局自注意力的成本含长度的二次项。30 秒和 60 秒下，两组 stride 4 的成本都随主干宽度增加。真实 test-clean 最长 34.955 秒，2,620 条中仅 9 条达到 30 秒。60 秒这列描述模型对输入长度的计算量敏感性，PER 仍来自原始整句。[计数与算子范围](../../docs/phone69_fixed_duration_macs.md) · [归档的真实时长](../phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E01/attempt_01/utterances.csv)
 
 | 模型 | 30 秒 GMAC | 60 秒 GMAC |
 | --- | ---: | ---: |
-| stride 2／256 维 | 26.539 | 76.108 |
 | stride 4／512 维 | 27.679 | 66.850 |
 | stride 4／128 维 | 4.336 | 11.548 |
 | Mel | 8.115 | 23.331 |

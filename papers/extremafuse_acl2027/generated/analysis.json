@@ -29,20 +29,6 @@
       "hi": 0.0
     },
     {
-      "a": "E06",
-      "b": "S2",
-      "delta_pp": -0.11797506123593425,
-      "lo": -0.24698986896430988,
-      "hi": 0.0035750525238384388
-    },
-    {
-      "a": "E07",
-      "b": "S2",
-      "delta_pp": -0.038619638879924666,
-      "lo": -0.16197810372836532,
-      "hi": 0.0810121282268477
-    },
-    {
       "a": "E07",
       "b": "E09",
       "delta_pp": -0.8824322965988266,
@@ -87,7 +73,7 @@
   ],
   "minimum_cost_at_per_ceiling": {
     "fixed_stride": [
-      "S2",
+      "E09",
       "E01"
     ],
     "fusion": [
@@ -100,28 +86,20 @@
   },
   "example_per_ceilings": [
     {
-      "per_ceiling_percent": 5.0,
-      "fixed_id": "S2",
-      "fusion_id": "E06",
-      "fixed_gmac_30s": 26.539014656,
-      "fusion_gmac_30s": 21.380416224,
-      "fixed_over_fusion": 1.2412768010666395
-    },
-    {
-      "per_ceiling_percent": 5.7,
-      "fixed_id": "S2",
+      "per_ceiling_percent": 5.75,
+      "fixed_id": "E09",
       "fusion_id": "E10",
-      "fixed_gmac_30s": 26.539014656,
+      "fixed_gmac_30s": 27.679450112,
       "fusion_gmac_30s": 5.267983696,
-      "fixed_over_fusion": 5.037793620384812
+      "fixed_over_fusion": 5.254277862138623
     },
     {
       "per_ceiling_percent": 6.1,
-      "fixed_id": "S2",
+      "fixed_id": "E09",
       "fusion_id": "P_MEL_L3",
-      "fixed_gmac_30s": 26.539014656,
+      "fixed_gmac_30s": 27.679450112,
       "fusion_gmac_30s": 4.174300144,
-      "fixed_over_fusion": 6.357715962074815
+      "fixed_over_fusion": 6.630919952362678
     },
     {
       "per_ceiling_percent": 6.13,
@@ -133,17 +111,6 @@
     }
   ],
   "figure_comparisons": [
-    {
-      "a": "E06",
-      "b": "S2",
-      "delta_pp": -0.11797506123593425,
-      "lo": -0.24698986896430988,
-      "hi": 0.0035750525238384388,
-      "selection": "baseline ceiling",
-      "gmac_30s_a": 21.380416224,
-      "gmac_30s_b": 26.539014656,
-      "gmac_saved_percent": 19.437791865545883
-    },
     {
       "a": "E10",
       "b": "E09",
@@ -179,7 +146,6 @@
     }
   ],
   "figure_points": [
-    "S2",
     "E09",
     "E01",
     "E05",
@@ -191,11 +157,6 @@
     "P_MEL_L3",
     "E10"
   ],
-  "figure_highlights": {
-    "fixed": "S2",
-    "nearest_cost": "E07",
-    "least_cost_at_observed_per": "E06"
-  },
   "matched_table": [
     {
       "match_on": "encoder_compression_gmac_30s",
@@ -220,17 +181,6 @@
       "change_gmac_percent": -4.264544256564751
     },
     {
-      "match_on": "encoder_compression_gmac_30s",
-      "fixed": "S2",
-      "fusion": "E07",
-      "delta_per_pp": -0.038619638879924666,
-      "interval_pp": [
-        -0.16197810372836532,
-        0.0810121282268477
-      ],
-      "change_gmac_percent": -0.15059694008257019
-    },
-    {
       "match_on": "phone_errors",
       "fixed": "E01",
       "fusion": "P_MEL_L3",
@@ -251,91 +201,9 @@
         0.11988451711625614
       ],
       "change_gmac_percent": -40.94148686532982
-    },
-    {
-      "match_on": "phone_errors",
-      "fixed": "S2",
-      "fusion": "E07",
-      "delta_per_pp": -0.038619638879924666,
-      "interval_pp": [
-        -0.16197810372836532,
-        0.0810121282268477
-      ],
-      "change_gmac_percent": -0.15059694008257019
     }
   ],
   "natural_rate_groups": {
-    "S2": {
-      "slow": {
-        "utterances": 786,
-        "speakers": 39,
-        "reference_phones": 36624,
-        "phone_errors": 1959,
-        "audio_seconds": 4851.1051875,
-        "corpus_PER": 0.05348951507208388,
-        "components_macs": {
-          "encoder_weights": 2408577077760,
-          "attention_products": 649556014080,
-          "projections": 20902352896,
-          "fusion_mlp": 0,
-          "detector_dots": 0,
-          "fusion_weighted_sum": 0,
-          "predictor": 851592019968,
-          "joiner": 138573818880
-        },
-        "total_major_macs": 4069201283584,
-        "total_gmac_per_audio_second": 0.8388194290384061,
-        "encoder_compression_gmac_per_audio_second": 0.63470803574201,
-        "predictor_gmac_per_audio_second": 0.17554598118431336,
-        "joiner_gmac_per_audio_second": 0.028565412112082758
-      },
-      "middle": {
-        "utterances": 1048,
-        "speakers": 40,
-        "reference_phones": 83207,
-        "phone_errors": 3853,
-        "audio_seconds": 8558.8204375,
-        "corpus_PER": 0.04630620019950245,
-        "components_macs": {
-          "encoder_weights": 4247342955520,
-          "attention_products": 1282350366720,
-          "projections": 36861315072,
-          "fusion_mlp": 0,
-          "detector_dots": 0,
-          "fusion_weighted_sum": 0,
-          "predictor": 1616087089152,
-          "joiner": 251435089920
-        },
-        "total_major_macs": 7434076816384,
-        "total_gmac_per_audio_second": 0.8685866084784303,
-        "encoder_compression_gmac_per_audio_second": 0.6503880619953712,
-        "predictor_gmac_per_audio_second": 0.18882124014089646,
-        "joiner_gmac_per_audio_second": 0.029377306342162644
-      },
-      "fast": {
-        "utterances": 786,
-        "speakers": 36,
-        "reference_phones": 69192,
-        "phone_errors": 3448,
-        "audio_seconds": 6042.555,
-        "corpus_PER": 0.04983235056075847,
-        "components_macs": {
-          "encoder_weights": 2998822202880,
-          "attention_products": 813651614720,
-          "projections": 26025545728,
-          "fusion_mlp": 0,
-          "detector_dots": 0,
-          "fusion_weighted_sum": 0,
-          "predictor": 1229687783424,
-          "joiner": 182895408640
-        },
-        "total_major_macs": 5251082555392,
-        "total_gmac_per_audio_second": 0.8690169233696673,
-        "encoder_compression_gmac_per_audio_second": 0.6352444228191552,
-        "predictor_gmac_per_audio_second": 0.20350460747548016,
-        "joiner_gmac_per_audio_second": 0.030267893075032002
-      }
-    },
     "E09": {
       "slow": {
         "utterances": 786,
