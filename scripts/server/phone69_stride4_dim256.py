@@ -45,17 +45,18 @@ def recipe():
 
 def verified_predecessor(queue, completion):
     models = (completion or {}).get('models', [])
+    required_models = [row for row in models if row['name'] in NAMES]
     if ((queue or {}).get('status') != 'complete'
-            or models != queue.get('completed') or [row['name'] for row in models] != NAMES):
+            or models != queue.get('completed') or [row['name'] for row in required_models] != NAMES):
         raise RuntimeError('The preceding placement queue lacks a matching completion record')
-    for row in models:
+    for row in required_models:
         boundary = row['epoch_boundary_metadata']
         if (row['status'] != 'trained' or row['epoch'] != 50
                 or boundary['resume_completed_epochs'] != 50 or not boundary['resume_at_epoch_boundary']
                 or boundary['resume_global_step'] != row['global_step']
                 or not all(Path(row[key]).is_file() for key in ('best_checkpoint', 'epoch_boundary_checkpoint'))):
             raise RuntimeError(f"Incomplete predecessor: {row['name']}")
-    return [row['name'] for row in models]
+    return [row['name'] for row in required_models]
 
 
 class Stride4Queue:

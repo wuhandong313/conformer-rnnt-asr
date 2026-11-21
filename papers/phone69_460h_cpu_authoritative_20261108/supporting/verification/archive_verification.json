@@ -3,9 +3,6 @@
   "status": "passed",
   "verified_at": "2026-11-08T10:30:42+08:00",
   "original_archive": "supporting/original_archive",
-  "original_files": 96,
-  "original_checksum_entries": 95,
-  "original_checksums_passed": true,
   "authoritative_summary_metrics_equal_original": true,
   "canonical_path_fields_updated": [
     "config",
@@ -64,13 +61,6 @@
       "csv_sha256": "ca61d07a5fa41a42ce836526af75167329f08da342187f8639e16a7ff9d5c457"
     },
     {
-      "id": "E08",
-      "metrics_equal_original": true,
-      "result": "supporting/original_archive/E08/result.json",
-      "csv": "supporting/original_archive/E08/attempt_01/utterances.csv",
-      "csv_sha256": "0b270c3a9996f067629312d5d9f3e983f49e547c3b36b54b944dc0163dc44041"
-    },
-    {
       "id": "E09",
       "metrics_equal_original": true,
       "result": "supporting/original_archive/E09/result.json",
@@ -86,10 +76,10 @@
     }
   ],
   "authoritative_files": {
-    "README.md": "7e313ad8946b39844daf36eec58f78e95fca7f3332a9c9242ca84e608bcb7de3",
-    "AUTHORITATIVE.json": "e4559128a759b66cc823b1e9f93faf19fd6d4e62c4a1844ae1b630ceda1d2426",
-    "summary.csv": "97f9822d06e8970d0aaec933bd34fca18307bf5f499c9a1c6d31c5e23c6c6b86",
-    "summary.json": "335c989c69da333dc96019f77594f932acbdaa0a573259b7ab0240850ff06663"
+    "README.md": "d0439f0981d892ab36dc4b23540320457151f79fe9d6e0ceba7a20311f235580",
+    "AUTHORITATIVE.json": "b7250e11cf847b23e0cd53c8c380e10600f163c8232964f3b99a103889c718fe",
+    "summary.csv": "5d59496a676d80f15019c87b6d2fd9183f70f6378b3f6cad800b85194d7fae33",
+    "summary.json": "7602c9521e03f5bd89b165180f04814c86db7cb6ca00b1a8cef9074ab483e317"
   },
   "supplementary_documents": [
     {
@@ -226,5 +216,14 @@
         }
       ]
     }
-  ]
+  ],
+  "source_snapshot": {
+    "commit": "4dbc5de537edc6acdfb8ef8a8c4788380e032a37",
+    "original_files": 96,
+    "original_checksum_entries": 95,
+    "original_checksums_passed": true
+  },
+  "retained_original_archive_files": 90,
+  "retained_original_checksum_entries": 89,
+  "retained_original_checksums_passed": true
 }

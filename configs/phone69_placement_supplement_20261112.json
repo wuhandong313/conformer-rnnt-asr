@@ -64,17 +64,6 @@
       "initial_budget": 6500
     },
     {
-      "name": "layers2_7_n3",
-      "action": "train",
-      "config": "configs/server_phone69_460h_placement_layers2_7_n3_stride1_s42_e50_supp20261112.yaml",
-      "baseline_config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch4000_before6000.yaml",
-      "positions": [
-        2,
-        7
-      ],
-      "initial_budget": 4000
-    },
-    {
       "name": "layer5",
       "action": "reuse",
       "config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
@@ -113,20 +102,6 @@
       "archive_id": "E10",
       "archive_result": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/result.json",
       "expected_best_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c"
-    },
-    {
-      "name": "layers2_5_n3",
-      "action": "reuse",
-      "config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-      "baseline_config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-      "positions": [
-        2,
-        5
-      ],
-      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
-      "archive_id": "E08",
-      "archive_result": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/result.json",
-      "expected_best_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87"
     }
   ]
 }

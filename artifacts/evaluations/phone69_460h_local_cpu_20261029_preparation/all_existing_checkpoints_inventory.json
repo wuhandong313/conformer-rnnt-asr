@@ -120,20 +120,6 @@
     ]
   },
   {
-    "experiment": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
-    "checkpoint_count": 60,
-    "bytes": 2908412936,
-    "status": "trained",
-    "best_recorded": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
-    "has_best_marker": true,
-    "sample_checkpoints": [
-      "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=32-step=91990-5111005e5816.ckpt",
-      "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
-      "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=25-step=72782-45cd284d1024.ckpt",
-      "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=47-step=133150-714c35a45aaf.ckpt"
-    ]
-  },
-  {
     "experiment": "exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50",
     "checkpoint_count": 56,
     "bytes": 2766544048,

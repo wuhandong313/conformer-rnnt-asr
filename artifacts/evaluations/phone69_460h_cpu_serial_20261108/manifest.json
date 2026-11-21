@@ -129,24 +129,6 @@
       "output_dir": "E07"
     },
     {
-      "id": "E08",
-      "name": "placement_layers2_5_n3_stride1",
-      "label": "第2层邻域3帧＋第5层五帧融合",
-      "baseline": false,
-      "training_config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-      "training_config_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
-      "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-      "config_sha256": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
-      "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/models/placement_layers2_5_n3_stride1/val-none-epoch=25-step=73182.ckpt",
-      "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
-      "old_predictions": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_layers2_5_n3_stride1.csv",
-      "old_predictions_sha256": "7c82581af996bcdb9a738454e289c736c60a1ecd64bdf5bed104b895d58bd88a",
-      "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457",
-      "projection": 128,
-      "backbone": 128,
-      "output_dir": "E08"
-    },
-    {
       "id": "E09",
       "name": "dim512_stride4_none",
       "label": "stride4 无动态压缩 512维主干",
@@ -183,7 +165,7 @@
       "output_dir": "E10"
     }
   ],
-  "ledger_sha256": "9c1a003cc1940dae389f562328756e691cbbf56d3ff6694ce201b7b23af365ab",
+  "ledger_sha256": "6bcf15dc5efee1b039f2492c699a8d7ce4ce99e2c4f7aa36f45becd53459638f",
   "audio": [
     {
       "uid": "1089-134686-0000",
@@ -16046,5 +16028,6 @@
       "sha256": "ce4985af1eb24c5cf570933a9234a54353c4b649cd1985fbe4300d67be97d76b"
     },
     "model_source": "snapshot"
-  }
+  },
+  "recorded_manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb"
 }

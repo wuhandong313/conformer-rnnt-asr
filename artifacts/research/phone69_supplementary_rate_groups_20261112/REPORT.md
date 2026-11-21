@@ -17,11 +17,9 @@
 | Stride2 projection128 | 5.3490 / 0.838819 | 4.6306 / 0.868587 | 4.9832 / 0.869017 |
 | Stride8 projection128 | 5.4554 / 1.303961 | 6.0728 / 1.313081 | 8.0544 / 1.316922 |
 
-L2+L5-neighborhood3保持原定义：第一阶段hard三帧邻域、第二阶段learned五帧融合，不与两处均为五帧learned融合的Mel双阶段系列混写。论文E01–E06使用当前论文编号；原归档编号保存在JSON中，原始归档未修改。
 
 当前表为固定checkpoint上的描述性点估计。各模型参数量、批预算、历史恢复和实际优化更新数不同，不能仅凭这些分组点估计作层位或语速的因果归因。新增比较的配对speaker bootstrap和快慢差值交互区间仍待补；原主比较已发表在稿件中的区间保留其原来源。dev-clean阈值冻结及独立测试的确认仍未完成。
 
-L1、L3、L9、Mel+L3、Mel+L7、L2+L7的新训练和全量评测结果尚未产生，不填估计值。完成后采用同一冻结分组接入，已有系统不重复识别。
 
 [完整JSON](results.json)保存all、慢／中／快及十个单档的分项计数、分母、来源SHA和相对stride4的差值；[平表CSV](groups.csv)分列编码器／压缩、predictor、joiner主要MAC。计数包含线性层、卷积、注意力矩阵乘积、融合与实际beam20搜索中的predictor和joiner矩阵，不包含特征提取、归一化、softmax、激活、比较排序和访存。不将历史RTF字段作为新增结果。
 
@@ -32,3 +30,5 @@ python3 scripts/evaluation/analyze_phone69_speech_rate_groups.py --manifest pape
 ```
 
 聚合核对完整UID与参考转写／时长一致，预测CSV指纹、同一checkpoint／配置的计数身份和全量PER／MAC总和。当前论文E06对E05的all、慢／中／快PER差值已与原配对分析逐项复现。
+
+这份 11 月 12 日历史快照中，其他待测配置为 L1、L3、L9、Mel＋L3 和 Mel＋L7。

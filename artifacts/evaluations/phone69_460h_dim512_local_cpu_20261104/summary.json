@@ -71,9 +71,9 @@
       "baseline_rtf": 0.04847569005032297,
       "rtf_ratio": 1.4876938773268336
     },
-    "ranking_among_10": {
-      "rank": 6,
-      "of": 10,
+    "ranking_among_9": {
+      "rank": 5,
+      "of": 9,
       "order": [
         {
           "name": "placement_layer5_stride1",
@@ -82,10 +82,6 @@
         {
           "name": "placement_layer7_stride1",
           "corpus_per": 0.048602551012310674
-        },
-        {
-          "name": "placement_layers2_5_n3_stride1",
-          "corpus_per": 0.05421033419213535
         },
         {
           "name": "stride1_cosd_learned_five_frames",

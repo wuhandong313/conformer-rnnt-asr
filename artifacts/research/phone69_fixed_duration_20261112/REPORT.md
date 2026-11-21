@@ -14,7 +14,6 @@
 | E05 | E02 | placement_mel_stride1 | 128 | L0:0.392838 | 8.114835 | 0.270494 | 5.5782% |
 | E06 | E03 | placement_layer5_stride1 | 128 | L5:0.394356 | 21.380416 | 0.712681 | 4.7809% |
 | E07 | E04 | placement_layer7_stride1 | 128 | L7:0.376053 | 26.499048 | 0.883302 | 4.8603% |
-| E08 | — | placement_layers2_5_n3_stride1 | 128 | L2:0.860761；L5:0.418638 | 18.615317 | 0.620511 | 5.4210% |
 | E09 | E05 | dim512_stride4_none | 512 | 无自适应压缩 | 27.679450 | 0.922648 | 5.7427% |
 | E10 | E06 | placement_mel_layer5_stride1 | 128 | L0:0.392838；L5:0.401862 | 5.267984 | 0.175599 | 5.6882% |
 | S1 | — | stride1_proj128 | 128 | 无自适应压缩 | 34.612238 | 1.153741 | 4.9856% |
@@ -39,7 +38,6 @@ L0代表Mel处；每层保留率以该层输入为分母。理论长度使用逐
 - supp_layer9 / layer9：没有对应checkpoint的完整逐层帧数，不填写数值。
 - supp_mel_layer3 / mel_layer3：没有对应checkpoint的完整逐层帧数，不填写数值。
 - supp_mel_layer7 / mel_layer7：没有对应checkpoint的完整逐层帧数，不填写数值。
-- supp_layers2_7_n3 / layers2_7_n3：没有对应checkpoint的完整逐层帧数，不填写数值。
 
 ## 复现与来源
 

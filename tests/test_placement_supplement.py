@@ -27,8 +27,9 @@ class PlacementSupplementTests(unittest.TestCase):
     def test_all_requested_recipes_only_change_the_authorized_positions(self):
         _, plan = queue.load_plan(ROOT / 'configs/phone69_placement_supplement_20261112.json')
         self.assertEqual([i['name'] for i in plan['experiments'] if i['action'] == 'train'],
-                         ['layer1', 'layer3', 'layer9', 'mel_layer3', 'mel_layer7', 'layers2_7_n3'])
-        self.assertEqual(sum(i['action'] == 'reuse' for i in plan['experiments']), 4)
+                         ['layer1', 'layer3', 'layer9', 'mel_layer3', 'mel_layer7'])
+        self.assertEqual([i['name'] for i in plan['experiments'] if i['action'] == 'reuse'],
+                         ['layer5', 'layer7', 'mel_layer5'])
 
     def test_backend_fusion_guard_and_seed_drift_are_rejected(self):
         for change in ('backend', 'fusion', 'guard', 'seed'):

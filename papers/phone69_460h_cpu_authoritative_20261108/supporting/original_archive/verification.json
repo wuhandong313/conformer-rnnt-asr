@@ -2,10 +2,9 @@
   "schema": 1,
   "status": "passed",
   "verified_at": "2026-11-08T02:10:09+08:00",
-  "checks": 244567,
-  "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
-  "summary_csv_sha256": "d3a754bcc62cd757ba6df960bf93927ee526850110636efab45e1c5e15d87555",
-  "summary_json_sha256": "6ad101139b17150b045b8423997f02f3336fdeb0fb769eaf11e7a1075c96f7c7",
+  "manifest_sha256": "6dcd67235eff3157d0bec3f1d42d791f54d243c6b0e17450a822871bf3841376",
+  "summary_csv_sha256": "7ecfd82c287bdc10f8a037be37dfcc0fa93d2be87e6cb1122ccbc69408c82cbb",
+  "summary_json_sha256": "de657c9b43c4807a19ca9b46736b926feca5ad4552cab377c5a04b58b2e7921b",
   "protocol": {
     "device": "cpu",
     "threads": 4,
@@ -34,8 +33,8 @@
     "model_source": "snapshot"
   },
   "baseline": "E09",
-  "completed": 10,
-  "total": 10,
+  "completed": 9,
+  "total": 9,
   "utterances_per_model": 2620,
   "reference_phones_per_model": 189023,
   "audio_seconds_per_model": 19452.480625,
@@ -43,7 +42,7 @@
   "batch_exit_code": 0,
   "failures": {},
   "verified_files": {
-    "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/research/phone69_460h_summary_20261107/experiments.json": "9c1a003cc1940dae389f562328756e691cbbf56d3ff6694ce201b7b23af365ab",
+    "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/research/phone69_460h_summary_20261107/experiments.json": "6bcf15dc5efee1b039f2492c699a8d7ce4ce99e2c4f7aa36f45becd53459638f",
     "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/__init__.py": "53467afcb57ca9fa24a0ac716cae00b38c0a18af4c5f356920922667be4b4ca0",
     "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/checkpoint_utils.py": "2b6be42fa3204a1c6bbe4234db6351d81785acd3c0ea17634fe88f30522d54af",
     "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_cpu_serial_20261108/model_source/conformer_rnnt/compression/__init__.py": "5f912b187342ecfa0de09028c21c7a103124c5ca1cd8e844fbebd89be15fd145",
@@ -2827,13 +2826,6 @@
     "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_cpu_serial_20261108/E07/training_config.yaml": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca",
     "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_cpu_serial_20261108/E07/config.yaml": "8d94308e6d24536f29985588c6f1d7409486d453c451128afea8112edb7d1605",
     "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_cpu_serial_20261108/E07/attempt_01/utterances.csv": "ca61d07a5fa41a42ce836526af75167329f08da342187f8639e16a7ff9d5c457",
-    "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
-    "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
-    "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/models/placement_layers2_5_n3_stride1/val-none-epoch=25-step=73182.ckpt": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
-    "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_layers2_5_n3_stride1.csv": "7c82581af996bcdb9a738454e289c736c60a1ecd64bdf5bed104b895d58bd88a",
-    "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_cpu_serial_20261108/E08/training_config.yaml": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
-    "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_cpu_serial_20261108/E08/config.yaml": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
-    "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_cpu_serial_20261108/E08/attempt_01/utterances.csv": "0b270c3a9996f067629312d5d9f3e983f49e547c3b36b54b944dc0163dc44041",
     "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride4_none_dim512_s42_e50.yaml": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351",
     "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_dim512_local_cpu_20261104/configs_cpu/dim512.yaml": "773e1ca8b7b335463b2475935cdd235bc1d7ac1e8ed17b9e5c73df7cb8a1ced7",
     "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261104/models/dim512/val-none-epoch=09-step=23150.ckpt": "005b39b31850128e7033f670cd58c6732d3dcc6ff738af1d79befc3d1a8c04a3",
@@ -3008,28 +3000,6 @@
       "RTF_over_E09": 1.269597334436836
     },
     {
-      "id": "E08",
-      "status": "passed",
-      "utterances": 2620,
-      "reference_phones": 189023,
-      "phone_errors": 10247,
-      "corpus_PER": 0.05421033419213535,
-      "corpus_RTF": 0.04648841666500816,
-      "changed_predictions": 0,
-      "started": "2026-11-08T01:31:51+08:00",
-      "finished": "2026-11-08T01:47:11+08:00",
-      "result": "E08/result.json",
-      "result_sha256": "2de7f6ec7bc98cce0260278a249d4cc3fae2c291d5e91acd5aaf0a78508c98cd",
-      "csv": "E08/attempt_01/utterances.csv",
-      "csv_sha256": "0b270c3a9996f067629312d5d9f3e983f49e547c3b36b54b944dc0163dc44041",
-      "log": "E08/attempt_01/run.log",
-      "log_sha256": "0563009376bce1acc8929d8a490b79e18ae449885c546a78278da31672d8eeca",
-      "attempts": [
-        "attempt_01"
-      ],
-      "RTF_over_E09": 1.1706370162679933
-    },
-    {
       "id": "E09",
       "status": "passed",
       "utterances": 2620,
@@ -3073,5 +3043,12 @@
       ],
       "RTF_over_E09": 0.6168337856980347
     }
-  ]
+  ],
+  "source_snapshot": {
+    "commit": "4dbc5de537edc6acdfb8ef8a8c4788380e032a37",
+    "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
+    "summary_csv_sha256": "d3a754bcc62cd757ba6df960bf93927ee526850110636efab45e1c5e15d87555",
+    "summary_json_sha256": "6ad101139b17150b045b8423997f02f3336fdeb0fb769eaf11e7a1075c96f7c7",
+    "checks": 244567
+  }
 }

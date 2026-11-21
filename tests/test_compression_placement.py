@@ -70,8 +70,7 @@ class PlacementSchemaTests(unittest.TestCase):
         base = yaml.safe_load((REPO / "configs/server_phone69_460h_offline_native_stride2_cosd_learned_s42_e50.yaml").read_text())
         outputs = set()
         for name, layout in (("mel", [(0, "learned", 0)]),
-                             ("layer5", [(5, "learned", 0)]),
-                             ("layers2_5_n3", [(2, "hard", 1), (5, "learned", 0)])):
+                             ("layer5", [(5, "learned", 0)])):
             path = REPO / f"configs/server_phone69_460h_placement_{name}_stride2_s42_e50.yaml"
             config = yaml.safe_load(path.read_text())
             for key in ("training", "data", "trainer", "tokenizer", "decoding", "seed"):
@@ -81,7 +80,7 @@ class PlacementSchemaTests(unittest.TestCase):
             outputs.add(config["paths"]["exp_dir"])
             stages = placement_options_from_config(config["model"])["compression_stages"]
             self.assertEqual([(x["after_layer"], x["mixer"]["type"], x["neighborhood_radius"]) for x in stages], layout)
-        self.assertEqual(len(outputs), 3)
+        self.assertEqual(len(outputs), 2)
 
     def test_triple_recipe_extends_current_double_stage_at_fixed_budget(self):
         base = yaml.safe_load((REPO / 'configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml').read_text())

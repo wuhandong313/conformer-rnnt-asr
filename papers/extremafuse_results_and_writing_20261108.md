@@ -1,6 +1,6 @@
 # ExtremaFuse 的 460h 实验结果与论文写作提纲
 
-当前论文仅保留六组结果，重新连续编号 E01–E06。原 E01、E03、E04、E08 不进入正文、附录和结果图，原 E11 继续仅供内部参考。原始实验、配置、checkpoint 和评测文件仍用归档编号；[新旧编号对照](extremafuse_acl2027/README.md#当前论文实验与编号)和快照中的 `archive_id` 用于追溯。
+这份 11 月 8 日写作提纲采用 E01–E06 六组结果。原始实验、配置、checkpoint 和评测文件沿用归档编号，可在[快照](extremafuse_acl2027/compute_snapshot.json)通过 `archive_id` 对照。原 E11 单列为内部参考。
 
 双阶段 E06 的 test-clean PER 为 5.6882%，Stride4 主基线 E05 为 5.7427%。全量主要 MAC 分别为 0.23252 和 0.92697 GMAC／输入音频秒，降低 74.92%。PER 差值的配对区间跨零，因此当前支持计算量明显减少、观察到的 PER 接近；独立测试上的质量门槛待确认。
 

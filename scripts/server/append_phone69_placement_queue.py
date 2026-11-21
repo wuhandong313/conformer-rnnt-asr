@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Append the three returned placements after the existing local L3/L9 queue."""
+"""Append the Mel placement runs after the existing local L3/L9 queue."""
 import argparse
 import copy
 from datetime import datetime, timezone
@@ -19,7 +19,7 @@ PLAN=ROOT/'configs/phone69_placement_current_server_three_20261115.json'
 PREDECESSOR=ROOT/'output/phone69_460h_placement_local_handoff_20261114'
 LAYER9=ROOT/'output/phone69_460h_placement_current_server_layer9_20261114'
 OUT=ROOT/'output/phone69_460h_placement_append_20261115'
-NAMES=['mel_layer3','mel_layer7','layers2_7_n3']
+NAMES=['mel_layer3','mel_layer7']
 
 
 def read(path):
@@ -77,7 +77,7 @@ def main():
     args=parser.parse_args()
     _,plan=load_plan(PLAN)
     if [i['name'] for i in plan['experiments']]!=NAMES or any(i['action']!='train' for i in plan['experiments']):
-        raise ValueError('Append manifest must contain exactly the three fresh returned placements')
+        raise ValueError('Append manifest must contain the fresh Mel+L3 and Mel+L7 runs')
     if args.mode=='validate':
         print(json.dumps(dict(valid=True,after=['layer3','layer9'],append=NAMES)))
         return
@@ -126,7 +126,7 @@ def main():
             fcntl.flock(lock,fcntl.LOCK_EX)
             results=verify_predecessor()
             save(OUT/'predecessor_verified.json',results)
-        state('starting_returned_three',completed_predecessor=results,append=NAMES)
+        state('starting_returned_placements',completed_predecessor=results,append=NAMES)
         queue=PlacementQueue(PLAN)
         queue.run()
         state('complete',completed=results+queue.completed)

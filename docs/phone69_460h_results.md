@@ -1,10 +1,10 @@
 # Phone69 460h 当前结果与训练配置
 
-2026-11-17最新[全部实验结果表](../artifacts/research/phone69_all_results_20261117/REPORT.md)汇总19份checkpoint的完整test-clean PER和统一30秒编码器＋压缩理论MAC，并单列实际beam20解码成本。新增Mel＋L3：PER **6.020431%**、**4.174300 GMAC／30秒**；L1／L3／L9及L3训练best诊断也已纳入。完整来源和SHA见[机器可读记录](../artifacts/research/phone69_all_results_20261117/results.json)。下文保留原结果快照。
+2026-11-17最新[全部实验结果表](../artifacts/research/phone69_all_results_20261117/REPORT.md)汇总18份checkpoint的完整test-clean PER和统一30秒编码器＋压缩理论MAC，并单列实际beam20解码成本。新增Mel＋L3：PER **6.020431%**、**4.174300 GMAC／30秒**；L1／L3／L9及L3训练best诊断也已纳入。完整来源和SHA见[机器可读记录](../artifacts/research/phone69_all_results_20261117/results.json)。下文保留原结果快照。
 
-用户要求的[图片版结果表](../artifacts/research/phone69_paper_results_table_20261117/paper_results_30s.png)仅保留12组论文对比项，省略5组历史未入选实验、L3训练best诊断，并按最新要求移除L2＋L5；L3使用原验证best。[图片数据与来源哈希](../artifacts/research/phone69_paper_results_table_20261117/data.json)可复核。
+用户要求的[图片版结果表](../artifacts/research/phone69_paper_results_table_20261117/paper_results_30s.png)仅保留12组论文对比项，省略5组历史未入选实验、L3训练best诊断；L3使用原验证best。[图片数据与来源哈希](../artifacts/research/phone69_paper_results_table_20261117/data.json)可复核。
 
-当前研究使用 corpus PER 与主要乘加量 GMAC／输入音频秒比较质量和计算成本。PER 来自 [2026-11-08 权威评测归档](../papers/phone69_460h_cpu_authoritative_20261108/README.md)，全量计数使用相同 test-clean 的 2,620 句、19,452.480625 秒音频、FP32、batch 1、beam 20。下表为 E01–E06 已完成计数的快照，E07–E10 待补；试测数不填入正式表。
+当前研究使用 corpus PER 与主要乘加量 GMAC／输入音频秒比较质量和计算成本。PER 来自 [2026-11-08 权威评测归档](../papers/phone69_460h_cpu_authoritative_20261108/README.md)，全量计数使用相同 test-clean 的 2,620 句、19,452.480625 秒音频、FP32、batch 1、beam 20。下表为 E01–E06 已完成计数的快照，其余各行当时待补；试测数不填入正式表。
 
 | 编号 | 配置 | Corpus PER | 编码器与压缩 | 预测器与 joiner | 合计 |
 | --- | --- | ---: | ---: | ---: | ---: |
@@ -15,13 +15,12 @@
 | E05 | Mel 五帧 | 5.5782% | 0.19552 | 0.18655 | 0.38207 |
 | E06 | 第5层五帧 | 4.7809% | 0.43193 | 0.19319 | 0.62512 |
 | E07 | 第7层五帧 | 4.8603% | — | — | — |
-| E08 | 第2层邻域3帧＋第5层五帧 | 5.4210% | — | — | — |
 | E09 | stride4、512维无动态压缩主基线 | 5.7427% | — | — | — |
 | E10 | Mel＋第5层五帧 | 5.6882% | — | — | — |
 
 后三列单位均为 GMAC／输入音频秒，按总乘加数除以真实音频总时长计算。范围包括线性层、卷积、注意力矩阵乘积、融合及真实搜索触发的预测器和 joiner 矩阵运算；特征提取、归一化、softmax、激活、比较排序和访存不计入主要 MAC。E09 全量计数完成后再计算相对预算。历史计时字段保留在归档，当前研究不使用 RTF 或重复计时作为比较指标。[已完成计数与来源哈希](../papers/extremafuse_acl2027/compute_snapshot.json) · [计数方案](../papers/phone69_460h_compute_eval_plan_20261108.md)
 
-三阶段 Mel＋第5层＋第8层的后续评测另见 [独立报告](../artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/REPORT.md)，未改写冻结 E01–E10 归档。训练预算、更新数和模型容量并非完全匹配；解释比较时须结合下述训练配置。
+三阶段 Mel＋第5层＋第8层的后续评测另见 [独立报告](../artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/REPORT.md)，另行归档。训练预算、更新数和模型容量并非完全匹配；解释比较时须结合下述训练配置。
 
 ## 共同配置
 
@@ -57,7 +56,6 @@
 | E05 | 1 × 128 → 128 | 4,228,619 | 6,500 | 3.5 | [YAML](../configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml) |
 | E06 | 1 × 128 → 128 | 4,236,299 | 5,000 | 3.5 | [YAML](../configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml) |
 | E07 | 1 × 128 → 128 | 4,236,299 | 6,500 | 3.5 | [YAML](../configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml) |
-| E08 | 1 × 128 → 128 | 4,236,299 | 4,000→6,000 | 3.5 | [YAML](../configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml) |
 | E09 | 4 × 128 → 512 | 29,584,966 | 7,000 | 3.0 | [YAML](../configs/server_phone69_460h_offline_native_stride4_none_dim512_s42_e50.yaml) |
 | E10 | 1 × 128 → 128 | 4,249,296 | 6,500→11,050 | 3.5 | [YAML](../configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml) |
 
@@ -65,13 +63,12 @@
 
 - E02、E03、E04采用2＋8层两块结构，在第2层后压缩。
 - E05在Mel域、输入投影前压缩，融合器输入维度80；E06、E07分别在第5、7层后对128维特征融合。
-- E08第2层只保留峰谷中心及左右各1帧的并集，第5层再作五帧融合；第一阶段并非可学习五帧融合。
 - E09主干512维，FFN仍为512、输出仍为256；它是扩大主干容量的参照，参数量并不匹配其他组。
 - E10的Mel、第5层均作五帧融合。三阶段实验的配置与选模记录见独立评测报告。
 
 
 ## 续训与复现
 
-E08 使用前三轮预算4,000、之后预算6,000的边界续训。E10 的初始、桥接和预算11,050恢复配方属于同一训练链，保留用于解释训练历史；桥接发生于轮中，不能视为样本顺序完全无变化的恢复。
+E10 的初始、桥接和预算11,050恢复配方属于同一训练链，保留用于解释训练历史；桥接发生于轮中，不能视为样本顺序完全无变化的恢复。
 
 各模型的精确训练配置、checkpoint 哈希、逐句结果与冻结源码位于权威归档；当前训练辅助配方保留在 configs/。更严格的受控比较要求见 [严谨性审查](experiments/phone69_460h_rigor_review_20261107.md)。

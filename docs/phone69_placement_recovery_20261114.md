@@ -1,10 +1,10 @@
 # 层位补充队列：环境重装与断点恢复
 
-**最新安排（2026-11-15）：** 后三组重新放回当前服务器，在现有L3、L9后依次运行，见[现行本机队列](phone69_placement_return_local_20261115.md)。以下跨服务器变更保留为中间历史。
+**最新安排（2026-11-15）：** Mel+L3、Mel+L7重新放回当前服务器，在现有L3、L9后依次运行，见[现行本机队列](phone69_placement_return_local_20261115.md)。以下跨服务器变更保留为中间历史。
 
-**后续安排已更新：** 用户随后将Mel+L3、Mel+L7、L2+L7迁往其他服务器。当前服务器只保留正在续训的L3和后续L9；原恢复控制器已由专用接管程序替换，L3原训练进程保持运行。现行清单与跨服务器prompt见[分服务器安排](phone69_placement_server_split_20261114.md)。下文保留恢复启动时的历史计划。
+**后续安排已更新：** 用户随后将Mel+L3、Mel+L7迁往其他服务器。当前服务器只保留正在续训的L3和后续L9；原恢复控制器已由专用接管程序替换，L3原训练进程保持运行。现行清单与跨服务器prompt见[分服务器安排](phone69_placement_server_split_20261114.md)。下文保留恢复启动时的历史计划。
 
-2026-11-14用户授权重新安装服务器环境并恢复任务。服务器持久化仓库、数据与checkpoint保留，`whd`训练Python缺失，无存活训练／队列进程，A100 GPU空闲。38个原部署源码和配置SHA全部一致；当前HEAD的后续论文归档变化不替代各实验实际启动commit。
+2026-11-14用户授权重新安装服务器环境并恢复任务。服务器持久化仓库、数据与checkpoint保留，`whd`训练Python缺失，无存活训练／队列进程，A100 GPU空闲。当时核对了原部署源码和配置SHA；当前HEAD的后续论文归档变化不替代各实验实际启动commit。
 
 | 串行次序 | 实验 | 恢复安排 |
 | --- | --- | --- |
@@ -12,9 +12,8 @@
 | 2 | L9 | 尚未启动，按原协议自动校准最大稳定batch，再从头50轮 |
 | 3 | Mel+L3 | 尚未启动，独立校准后从头50轮 |
 | 4 | Mel+L7 | 尚未启动，独立校准后从头50轮 |
-| 5 | L2+L7 | 尚未启动，独立校准后从头50轮 |
 
-L1已记录trained、epoch50、step99000及最终完整边界；恢复控制器还会实际读取其边界并核对best后跳过。L5、L7、Mel+L5、L2+L5继续复用原有完整实验，不重复训练。
+L1已记录trained、epoch50、step99000及最终完整边界；恢复控制器还会实际读取其边界并核对best后跳过。L5、L7、Mel+L5继续复用原有完整实验，不重复训练。
 
 环境沿用既有锁定版本：Python3.10.18、torch／torchaudio2.6.0+cu124、Lightning2.6.6和numpy2.2.6，依赖来自`artifacts/recoveries/phone69_post_restart_20261021/requirements-restored.txt`。环境重建、`pip check`及版本／CUDA可用性查询不运行软件测试；软件安全检查仅在本地运行。
 
@@ -26,4 +25,4 @@ L3原run记录第2轮、step2200，轮中完整验证／last checkpoint还记录
 
 [初始核对](../artifacts/recoveries/phone69_placement_supplement_20261114/initial_inspection.json)及[本地安全检查](../artifacts/recoveries/phone69_placement_supplement_20261114/local_validation.json)记录恢复依据。环境版本、选定断点、独立备份清单及实际恢复PID见[启动核验](../artifacts/recoveries/phone69_placement_supplement_20261114/startup.json)和[checkpoint备份清单](../artifacts/recoveries/phone69_placement_supplement_20261114/checkpoint_inventory.json)。
 
-环境重装已完成，pip依赖检查通过、CUDA可用。恢复控制器PID538、L3训练PID557，实际恢复启动commit为`a9ba99c4f9c188d96758ebec4dfd0bdfc1f3cc3a`。日志明确记录已恢复全部checkpoint状态，已观察第2轮、global_step1900，原预算8800不变；GPU正常执行训练。原配置与续训YAML独立解析比较，仅`paths.from_checkpoint`变化。7个旧checkpoint均独立复制并核对SHA，5组已完成实验实际核验后跳过。后续归档提交不替代该实际恢复启动commit。
+环境重装已完成，pip依赖检查通过、CUDA可用。恢复控制器PID538、L3训练PID557，实际恢复启动commit为`a9ba99c4f9c188d96758ebec4dfd0bdfc1f3cc3a`。日志明确记录已恢复全部checkpoint状态，已观察第2轮、global_step1900，原预算8800不变；GPU正常执行训练。原配置与续训YAML独立解析比较，仅`paths.from_checkpoint`变化。7个旧checkpoint均独立复制并核对SHA，已完成的保留实验核验后跳过。后续归档提交不替代该实际恢复启动commit。

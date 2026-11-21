@@ -22,12 +22,12 @@ MEL_L3 = ROOT / 'artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117'
 OUT = ROOT / 'artifacts/research/phone69_all_results_20261117'
 LABELS = dict(E01='Stride 4（主干128）', E02='L2', E03='Stride 2＋L2',
               E04='Stride 4＋L2', E05='Mel', E06='L5', E07='L7',
-              E08='L2＋L5*', E09='Stride 4（主干512）', E10='Mel＋L5',
+              E09='Stride 4（主干512）', E10='Mel＋L5',
               E11='Mel＋L5＋L8', S1='Stride 1', S2='Stride 2', S8='Stride 8',
               P_L1='L1', P_L3='L3', P_L9='L9', P_MEL_L3='Mel＋L3',
               D_L3_TRAIN='L3（训练回调best，诊断）')
 ORDER = ['S1', 'S2', 'E09', 'E05', 'P_L1', 'E02', 'P_L3', 'E06', 'E07',
-         'P_L9', 'P_MEL_L3', 'E10', 'E08', 'D_L3_TRAIN',
+         'P_L9', 'P_MEL_L3', 'E10', 'D_L3_TRAIN',
          'E01', 'E03', 'E04', 'S8', 'E11']
 
 
@@ -175,8 +175,7 @@ def write_report(out, records):
              '30秒列是3001个80维Mel帧、batch1的编码器与压缩主要MAC，由各checkpoint完整2620句的逐层条件保留率校准。一次乘加计1 MAC；不将变长语料计数线性缩放。', '',
              '## 原论文入选实验与新增位置对照', '']
     lines += table(main)
-    lines += ['', 'L2＋L5*首阶段为hard三帧邻域、第二阶段为learned五帧融合；其余动态压缩位置采用learned五帧。',
-              '此表保留原九组论文入选项及新完成的位置对照，不据本次test-clean结果自动重选checkpoint或推断显著性。不同stride的主干宽度、训练预算与更新次数并不完全一致。', '',
+    lines += ['', '动态压缩位置采用可学习五帧融合。此表保留原论文入选项及当时已完成的位置对照。不同stride的主干宽度、训练预算与更新次数并不完全一致。', '',
               '## 独立选模诊断', ''] + table(diagnostics)
     lines += ['', 'L3训练回调best与验证loss best单列。它是同一训练的额外checkpoint诊断；不可把在test-clean上比较后选出的较好值视为独立的正式验证选模结果。', '',
               '## 历史未入选结果（完整保留）', ''] + table(excluded)
@@ -184,7 +183,7 @@ def write_report(out, records):
               '## 尚未完成的实验', '',
               '| 实验 | 状态 | PER／30秒MAC |', '| --- | --- | --- |',
               '| Mel＋L7 | 本次检查时正在训练 | 不填未核验值 |',
-              '| L2＋L7* | 排队等待 | 不填未核验值 |', '',
+              '',
               '## 实际beam20解码计数（另一口径）', '',
               '下表单位是完整变长语料的GMAC／实际音频秒，分别报告编码器与压缩、predictor、joiner。它不是30秒理论值。', '',
               '| 实验 | 编码器与压缩 | Predictor | Joiner | 合计 |', '| --- | ---: | ---: | ---: | ---: |']
@@ -215,7 +214,7 @@ def main():
                   duration_seconds=30, input_mel_frames=3001, counted_scope='encoder and compression major MACs',
                   per_protocol='full test-clean, CPU/FP32/batch1/beam20, threads4/interop1/workers0',
                   script_sha256=sha(__file__), models=records,
-                  pending=['mel_layer7', 'layers2_7_n3'])
+                  pending=['mel_layer7'])
     (args.out / 'results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
     fields = ['id', 'system', 'backbone', 'per_percent', 'encoder_compression_gmac_30s',
               'encoder_compression_gmac_per_audio_s_30s', 'phone_errors', 'reference_phones',

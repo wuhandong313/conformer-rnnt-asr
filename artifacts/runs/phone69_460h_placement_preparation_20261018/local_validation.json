@@ -37,8 +37,7 @@
     "docs/phone69_compression_placement_plan_20261018.md": "6af30a31dcbb34cbeabb7454eb56eff23f2690c0bb626040b3ec3ab0412ee13b",
     "docs/dynamic_compression_paper_plan_20261018.md": "b5312978fc6857fd92c61c8f66026ed89b27cad37e8a77883fa516e0bbba8c2e",
     "configs/server_phone69_460h_placement_mel_stride2_s42_e50.yaml": "36a0bb9e13502f8ac1b6ec4fc67b9f760cd057ebe8720e4ca1c26ac2043701c4",
-    "configs/server_phone69_460h_placement_layer5_stride2_s42_e50.yaml": "dfd9659b1c2077db30057f4815d33338d87e5b04cc80092d5c896e70cb4d803f",
-    "configs/server_phone69_460h_placement_layers2_5_n3_stride2_s42_e50.yaml": "6764d865ba5ee7caf04a06150de139db21dfed0f23608aef13f2876708781189"
+    "configs/server_phone69_460h_placement_layer5_stride2_s42_e50.yaml": "dfd9659b1c2077db30057f4815d33338d87e5b04cc80092d5c896e70cb4d803f"
   },
   "new_training_started": false,
   "server_files_modified": false,

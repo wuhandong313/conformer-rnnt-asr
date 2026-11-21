@@ -35,7 +35,7 @@
 - **固定输入：** 按[计数协议](../../docs/phone69_fixed_duration_macs.md)，对每个 checkpoint 的每个压缩位置，以全部 2,620 句的输出帧数之和除以该位置输入帧数之和；依网络顺序传播 3,001 帧，逐层计算算子。附录绝对值表的 GMAC/s 列将 30 秒成本除以 30。30 秒见 [Fast Conformer](https://arxiv.org/html/2305.05084v4) 和 [Zipformer](https://arxiv.org/html/2310.11230v4)；各论文的 MAC/FLOP 范围不相同。
 - **真实解码：** 用整句 FP32、batch 1、beam 20 的实际计数，分别给 encoder＋fusion、predictor、joiner、总量。说明是每个真实音频秒的主要 MAC，不把它当固定输入理论值、设备耗时或速度倍数。
 - **配对与分组：** [生成脚本](build_current_results.py)校验预测文件哈希、全部 UID、参考转写和错误数；按说话人配对重采样 10,000 次（种子 42）。同一脚本复用冻结语速十等分的成员，校验三组重新合并后复现整集错误数与实际 MAC。[配对区间及三组完整计数](generated/analysis.json)可独立核查。窗口与冻结替换数值来自[100 句 / 37 人机制诊断](../../artifacts/research/phone69_460h_summary_20261107/mel_layer5_interpretability_20261107.json)。
-- 从项目根运行 `python papers/extremafuse_acl2027/build_current_results.py`（NumPy、Matplotlib），生成结果曲线、方法网络图的矢量 PDF 和高清 PNG，以及五份 LaTeX 表行。曲线与放大图使用相同的未舍入坐标，方法图读取 Mel+L5 的 30 秒逐层帧数。编译入口为 `main.tex`。用 Tectonic 在本目录编译即能更新整稿 PDF。表 1 的 PNG 取自当前编译稿。[当前配对表预览](figures/matched_operating_points.png) · [11 月 12 日历史九点图](fixed_duration_curve_20261112/REPORT.md) · [历史导出记录](build_20261112.json)
+- 从项目根运行 `python papers/extremafuse_acl2027/build_current_results.py`（NumPy、Matplotlib），生成结果曲线、方法网络图的矢量 PDF 和高清 PNG，以及五份 LaTeX 表行。曲线与放大图使用相同的未舍入坐标，方法图读取 Mel+L5 的 30 秒逐层帧数。编译入口为 `main.tex`。用 Tectonic 在本目录编译即能更新整稿 PDF。表 1 的 PNG 取自当前编译稿。[当前配对表预览](figures/matched_operating_points.png) · [11 月 12 日历史八点图](fixed_duration_curve_20261112/REPORT.md)
 
 ## 投稿前优先补的证据
 

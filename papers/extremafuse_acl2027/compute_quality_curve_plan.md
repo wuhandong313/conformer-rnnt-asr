@@ -8,7 +8,7 @@
 
 ### 2026-11-19 追加 stride 4／256 维
 
-新配方沿用已训练的 stride 2／256 维的 8,800 个目标音素批上限、460 小时数据、seed 42 和 50 轮，其余训练参数相同。每帧投影改为 64 维，拼接四帧得 256 维主干。队列入口等待现有 Mel+L3、Mel+L7、L2+L7 的完成记录与最后控制进程退出，再持有共用 GPU 锁验证实际训练批，候选通过后从头训练。服务器状态写在 `output/phone69_460h_stride4_dim256_20261119/queue_state.json`，最终按 dev-clean 验证损失取 checkpoint。30 秒的 10.394 GMAC 为理论编码器算量，PER 在全量评估后补入。[新配方](../../configs/server_phone69_460h_offline_native_stride4_none_dim256_s42_e50.yaml) · [排队入口](../../scripts/server/phone69_stride4_dim256.py)
+新配方沿用已训练的 stride 2／256 维的 8,800 个目标音素批上限、460 小时数据、seed 42 和 50 轮，其余训练参数相同。每帧投影改为 64 维，拼接四帧得 256 维主干。队列入口等待前一批训练完成并释放 GPU，再持有共用 GPU 锁验证实际训练批，候选通过后从头训练。服务器状态写在 `output/phone69_460h_stride4_dim256_20261119/queue_state.json`，最终按 dev-clean 验证损失取 checkpoint。30 秒的 10.394 GMAC 为理论编码器算量，PER 在全量评估后补入。[新配方](../../configs/server_phone69_460h_offline_native_stride4_none_dim256_s42_e50.yaml) · [排队入口](../../scripts/server/phone69_stride4_dim256.py)
 
 ### stride 4／128 维的低预算对照
 
@@ -79,17 +79,17 @@
 
 下文保留既往方案及当时的入选集合。当前入稿范围见[论文说明](README.md)。
 
-## 2026-11-12 九组曲线（历史）
+## 2026-11-12 固定时长曲线（历史）
 
-按用户明确选择，移除128维stride4，将L2+L5作为核心插入位置对比纳入正文。当前入选九组：固定stride1／2／4（主干128／256／512），单阶段Mel／L2／L5／L7，以及双阶段Mel+L5、L2+L5。L2+L5首阶段hard三帧邻域、次阶段learned五帧融合，独立标记，避免将融合规则差异全归因于位置。
+这份历史图保留八组配置，分别为固定 stride 1／2／4（主干 128／256／512）、单阶段 Mel／L2／L5／L7 和双阶段 Mel+L5。
 
-核心曲线横轴为固定30秒、实测逐层保留率校准的编码器＋压缩理论GMAC／音频秒，纵轴为原始完整test-clean PER。九组均显示；当前入选集合的观察前沿为Mel+L5→Mel→L2→L2+L5→L5。连线只连接已有工作点，不插值未知性能。它是筛选后的探索性系统比较，不是全部实验的前沿或严格单因素因果实验。未核验的六个新增层位保持pending。
+核心曲线横轴为固定30秒、实测逐层保留率校准的编码器＋压缩理论GMAC／音频秒，纵轴为原始完整test-clean PER。入选集合的观察前沿为 Mel+L5 → Mel → L2 → L5。连线连接已有工作点。它是筛选后的探索性系统比较。当时五个新增位置尚待核验。
 
-[核心图和九组完整表](fixed_duration_curve_20261112/REPORT.md) · [入选清单](fixed_duration_selection.json) · [固定时长算法](../../docs/phone69_fixed_duration_macs.md)。重建：`python papers/extremafuse_acl2027/plot_fixed_duration_quality.py`。原始评测和下述历史真实搜索计数不覆盖；实际predictor/joiner分项保持独立，不混入理论编码器曲线。
+[历史图和八组完整表](fixed_duration_curve_20261112/REPORT.md) · [入选清单](fixed_duration_selection.json) · [固定时长算法](../../docs/phone69_fixed_duration_macs.md)。重建：`python papers/extremafuse_acl2027/plot_fixed_duration_quality.py`。原始评测和下述历史真实搜索计数不覆盖；实际predictor/joiner分项保持独立，不混入理论编码器曲线。
 
 ## 历史完整语料计数方案（保留来源）
 
-当前六组按新论文编号 E01–E06 命名，原始归档编号见 [README](README.md#当前论文实验与编号)。固定stride1、2、8已完成50轮和本地全量PER／主要MAC评测，层数保持10、投影维度128，见[完成报告](../../artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/REPORT_complete.md)。2026-11-12进一步授权[层位网格与自然语速补充](placement_rate_supplement_20261112.md)：已有位置复用，只训练六个缺少的位置，原六组快照保留。
+当前六组按新论文编号 E01–E06 命名，原始归档编号见 [README](README.md#当前论文实验与编号)。固定stride1、2、8已完成50轮和本地全量PER／主要MAC评测，层数保持10、投影维度128，见[完成报告](../../artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/REPORT_complete.md)。2026-11-12进一步授权[层位网格与自然语速补充](placement_rate_supplement_20261112.md)：已有位置复用，只训练五个缺少的位置，原六组快照保留。
 
 ### 历史六组结果
 

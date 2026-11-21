@@ -68,14 +68,6 @@
       "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50/checkpoints/val-none-epoch=45-step=151700.ckpt",
       "checkpoint_sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c",
       "test_clean_PER": 0.04780899678875058
-    },
-    {
-      "name": "placement_layers2_5_n3",
-      "config": "/test21/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_placement_stride1_layers2_5_n3_testclean_cpu_monotonic_20261027/configs/layers2_5_n3_cpu_testclean.yaml",
-      "config_sha256": "b064be6f57a99084a3350049c5ef323ae1c7a27eb4a2ec6598cc28c2ef2e6613",
-      "checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
-      "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
-      "test_clean_PER": 0.05421033419213535
     }
   ],
   "device": "cpu",

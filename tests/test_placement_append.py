@@ -24,7 +24,7 @@ class PlacementAppendTests(unittest.TestCase):
                 append.verify_predecessor()
             verify.assert_not_called()
 
-    def test_returned_manifest_contains_only_the_three_requested_fresh_runs(self):
+    def test_returned_manifest_contains_only_the_requested_mel_runs(self):
         root=Path(__file__).resolve().parents[1]
         plan=json.loads((root/'configs/phone69_placement_current_server_three_20261115.json').read_text())
         self.assertEqual([x['name'] for x in plan['experiments']],append.NAMES)

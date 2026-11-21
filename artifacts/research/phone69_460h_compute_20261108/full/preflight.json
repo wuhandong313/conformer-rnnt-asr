@@ -185,25 +185,6 @@
           "aten::convolution": 97315840
         }
       },
-      "E08/2217": {
-        "dispatched_macs": {
-          "projection": 4947968,
-          "layers": 619560960,
-          "fusion": 1671840,
-          "predictor": 417890304,
-          "joiner": 54064640
-        },
-        "elementwise_fusion": {
-          "detector_dots": 54144,
-          "fusion_weighted_sum": 51840
-        },
-        "operators": {
-          "aten::mm": 373751808,
-          "aten::addmm": 581925024,
-          "aten::_scaled_dot_product_flash_attention_for_cpu": 65116160,
-          "aten::convolution": 77342720
-        }
-      },
       "E09/2217": {
         "dispatched_macs": {
           "projection": 9633792,

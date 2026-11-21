@@ -82,7 +82,8 @@ def main():
     args = parser.parse_args()
     manifest_path = ARCHIVE / 'manifest.json'
     authority = json.loads((ARCHIVE / 'AUTHORITATIVE.json').read_text())
-    assert sha(manifest_path) == authority['original_verification']['manifest_sha256']
+    current = authority.get('retained_archive', authority['original_verification'])
+    assert sha(manifest_path) == current['manifest_sha256']
     audio = json.loads(manifest_path.read_text())['audio']
     assert len(audio) == 2620 and all(x['sample_rate'] == 16000 for x in audio)
     seconds = math.fsum(x['samples'] / x['sample_rate'] for x in audio)

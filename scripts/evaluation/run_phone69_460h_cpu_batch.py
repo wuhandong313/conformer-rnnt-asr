@@ -1,4 +1,4 @@
-"""Run the ten selected 460h Phone69 checkpoints serially on local CPU."""
+"""Run the retained 460h Phone69 checkpoints serially on local CPU."""
 import argparse
 import csv
 from datetime import datetime
@@ -17,7 +17,7 @@ import time
 
 ROOT = Path(__file__).resolve().parents[2]
 LEDGER = ROOT / "artifacts/research/phone69_460h_summary_20261107/experiments.json"
-IDS = [f"E{i:02}" for i in range(1, 11)]
+IDS = ("E01", "E02", "E03", "E04", "E05", "E06", "E07", "E09", "E10")
 BASELINE = "E09"
 N_UTTS = 2620
 N_PHONES = 189023
@@ -51,6 +51,15 @@ def write_json(path, value):
 def verified(path, expected):
     if sha(path) != expected:
         raise ValueError(f"SHA-256 mismatch: {path}")
+
+
+def read_authoritative_manifest(archive):
+    """Verify the current manifest and return the original provenance record."""
+    path = archive / "manifest.json"
+    authority = json.loads(read(archive / "AUTHORITATIVE.json"))
+    current = authority.get("retained_archive", authority["original_verification"])
+    verified(path, current["manifest_sha256"])
+    return json.loads(read(path)), authority
 
 
 def openmp_runtime():
@@ -284,18 +293,21 @@ def worker(out, name, attempt):
 
 def summarize(out, manifest):
     results = []
+    manifest_hashes = {sha(out / "manifest.json")}
+    if "recorded_manifest_sha256" in manifest:
+        manifest_hashes.add(manifest["recorded_manifest_sha256"])
     for entry in manifest["models"]:
         path = out / entry["id"] / "result.json"
         if path.exists():
             r = json.loads(read(path))
-            if any(r[k] != entry[k] for k in entry) or r["manifest_sha256"] != sha(out/"manifest.json"):
+            if any(r[k] != entry[k] for k in entry) or r["manifest_sha256"] not in manifest_hashes:
                 raise ValueError(f"Result provenance mismatch: {path}")
             verified(out/r["csv"],r["csv_sha256"])
             results.append(r)
     base = next((r["corpus_RTF"] for r in results if r["id"]==BASELINE), None)
     for r in results:
         r["RTF_over_E09"] = r["corpus_RTF"]/base if base else None
-    write_json(out/"summary.json", dict(baseline=BASELINE, completed=len(results), total=len(IDS), results=results))
+    write_json(out/"summary.json", dict(baseline=BASELINE, completed=len(results), total=len(manifest["models"]), results=results))
     columns = ["id","name","baseline","projection","backbone","threads","interop_threads","data_workers",
                "corpus_PER","corpus_RTF","RTF_over_E09",
                "utterances","changed_predictions","config","config_sha256","training_config","training_config_sha256",

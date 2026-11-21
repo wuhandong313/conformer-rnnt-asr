@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "study": "return_three_placements_to_current_server_20261115",
+  "study": "return_mel_placements_to_current_server_20261115",
   "runtime_dir": "output/phone69_460h_placement_current_server_three_20261115",
   "batch_search": {
     "initial": 5000,
@@ -32,17 +32,6 @@
         7
       ],
       "initial_budget": 6500
-    },
-    {
-      "name": "layers2_7_n3",
-      "action": "train",
-      "config": "configs/server_phone69_460h_placement_layers2_7_n3_stride1_s42_e50_supp20261112.yaml",
-      "baseline_config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch4000_before6000.yaml",
-      "positions": [
-        2,
-        7
-      ],
-      "initial_budget": 4000
     }
   ]
 }

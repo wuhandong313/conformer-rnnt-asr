@@ -20,15 +20,6 @@
       "matches_local": true
     },
     {
-      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
-      "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-      "sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
-      "matches_run": true,
-      "local_path_exists": true,
-      "local_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
-      "matches_local": true
-    },
-    {
       "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_layer5_layer8_stride1_s42_b11050_e50",
       "path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_mel_layer5_layer8_stride1_s42_b11050_e50.yaml",
       "sha256": "04e89690cd2297d4fbe79202b5c7ddbc3ed0c435cebf27c7c32e043c5d609250",
@@ -125,7 +116,6 @@
     "phone69_460h_five_frames_20261021_post_restart",
     "phone69_460h_local_cpu_20261029_preparation",
     "phone69_460h_mel_layer5_local_cpu_20261107",
-    "phone69_460h_placement_stride1_layers2_5_n3_testclean_cpu_monotonic_20261027",
     "phone69_460h_placement_stride1_testclean_cpu_20261025",
     "phone69_460h_placement_stride1_testclean_cpu_monotonic_20261025",
     "phone69_460h_testclean_20261017"

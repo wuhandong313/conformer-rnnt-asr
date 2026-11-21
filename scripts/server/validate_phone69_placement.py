@@ -23,7 +23,7 @@ from common import WarmupLR
 from conformer_rnnt.model import conformer_rnnt_model_from_config
 
 
-VARIANTS = ("mel", "layer5", "layers2_5_n3")
+VARIANTS = ("mel", "layer5")
 CONFIGS = [REPO / f"configs/server_phone69_460h_placement_{name}_stride2_s42_e50.yaml" for name in VARIANTS]
 
 

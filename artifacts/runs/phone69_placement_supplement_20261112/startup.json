@@ -83,30 +83,6 @@
           "resume_completed_epochs": 50,
           "resume_at_epoch_boundary": true
         }
-      },
-      {
-        "name": "layers2_5_n3",
-        "action": "reuse",
-        "positions": [
-          2,
-          5
-        ],
-        "status": "trained",
-        "epoch": 50,
-        "global_step": 141382,
-        "budget": 6000,
-        "training_commit": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
-        "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-        "config_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
-        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
-        "best_checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
-        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=141382-e74a7a871dc9.ckpt",
-        "epoch_boundary_metadata": {
-          "previous_max_token_limit": 6000,
-          "resume_global_step": 141382,
-          "resume_completed_epochs": 50,
-          "resume_at_epoch_boundary": true
-        }
       }
     ],
     "experiment": "layer1",
@@ -126,9 +102,6 @@
     "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60",
     "configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca",
     "configs/server_phone69_460h_placement_layer9_stride1_s42_e50_supp20261112.yaml": "020f3a97ca5d9e73bcfa87967c44349d7fba3f0a8b5641a8209d06e11a7dbdab",
-    "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch4000_before6000.yaml": "e60e15d89be9e141bfc3ab5812e3a3454ea888bd48893ef25443eccd8ab19e61",
-    "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
-    "configs/server_phone69_460h_placement_layers2_7_n3_stride1_s42_e50_supp20261112.yaml": "551e09bdcabf9067464b4215acecff5bcdb8dd7b55661e54799e01f23f27fe20",
     "configs/server_phone69_460h_placement_mel_layer3_stride1_s42_e50_supp20261112.yaml": "47b71c569a1a5cc16a0c9e6b8c34bd919beb3c2dbfa821dc4e626589fcb90342",
     "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_e50.yaml": "681154e65a68ec870b479b8fbca1ca39502ee89e617ddbae3e0d9df618dab0b0",
     "configs/server_phone69_460h_placement_mel_layer5_stride1_s42_resume_b11050_e50.yaml": "2b9909965c50808e96ee5546a3f53eede597e415449ae79bb845b60ab1728192",
@@ -245,30 +218,6 @@
         "resume_completed_epochs": 50,
         "resume_at_epoch_boundary": true
       }
-    },
-    {
-      "name": "layers2_5_n3",
-      "action": "reuse",
-      "positions": [
-        2,
-        5
-      ],
-      "status": "trained",
-      "epoch": 50,
-      "global_step": 141382,
-      "budget": 6000,
-      "training_commit": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
-      "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-      "config_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
-      "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
-      "best_checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
-      "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=141382-e74a7a871dc9.ckpt",
-      "epoch_boundary_metadata": {
-        "previous_max_token_limit": 6000,
-        "resume_global_step": 141382,
-        "resume_completed_epochs": 50,
-        "resume_at_epoch_boundary": true
-      }
     }
   ],
   "pending_training": [
@@ -276,8 +225,7 @@
     "layer3",
     "layer9",
     "mel_layer3",
-    "mel_layer7",
-    "layers2_7_n3"
+    "mel_layer7"
   ],
   "latest_first_probe": {
     "status": "preparing",
@@ -381,7 +329,6 @@
     "no_model_inference": true,
     "report": "artifacts/research/phone69_supplementary_rate_groups_20261112/REPORT.md"
   },
-  "paper_build_record": "papers/extremafuse_acl2027/build_20261112.json",
   "first_selected_batch": {
     "valid": true,
     "name": "layer1",

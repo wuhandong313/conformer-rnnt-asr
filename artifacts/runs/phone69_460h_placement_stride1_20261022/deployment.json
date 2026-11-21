@@ -120,18 +120,6 @@
       "sha256": "adf2cdc88983fceee80c9d531c87c20142682a7e2069dd6c95c8ed8396da8268",
       "previous_sha256": null,
       "backup": null
-    },
-    {
-      "path": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50.yaml",
-      "sha256": "46fcd21d1a968f7e05cbe03cd8ed50e3d5bd62a69f1d932d1c68e0fcf26f4581",
-      "previous_sha256": null,
-      "backup": null
-    },
-    {
-      "path": "configs/server_phone69_460h_placement_layers2_5_n3_stride2_s42_e50.yaml",
-      "sha256": "1249c9930e4dacfc58525975d5a10c689f233b865badcde4460c5ebc786e562c",
-      "previous_sha256": null,
-      "backup": null
     }
   ]
 }

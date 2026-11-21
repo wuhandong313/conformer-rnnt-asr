@@ -37,40 +37,6 @@
       "joiner_gmac_per_audio_second": 0.01075719625244454
     },
     {
-      "name": "layers2_7_n3",
-      "corpus_PER": 0.05435846431386657,
-      "per_percent": 5.435846431386657,
-      "utterances": 2620,
-      "reference_phones": 189023,
-      "phone_errors": 10275,
-      "encoder_compression_gmac_30s": 22.405111488,
-      "encoder_compression_gmac_per_audio_s_30s": 0.7468370496,
-      "full_corpus_components_macs": {
-        "encoder_weights": 5432090294400,
-        "attention_products": 3317633421056,
-        "projections": 41760550912,
-        "fusion_mlp": 13744568160,
-        "detector_dots": 462917120,
-        "fusion_weighted_sum": 426188160,
-        "predictor": 2859825364992,
-        "joiner": 411500472320
-      },
-      "full_corpus_total_gmac_per_audio_s": 0.6208690814269864,
-      "checkpoint_sha256": "a9a44f40850e1a1bc86fc1d1356715a594392182f034d7c589d0f8daee0afeab",
-      "csv_sha256": "8a17241db33d5655c8c3e831348a81638848d407c6e142b30d63f2aeef720617",
-      "independent_edit_distance_checked": 2620,
-      "checkpoint_hash_verified": true,
-      "frozen_model_source_verified": true,
-      "manifest_hash_verified": true,
-      "label": "L2+L7",
-      "expected_parameters": 4236299,
-      "best_checkpoint": "val-none-epoch=25-step=48050.ckpt",
-      "result_sha256": "dcb732db39509dfafe90748ac14c4e725e323c56c4ecfc7b0f213ed465d241a3",
-      "encoder_compression_gmac_per_audio_second": 0.4526989698419504,
-      "predictor_gmac_per_audio_second": 0.14701597293029048,
-      "joiner_gmac_per_audio_second": 0.02115413865474548
-    },
-    {
       "name": "stride4_dim256",
       "corpus_PER": 0.05599318601440036,
       "per_percent": 5.599318601440037,
@@ -140,9 +106,9 @@
     }
   ],
   "verifier_sha256": "1ec3f30659be3eca1a92548082c2b7d1f93985aca676907f2adb974274917b4d",
-  "server_metadata_sha256": "9fa1a5c3dc8048ada48ebccc26a452baac2fd16e69e3aa3b1d1ccf430831ac03",
+  "server_metadata_sha256": "ec7af3806ebd5d8c2bb50bffc5589c382426c27182bf65f6ff29fc38dd51cd1c",
   "server_verification_utc": "2026-11-21T02:21:55.030248+00:00",
-  "summary_sha256": "aecb03d9759661a8ebaa9b07953eca966c8709d2aff6253db2ba93f17f91597a",
+  "summary_sha256": "bc0cd681fa157f4e2219a68a94d39d7fe5de755a51b04d12937bf222a5a5b7a2",
   "completion_marker_sha256": "bcda5cf8b90965ba382212d13aaf62dbdb34550a6ec96b5630238071657f33a3",
   "launched_at_utc": "2026-11-21T03:11:47.601173+00:00",
   "launcher_sha256": "972ce70bdd464627f86c435d8d2cb7b7f8fb893219f5d44be2501f9635e31365",
@@ -155,5 +121,10 @@
     "preserved_attempt": "layer3_rerun/attempt_interrupted_01",
     "retried_at_utc": "2026-11-21T04:24:11.259026+00:00",
     "exit_reason": "not recorded"
+  },
+  "source_snapshot": {
+    "commit": "4dbc5de537edc6acdfb8ef8a8c4788380e032a37",
+    "server_metadata_sha256": "9fa1a5c3dc8048ada48ebccc26a452baac2fd16e69e3aa3b1d1ccf430831ac03",
+    "summary_sha256": "aecb03d9759661a8ebaa9b07953eca966c8709d2aff6253db2ba93f17f91597a"
   }
 }

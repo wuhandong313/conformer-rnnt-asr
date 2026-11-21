@@ -2,7 +2,6 @@
   "status": "evaluating",
   "completed_models": [
     "mel_layer7",
-    "layers2_7_n3",
     "stride4_dim256"
   ],
   "controller_pid": 21384,

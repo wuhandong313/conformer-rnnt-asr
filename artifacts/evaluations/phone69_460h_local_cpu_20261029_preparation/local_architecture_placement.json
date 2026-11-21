@@ -27,13 +27,6 @@
       "tokenizer": true,
       "state_dict_layout": true,
       "local_checkpoint_loaded": false
-    },
-    {
-      "name": "placement_layers2_5_n3_stride1",
-      "definition": true,
-      "tokenizer": true,
-      "state_dict_layout": true,
-      "local_checkpoint_loaded": false
     }
   ]
 }

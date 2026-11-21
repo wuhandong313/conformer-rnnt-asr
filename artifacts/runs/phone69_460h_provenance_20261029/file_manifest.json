@@ -711,7 +711,9 @@
       "included": true,
       "sha256": "01131291dd7cbc7d413477201f109d6ed59b12d3675dbac21e8bddd51d3683fc",
       "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_layer7_stride1_20261027/controller.py"
+      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_layer7_stride1_20261027/controller.py",
+      "retained_local_sha256": "3b4bc64a644351235c24e37059c12cfae50fba12a5b6aef64c5f9f5037b781fd",
+      "retained_local_bytes": 12963
     },
     {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_layer7_stride1_20261027/launch_state.json",
@@ -771,7 +773,9 @@
       "included": true,
       "sha256": "568c57421e1627983560b30ef70179d9eedde57bd08b22c5dd8b954a39e58cd9",
       "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_layer7_stride1_20261027/protected_manifest.json"
+      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_layer7_stride1_20261027/protected_manifest.json",
+      "retained_local_sha256": "eb8cd244c5d8d939d58b07aa346b91ac45200b955e301d35a43fdd1efd0d25f2",
+      "retained_local_bytes": 29618
     },
     {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_layer7_stride1_20261027/queue_plan.json",
@@ -844,16 +848,6 @@
       "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/complete_layer5.json"
     },
     {
-      "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/complete_layers2_5_n3.json",
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/complete_layers2_5_n3.json",
-      "bytes": 730,
-      "mtime_ns": 1792968398051249052,
-      "included": true,
-      "sha256": "3487e1960626695caf57e1e617d1219e23978fa2b3f9834c3760a675a5e88e80",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/complete_layers2_5_n3.json"
-    },
-    {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/complete_mel.json",
       "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/complete_mel.json",
       "bytes": 704,
@@ -871,7 +865,9 @@
       "included": true,
       "sha256": "2972e217a44457cf940afaff84308c93ed116abe631e856fdee5ab347c126c86",
       "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/completion_validation.json"
+      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/completion_validation.json",
+      "retained_local_sha256": "7db46ab61e5a01a178e929cdb8639a1631a83f9e51b7231e8d96fc92f5a2c071",
+      "retained_local_bytes": 1802
     },
     {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/deployment.json",
@@ -881,7 +877,9 @@
       "included": true,
       "sha256": "c59746615e9645301937648f9af7d99bd495f91dfa04e0ee0d4360f56f2f9bea",
       "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/deployment.json"
+      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/deployment.json",
+      "retained_local_sha256": "49fa81fcbe52cefd649122988663dd702f92c74d30ad77c1e08cefa1783be1cd",
+      "retained_local_bytes": 5591
     },
     {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/docs_before_final/phone69_placement_stride1_launch_20261022.md",
@@ -891,7 +889,9 @@
       "included": true,
       "sha256": "4f81950215dbc1f8beecfb3e985cbc0e9c795cf3233086bf6ae8459c0c5e87f4",
       "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/docs_before_final/phone69_placement_stride1_launch_20261022.md"
+      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/docs_before_final/phone69_placement_stride1_launch_20261022.md",
+      "retained_local_sha256": "7ef1e1dd36fc1b3ccc93ecf02d6f67e75eded9ae8e1f3134b94180ef0a8405ef",
+      "retained_local_bytes": 2950
     },
     {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/launch_repair_01/failed_queue_state.json",
@@ -931,7 +931,9 @@
       "included": true,
       "sha256": "ef9624e1c37f1e95d8025791a99f0c4b9bbc84071a328266c8f90e1bab40249c",
       "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/launch_repair_01/source_before/scripts/server/phone69_placement_pipeline.py"
+      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/launch_repair_01/source_before/scripts/server/phone69_placement_pipeline.py",
+      "retained_local_sha256": "65b8d7681c0b538f9556f447062fcc0b3dca8cf4590b7e9ca9698a80dd1ef424",
+      "retained_local_bytes": 10435
     },
     {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/launch_repair_01/source_before/tests/test_placement_launch.py",
@@ -971,7 +973,9 @@
       "included": true,
       "sha256": "b5da102b0870aa35a05df8075428cfc882278900189f465cad5d5906d88211fe",
       "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/prelaunch_validation.json"
+      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/prelaunch_validation.json",
+      "retained_local_sha256": "34e9bf2c7e2aa0278133fdd1cd4e5d198a3b423bffaca9f72d03c76c5dac88b2",
+      "retained_local_bytes": 5227
     },
     {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layer5_b5000.json",
@@ -1014,86 +1018,6 @@
       "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layer5_b6500.log"
     },
     {
-      "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b4000.json",
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b4000.json",
-      "bytes": 85647,
-      "mtime_ns": 1792623754224174916,
-      "included": true,
-      "sha256": "7c62f649b6dad1033e8cc9be60feeaf6fa437b01a2bad27b2a2ad73289a62ab7",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b4000.json"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b4000.log",
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b4000.log",
-      "bytes": 27367,
-      "mtime_ns": 1792623755514234334,
-      "included": true,
-      "sha256": "c49f6c34504a7707c1d41c34c7853135512ae5bdaa10df12b7b727ec18149be6",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b4000.log"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b5000.json",
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b5000.json",
-      "bytes": 86556,
-      "mtime_ns": 1792623702934866285,
-      "included": true,
-      "sha256": "ea50f517646eaa3e1f330dafd500c65c56b3c2c35bd6dbe9f648ec4b71df1fa4",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b5000.json"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b5000.log",
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b5000.log",
-      "bytes": 26531,
-      "mtime_ns": 1792623704451854542,
-      "included": true,
-      "sha256": "13137e9fc7ca73a54e54274167dd8ec891cd99d24ac06b59faab27adb8c36c9a",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b5000.log"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6000_user_override.json",
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6000_user_override.json",
-      "bytes": 119594,
-      "mtime_ns": 1792844128802874256,
-      "included": true,
-      "sha256": "f0bcc9a170c23ce7a3a094ff12c0b0c91cd996d0b7d7d6489c0b8463b314b673",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6000_user_override.json"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6000_user_override.log",
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6000_user_override.log",
-      "bytes": 36041,
-      "mtime_ns": 1792844129949992522,
-      "included": true,
-      "sha256": "cd4332a84a9c11c04579e20e5f89cb8445c16f46e07f9f746f3d2d91e0a90965",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6000_user_override.log"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6500.json",
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6500.json",
-      "bytes": 34121,
-      "mtime_ns": 1792623654953165706,
-      "included": true,
-      "sha256": "b63c4ad7ec8cb7ded120247bb54665bf7baa0f990d9859fb715f7f2f838f8a75",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6500.json"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6500.log",
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6500.log",
-      "bytes": 11244,
-      "mtime_ns": 1792623656250114287,
-      "included": true,
-      "sha256": "d2472c022af6de50908612969fc40780ea566e954d29c0eac0cb256fd2c938a9",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6500.log"
-    },
-    {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/probe_mel_b6500.json",
       "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_mel_b6500.json",
       "bytes": 85409,
@@ -1131,7 +1055,9 @@
       "included": true,
       "sha256": "ffbdc36d39ccded2d57e3cedb7b01411ad0b255371c8eafc90010abe3b5da824",
       "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/queue_plan.json"
+      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/queue_plan.json",
+      "retained_local_sha256": "9fcff3dc3a2ac5f12983ca9d7ff81020aaf4291b211f3ff95d76a3f338ca2e63",
+      "retained_local_bytes": 1354
     },
     {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/queue_state.json",
@@ -1141,7 +1067,9 @@
       "included": true,
       "sha256": "20c2fef26943a3d27321ede64229410e741031799e567a9fb5500006cd02dd12",
       "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/queue_state.json"
+      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/queue_state.json",
+      "retained_local_sha256": "177eeaeb9957e7b0da48f632d42592af38c0f444419f9137c96e9ae80b87cf2a",
+      "retained_local_bytes": 491
     },
     {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/resume_batch6000_attempt.json",
@@ -1251,7 +1179,9 @@
       "included": true,
       "sha256": "75e3eaeed9e0d10cdb07b3cbb0f9ac62c09cad0958d7f327ae0dbf3bc7f25aaf",
       "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/startup_validation.json"
+      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/startup_validation.json",
+      "retained_local_sha256": "01ca1e52ddb7425e7f15a624a274d2b96a4543123f7129e44cb0ec4a0c8a2130",
+      "retained_local_bytes": 1552
     },
     {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/synthetic_validation.json",
@@ -1261,7 +1191,9 @@
       "included": true,
       "sha256": "064eb2d0e65b97007d121b757db4abc690631ec77f81349ff26e3b3571ffcba6",
       "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/synthetic_validation.json"
+      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/synthetic_validation.json",
+      "retained_local_sha256": "5c6944e297a0ea26629ac6bdca0d66a105bd342ab99d67fa579c80cae0d1d66d",
+      "retained_local_bytes": 3986
     },
     {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/synthetic_validation.log",
@@ -1281,7 +1213,9 @@
       "included": true,
       "sha256": "d931a465bb931eff86952350aaacc00ebf32b6af2d124670ee02599b387597b2",
       "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/synthetic_validation_resume_preflight.json"
+      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/artifacts/runs/phone69_460h_placement_stride1_20261022/synthetic_validation_resume_preflight.json",
+      "retained_local_sha256": "876e325c65b313d00b582c1a5f04ee3db27a000ebafbdfc3f17f4413487770ab",
+      "retained_local_bytes": 3986
     },
     {
       "source": "/test21/conformer-rnnt-asr/artifacts/runs/phone69_460h_placement_stride1_20261022/synthetic_validation_resume_preflight.log",
@@ -1382,16 +1316,6 @@
       "sha256": "8a6e57d334db6497f8a1f670173a603268e30b6531f459c39ae95aec748b1eca",
       "stable": true,
       "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/configs/server_phone69_460h_placement_layer7_stride1_s42_e50.yaml"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-      "path": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-      "bytes": 2548,
-      "mtime_ns": 1792844277999867967,
-      "included": true,
-      "sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml"
     },
     {
       "source": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
@@ -1582,96 +1506,6 @@
       "sha256": "608693e0a570cff8ff921c82e734d4dff5a036da072318a242de39925a8c1765",
       "stable": true,
       "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layer7_stride1_s42_e50/run.json"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/TRAINING_COMPLETE",
-      "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/TRAINING_COMPLETE",
-      "bytes": 0,
-      "mtime_ns": 1792968398062830813,
-      "included": true,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/TRAINING_COMPLETE"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/best_checkpoint.txt",
-      "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/best_checkpoint.txt",
-      "bytes": 144,
-      "mtime_ns": 1792962587685382937,
-      "included": true,
-      "sha256": "e2bca474255172086d2d02cbd45caf7ac2ad6718d26c3ec1f1183d8eb81bb310",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/best_checkpoint.txt"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_0/hparams.yaml",
-      "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_0/hparams.yaml",
-      "bytes": 1904,
-      "mtime_ns": 1792832925415778564,
-      "included": true,
-      "sha256": "fe0a9e9f48576aec87fbfe99dd56a05c5517b6722398bd114803e7f8d0e8cdff",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_0/hparams.yaml"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_0/metrics.csv",
-      "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_0/metrics.csv",
-      "bytes": 147003,
-      "mtime_ns": 1792844001022960606,
-      "included": true,
-      "sha256": "eac203600dbd193d60573a27141c0e6930144274db422dbd2419c14082273929",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_0/metrics.csv"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_1/hparams.yaml",
-      "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_1/hparams.yaml",
-      "bytes": 1904,
-      "mtime_ns": 1792844283012302248,
-      "included": true,
-      "sha256": "3654448363e3f24f050e528c9329c9ab896ef67a6f90cd535ab975195e01d10c",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_1/hparams.yaml"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_1/metrics.csv",
-      "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_1/metrics.csv",
-      "bytes": 1009665,
-      "mtime_ns": 1792962584287934476,
-      "included": true,
-      "sha256": "682aa05660b2b0c43b6bee2d6b236054c73086fdc06384ccbd84eeee186cee7b",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_1/metrics.csv"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/logs/gpu_usage.csv",
-      "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/logs/gpu_usage.csv",
-      "bytes": 177303,
-      "mtime_ns": 1792962570787076725,
-      "included": true,
-      "sha256": "3ba01c8db06f2c9c9c7cbb8d24d77f926da8e72d6b18e95513d1a6df71bf7e2d",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/logs/gpu_usage.csv"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/logs/train.log",
-      "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/logs/train.log",
-      "bytes": 25797064,
-      "mtime_ns": 1792962589316769655,
-      "included": false,
-      "sha256": "cdeab9f8e64d0add5a64528d9501dbcbcbbba3cf6c7496f6ac3ccdc4b4d89e1c",
-      "stable": true,
-      "reason": "over_10_mib"
-    },
-    {
-      "source": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/run.json",
-      "path": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/run.json",
-      "bytes": 8922,
-      "mtime_ns": 1792962587703241688,
-      "included": true,
-      "sha256": "adc04feb84d104fb187241d09b3a7e2a9aaefae5b1ea3065136069838a66980f",
-      "stable": true,
-      "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/run.json"
     },
     {
       "source": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_mel_stride1_s42_e50/TRAINING_COMPLETE",
@@ -2074,5 +1908,6 @@
       "local_path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_stride4_none_s42_e50/run.json"
     }
   ],
-  "note": "Live files are point-in-time snapshots; server continues appending."
+  "note": "Live files are point-in-time snapshots; server continues appending.",
+  "source_snapshot_commit": "4dbc5de537edc6acdfb8ef8a8c4788380e032a37"
 }

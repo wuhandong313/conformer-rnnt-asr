@@ -6,11 +6,6 @@
   "stride_status": "pending_user_decision",
   "candidate_template_stride": 2,
   "confirmed_later_layer": 5,
-  "confirmed_first_stage_neighborhood_radius": 1,
-  "confirmed_multistage_layers": [
-    2,
-    5
-  ],
   "parsed_yaml_values_unchanged": true,
   "validated_python_source_unchanged": true,
   "current_training_recipes_unchanged": true,
@@ -30,10 +25,6 @@
       "previous_sha256": "dfd9659b1c2077db30057f4815d33338d87e5b04cc80092d5c896e70cb4d803f",
       "current_sha256": "adf2cdc88983fceee80c9d531c87c20142682a7e2069dd6c95c8ed8396da8268"
     },
-    "configs/server_phone69_460h_placement_layers2_5_n3_stride2_s42_e50.yaml": {
-      "previous_sha256": "6764d865ba5ee7caf04a06150de139db21dfed0f23608aef13f2876708781189",
-      "current_sha256": "1249c9930e4dacfc58525975d5a10c689f233b865badcde4460c5ebc786e562c"
-    },
     "configs/server_phone69_460h_placement_mel_stride2_s42_e50.yaml": {
       "previous_sha256": "36a0bb9e13502f8ac1b6ec4fc67b9f760cd057ebe8720e4ca1c26ac2043701c4",
       "current_sha256": "50174ea97eace492aa9e2a6ee971c908d594fea61a28524b44713d5257274a4c"
@@ -49,5 +40,6 @@
     "Match input projection times stride to hidden width 128",
     "Recount parameters and validate selected configurations",
     "Validate real A100 batch memory before launch"
-  ]
+  ],
+  "retained_local_validation_report_sha256": "f2e1fbe7fa4f4df8dbea1f47ee7bd72187b044b84713cd28aaf806e18d061775"
 }

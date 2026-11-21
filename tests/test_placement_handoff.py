@@ -36,7 +36,7 @@ class PlacementHandoffTests(unittest.TestCase):
         here=json.loads((root/'configs/phone69_placement_current_server_layer9_20261114.json').read_text())
         there=json.loads((root/'configs/phone69_placement_remote_three_20261114.json').read_text())
         self.assertEqual([x['name'] for x in here['experiments']],['layer9'])
-        self.assertEqual([x['name'] for x in there['experiments']],['mel_layer3','mel_layer7','layers2_7_n3'])
+        self.assertEqual([x['name'] for x in there['experiments']],['mel_layer3','mel_layer7'])
         self.assertTrue(all(x['action']=='train' for x in here['experiments']+there['experiments']))
 
 

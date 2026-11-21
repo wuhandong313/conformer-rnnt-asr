@@ -1,6 +1,6 @@
 {
   "selection": "artifacts/research/phone69_paper_results_table_20261117/data.json",
-  "sha256": "0108cb83feb70f0e143b4ddce1a0c32b105e86c5a78f53c05731dedc6f9285d1",
+  "sha256": "06af20f0d958f0a17a3d0c363587eff6633428b50c54cf19e0fa5883704b3b1e",
   "paired_unit": "speaker",
   "speakers": 40,
   "draws": 10000,

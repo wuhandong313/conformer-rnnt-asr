@@ -11,7 +11,9 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from run_phone69_460h_cpu_batch import N_UTTS, ROOT, THREAD_ENV, code_fingerprints, sha, verified
+from run_phone69_460h_cpu_batch import (
+    N_UTTS, ROOT, THREAD_ENV, code_fingerprints, read_authoritative_manifest, sha, verified,
+)
 
 ARCHIVE = ROOT / "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive"
 COMPONENTS = ("encoder_weights", "attention_products", "projections", "fusion_mlp",
@@ -236,14 +238,12 @@ def measure(archive, entry, audio, indices):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", required=True, type=Path, help="Output directory, one JSON per model")
-    parser.add_argument("--models", nargs="+", help="Experiment IDs, default E01 through E10")
+    parser.add_argument("--models", nargs="+", help="Experiment IDs, default all retained models")
     parser.add_argument("--sample-per-quartile", type=int, help="Pilot only; omit to count the entire corpus")
     args = parser.parse_args()
     archive = ARCHIVE
     manifest_path = archive / "manifest.json"
-    authority = json.loads((archive / "AUTHORITATIVE.json").read_text())
-    verified(manifest_path, authority["original_verification"]["manifest_sha256"])
-    manifest = json.loads(manifest_path.read_text())
+    manifest, authority = read_authoritative_manifest(archive)
     source = archive / "model_source"
     if code_fingerprints(source) != manifest["code_sha256"]:
         raise ValueError("Model source does not match frozen manifest")
@@ -269,13 +269,20 @@ def main():
                       index_sha256=hashlib.sha256(json.dumps(indices).encode()).hexdigest(),
                       subset="test-clean", sample_per_quartile=args.sample_per_quartile,
                       torch=torch.__version__, torchaudio=torchaudio.__version__)
+    historical = authority.get("retained_archive")
+    historic_provenance = None
+    if historical:
+        historic_provenance = dict(provenance,
+                                   manifest_sha256=authority["original_verification"]["manifest_sha256"],
+                                   counter_sha256=historical["recorded_counter_sha256"])
     args.out.mkdir(parents=True, exist_ok=True)
     for name in args.models or entries:
         entry = entries[name]
         target = args.out / f"{name}.json"
         if target.exists():
             result = json.loads(target.read_text())
-            validate_result(result, entry, manifest["audio"], indices, provenance)
+            expected = historic_provenance if result["provenance"] == historic_provenance else provenance
+            validate_result(result, entry, manifest["audio"], indices, expected)
         else:
             result = measure(archive, entry, manifest["audio"], indices)
             result["provenance"] = provenance

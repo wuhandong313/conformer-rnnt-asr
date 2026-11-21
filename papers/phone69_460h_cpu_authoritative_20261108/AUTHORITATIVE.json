@@ -18,7 +18,6 @@
       "E05",
       "E06",
       "E07",
-      "E08",
       "E09",
       "E10"
     ],
@@ -59,8 +58,8 @@
     "model_source": "snapshot"
   },
   "batch_finished_at": "2026-11-08T02:08:37+08:00",
-  "completed": 10,
-  "total": 10,
+  "completed": 9,
+  "total": 9,
   "failures": {},
   "retries": 0,
   "changed_predictions": 0,
@@ -154,14 +153,6 @@
       "training_config": "supporting/original_archive/E07/training_config.yaml"
     },
     {
-      "id": "E08",
-      "result": "supporting/original_archive/E08/result.json",
-      "csv": "supporting/original_archive/E08/attempt_01/utterances.csv",
-      "log": "supporting/original_archive/E08/attempt_01/run.log",
-      "config": "supporting/original_archive/E08/config.yaml",
-      "training_config": "supporting/original_archive/E08/training_config.yaml"
-    },
-    {
       "id": "E09",
       "result": "supporting/original_archive/E09/result.json",
       "csv": "supporting/original_archive/E09/attempt_01/utterances.csv",
@@ -202,5 +193,13 @@
       "relative_links_rebased": 24,
       "metric_authority": "summary.csv"
     }
-  ]
+  ],
+  "retained_archive": {
+    "source_commit": "4dbc5de537edc6acdfb8ef8a8c4788380e032a37",
+    "manifest_sha256": "6dcd67235eff3157d0bec3f1d42d791f54d243c6b0e17450a822871bf3841376",
+    "summary_csv_sha256": "7ecfd82c287bdc10f8a037be37dfcc0fa93d2be87e6cb1122ccbc69408c82cbb",
+    "summary_json_sha256": "de657c9b43c4807a19ca9b46736b926feca5ad4552cab377c5a04b58b2e7921b",
+    "verification_sha256": "7382f223527952d17f1088e5919e92073d6e42dcfd5e5aa60b6c942a3ae52e5e",
+    "recorded_counter_sha256": "a8e121caf614f1686f832318738d8a149521a07fd2ff9f8af9f62962dabc3e5d"
+  }
 }

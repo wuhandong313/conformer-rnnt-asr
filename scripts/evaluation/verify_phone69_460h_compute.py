@@ -1,4 +1,4 @@
-"""Verify the ten full-corpus count files and write their publication table."""
+"""Verify the retained full-corpus count files and write their publication table."""
 
 import argparse
 import csv
@@ -10,7 +10,7 @@ from pathlib import Path
 
 import yaml
 
-from run_phone69_460h_cpu_batch import ROOT, sha
+from run_phone69_460h_cpu_batch import ROOT, read_authoritative_manifest, sha
 
 ARCHIVE = ROOT / "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive"
 STAGE_LENGTHS = ROOT / "output/phone69_460h/mel_layer5_compute_20261107/frame_lengths.csv"
@@ -71,7 +71,7 @@ def expected_components(model, raw, row):
                 predictor=row["predictor_tokens"] * 294912, joiner=row["joiner_rows"] * 17920)
 
 
-def verify_model(result_dir, entry, manifest, independent_lengths, paired_encoder):
+def verify_model(result_dir, entry, manifest, independent_lengths, paired_encoder, count_sources):
     name = entry["id"]
     file = result_dir / f"{name}.json"
     result = json.loads(file.read_text())
@@ -84,8 +84,7 @@ def verify_model(result_dir, entry, manifest, independent_lengths, paired_encode
             f"{name}: corpus size")
     index_sha = hashlib.sha256(json.dumps(list(range(n))).encode()).hexdigest()
     require(provenance["sample_per_quartile"] is None and provenance["index_sha256"] == index_sha
-            and provenance["manifest_sha256"] == sha(ARCHIVE / "manifest.json")
-            and provenance["counter_sha256"] == sha(Path(__file__).with_name("measure_phone69_460h_compute.py")),
+            and (provenance["manifest_sha256"], provenance["counter_sha256"]) in count_sources,
             f"{name}: provenance")
     cfg = yaml.safe_load((ARCHIVE / name / "config.yaml").read_text())["model"]
     original = json.loads((ARCHIVE / name / "result.json").read_text())
@@ -138,11 +137,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, required=True, help="Completed 'full' directory next to 'pilot24'")
     out = parser.parse_args().out
-    manifest = json.loads((ARCHIVE / "manifest.json").read_text())
+    manifest, authority = read_authoritative_manifest(ARCHIVE)
+    current_hash = sha(ARCHIVE / "manifest.json")
+    counter = Path(__file__).with_name("measure_phone69_460h_compute.py")
+    count_sources = {(current_hash, sha(counter))}
+    if "retained_archive" in authority:
+        count_sources.add((authority["original_verification"]["manifest_sha256"],
+                           authority["retained_archive"]["recorded_counter_sha256"]))
     with STAGE_LENGTHS.open(newline="") as f:
         independent_lengths = list(csv.DictReader(f))
     paired_encoder = json.loads(PAIRED_ENCODER.read_text())["record"]
-    metrics, checks = zip(*(verify_model(out, entry, manifest, independent_lengths, paired_encoder)
+    metrics, checks = zip(*(verify_model(out, entry, manifest, independent_lengths, paired_encoder, count_sources)
                             for entry in manifest["models"]))
     baseline = next(r["total_gmac_per_audio_s"] for r in metrics if r["id"] == "E09")
     for m in metrics:
@@ -152,7 +157,7 @@ def main():
         writer.writeheader()
         writer.writerows(metrics)
     report = dict(status="passed", scope="major model MACs per second of input audio",
-                  manifest_sha256=sha(ARCHIVE / "manifest.json"), independent_lengths_sha256=sha(STAGE_LENGTHS),
+                  manifest_sha256=current_hash, independent_lengths_sha256=sha(STAGE_LENGTHS),
                   summary_sha256=sha(out / "summary.csv"), checked_model_utterances=sum(x["rows_verified"] for x in checks),
                   models=checks)
     (out / "verification.json").write_text(json.dumps(report, indent=2) + "\n")

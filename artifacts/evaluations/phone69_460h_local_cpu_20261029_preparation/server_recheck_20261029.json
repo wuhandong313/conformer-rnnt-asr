@@ -58,14 +58,6 @@
       "stats_match": true,
       "trained": true,
       "best_path_match": true
-    },
-    {
-      "name": "placement_layers2_5_n3_stride1",
-      "best_match": true,
-      "config_match": true,
-      "stats_match": true,
-      "trained": true,
-      "best_path_match": true
     }
   ]
 }

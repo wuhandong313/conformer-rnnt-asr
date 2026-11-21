@@ -6,7 +6,7 @@
   "input_mel_frames": 3001,
   "counted_scope": "encoder and compression major MACs",
   "per_protocol": "full test-clean, CPU/FP32/batch1/beam20, threads4/interop1/workers0",
-  "script_sha256": "f731a4e482de4c19a303793a5db04694c01e0d1fc61893024533cbcf63f732cf",
+  "script_sha256": "61ad53a886a23559a167eee752d27091899f8efad2605a9913c27f93e3095374",
   "models": [
     {
       "id": "S1",
@@ -58,7 +58,7 @@
       "sources": {
         "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/attempt_01/result.json": "5595928f5bdeb7b5898778d05e84cc1c77716f4a3e5c54bbd2f5ebbd83062fcf",
         "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/attempt_01/utterances.csv": "fc0a59c9d26ea04a521173eb807a37998928e669f39fb66280a3471f17efd18d",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "dc0000053552ffa346f0883d68231e2dfd8fef1b0d2e34e9e188a6ffe69d9148",
         "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/config.yaml": "3c413f88b86b72247a86e1337e699e2390d25c0316528493e8b6de65c3787af3"
       }
     },
@@ -112,7 +112,7 @@
       "sources": {
         "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/attempt_01/result.json": "312fed0584a0d57b72a8a0593d68a602cd6224389b43fb4c7c4afbe558fe6bcf",
         "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/attempt_01/utterances.csv": "2a88e18879caefc4790788b73485beab1b3fb5b8d0f29a1365286fd71c2414e7",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "dc0000053552ffa346f0883d68231e2dfd8fef1b0d2e34e9e188a6ffe69d9148",
         "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/config.yaml": "0c9c26fcf52ff75d22b58afdd0d2da2b44d48f572c3cf84c3b8f7e658293cd32"
       }
     },
@@ -166,7 +166,7 @@
       "sources": {
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E09/result.json": "d97fab3b5f83bd9b4dc601c57399b036083592ee95974d9f9319fe1874310ef9",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E09/attempt_01/utterances.csv": "ddb61d71075f1b9a00ebee4c335bf9920e32a65c6532c51b865a52eeab8524f8",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "dc0000053552ffa346f0883d68231e2dfd8fef1b0d2e34e9e188a6ffe69d9148",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E09/config.yaml": "773e1ca8b7b335463b2475935cdd235bc1d7ac1e8ed17b9e5c73df7cb8a1ced7",
         "artifacts/research/phone69_460h_compute_20261108/full/E09.json": "32e164529117f2e88ccb54a2b23b2e077c99f9d36e068e785fbb5b9f1fa27b92"
       }
@@ -238,7 +238,7 @@
       "sources": {
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E05/result.json": "f9c9108d601c42df5976329bdda0a9afbaaa7ea44fd831e9ab15d07b45c51022",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E05/attempt_01/utterances.csv": "92fcc23ff24851c8517ae2a1fab350ca690d764a8ea3cbfe0430020388336fb9",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "dc0000053552ffa346f0883d68231e2dfd8fef1b0d2e34e9e188a6ffe69d9148",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E05/config.yaml": "584a45b39917382123fd4116356f77ebc13eb94f1beb0c3652c3fd611b5e01a3",
         "artifacts/research/phone69_460h_compute_20261108/full/E05.json": "d57a3a071926a3acefe4eaf855f5a3285c99b5141aace93835a55a16dc83b40f"
       }
@@ -337,7 +337,7 @@
           "retention": 0.40712177966946,
           "reduction": 0.59287822033054,
           "utterance_ratio_mean": 0.407316854448892,
-          "utterance_ratio_std": 0.015384685816292896,
+          "utterance_ratio_std": 0.015384685816292895,
           "utterances": 2620
         }
       ],
@@ -383,7 +383,7 @@
       "sources": {
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E02/result.json": "7a40d860f78f6f017d0a2e7169fc9eb87eb8b4dba304fa669c47c93382d46c8e",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E02/attempt_01/utterances.csv": "be5e3a989315c38b57aabc3bf05a50d4c60a6eceebe0794a5781c3d5f02a149b",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "dc0000053552ffa346f0883d68231e2dfd8fef1b0d2e34e9e188a6ffe69d9148",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E02/config.yaml": "733b2b28c723c90328f688b1063c425daa8cf424ca617519997ca6891baa5e0f",
         "artifacts/research/phone69_460h_compute_20261108/full/E02.json": "7035559cad6b73e7efc70c38609194413cacead93e278e34dd0bcb2c577794d2"
       }
@@ -528,7 +528,7 @@
       "sources": {
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/result.json": "6b159a3898cd1c18bc44763741fa3704c89e2c2abfae022559ee827005397650",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/attempt_01/utterances.csv": "df7729151cefd0405d7c89f786fb1825b11c6ee042a49e7d4b939d4b7db4697d",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "dc0000053552ffa346f0883d68231e2dfd8fef1b0d2e34e9e188a6ffe69d9148",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/config.yaml": "99742e054c65ff6a2e7b2a0a2a175a697bafda81599e49135c75a0ac5c610c6d",
         "artifacts/research/phone69_460h_compute_20261108/full/E06.json": "484efee7f1511a1db48e74a2eb79db6585d16f3d92ed4c16bb97a31b26f658bf"
       }
@@ -600,7 +600,7 @@
       "sources": {
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E07/result.json": "2a5a69925e7a51d0c65c85603e83f9d5354fccaf83b282abaecb92f3460e30b2",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E07/attempt_01/utterances.csv": "ca61d07a5fa41a42ce836526af75167329f08da342187f8639e16a7ff9d5c457",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "dc0000053552ffa346f0883d68231e2dfd8fef1b0d2e34e9e188a6ffe69d9148",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E07/config.yaml": "8d94308e6d24536f29985588c6f1d7409486d453c451128afea8112edb7d1605",
         "artifacts/research/phone69_460h_compute_20261108/full/E07.json": "2f9f6ed278b0afa6d7977408c31ad0a53721a29d936fec054c1c077be967090c"
       }
@@ -848,96 +848,9 @@
       "sources": {
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/result.json": "51cf1c85692a34752d279580b91038f36c2095a5174ecb479a5086b5e697a449",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/attempt_01/utterances.csv": "41ab794a0046c1a9006663775fa035f9b3b509e1f1654873054a89dee95da39f",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "dc0000053552ffa346f0883d68231e2dfd8fef1b0d2e34e9e188a6ffe69d9148",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/config.yaml": "3b595766e6627217d963c2f9b6b0a00d3724a7e959201ece5168dc0ec8f982b4",
         "artifacts/research/phone69_460h_compute_20261108/full/E10.json": "424625ab26112c73fe03dc5e94b939a708e0b8e1db8c38fda2ad2766a270c550"
-      }
-    },
-    {
-      "id": "E08",
-      "system": "L2＋L5*",
-      "inclusion": "existing_paper_selection",
-      "note": "",
-      "checkpoint_selection": "dev-clean validation loss",
-      "backbone": 128,
-      "per_percent": 5.4210334192135345,
-      "utterances": 2620,
-      "reference_phones": 189023,
-      "phone_errors": 10247,
-      "encoder_compression_gmac_30s": 18.615316768,
-      "encoder_compression_gmac_per_audio_s_30s": 0.6205105589333333,
-      "stage_rates": [
-        {
-          "after_layer": 2,
-          "input_frames": 1947238,
-          "output_frames": 1676106,
-          "retention": 0.8607607287861063,
-          "reduction": 0.13923927121389368,
-          "utterance_ratio_mean": 0.8604679748141549,
-          "utterance_ratio_std": 0.024972269483417953,
-          "utterances": 2620
-        },
-        {
-          "after_layer": 5,
-          "input_frames": 1676106,
-          "output_frames": 701682,
-          "retention": 0.4186382006865914,
-          "reduction": 0.5813617993134086,
-          "utterance_ratio_mean": 0.41815721388570676,
-          "utterance_ratio_std": 0.01398726505492919,
-          "utterances": 2620
-        }
-      ],
-      "trace_30s": {
-        "projected_frames": 3001,
-        "layer_frames": [
-          3001,
-          3001,
-          2583,
-          2583,
-          2583,
-          1081,
-          1081,
-          1081,
-          1081,
-          1081
-        ],
-        "output_frames": 1081,
-        "stages": [
-          {
-            "after_layer": 2,
-            "input_frames": 3001,
-            "output_frames": 2583
-          },
-          {
-            "after_layer": 5,
-            "input_frames": 2583,
-            "output_frames": 1081
-          }
-        ]
-      },
-      "components_macs_30s": {
-        "encoder_weights": 7294604800,
-        "attention_products": 11230841344,
-        "projections": 66152448,
-        "fusion_mlp": 22311840,
-        "detector_dots": 714496,
-        "fusion_weighted_sum": 691840
-      },
-      "actual_beam20_gmac_per_audio_s": {
-        "encoder_compression": 0.38387530805973946,
-        "predictor": 0.15610571484817998,
-        "joiner": 0.022365378017694303,
-        "total": 0.5623464009256137
-      },
-      "checkpoint": "val-none-epoch=25-step=73182.ckpt",
-      "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
-      "sources": {
-        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/result.json": "2de7f6ec7bc98cce0260278a249d4cc3fae2c291d5e91acd5aaf0a78508c98cd",
-        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/attempt_01/utterances.csv": "0b270c3a9996f067629312d5d9f3e983f49e547c3b36b54b944dc0163dc44041",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
-        "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/config.yaml": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
-        "artifacts/research/phone69_460h_compute_20261108/full/E08.json": "dc9a64598b8b19686c27378f3eb46290b566dabd21457617e13cfc53d536cc0d"
       }
     },
     {
@@ -1063,7 +976,7 @@
       "sources": {
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E01/result.json": "3ec80ed70144b9289fb7c3e0b6daeaed95849d642580c2222715eed792bb77fd",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E01/attempt_01/utterances.csv": "b92d9efcc2cc9c32243fce3393c2f8f4d949a5e0a4fb04ffc4df6af8ad538cfa",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "dc0000053552ffa346f0883d68231e2dfd8fef1b0d2e34e9e188a6ffe69d9148",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E01/config.yaml": "c781d6b13c3a89ae314562a1b0ea18fda549cf4c771f0fdbd963dc2a18932d83",
         "artifacts/research/phone69_460h_compute_20261108/full/E01.json": "7bae630a1858a54454ce6b23003db1b218163c6e5baddfbef79e6b5eed717ad6"
       }
@@ -1135,7 +1048,7 @@
       "sources": {
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E03/result.json": "886bcc1b7c16fa3f229edab3d75581d1f2ce3c63911c07b409dd1448e36f8d48",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E03/attempt_01/utterances.csv": "92111e45f0b5ce2286a2ff56b48ad09b8c947a4a69344b6a07ea540b05f5cad5",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "dc0000053552ffa346f0883d68231e2dfd8fef1b0d2e34e9e188a6ffe69d9148",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E03/config.yaml": "696e16cdb7e91d6089d8b1da227ef1e65235f3ba49cc5ccec233737ab7b1e9d2",
         "artifacts/research/phone69_460h_compute_20261108/full/E03.json": "2b300ce50946a6eaae45a134b88db335436833eea5c18b6335a3db36d46fa664"
       }
@@ -1207,7 +1120,7 @@
       "sources": {
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E04/result.json": "5ee23304b9ec32fe0d0d66959687a8af3d130529a3549b98543030b392405815",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E04/attempt_01/utterances.csv": "c74df09bfb115507e10e48d3ca6cd0af65a6f3e46af92883b557be99c52885cc",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "dc0000053552ffa346f0883d68231e2dfd8fef1b0d2e34e9e188a6ffe69d9148",
         "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E04/config.yaml": "752ea4b568f2e61dd839ff378218b623910e4c2f6e7b35bed43314b2dfa909b9",
         "artifacts/research/phone69_460h_compute_20261108/full/E04.json": "54e228a997d81b4bdfee8159d4418d4b8425967b4798c8b94a499d96aabed17b"
       }
@@ -1262,7 +1175,7 @@
       "sources": {
         "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/attempt_01/result.json": "e1c89da5b5b293fd4a3c340a094e90087ea70d9a75f0d7dc922583748d7349d6",
         "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/attempt_01/utterances.csv": "c98b7d616c9a9d2de9a6dbfe09d2e137034948949004f7567a996c4e0f5f788a",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "dc0000053552ffa346f0883d68231e2dfd8fef1b0d2e34e9e188a6ffe69d9148",
         "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/config.yaml": "378a5a26acec688a4a8f95152e8820b668ed0b202bdeda6db2158b2ea5fcb2f0"
       }
     },
@@ -1358,14 +1271,13 @@
       "sources": {
         "artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/result.json": "6b6616ca92aee0117b90ccba2b928b75a966cb7febb143a5db16d5b7a54c2598",
         "artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/utterances.csv": "5a3ee0fb26b3de9156083164dd75c6795b90207016f95fe899ef2e219f85ca68",
-        "artifacts/research/phone69_fixed_duration_20261112/results.json": "fe583dbb6b056e7cbd137723901c3b1c5baa0ef5c1acdf9125576e2953ff5484",
+        "artifacts/research/phone69_fixed_duration_20261112/results.json": "dc0000053552ffa346f0883d68231e2dfd8fef1b0d2e34e9e188a6ffe69d9148",
         "artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/config.yaml": "395664ece5870461b8057776a9bf17954a062c45a96d848561579b0ef669a697",
         "artifacts/research/phone69_fixed_duration_20261112/E11_stage_lengths.json": "848e651373be702fd61af1108d5bda57ac1043901698d0ec20f834942013403a"
       }
     }
   ],
   "pending": [
-    "mel_layer7",
-    "layers2_7_n3"
+    "mel_layer7"
   ]
 }

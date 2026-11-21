@@ -61,14 +61,6 @@
       "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E10.json"
     },
     {
-      "id": "legacy_L2_L5_n3",
-      "name": "ExtremaFuse-L2-L5-neighborhood3",
-      "archive_id": "E08",
-      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/attempt_01/utterances.csv",
-      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E08/result.json",
-      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E08.json"
-    },
-    {
       "id": "fixed_stride1",
       "name": "Stride1 projection128",
       "predictions_csv": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/attempt_01/utterances.csv",
@@ -92,7 +84,6 @@
     "L3",
     "L9",
     "Mel+L3",
-    "Mel+L7",
-    "L2+L7"
+    "Mel+L7"
   ]
 }

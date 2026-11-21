@@ -16,7 +16,6 @@ GROUPS = [
     ('单阶段压缩', ['E05', 'P_L1', 'E02', 'P_L3', 'E06', 'E07', 'P_L9']),
     ('两阶段压缩', ['P_MEL_L3', 'E10']),
 ]
-USER_EXCLUSIONS = {'E08': 'L2+L5 removed from the image by the user on 2026-11-17'}
 SCALE = 2
 WIDTH, HEIGHT = 1280, 1415
 INK, MUTED = '#172B43', '#5C6F83'
@@ -33,7 +32,6 @@ def main():
     selected = [identity for _, group in GROUPS for identity in group]
     expected = {row['id'] for row in rows.values()
                 if row['inclusion'] in ('existing_paper_selection', 'new_placement_comparison')}
-    expected -= USER_EXCLUSIONS.keys()
     assert len(selected) == len(set(selected)) == 12 and set(selected) == expected
     assert source['complete'] and source['duration_seconds'] == 30
     for identity in selected:
@@ -135,10 +133,7 @@ def main():
     snapshot = dict(source=str(SOURCE.relative_to(ROOT)), source_sha256=sha(SOURCE),
                     script_sha256=sha(__file__), image=path.name, image_sha256=sha(path),
                     duration_seconds=30, scope='encoder and compression major MACs',
-                    selection='Original paper comparison and newly evaluated placement comparisons; '
-                              'historical exclusions, training-loss checkpoint diagnosis, and '
-                              'user-excluded L2+L5 omitted.',
-                    user_exclusions=USER_EXCLUSIONS,
+                    selection='Original paper comparison and newly evaluated placement comparisons.',
                     selected_ids=selected, models=[rows[i] for i in selected],
                     excluded_ids=[i for i in rows if i not in selected])
     (OUT / 'data.json').write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + '\n')

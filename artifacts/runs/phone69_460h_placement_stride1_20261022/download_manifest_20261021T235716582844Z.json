@@ -67,36 +67,6 @@
       "sha256": "a2fbb19aa49a805851ef19539fd3ff7f8ab22182d48ceb2376ccdf1b3c6a7094"
     },
     {
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b4000.json",
-      "bytes": 85647,
-      "sha256": "7c62f649b6dad1033e8cc9be60feeaf6fa437b01a2bad27b2a2ad73289a62ab7"
-    },
-    {
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b4000.log",
-      "bytes": 27367,
-      "sha256": "c49f6c34504a7707c1d41c34c7853135512ae5bdaa10df12b7b727ec18149be6"
-    },
-    {
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b5000.json",
-      "bytes": 86556,
-      "sha256": "ea50f517646eaa3e1f330dafd500c65c56b3c2c35bd6dbe9f648ec4b71df1fa4"
-    },
-    {
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b5000.log",
-      "bytes": 26531,
-      "sha256": "13137e9fc7ca73a54e54274167dd8ec891cd99d24ac06b59faab27adb8c36c9a"
-    },
-    {
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6500.json",
-      "bytes": 34121,
-      "sha256": "b63c4ad7ec8cb7ded120247bb54665bf7baa0f990d9859fb715f7f2f838f8a75"
-    },
-    {
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6500.log",
-      "bytes": 11244,
-      "sha256": "d2472c022af6de50908612969fc40780ea566e954d29c0eac0cb256fd2c938a9"
-    },
-    {
       "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_mel_b6500.json",
       "bytes": 85409,
       "sha256": "5884cb703f4e4ff8a4a43ad68573ae605c2e27969fbc91ede7fb508363fd89f8"
@@ -200,11 +170,6 @@
       "path": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
       "bytes": 2180,
       "sha256": "34e17b7d5b3b78762c436dd6fe1dc14392b328d3cfd3a09db45113347c26ef60"
-    },
-    {
-      "path": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50.yaml",
-      "bytes": 2310,
-      "sha256": "e60e15d89be9e141bfc3ab5812e3a3454ea888bd48893ef25443eccd8ab19e61"
     },
     {
       "path": "configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",

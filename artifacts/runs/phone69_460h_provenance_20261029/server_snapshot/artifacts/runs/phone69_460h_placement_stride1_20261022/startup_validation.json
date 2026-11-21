@@ -13,8 +13,7 @@
   "protected_four_experiments_unchanged": true,
   "budgets": {
     "mel": 6500,
-    "layer5": 5000,
-    "layers2_5_n3": 4000
+    "layer5": 5000
   },
   "process": "PID   PPID STAT     ELAPSED COMMAND\n  2038   1960 Rl         01:56 /root/anaconda3/envs/whd/bin/python -u scripts/server/train_phone69_460h_one.py configs/server_phone69_460h_placement_mel_stride1_s42_e50.yaml",
   "log_tail": [

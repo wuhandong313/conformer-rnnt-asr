@@ -141,16 +141,6 @@
       }
     },
     {
-      "name": "layers2_7_n3",
-      "action": "train",
-      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_7_n3_stride1_s42_e50_supp20261112",
-      "run": null,
-      "selected_budget": null,
-      "checkpoints": {
-        "count": 0
-      }
-    },
-    {
       "name": "layer5",
       "action": "reuse",
       "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50",
@@ -232,34 +222,6 @@
       "selected_budget": null,
       "checkpoints": {
         "count": 39
-      }
-    },
-    {
-      "name": "layers2_5_n3",
-      "action": "reuse",
-      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
-      "run": {
-        "status": "trained",
-        "epoch": 50,
-        "global_step": 141382,
-        "config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-        "config_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
-        "max_token_limit": 6000,
-        "code_commit": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
-        "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
-        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=141382-e74a7a871dc9.ckpt",
-        "epoch_boundary_metadata": {
-          "previous_max_token_limit": 6000,
-          "resume_global_step": 141382,
-          "resume_completed_epochs": 50,
-          "resume_at_epoch_boundary": true
-        },
-        "pid": 8654,
-        "error": null
-      },
-      "selected_budget": null,
-      "checkpoints": {
-        "count": 60
       }
     }
   ]

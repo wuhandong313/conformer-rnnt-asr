@@ -179,7 +179,13 @@ def reference_decoder_macs(model, output_frames, target_phones):
 
 
 def inventory(extra_calibration=None):
-    manifest = read(ARCHIVE / 'manifest.json')
+    path = ARCHIVE / 'manifest.json'
+    authority = read(ARCHIVE / 'AUTHORITATIVE.json')
+    recorded = authority['original_verification']['manifest_sha256']
+    current = authority.get('retained_archive', authority['original_verification'])['manifest_sha256']
+    if sha(path) != current:
+        raise ValueError('Calibration manifest differs from the authoritative archive')
+    manifest = read(path)
     audio = manifest['audio']
     uids = [a['uid'] for a in audio]
     raw = [a['samples'] // 160 + 1 for a in audio]
@@ -194,7 +200,7 @@ def inventory(extra_calibration=None):
         if (result['config_sha256'] != sha(folder / 'config.yaml')
                 or result['checkpoint_sha256'] != item['checkpoint_sha256']
                 or result['provenance']['sample_per_quartile'] is not None
-                or result['provenance']['manifest_sha256'] != sha(ARCHIVE / 'manifest.json')):
+                or result['provenance']['manifest_sha256'] not in (recorded, current)):
             raise ValueError('Calibration identity differs from archive')
         entries.append(dict(id=item['id'], paper_id=aliases.get(item['id']), name=item['name'],
                             config_path=folder / 'config.yaml', checkpoint_sha256=item['checkpoint_sha256'],

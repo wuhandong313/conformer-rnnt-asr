@@ -17,12 +17,6 @@
       "config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
       "experiment": "exp_phone69_460h_offline_native_placement_layer5_stride1_s42_e50",
       "initial_budget": 6500
-    },
-    {
-      "scheme": "layers2_5_n3",
-      "config": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50.yaml",
-      "experiment": "exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
-      "initial_budget": 6500
     }
   ],
   "batch_candidates": [

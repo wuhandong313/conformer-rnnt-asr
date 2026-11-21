@@ -31,7 +31,7 @@
     ]
   },
   "per_source": "papers/phone69_460h_cpu_authoritative_20261108/summary.csv",
-  "per_source_sha256": "97f9822d06e8970d0aaec933bd34fca18307bf5f499c9a1c6d31c5e23c6c6b86",
+  "per_source_sha256": "5d59496a676d80f15019c87b6d2fd9183f70f6378b3f6cad800b85194d7fae33",
   "completed_full_counts": [
     "E01",
     "E02",
@@ -307,7 +307,7 @@
     "seed": 42
   },
   "full_verification_source": "artifacts/research/phone69_460h_compute_20261108/full/verification.json",
-  "full_verification_sha256": "ecac4ae6a88405e2ec9671d070ed6205b4198341b8b1bb11aca51f171e628c10",
+  "full_verification_sha256": "30c1dbc198451ad3a7334819ec48ccbfac24133eeb3e7ce5b48bea98cde07893",
   "baseline_id": "E05",
   "two_stage_id": "E06",
   "id_namespace": "paper_ids_20261108_v2",
@@ -323,8 +323,7 @@
   "excluded_archive_ids": [
     "E01",
     "E03",
-    "E04",
-    "E08"
+    "E04"
   ],
   "previously_excluded_three_stage_archive_id": "E11"
 }

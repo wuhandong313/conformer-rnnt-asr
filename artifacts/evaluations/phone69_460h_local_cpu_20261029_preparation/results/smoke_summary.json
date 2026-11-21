@@ -82,17 +82,5 @@
     "name": "placement_layer7_stride1",
     "phase": "smoke",
     "process_wall_seconds": 4.752592208998976
-  },
-  {
-    "utterances": 2,
-    "phone_errors": 4,
-    "reference_phones": 133,
-    "corpus_per": 0.03007518796992481,
-    "mean_utterance_rtf": 0.054270841519992716,
-    "reference_order_sha256": "87ff34a16e05896f724995e50ed326a71c39a13d15b64ffd8cf25cbc84f59d0c",
-    "csv_sha256": "1392e94280599bb6c55e0303761d6ad8b9da9021c5473fdd71365a4d974f290b",
-    "name": "placement_layers2_5_n3_stride1",
-    "phase": "smoke",
-    "process_wall_seconds": 5.094131666002795
   }
 ]

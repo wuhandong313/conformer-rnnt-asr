@@ -6,7 +6,7 @@
 
 当前只保留新 E01–E06，对应原归档 E02、E05、E06、E07、E09、E10。新 E05 为 stride4 主基线，新 E06 为 Mel＋L5 双阶段方法。[名称与编号对照](extremafuse_acl2027/README.md#当前论文实验与编号)
 
-原始归档、脚本参数和计数文件保持原编号。十组历史全量计数与核验原件均保留；正文、附录、图表和工作簿使用六组论文编号，通过 `archive_id` 追溯。原 E01、E03、E04、E08 已从论文移除；原 E11 继续仅作内部参考。
+原始归档、脚本参数和计数文件保持原编号。现存的九组历史全量计数及核验可按原编号查找。当时的正文、附录、图表和工作簿使用六组论文编号，通过 `archive_id` 追溯。原 E11 单列为内部参考。
 
 ## 已完成的同口径全量结果
 
@@ -38,7 +38,7 @@
 
 ## 结果核验与复现
 
-原 E01–E10 共 26,200 条模型—语句记录的预测与冻结归档逐句一致，分项总数由独立公式复算；原 E05／E10 的逐句帧长还与此前独立保存的几何数据精确比较。早期 24 句试测共 240 条记录与全量中的对应记录一致。试测仅作核验，不用来代替全量结果。[全量 CSV（归档编号）](../artifacts/research/phone69_460h_compute_20261108/full/summary.csv) · [核验报告](../artifacts/research/phone69_460h_compute_20261108/full/verification.json) · [算子级抽查](../artifacts/research/phone69_460h_compute_20261108/full/preflight.json)
+该次评测归档中现存的 23,580 条模型—语句记录的预测与冻结归档逐句一致，分项总数由独立公式复算；原 E05／E10 的逐句帧长还与此前独立保存的几何数据精确比较。早期 24 句试测共 216 条记录与全量中的对应记录一致。试测仅作核验，不用来代替全量结果。[全量 CSV（归档编号）](../artifacts/research/phone69_460h_compute_20261108/full/summary.csv) · [核验报告](../artifacts/research/phone69_460h_compute_20261108/full/verification.json) · [算子级抽查](../artifacts/research/phone69_460h_compute_20261108/full/preflight.json)
 
 若需另行复现论文入选六组，脚本仍接受**归档编号**。下例只是复现命令，不表示本次进行了新评测：
 

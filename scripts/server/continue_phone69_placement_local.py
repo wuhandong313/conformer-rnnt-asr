@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Retire only the old queue parent, retain its L3 worker, then train L9.
 
-The relocated Mel+L3/Mel+L7/L2+L7 recipes are never launched here. The old
+The relocated Mel+L3/Mel+L7 recipes are handled by a separate queue. The old
 deployment/manifest stays immutable; handoff identities and progress are audited.
 """
 import argparse
@@ -96,7 +96,7 @@ def main():
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
         save(OUT/'handoff_request.json',dict(code_commit=source_commit,original_state=old,
             original_run_config_sha256=run['config_sha256'],training_pid_preserved=training_pid,
-            old_controller_pid=old['controller_pid'],deferred_to_other_server=['mel_layer3','mel_layer7','layers2_7_n3'],
+            old_controller_pid=old['controller_pid'],deferred_to_other_server=['mel_layer3','mel_layer7'],
             current_server_next=['layer9'],source_sha256=fingerprints))
         state('retiring_old_queue_parent',old_controller_pid=old['controller_pid'],training_pid=training_pid)
         retire_queue_parent(old['controller_pid'],training_pid)
@@ -107,7 +107,7 @@ def main():
                     current=read(run_path)
                     state('waiting_for_running_layer3',training_pid=training_pid,
                         epoch=current.get('epoch'),global_step=current.get('global_step'),budget=8800,
-                        remaining_here=['layer9'],deferred_to_other_server=['mel_layer3','mel_layer7','layers2_7_n3'])
+                        remaining_here=['layer9'],deferred_to_other_server=['mel_layer3','mel_layer7'])
                     subprocess.run(['nvidia-smi','-i','0','--query-gpu=timestamp,name,memory.used,memory.total,utilization.gpu',
                         '--format=csv,noheader'],stdout=gpu,stderr=subprocess.DEVNULL)
                     gpu.flush()
@@ -126,7 +126,7 @@ def main():
         state('starting_layer9_only',completed=[result],remaining_here=['layer9'])
         queue=PlacementQueue(PLAN)
         queue.run()
-        state('complete',completed=[result]+queue.completed,deferred_to_other_server=['mel_layer3','mel_layer7','layers2_7_n3'])
+        state('complete',completed=[result]+queue.completed,deferred_to_other_server=['mel_layer3','mel_layer7'])
     except BaseException as error:
         state('failed',error=repr(error))
         raise

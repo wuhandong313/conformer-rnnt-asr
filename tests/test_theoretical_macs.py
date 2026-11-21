@@ -86,12 +86,11 @@ class TheoryTests(unittest.TestCase):
     def test_full_inventory_and_fixed_duration_coverage(self):
         calibration = (theory.DEFAULT_OUT / 'E11_stage_lengths.json').relative_to(ROOT)
         report, rows = theory.generate([30], calibration)
-        self.assertEqual(len(report['models']), 20)
-        self.assertEqual(len(rows), 14)
+        self.assertEqual(len(report['models']), 18)
+        self.assertEqual(len(rows), 13)
         self.assertTrue(all(r['input_frames'] == 3001 and r['target_phones'] == 292 for r in rows))
         self.assertEqual([m['id'] for m in report['models'] if not m['results']],
-                         ['supp_layer1', 'supp_layer3', 'supp_layer9', 'supp_mel_layer3',
-                          'supp_mel_layer7', 'supp_layers2_7_n3'])
+                         ['supp_layer1', 'supp_layer3', 'supp_layer9', 'supp_mel_layer3', 'supp_mel_layer7'])
 
 
 if __name__ == '__main__':

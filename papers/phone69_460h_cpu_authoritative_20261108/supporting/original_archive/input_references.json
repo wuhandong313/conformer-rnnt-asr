@@ -177,31 +177,6 @@
       }
     },
     {
-      "id": "E08",
-      "checkpoint": {
-        "path": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/models/placement_layers2_5_n3_stride1/val-none-epoch=25-step=73182.ckpt",
-        "sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
-        "bytes": 51297728
-      },
-      "dataset_path": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/librispeech",
-      "audio_manifest": "manifest.json#audio",
-      "chapter_label_hashes": "manifest.json#chapter_labels",
-      "global_stats": {
-        "original_path": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/assets/global_stats.json",
-        "archive_path": "inputs/global_stats.json",
-        "sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
-      },
-      "vocabulary": {
-        "original_path": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261029/code/placement/configs/phone69_vocab.json",
-        "archive_path": "inputs/phone69_vocab.json",
-        "sha256": "381f0fa6dd78e828ccf68c0f4b5d3988aabb3976753d4ae62ffea7f0359876e6"
-      },
-      "historical_predictions": {
-        "path": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_layers2_5_n3_stride1.csv",
-        "sha256": "7c82581af996bcdb9a738454e289c736c60a1ecd64bdf5bed104b895d58bd88a"
-      }
-    },
-    {
       "id": "E09",
       "checkpoint": {
         "path": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261104/models/dim512/val-none-epoch=09-step=23150.ckpt",

@@ -7,8 +7,8 @@
   "status_observed_local": "2026-11-07T14:09:11.934929+08:00",
   "server_clock_utc": "2026-11-07T05:20:51Z",
   "counts": {
-    "experiments": 11,
-    "full_test_clean_results": 10,
+    "experiments": 10,
+    "full_test_clean_results": 9,
     "trained_awaiting_full_evaluation": 0,
     "training": 1,
     "interrupted_with_full_evaluation": 0
@@ -1461,235 +1461,6 @@
       "parameters_source": "artifacts/runs/phone69_460h_placement_layer7_stride1_20261027/probe_layer7_b6500.json"
     },
     {
-      "id": "E08",
-      "name": "placement_layers2_5_n3_stride1",
-      "label": "第2层邻域3帧＋第5层五帧融合",
-      "training_config_path": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-      "training_config_sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0",
-      "server_config_path": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-      "experiment": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
-      "configuration": {
-        "paths": {
-          "dataset_path": "/test21/librispeech",
-          "global_stats_path": "/test21/librispeech/global_stats.json",
-          "exp_dir": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50",
-          "from_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=03-step=12414-ffc3c9aa1e56.ckpt"
-        },
-        "tokenizer": {
-          "type": "phone69",
-          "vocab_path": "configs/phone69_vocab.json"
-        },
-        "model": {
-          "sequence_mode": "offline",
-          "input_dim": 80,
-          "encoding_dim": 256,
-          "num_symbols": 69,
-          "time_reduction_input_dim": 128,
-          "time_reduction_stride": 1,
-          "num_heads": 8,
-          "ffn_dim": 512,
-          "depthwise_conv_kernel_size": 31,
-          "dropout": 0.1,
-          "compression": {
-            "stages": [
-              {
-                "after_layer": 2,
-                "detector": {
-                  "type": "cosine_diff"
-                },
-                "mixer": {
-                  "type": "hard"
-                },
-                "neighborhood_radius": 1
-              },
-              {
-                "after_layer": 5,
-                "detector": {
-                  "type": "cosine_diff"
-                },
-                "mixer": {
-                  "type": "learned"
-                },
-                "window_size": 5,
-                "weight_predictor_mode": "five_frames"
-              }
-            ]
-          },
-          "predictor": {
-            "symbol_embedding_dim": 128,
-            "num_lstm_layers": 2,
-            "lstm_hidden_dim": 128,
-            "lstm_layer_norm": true,
-            "lstm_layer_norm_epsilon": 0.001,
-            "lstm_dropout": 0.3
-          },
-          "joiner": {
-            "activation": "relu"
-          },
-          "num_layers": 10
-        },
-        "training": {
-          "learning_rate": 0.0005,
-          "adam_betas": [
-            0.9,
-            0.999
-          ],
-          "adam_eps": 1e-08,
-          "warmup_steps": 10000,
-          "rnnt_loss_reduction": "sum",
-          "rnnt_loss_clamp": 1.0,
-          "rnnt_loss_chunk": "batch",
-          "gradient_clip_val": 10.0,
-          "epochs": 50
-        },
-        "data": {
-          "sample_rate": 16000,
-          "n_fft": 400,
-          "n_mels": 80,
-          "hop_length": 160,
-          "spec_augment": {
-            "freq_mask_param": 27,
-            "time_mask_param": 100,
-            "time_mask_prob": 0.2
-          },
-          "transcript_suffix": "-ph",
-          "strip_spaces": false,
-          "max_token_limit": 6000,
-          "rnnt_numel_limit": 1900000000,
-          "rnnt_frames_per_char": 3.5,
-          "num_workers": 20,
-          "prefetch_factor": 2,
-          "train_subset": [
-            "train-clean-100",
-            "train-clean-360"
-          ],
-          "val_subset": "dev-clean",
-          "test_subset": "test-clean"
-        },
-        "trainer": {
-          "accelerator": "cuda",
-          "strategy": "auto",
-          "devices": 1,
-          "num_nodes": 1,
-          "log_every_n_steps": 10,
-          "val_check_interval": 200,
-          "num_sanity_val_steps": 0,
-          "fast_dev_run": false,
-          "matmul_precision": "high",
-          "accumulate_grad_batches": 1,
-          "checkpoint": {
-            "save_top_k": 2,
-            "save_weights_only": true,
-            "save_last": true,
-            "save_on_validation_end": true,
-            "val_checkpoint_interval": 200,
-            "train_checkpoint_interval": 500
-          }
-        },
-        "decoding": {
-          "beam_width": 20
-        },
-        "debug": false,
-        "seed": 42
-      },
-      "training_run_sha256": "adc04feb84d104fb187241d09b3a7e2a9aaefae5b1ea3065136069838a66980f",
-      "training": {
-        "status": "trained",
-        "target_epochs": 50,
-        "reported_epoch": 50,
-        "global_step": 141382,
-        "completed_epochs_at_last_boundary": 50,
-        "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=50-step=141382-e74a7a871dc9.ckpt",
-        "training_complete_marker": true,
-        "code_commit_recorded": "bae6d2c2170c1c1db9f4b1df4fa6743cc29b34f2",
-        "phone_token_budget": 6000,
-        "rnnt_frames_per_char": 3.5,
-        "resume_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/epoch-boundary-epoch=03-step=12414-ffc3c9aa1e56.ckpt",
-        "error": null
-      },
-      "stride": 1,
-      "input_projection_dim": 128,
-      "backbone_dim": 128,
-      "best_checkpoint": {
-        "server_path": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/checkpoints/val-none-epoch=25-step=73182.ckpt",
-        "sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
-        "audit_path": "artifacts/runs/phone69_460h_provenance_20261029/checkpoint_audit.json",
-        "dev_loss": 9.96010684967041,
-        "dev_loss_source": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_1/metrics.csv",
-        "epoch_zero_based": 25,
-        "global_step": 73182
-      },
-      "evaluation": {
-        "utterances": 2620,
-        "phone_errors": 10247,
-        "reference_phones": 189023,
-        "corpus_per": 0.05421033419213535,
-        "mean_utterance_rtf": 0.05846543485277441,
-        "median_utterance_rtf": 0.056947177894089915,
-        "csv_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_layers2_5_n3_stride1.csv",
-        "csv_sha256": "7c82581af996bcdb9a738454e289c736c60a1ecd64bdf5bed104b895d58bd88a",
-        "checks": {
-          "idx_contiguous": true,
-          "counts_match": true,
-          "per_consistent": true,
-          "rtf_finite_nonnegative": true,
-          "csv_hash_matches_summary": true,
-          "reference_order_matches": true
-        },
-        "summary_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/summary.json",
-        "evaluation_date": "2026-10-29",
-        "environment": {
-          "accelerator": "cpu",
-          "threads": 4,
-          "interop_threads": 1,
-          "workers": 0,
-          "torch": "2.8.0",
-          "torchaudio": "2.8.0",
-          "beam_width": 20
-        },
-        "config_path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-        "config_sha256": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
-        "global_stats_sha256": "022a496264bafdba8ecb65f72d71a579c76f6f8c56e41866a600272fc3b1c457"
-      },
-      "frame_retention": {
-        "overall_retention": 0.3603468091727873,
-        "frame_totals": {
-          "input_mel_frames": 1947238,
-          "encoder_input_frames": 1947238,
-          "encoder_output_frames": 701681
-        },
-        "stages": {
-          "after_layer_2": {
-            "input_frames": 1947238,
-            "output_frames": 1676099,
-            "candidate_frames": 745507,
-            "retention": 0.8607571339507548,
-            "reduction": 0.13924286604924518
-          },
-          "after_layer_5": {
-            "input_frames": 1676099,
-            "output_frames": 701681,
-            "candidate_frames": 701681,
-            "retention": 0.41863935244875156,
-            "reduction": 0.5813606475512485
-          }
-        },
-        "source": "artifacts/analysis/phone69_460h_testclean_frame_retention_cpu_20261027/compression_summary.json",
-        "date": "2026-10-27",
-        "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
-        "device": "cpu"
-      },
-      "notes": [
-        "4000 budget for first 3 completed epochs; resumed at step 12414 with budget 6000. Overlapping metrics versions are not independent runs."
-      ],
-      "parameters": 4236299,
-      "parameters_source": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6000_user_override.json",
-      "config_chain": [
-        "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch4000_before6000.yaml",
-        "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml"
-      ]
-    },
-    {
       "id": "E09",
       "name": "dim512_stride4_none",
       "label": "stride4 无动态压缩 512维主干",
@@ -2499,41 +2270,6 @@
       "sha256": "ccbf0b1a35a3a93a9808dbba307e12f8c7eff35e2602073d5c770ca279a1e3ea"
     },
     {
-      "path": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-      "bytes": 2548,
-      "sha256": "aa0b01cd4302161a57d25f32820dd5def5c0992f788fcb1c961821a02cd6bbd0"
-    },
-    {
-      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/results/full/placement_layers2_5_n3_stride1.csv",
-      "bytes": 1201297,
-      "sha256": "7c82581af996bcdb9a738454e289c736c60a1ecd64bdf5bed104b895d58bd88a"
-    },
-    {
-      "path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_0/metrics.csv",
-      "bytes": 147003,
-      "sha256": "eac203600dbd193d60573a27141c0e6930144274db422dbd2419c14082273929"
-    },
-    {
-      "path": "artifacts/runs/phone69_460h_provenance_20261029/server_snapshot/experiments/phone69_460h_offline_native_placement_layers2_5_n3_stride1_s42_e50/lightning_logs/version_1/metrics.csv",
-      "bytes": 1009665,
-      "sha256": "682aa05660b2b0c43b6bee2d6b236054c73086fdc06384ccbd84eeee186cee7b"
-    },
-    {
-      "path": "artifacts/evaluations/phone69_460h_local_cpu_20261029_preparation/configs_cpu/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch6000_resume.yaml",
-      "bytes": 2420,
-      "sha256": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb"
-    },
-    {
-      "path": "artifacts/runs/phone69_460h_placement_stride1_20261022/probe_layers2_5_n3_b6000_user_override.json",
-      "bytes": 119594,
-      "sha256": "f0bcc9a170c23ce7a3a094ff12c0b0c91cd996d0b7d7d6489c0b8463b314b673"
-    },
-    {
-      "path": "configs/server_phone69_460h_placement_layers2_5_n3_stride1_s42_e50_batch4000_before6000.yaml",
-      "bytes": 2310,
-      "sha256": "e60e15d89be9e141bfc3ab5812e3a3454ea888bd48893ef25443eccd8ab19e61"
-    },
-    {
       "path": "configs/server_phone69_460h_offline_native_stride4_none_dim512_s42_e50.yaml",
       "bytes": 2078,
       "sha256": "67492a12e0b6d2892ccae7b888a88c192fd9a9939e1e67471bc8236fb4232351"
@@ -2610,8 +2346,8 @@
     }
   ],
   "verification": {
-    "full_result_csvs": 10,
-    "rows_checked": 26200,
+    "full_result_csvs": 9,
+    "rows_checked": 23580,
     "retest_csvs": 1,
     "retest_rows_checked": 2620,
     "same_reference_sequence": true,

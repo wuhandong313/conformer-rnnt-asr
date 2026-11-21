@@ -42,6 +42,10 @@ class Stride4AppendTests(unittest.TestCase):
                     for name in stride.NAMES]
             queue = dict(status='complete', completed=rows)
             self.assertEqual(stride.verified_predecessor(queue, dict(models=rows)), stride.NAMES)
+            historical_rows = rows + [dict(name='previously_completed_run')]
+            historical_queue = dict(status='complete', completed=historical_rows)
+            self.assertEqual(stride.verified_predecessor(historical_queue, dict(models=historical_rows)),
+                             stride.NAMES)
             with self.assertRaisesRegex(RuntimeError, 'matching completion'):
                 stride.verified_predecessor(queue, dict(models=rows[:-1]))
             checkpoint.unlink()

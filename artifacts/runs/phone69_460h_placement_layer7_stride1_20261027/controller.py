@@ -33,7 +33,7 @@ def state(status, **values):
     print(json.dumps(record, ensure_ascii=False), flush=True)
 
 def capture_protected():
-    existing = ['mel', 'layer5', 'layers2_5_n3']
+    existing = ['mel', 'layer5']
     result = {'experiments': {}, 'configs': {}, 'legacy_manifest': str(repo / 'artifacts/runs/phone69_460h_placement_stride1_20261022/protected_manifest.json')}
     helper['protected_unchanged']()
     for name in existing:

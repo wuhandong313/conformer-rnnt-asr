@@ -99,7 +99,7 @@ def main():
     os.chdir(REPO)
     os.environ.update(OMP_NUM_THREADS='8', OPENBLAS_NUM_THREADS='8')
     plan = json.loads((AUDIT / 'queue_plan.json').read_text())
-    assert [x['scheme'] for x in plan['experiments']] == ['mel', 'layer5', 'layers2_5_n3']
+    assert [x['scheme'] for x in plan['experiments']] == ['mel', 'layer5']
     with open('/tmp/phone69_460h_serial.lock', 'w') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         protected_unchanged()

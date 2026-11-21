@@ -67,7 +67,7 @@ for group, gate_fragment in [('five_frames', 'native_offline_five_frames'),
 
 order = ['stride4_none', 'stride1_cosd_learned_five_frames', 'stride2_cosd_learned_five_frames',
          'stride4_cosd_learned_five_frames', 'placement_mel_stride1', 'placement_layer5_stride1',
-         'placement_layer7_stride1', 'placement_layers2_5_n3_stride1']
+         'placement_layer7_stride1']
 models = []
 for short_name in order:
     record = next(m for m in audit['models'] if m['experiment'] ==

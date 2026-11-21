@@ -4,7 +4,7 @@
 
 2026-11-12 用户要求：用真实数据测得各压缩层的保留率，再用固定算法计算统一输入长度的 MAC；缺失的逐层帧数在本地重新实测。主表采用 **30 秒、batch 1、编码器与压缩模块**，同时列 GMAC/30秒输入与 GMAC/输入音频秒。
 
-2026-11-17最新[全部结果表](../artifacts/research/phone69_all_results_20261117/REPORT.md)已覆盖19份checkpoint：原14组、L1／L3／L9、Mel＋L3及独立的L3训练best诊断。L1／L3／L9和Mel＋L3均完成全量本地解码与逐层帧数核验；Mel＋L7、L2＋L7仍不填待核验值。下文2026-11-12的14组清单作为原协议快照保留。
+2026-11-17最新[全部结果表](../artifacts/research/phone69_all_results_20261117/REPORT.md)已覆盖18份checkpoint：此前13组、L1／L3／L9、Mel＋L3及独立的L3训练best诊断。L1／L3／L9和Mel＋L3均完成全量本地解码与逐层帧数核验；该快照当时尚无Mel＋L7的核验结果。下文2026-11-12的13组清单作为原协议快照保留。
 
 - [Fast Conformer，ASRU 2023，§3.1.1、表4](https://arxiv.org/html/2305.05084v4#S3.SS1.SSS1)：使用单条30秒音频，DeepSpeed统计编码器MAC，表列GMAC；不包含RNNT decoder。
 - [Zipformer，ICLR 2024，§4.0.2、表2](https://arxiv.org/html/2310.11230v4)：明确用30秒音频统计编码器GFLOPs，同时比较Conformer、Squeezeformer、Branchformer等。
@@ -19,7 +19,7 @@
 
 `r_j = sum_i K_ij / sum_i N_ij`，称为**保留率**，压缩掉的比例为`1-r_j`。
 
-多阶段分别计算条件保留率：L5阶段的分母是进入L5压缩层的长度，不能再除原始Mel帧数；hard邻域保留用最终去重后的输出帧数。保留每层总N、总K、逐句保留率均值和标准差、checkpoint及配置／数据来源哈希。
+多阶段分别计算条件保留率：L5阶段的分母是进入L5压缩层的长度，不能再除原始Mel帧数。保留每层总N、总K、逐句保留率均值和标准差、checkpoint及配置／数据来源哈希。
 
 固定长度下按真实网络顺序传播：Mel压缩→输入投影→stride拼接→编码层→层后压缩→输出投影。压缩后长度为`clamp(round_half_up(r_j*N_j), 1, N_j)`；stride后长度为`ceil(N/s)`。取整用有理数实现。不同模型保留其真实宽度`D=projection_dim*stride`，不人为抹平stride导致的宽度变化。
 
@@ -38,7 +38,6 @@
 - 余弦检测器点积：`(N-1)*D_stage`；Mel处`D_stage=80`，编码层处为D。
 - 五帧融合MLP：`K*(5*D_stage*32 + 32*5)`。
 - 五帧加权融合：`K*5*D_stage`。
-- hard选择不产生融合矩阵MAC；输入仅1帧时按实现旁路，不计检测和融合。
 
 不计特征提取、归一化、softmax、激活、峰谷比较、排序、访存、Python控制流、训练反向和优化器。这是明确算子范围的主要MAC，不称为设备耗时或完整指令量。
 
@@ -52,7 +51,7 @@
 
 ## 覆盖与复现
 
-采用原归档E01–E11及新增S1/S2/S8，总计14个已评估模型；E编号保持原归档编号，另列论文编号避免混淆。六个新层位保留在清单中，缺少对应checkpoint完整保留率时明确pending，不输出虚构MAC。
+采用此前的原归档与新增S1/S2/S8，总计13个已评估模型；E编号保持原归档编号，另列论文编号避免混淆。新层位保留在清单中，缺少对应checkpoint完整保留率时明确pending，不输出虚构MAC。
 
 ```sh
 python scripts/evaluation/theoretical_phone69_macs.py \
@@ -62,8 +61,8 @@ python -m unittest discover -s tests -p test_theoretical_macs.py
 
 默认输出[结果JSON](../artifacts/research/phone69_fixed_duration_20261112/results.json)、[汇总CSV](../artifacts/research/phone69_fixed_duration_20261112/summary.csv)。没有stage-calibration时E11明确pending。
 
-已完成[14组结果表](../artifacts/research/phone69_fixed_duration_20261112/REPORT.md)，每组包含1／5／10／20／30秒，共70个理论工作点。E11缺失帧数已在家中CPU按其冻结checkpoint补测完整2620句，Mel／L5／L8条件保留率分别为0.392838／0.384232／0.449261；[原始补测记录](../artifacts/research/phone69_fixed_duration_20261112/E11_stage_lengths.json)保留逐层观测与来源哈希。9项本机回归通过，[核验记录](../artifacts/research/phone69_fixed_duration_20261112/verification.json)列明范围和产物哈希。
+已完成[13组结果表](../artifacts/research/phone69_fixed_duration_20261112/REPORT.md)，每组包含1／5／10／20／30秒，共65个理论工作点。E11缺失帧数已在家中CPU按其冻结checkpoint补测完整2620句，Mel／L5／L8条件保留率分别为0.392838／0.384232／0.449261；[原始补测记录](../artifacts/research/phone69_fixed_duration_20261112/E11_stage_lengths.json)保留逐层观测与来源哈希。9项本机回归通过，[核验记录](../artifacts/research/phone69_fixed_duration_20261112/verification.json)列明范围和产物哈希。
 
 缺失帧数的本地补测入口为`calibrate_phone69_stage_lengths.py --manifest <冻结manifest> --out <新文件>`：校验checkpoint、配置、源码、统计、词表和音频哈希，使用原CPU/FP32环境，实际观测每层输入帧数及各压缩模块前后长度，覆盖完整2620句。只执行编码器，不执行解码、不计时、不训练。脚本经Git同步到家中电脑后运行，服务器不执行测试或此补测。
 
-公式通过原E01–E10全部26200条逐句记录的6个编码器／压缩MAC分项逐一精确核对；另测试多阶段条件比率、长短句加权、stride取整、Mel先压缩后投影、单帧旁路和规定解码路径。旧PER、计数及时间档案保留原样；本协议结果另存，不能直接覆盖旧beam20总GMAC曲线。
+公式通过首批保留组的23580条逐句记录的6个编码器／压缩MAC分项逐一精确核对；另测试多阶段条件比率、长短句加权、stride取整、Mel先压缩后投影、单帧旁路和规定解码路径。旧PER、计数及时间档案保留原样；本协议结果另存，不能直接覆盖旧beam20总GMAC曲线。

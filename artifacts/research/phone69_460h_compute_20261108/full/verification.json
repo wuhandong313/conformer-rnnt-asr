@@ -1,10 +1,10 @@
 {
   "status": "passed",
   "scope": "major model MACs per second of input audio",
-  "manifest_sha256": "7bfe4ed442fb0cf7815a686448e5a6aae8de84abcc1673d43c7ed1bd69429acb",
+  "manifest_sha256": "6dcd67235eff3157d0bec3f1d42d791f54d243c6b0e17450a822871bf3841376",
   "independent_lengths_sha256": "6159b8935239aba0bbfacaae78acc7b8460f05f6104d55650975ef52e90cb4e2",
-  "summary_sha256": "e469abb03be34cc0ac2cc527e275efc47a60c8d9916f30bc1df564448ca3d1f6",
-  "checked_model_utterances": 26200,
+  "summary_sha256": "05f09c27dc6b46f4214f4af3765eb6f92151484969cd399d11e69a165e23ba5e",
+  "checked_model_utterances": 23580,
   "models": [
     {
       "id": "E01",
@@ -68,15 +68,6 @@
       "rows_verified": 2620,
       "pilot_rows_identical": 24,
       "total_major_macs": 13687140648352
-    },
-    {
-      "id": "E08",
-      "file_sha256": "dc9a64598b8b19686c27378f3eb46290b566dabd21457617e13cfc53d536cc0d",
-      "config_sha256": "d7517479edf9aa13bfdee0ab8d2e2a5d3aaad606ef6ba1fb6c59d884a6601feb",
-      "checkpoint_sha256": "cd753f6c7c6bcb22dbc41b025cc28b6c0d1172c77800f78ab8db9c0b200bed87",
-      "rows_verified": 2620,
-      "pilot_rows_identical": 24,
-      "total_major_macs": 10939032468544
     },
     {
       "id": "E09",
