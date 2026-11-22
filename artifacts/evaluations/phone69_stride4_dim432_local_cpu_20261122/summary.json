@@ -1,0 +1,138 @@
+{
+  "complete": true,
+  "models": {
+    "stride4_dim432": {
+      "model": {
+        "name": "stride4_dim432",
+        "stride": 4,
+        "expected_parameters": 22595686,
+        "training_commit": "5ca625fb9038c08f80c12e2965c9716a1778d70b",
+        "checkpoint": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/output/local_cpu_20261122/models/stride4_dim432/val-none-epoch=14-step=34900.ckpt",
+        "checkpoint_sha256": "788ce66ad606aa40355e8f9efe4e88065c952c89b21024a1e8893bb8dd0698fc",
+        "config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_stride4_dim432_local_cpu_20261122/stride4_dim432/config.yaml",
+        "config_sha256": "cbee75974b17991e00c8c91375cb5a041f637c5a1c81c5b7294ef6cd8f8aca71",
+        "training_config": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_stride4_dim432_local_cpu_20261122/stride4_dim432/training_config.yaml",
+        "training_config_sha256": "5442b29c39bd568a2d70a27464ab580438ca8e1b087aec7403e36dc6b8da2595",
+        "offline_native_definition": {
+          "version": 1,
+          "sequence_mode": "offline",
+          "tail_alignment": "zero_pad_ceil",
+          "stride": 4,
+          "input_projection": 108,
+          "encoding_dim": 256,
+          "num_heads": 8,
+          "ffn_dim": 512,
+          "layers": [
+            2,
+            8
+          ],
+          "detector": null,
+          "mixer": null,
+          "filter": "none",
+          "window_size": 5,
+          "weight_predictor_mode": "diff5"
+        },
+        "server_training": {
+          "status": "trained",
+          "config": "/test21/conformer-rnnt-asr/configs/server_phone69_460h_offline_native_stride4_none_dim432_s42_e50.yaml",
+          "config_sha256": "5442b29c39bd568a2d70a27464ab580438ca8e1b087aec7403e36dc6b8da2595",
+          "code_commit": "5ca625fb9038c08f80c12e2965c9716a1778d70b",
+          "pid": 30206,
+          "started_at": "2026-11-21T10:50:05.137616+00:00",
+          "epochs": 50,
+          "early_stopping": false,
+          "max_token_limit": 7000,
+          "train_subset": [
+            "train-clean-100",
+            "train-clean-360"
+          ],
+          "val_subset": "dev-clean",
+          "test_subset": "test-clean",
+          "tokenizer": "phone69",
+          "resume_checkpoint": null,
+          "internal_dim": 432,
+          "num_heads": 8,
+          "sequence_mode": "offline",
+          "compression": {
+            "filter": "none"
+          },
+          "output_dim": 256,
+          "ffn_dim": 512,
+          "time_reduction_stride": 4,
+          "updated_at": "2026-11-22T01:25:42.280051+00:00",
+          "epoch_boundary_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim432_s42_e50/checkpoints/epoch-boundary-epoch=50-step=117500-606e20e1baa5.ckpt",
+          "epoch_boundary_metadata": {
+            "previous_max_token_limit": 7000,
+            "resume_global_step": 117500,
+            "resume_completed_epochs": 50,
+            "resume_at_epoch_boundary": true
+          },
+          "epoch": 50,
+          "global_step": 117500,
+          "observed_compression_lengths": null,
+          "best_checkpoint": "/test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim432_s42_e50/checkpoints/val-none-epoch=14-step=34900.ckpt"
+        },
+        "validation_checkpoint": {
+          "epoch_zero_based": 14,
+          "global_step": 34900,
+          "validation_loss": 10.572707176208496,
+          "monitor": "Losses/val_loss"
+        }
+      },
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10256,
+      "corpus_PER": 0.05425794744554895,
+      "audio_seconds": 19452.480625,
+      "components_macs": {
+        "encoder_weights": 10753112633760,
+        "attention_products": 1160419331520,
+        "projections": 70768812672,
+        "fusion_mlp": 0,
+        "detector_dots": 0,
+        "fusion_weighted_sum": 0,
+        "predictor": 2178551218176,
+        "joiner": 306258946560
+      },
+      "total_major_macs": 14469110942688,
+      "gmac_per_audio_second": 0.7438182934927355,
+      "encoder_compression_gmac_per_audio_second": 0.616080848966377,
+      "predictor_gmac_per_audio_second": 0.11199349122477278,
+      "joiner_gmac_per_audio_second": 0.015743953301585668,
+      "protocol": {
+        "device": "cpu",
+        "dtype": "float32",
+        "batch": 1,
+        "beam": 20,
+        "threads": 4,
+        "interop_threads": 1,
+        "data_workers": 0,
+        "openmp_max_active_levels": 1,
+        "warmup_utterances": 10,
+        "subset": "test-clean"
+      },
+      "runtime": {
+        "python": "/opt/anaconda3/envs/aligner/bin/python",
+        "python_version": "3.12.9",
+        "machine": "arm64",
+        "os": "macOS-27.3-arm64-arm-64bit",
+        "torch": "2.8.0",
+        "torchaudio": "2.8.0",
+        "openmp": {
+          "path": "/opt/anaconda3/envs/aligner/lib/libomp.dylib",
+          "sha256": "ce4985af1eb24c5cf570933a9234a54353c4b649cd1985fbe4300d67be97d76b"
+        },
+        "model_source": "snapshot"
+      },
+      "checkpoint_epoch": 14,
+      "checkpoint_global_step": 34900,
+      "manifest_sha256": "aa76e46aa151c09fa58dc1115244b2d9f17cc781a23ea83e87d88f22db6f68ed",
+      "csv_sha256": "8a95df44237e99b4819010a02fb4a249ae09891d3d9b5ccc43a729dc6cc66e58",
+      "counted_scope": "linear, convolution, attention products, compression, and actual beam-search predictor/joiner matrices",
+      "excluded_scope": "feature extraction, normalization, softmax, activations, comparisons/sorting, memory access",
+      "completed_at_utc": "2026-11-22T13:54:53.525744+00:00",
+      "verified_full_corpus": true
+    }
+  },
+  "updated_at_utc": "2026-11-22T13:54:54.123013+00:00"
+}

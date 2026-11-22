@@ -1,0 +1,36 @@
+{
+  "complete": true,
+  "verified_at_utc": "2026-11-22T13:54:57.667885+00:00",
+  "models": [
+    {
+      "name": "stride4_dim432",
+      "corpus_PER": 0.05425794744554895,
+      "per_percent": 5.425794744554896,
+      "utterances": 2620,
+      "reference_phones": 189023,
+      "phone_errors": 10256,
+      "encoder_compression_gmac_30s": 21.537716832,
+      "encoder_compression_gmac_per_audio_s_30s": 0.7179238944,
+      "full_corpus_components_macs": {
+        "encoder_weights": 10753112633760,
+        "attention_products": 1160419331520,
+        "projections": 70768812672,
+        "fusion_mlp": 0,
+        "detector_dots": 0,
+        "fusion_weighted_sum": 0,
+        "predictor": 2178551218176,
+        "joiner": 306258946560
+      },
+      "full_corpus_total_gmac_per_audio_s": 0.7438182934927355,
+      "checkpoint_sha256": "788ce66ad606aa40355e8f9efe4e88065c952c89b21024a1e8893bb8dd0698fc",
+      "csv_sha256": "8a95df44237e99b4819010a02fb4a249ae09891d3d9b5ccc43a729dc6cc66e58",
+      "independent_edit_distance_checked": 2620,
+      "checkpoint_hash_verified": true,
+      "frozen_model_source_verified": true,
+      "manifest_hash_verified": true
+    }
+  ],
+  "verifier_sha256": "1ec3f30659be3eca1a92548082c2b7d1f93985aca676907f2adb974274917b4d",
+  "server_metadata_sha256": "f665c4d5234a9b31d296ef6a8ac8b24f72a5085b2ed64cc85295be47867ad64b",
+  "controller_sha256": "c2436d7edb03cd5b4adc808ade7181267f1abc7a9602268046b36dcf4e3cc037"
+}

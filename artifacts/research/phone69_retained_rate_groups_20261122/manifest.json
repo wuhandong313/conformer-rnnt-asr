@@ -1,0 +1,333 @@
+{
+  "schema": 1,
+  "study": "Retained Phone69 systems across frozen natural speaking-rate groups",
+  "training_hours": 460,
+  "baseline_id": "E09",
+  "decile_directory": "speech_rate_analysis/deciles",
+  "protocol": {
+    "device": "cpu",
+    "subset": "test-clean",
+    "dtype": "FP32",
+    "batch": 1,
+    "beam": 20,
+    "threads": 4,
+    "interop_threads": 1,
+    "data_workers": 0
+  },
+  "selection_sources": {
+    "artifacts/research/phone69_all_results_20261117/results.json": "6fe30cd1159e9a57e6251c446e3f410d022b8631eda711ed7eab701cc0d61fa8",
+    "artifacts/research/phone69_manuscript_rate_groups_20261122/manifest.json": "c9c02703ac00172e316f33431d0aad85c57eef413dbc4cbbdf7a124e97c7411d"
+  },
+  "excluded_cancelled": [
+    "nine-frame fusion",
+    "three-frame retention or neighborhoods",
+    "L2 extrema-center-only",
+    "32-wide backbone fusion",
+    "feature smoothing"
+  ],
+  "models": [
+    {
+      "id": "E01",
+      "name": "Stride 4 / D128",
+      "archive_id": "E01",
+      "checkpoint": "val-none-epoch=41-step=46858.ckpt",
+      "checkpoint_sha256": "856b24c15f7450c4334810728f3681596ee43653ac855e73efddd51cbd47fd3b",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E01/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E01/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E01.json",
+      "is_primary": true
+    },
+    {
+      "id": "S4_D256",
+      "name": "Stride 4 / D256",
+      "archive_id": "S4_D256",
+      "checkpoint": "val-none-epoch=38-step=72470.ckpt",
+      "checkpoint_sha256": "e7c1a2cb4de9c4a35175bd03958d23ce8e82945c5371d7c7d23ac72e075a122f",
+      "predictions_csv": "artifacts/evaluations/phone69_remaining_local_cpu_20261121/stride4_dim256/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_remaining_local_cpu_20261121/stride4_dim256/attempt_01/result.json",
+      "counts_json": null,
+      "is_primary": true
+    },
+    {
+      "id": "S4_D432",
+      "name": "Stride 4 / D432",
+      "archive_id": "S4_D432",
+      "checkpoint": "val-none-epoch=14-step=34900.ckpt",
+      "checkpoint_sha256": "788ce66ad606aa40355e8f9efe4e88065c952c89b21024a1e8893bb8dd0698fc",
+      "is_primary": true,
+      "predictions_csv": "artifacts/evaluations/phone69_stride4_dim432_local_cpu_20261122/stride4_dim432/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_stride4_dim432_local_cpu_20261122/stride4_dim432/attempt_01/result.json",
+      "counts_json": null,
+      "evaluation_manifest": {
+        "path": "artifacts/evaluations/phone69_stride4_dim432_local_cpu_20261122/stride4_dim432/manifest.json",
+        "sha256": "aa76e46aa151c09fa58dc1115244b2d9f17cc781a23ea83e87d88f22db6f68ed"
+      }
+    },
+    {
+      "id": "E09",
+      "name": "Stride 4 / D512，第 31 轮",
+      "archive_id": "E09",
+      "checkpoint": "train-none-epoch=30-step=70700.ckpt",
+      "checkpoint_sha256": "df1997533372963b2848991a411681cc4f272f97689abecc71ae396157b602e9",
+      "predictions_csv": "artifacts/evaluations/phone69_stride4_dim512_train_best_local_cpu_20261121/stride4_dim512_train_epoch31/attempt_02/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_stride4_dim512_train_best_local_cpu_20261121/stride4_dim512_train_epoch31/attempt_02/result.json",
+      "counts_json": null,
+      "is_primary": true
+    },
+    {
+      "id": "S1",
+      "name": "Stride 1 / D128",
+      "archive_id": "S1",
+      "checkpoint": "val-none-epoch=43-step=136173.ckpt",
+      "checkpoint_sha256": "01409ecf07a8eb3d5536c56a552554bdd860801dc2ce790e011a580b46033c77",
+      "is_primary": true,
+      "predictions_csv": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride1_proj128/attempt_01/result.json",
+      "counts_json": null
+    },
+    {
+      "id": "S2",
+      "name": "Stride 2 / D256",
+      "archive_id": "S2",
+      "checkpoint": "val-none-epoch=24-step=46360.ckpt",
+      "checkpoint_sha256": "362f3aae0bf25a87e15d10e18fe57edacd735398d0f8efeda7f5d67bfe0d055d",
+      "is_primary": true,
+      "predictions_csv": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride2_proj128/attempt_01/result.json",
+      "counts_json": null
+    },
+    {
+      "id": "S8",
+      "name": "Stride 8 / D1024",
+      "archive_id": "S8",
+      "checkpoint": "val-none-epoch=21-step=36553.ckpt",
+      "checkpoint_sha256": "b0d98ff359afee613f574b134f9111d39d737e0ec87a392b2d35e64afcb8ceef",
+      "is_primary": true,
+      "predictions_csv": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_460h_stride_sweep_local_cpu_20261111/stride8_proj128/attempt_01/result.json",
+      "counts_json": null
+    },
+    {
+      "id": "E05",
+      "name": "Mel",
+      "archive_id": "E05",
+      "checkpoint": "val-none-epoch=48-step=121688.ckpt",
+      "checkpoint_sha256": "5630172734bcc316161794fe7168045376a6b47c94dc8fe8f30285ed5142e6a0",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E05/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E05/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E05.json",
+      "is_primary": true
+    },
+    {
+      "id": "P_L1",
+      "name": "L1",
+      "archive_id": "P_L1",
+      "checkpoint": "val-none-epoch=44-step=88720.ckpt",
+      "checkpoint_sha256": "bdb28193b75d348b6b3273140d182fe1b6401ec73f5d9cdeb7b7f00146900b75",
+      "predictions_csv": "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer1/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer1/attempt_01/result.json",
+      "counts_json": null,
+      "is_primary": true
+    },
+    {
+      "id": "E02",
+      "name": "L2",
+      "archive_id": "E02",
+      "checkpoint": "val-none-epoch=27-step=69137.ckpt",
+      "checkpoint_sha256": "c314db27cc84ebc90c128ad84751d7f4c7b6620ffbc6687c9b579a76d5e91317",
+      "is_primary": true,
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E02/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E02/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E02.json"
+    },
+    {
+      "id": "D_L3_TRAIN",
+      "name": "L3，第 31 轮",
+      "archive_id": "L3",
+      "checkpoint": "train-none-epoch=30-step=57500.ckpt",
+      "checkpoint_sha256": "238c3e4afdb552d0d27b9f722aa38d3e066d167cea7f6746a45b5d018550e0e0",
+      "is_primary": true,
+      "predictions_csv": "artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/layer3_train_best/attempt_02/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_layer3_train_best_local_cpu_20261117/layer3_train_best/attempt_02/result.json",
+      "counts_json": null
+    },
+    {
+      "id": "E06",
+      "name": "L5",
+      "archive_id": "E06",
+      "checkpoint": "val-none-epoch=45-step=151700.ckpt",
+      "checkpoint_sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E06.json",
+      "is_primary": true
+    },
+    {
+      "id": "E07",
+      "name": "L7",
+      "archive_id": "E07",
+      "checkpoint": "val-none-epoch=46-step=118826.ckpt",
+      "checkpoint_sha256": "c452301ca02f49a42b544cfdb7db26d893069fcff73adfbe890ed3798c9d165b",
+      "is_primary": true,
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E07/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E07/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E07.json"
+    },
+    {
+      "id": "P_L9",
+      "name": "L9",
+      "archive_id": "P_L9",
+      "checkpoint": "val-none-epoch=49-step=117150.ckpt",
+      "checkpoint_sha256": "5890e73762175447f7ba86ba6291893184a30febcae14101086b4ef61a35d2cc",
+      "is_primary": true,
+      "predictions_csv": "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer9/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer9/attempt_01/result.json",
+      "counts_json": null
+    },
+    {
+      "id": "P_MEL_L2",
+      "name": "Mel+L2（阶段性检查点）",
+      "archive_id": "P_MEL_L2",
+      "checkpoint": "val-none-epoch=30-step=55150.ckpt",
+      "checkpoint_sha256": "aa01cd6f08d67a91f31116105abeebaeeb0b90fa8be8d1bc9ea64866547d6203",
+      "is_primary": true,
+      "predictions_csv": "artifacts/evaluations/phone69_mel_layer2_snapshot_local_cpu_20261122/mel_layer2/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_mel_layer2_snapshot_local_cpu_20261122/mel_layer2/attempt_01/result.json",
+      "counts_json": null,
+      "evaluation_manifest": {
+        "path": "artifacts/evaluations/phone69_mel_layer2_snapshot_local_cpu_20261122/mel_layer2/manifest.json",
+        "sha256": "4adc728b26cb9db7be3fcb36a456eeb3f3a5e3471789d52f5f0d3cad7baba5d6"
+      },
+      "evaluation_stage": "interim",
+      "selection_snapshot": {
+        "utc": "2026-11-22T12:42:52.809389+00:00",
+        "checkpoint_epoch": 31,
+        "checkpoint_step": 55150,
+        "validation_loss": 12.619651794433594,
+        "training_epoch": 36,
+        "training_step": 64940,
+        "criterion": "minimum saved Losses/val_loss_epoch at snapshot"
+      }
+    },
+    {
+      "id": "P_MEL_L3",
+      "name": "Mel+L3",
+      "archive_id": "P_MEL_L3",
+      "checkpoint": "val-none-epoch=48-step=88800.ckpt",
+      "checkpoint_sha256": "a905d1026801f3f68a750e6cc7179f8ea1fd2fa26982026e901a38127a56ddd2",
+      "predictions_csv": "artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/mel_layer3/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/mel_layer3/attempt_01/result.json",
+      "counts_json": null,
+      "is_primary": true
+    },
+    {
+      "id": "E10",
+      "name": "Mel+L5",
+      "archive_id": "E10",
+      "checkpoint": "val-none-epoch=49-step=89901.ckpt",
+      "checkpoint_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E10.json",
+      "is_primary": true
+    },
+    {
+      "id": "P_MEL_L7",
+      "name": "Mel+L7",
+      "archive_id": "P_MEL_L7",
+      "checkpoint": "val-none-epoch=49-step=90825.ckpt",
+      "checkpoint_sha256": "48bbd6f398d4f89a12b4d83f7e19036168e455767e657dfbf1bd18c3615d5c87",
+      "is_primary": true,
+      "predictions_csv": "artifacts/evaluations/phone69_remaining_local_cpu_20261121/mel_layer7/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_remaining_local_cpu_20261121/mel_layer7/attempt_01/result.json",
+      "counts_json": null
+    },
+    {
+      "id": "E11",
+      "name": "Mel+L5+L8",
+      "archive_id": "E11",
+      "checkpoint": "val-none-epoch=47-step=59949.ckpt",
+      "checkpoint_sha256": "8cd027fec53d5863bf95d93005fc5dcc516b5d79bd074999ec8d77e9e8100978",
+      "is_primary": true,
+      "predictions_csv": "artifacts/evaluations/phone69_all_rate_followup_local_cpu_20261122/mel_layer5_layer8/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_all_rate_followup_local_cpu_20261122/mel_layer5_layer8/attempt_01/result.json",
+      "counts_json": null,
+      "evaluation_manifest": {
+        "path": "artifacts/evaluations/phone69_all_rate_followup_local_cpu_20261122/mel_layer5_layer8/manifest.json",
+        "sha256": "5d29df795827bd559ad7391ce7a3b0a1542a0a3299563e454f48bf8d91cdd63b"
+      },
+      "matching_original_predictions": {
+        "path": "artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/utterances.csv",
+        "sha256": "5a3ee0fb26b3de9156083164dd75c6795b90207016f95fe899ef2e219f85ca68",
+        "utterances": 2620
+      }
+    },
+    {
+      "id": "E03",
+      "name": "Stride 2 + L2 / D128",
+      "archive_id": "E03",
+      "checkpoint": "val-none-epoch=20-step=24540.ckpt",
+      "checkpoint_sha256": "dd2d95921a78963e99b94a5aac23c8e302580c9896d6fb25ce7d855e7480d04c",
+      "is_primary": true,
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E03/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E03/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E03.json"
+    },
+    {
+      "id": "E04",
+      "name": "Stride 4 + L2 / D128",
+      "archive_id": "E04",
+      "checkpoint": "val-none-epoch=44-step=43524.ckpt",
+      "checkpoint_sha256": "e00b5dd7bf64eb3eafb23c2c6f8a8a11578bef3b90c1c49cf7ca795ab10ef494",
+      "is_primary": true,
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E04/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E04/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E04.json"
+    },
+    {
+      "id": "S4_D512_E10",
+      "name": "Stride 4 / D512，第 10 轮",
+      "archive_id": "E09",
+      "checkpoint": "val-none-epoch=09-step=23150.ckpt",
+      "checkpoint_sha256": "005b39b31850128e7033f670cd58c6732d3dcc6ff738af1d79befc3d1a8c04a3",
+      "is_primary": false,
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E09/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E09/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E09.json"
+    },
+    {
+      "id": "S4_D512_E47",
+      "name": "Stride 4 / D512，第 47 轮",
+      "archive_id": "E09",
+      "checkpoint": "train-none-epoch=46-step=110000.ckpt",
+      "checkpoint_sha256": "f0e963b0ef0c95dac7bc77df2ae3b1a0ef1e2f9e8d473dbb0844f1b1426bff8d",
+      "is_primary": false,
+      "predictions_csv": "artifacts/evaluations/phone69_stride4_dim512_train_best_local_cpu_20261121/stride4_dim512_train_epoch47/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_stride4_dim512_train_best_local_cpu_20261121/stride4_dim512_train_epoch47/attempt_01/result.json",
+      "counts_json": null
+    },
+    {
+      "id": "P_L3",
+      "name": "L3，验证最优第 15 轮",
+      "archive_id": "L3",
+      "checkpoint": "val-none-epoch=14-step=27324.ckpt",
+      "checkpoint_sha256": "34f99288beef3f8e2b4318804297412f145e71875d41c99af427fecd74ac8e79",
+      "is_primary": false,
+      "predictions_csv": "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer3/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer3/attempt_01/result.json",
+      "counts_json": null
+    },
+    {
+      "id": "P_L3_RERUN",
+      "name": "L3，从头复跑第 15 轮",
+      "archive_id": "L3",
+      "checkpoint": "val-none-epoch=14-step=27924.ckpt",
+      "checkpoint_sha256": "9deff40ab63aeb2347ddca0fc4f9fbd972d3c16b2bc667cd9696f385566b8834",
+      "is_primary": false,
+      "predictions_csv": "artifacts/evaluations/phone69_remaining_local_cpu_20261121/layer3_rerun/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_remaining_local_cpu_20261121/layer3_rerun/attempt_01/result.json",
+      "counts_json": null
+    }
+  ],
+  "pending_models": []
+}

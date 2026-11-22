@@ -1,0 +1,12 @@
+{
+  "status": "complete",
+  "completed_models": [
+    "mel_layer2"
+  ],
+  "active_model": null,
+  "controller_pid": 35677,
+  "updated_at_utc": "2026-11-22T13:49:18.375468+00:00",
+  "evaluation_pid": null,
+  "progress": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_mel_layer2_snapshot_local_cpu_20261122/mel_layer2/attempt_01/progress.json",
+  "log": "/Users/wuhandong/Desktop/Projects/conformer-rnnt-asr/artifacts/evaluations/phone69_mel_layer2_snapshot_local_cpu_20261122/mel_layer2/attempt_01/run.log"
+}

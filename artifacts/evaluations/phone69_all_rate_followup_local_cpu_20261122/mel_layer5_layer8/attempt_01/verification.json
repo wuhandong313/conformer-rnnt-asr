@@ -1,0 +1,12 @@
+{
+  "verified_full_corpus": true,
+  "matching_predictions": 2620,
+  "previous_csv": "artifacts/evaluations/phone69_460h_mel_layer5_layer8_local_cpu_20261108/utterances.csv",
+  "previous_csv_sha256": "5a3ee0fb26b3de9156083164dd75c6795b90207016f95fe899ef2e219f85ca68",
+  "observed_csv": "artifacts/evaluations/phone69_all_rate_followup_local_cpu_20261122/mel_layer5_layer8/attempt_01/utterances.csv",
+  "observed_csv_sha256": "10c84f29919d6d808ec28af9f443c7416105281fa02d16d3c88410be52e13452",
+  "checkpoint_sha256": "8cd027fec53d5863bf95d93005fc5dcc516b5d79bd074999ec8d77e9e8100978",
+  "matched_configuration_sha256": "395664ece5870461b8057776a9bf17954a062c45a96d848561579b0ef669a697",
+  "matching_archived_stage_length_calculation": true,
+  "archived_stage_lengths": "artifacts/research/phone69_fixed_duration_20261112/E11_stage_lengths.json"
+}
