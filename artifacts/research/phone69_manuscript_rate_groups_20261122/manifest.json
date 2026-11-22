@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "study": "Current eight manuscript systems over frozen natural speaking-rate groups",
+  "training_hours": 460,
+  "baseline_id": "E09",
+  "decile_directory": "speech_rate_analysis/deciles",
+  "protocol": {
+    "device": "cpu",
+    "subset": "test-clean",
+    "dtype": "FP32",
+    "batch": 1,
+    "beam": 20,
+    "threads": 4,
+    "interop_threads": 1,
+    "data_workers": 0
+  },
+  "manuscript_selection": {
+    "path": "papers/extremafuse_acl2027/generated/analysis.json",
+    "sha256": "7307b86dc97a0940143a1b1a927aa6bc95e53bf9adf874edcc480b1b350dee7a"
+  },
+  "models": [
+    {
+      "id": "E01",
+      "name": "Stride 4 (128)",
+      "archive_id": "E01",
+      "checkpoint": "val-none-epoch=41-step=46858.ckpt",
+      "checkpoint_sha256": "856b24c15f7450c4334810728f3681596ee43653ac855e73efddd51cbd47fd3b",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E01/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E01/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E01.json"
+    },
+    {
+      "id": "S4_D256",
+      "name": "Stride 4 (256)",
+      "archive_id": "S4_D256",
+      "checkpoint": "val-none-epoch=38-step=72470.ckpt",
+      "checkpoint_sha256": "e7c1a2cb4de9c4a35175bd03958d23ce8e82945c5371d7c7d23ac72e075a122f",
+      "predictions_csv": "artifacts/evaluations/phone69_remaining_local_cpu_20261121/stride4_dim256/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_remaining_local_cpu_20261121/stride4_dim256/attempt_01/result.json",
+      "counts_json": null
+    },
+    {
+      "id": "E09",
+      "name": "Stride 4 (512) / epoch 31",
+      "archive_id": "E09",
+      "checkpoint": "train-none-epoch=30-step=70700.ckpt",
+      "checkpoint_sha256": "df1997533372963b2848991a411681cc4f272f97689abecc71ae396157b602e9",
+      "predictions_csv": "artifacts/evaluations/phone69_stride4_dim512_train_best_local_cpu_20261121/stride4_dim512_train_epoch31/attempt_02/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_stride4_dim512_train_best_local_cpu_20261121/stride4_dim512_train_epoch31/attempt_02/result.json",
+      "counts_json": null
+    },
+    {
+      "id": "E05",
+      "name": "Mel",
+      "archive_id": "E05",
+      "checkpoint": "val-none-epoch=48-step=121688.ckpt",
+      "checkpoint_sha256": "5630172734bcc316161794fe7168045376a6b47c94dc8fe8f30285ed5142e6a0",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E05/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E05/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E05.json"
+    },
+    {
+      "id": "P_L1",
+      "name": "L1",
+      "archive_id": "P_L1",
+      "checkpoint": "val-none-epoch=44-step=88720.ckpt",
+      "checkpoint_sha256": "bdb28193b75d348b6b3273140d182fe1b6401ec73f5d9cdeb7b7f00146900b75",
+      "predictions_csv": "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer1/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_placement_l1_l3_l9_local_cpu_20261117/layer1/attempt_01/result.json",
+      "counts_json": null
+    },
+    {
+      "id": "E06",
+      "name": "L5",
+      "archive_id": "E06",
+      "checkpoint": "val-none-epoch=45-step=151700.ckpt",
+      "checkpoint_sha256": "6e3cc340b21544ea9658c589ca323f23d9aa45fdc9785063b654f11bc4a68b8c",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E06/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E06.json"
+    },
+    {
+      "id": "P_MEL_L3",
+      "name": "Mel+L3",
+      "archive_id": "P_MEL_L3",
+      "checkpoint": "val-none-epoch=48-step=88800.ckpt",
+      "checkpoint_sha256": "a905d1026801f3f68a750e6cc7179f8ea1fd2fa26982026e901a38127a56ddd2",
+      "predictions_csv": "artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/mel_layer3/attempt_01/utterances.csv",
+      "result_json": "artifacts/evaluations/phone69_mel_layer3_local_cpu_20261117/mel_layer3/attempt_01/result.json",
+      "counts_json": null
+    },
+    {
+      "id": "E10",
+      "name": "Mel+L5",
+      "archive_id": "E10",
+      "checkpoint": "val-none-epoch=49-step=89901.ckpt",
+      "checkpoint_sha256": "6e88fdb52fe9ab06d4e2eea7e031c0cff19a4d4409da32aa1acca76e0a75c21c",
+      "predictions_csv": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/attempt_01/utterances.csv",
+      "result_json": "papers/phone69_460h_cpu_authoritative_20261108/supporting/original_archive/E10/result.json",
+      "counts_json": "artifacts/research/phone69_460h_compute_20261108/full/E10.json"
+    }
+  ],
+  "pending_models": [
+    "Stride 4 (P108 / D432)",
+    "Mel+L2"
+  ]
+}
