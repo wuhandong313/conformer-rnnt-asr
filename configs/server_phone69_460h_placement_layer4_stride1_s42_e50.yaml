@@ -1,10 +1,9 @@
-# Stride-4 L4 estimate at 30 s: 392-wide = 18.719186192 GMAC; estimated L4 = 18.830795712 GMAC.
-# L4 retention is estimated by averaging full-corpus L3 and L5 retention (39.924523864%).
-# Keep the 432-wide training recipe; input projection 98 gives a 392-wide trunk.
+# Single-stage placement after Conformer layer 4.
+# Fresh training with the L5 recipe and real-batch calibration.
 paths:
   dataset_path: /test21/librispeech
   global_stats_path: /test21/librispeech/global_stats.json
-  exp_dir: /test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_stride4_none_dim392_s42_e50
+  exp_dir: /test21/conformer-rnnt-asr/exp_phone69_460h_offline_native_placement_layer4_stride1_s42_e50
   from_checkpoint: null
 tokenizer:
   type: phone69
@@ -14,16 +13,21 @@ model:
   input_dim: 80
   encoding_dim: 256
   num_symbols: 69
-  time_reduction_input_dim: 98
-  time_reduction_stride: 4
+  time_reduction_input_dim: 128
+  time_reduction_stride: 1
   num_heads: 8
   ffn_dim: 512
-  num_layers_block1: 2
-  num_layers_block2: 8
   depthwise_conv_kernel_size: 31
   dropout: 0.1
   compression:
-    filter: none
+    stages:
+    - after_layer: 4
+      detector:
+        type: cosine_diff
+      mixer:
+        type: learned
+      window_size: 5
+      weight_predictor_mode: five_frames
   predictor:
     symbol_embedding_dim: 128
     num_lstm_layers: 2
@@ -33,6 +37,7 @@ model:
     lstm_dropout: 0.3
   joiner:
     activation: relu
+  num_layers: 10
 training:
   learning_rate: 0.0005
   adam_betas:
@@ -56,9 +61,9 @@ data:
     time_mask_prob: 0.2
   transcript_suffix: -ph
   strip_spaces: false
-  max_token_limit: 7000
+  max_token_limit: 5000
   rnnt_numel_limit: 1900000000
-  rnnt_frames_per_char: 3.0
+  rnnt_frames_per_char: 3.5
   num_workers: 20
   prefetch_factor: 2
   train_subset:

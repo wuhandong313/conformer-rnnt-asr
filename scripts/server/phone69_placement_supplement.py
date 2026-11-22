@@ -88,6 +88,12 @@ def load_plan(path):
         raise ValueError('The manifest must be inside the repository')
     plan = json.loads(path.read_text())
     local_path(plan['runtime_dir'])
+    if 'predecessor' in plan:
+        previous = plan['predecessor']
+        if (local_path(previous['runtime_dir']) == local_path(plan['runtime_dir'])
+                or Path(previous['controller_script']).name != previous['controller_script']
+                or not previous['experiment']):
+            raise ValueError('Invalid predecessor queue identity')
     search = plan['batch_search']
     if not (0 < search['minimum'] <= search['initial'] <= search['maximum']
             and search['quantum'] > 0 and search['growth'] > 1
@@ -226,6 +232,44 @@ class PlacementQueue:
         if changed:
             raise RuntimeError('Deployed source/configuration changed: ' + ', '.join(changed))
 
+    def wait_predecessor(self, previous):
+        folder = local_path(previous['runtime_dir'])
+        state_path = folder / 'queue_state.json'
+        initial = json.loads(state_path.read_text())
+        pid = initial['controller_pid']
+        process = Path('/proc') / str(pid)
+        while True:
+            try:
+                stat = (process / 'stat').read_text().rsplit(')', 1)[1].split()
+                names = {Path(a).name for a in (process / 'cmdline').read_bytes().decode(
+                    errors='replace').split('\0') if a}
+                alive = stat[0] != 'Z' and previous['controller_script'] in names
+            except (FileNotFoundError, ProcessLookupError):
+                alive = False
+            state = json.loads(state_path.read_text())
+            if (state['experiment'] != previous['experiment'] or state['controller_pid'] != pid
+                    or state['code_commit'] != initial['code_commit']):
+                raise RuntimeError('Predecessor queue identity changed')
+            if state['status'] == 'complete':
+                complete = json.loads((folder / 'completion.json').read_text())
+                boundary = complete['epoch_boundary_metadata']
+                best = Path(complete['best_checkpoint'])
+                if (any(state.get(key) != value for key, value in complete.items())
+                        or boundary['resume_completed_epochs'] != state['epochs']
+                        or not boundary['resume_at_epoch_boundary']
+                        or boundary['resume_global_step'] != complete['global_step']
+                        or not Path(complete['epoch_boundary_checkpoint']).is_file()
+                        or not best.is_file() or sha(best) != complete['best_checkpoint_sha256']):
+                    raise RuntimeError('Predecessor completion does not match its checkpoints')
+                save(self.audit / 'predecessor_verified.json', complete)
+                return
+            if not alive or state['status'] in ('failed', 'cancelled'):
+                raise RuntimeError(f'Predecessor stopped at {state["status"]}: {folder}')
+            self.state('waiting_for_predecessor', predecessor_experiment=previous['experiment'],
+                       predecessor_pid=pid, predecessor_status=state['status'],
+                       pending=[item['name'] for item in self.plan['experiments'] if item['action'] == 'train'])
+            time.sleep(20)
+
     def wait_idle(self):
         while True:
             # run() holds the shared lock here. Another compliant controller may
@@ -356,6 +400,8 @@ class PlacementQueue:
                 result = verify_completed(item)
                 self.completed.append(result)
                 save(self.audit / (item['name'] + '_reused.json'), result)
+        if 'predecessor' in self.plan:
+            self.wait_predecessor(self.plan['predecessor'])
         with open('/tmp/phone69_460h_serial.lock', 'a') as lock:
             while True:
                 try:

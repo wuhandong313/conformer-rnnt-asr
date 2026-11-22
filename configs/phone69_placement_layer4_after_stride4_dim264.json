@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "study": "phone69_single_stage_layer4",
+  "runtime_dir": "output/phone69_460h_placement_layer4_stride1",
+  "predecessor": {
+    "runtime_dir": "output/phone69_460h_stride4_dim264_l1_match",
+    "experiment": "stride4_dim264",
+    "controller_script": "phone69_stride4_dim264.py"
+  },
+  "batch_search": {
+    "initial": 5000,
+    "minimum": 1000,
+    "maximum": 100000,
+    "quantum": 100,
+    "growth": 1.4,
+    "max_reserved_fraction": 0.96
+  },
+  "experiments": [
+    {
+      "name": "layer4",
+      "action": "train",
+      "config": "configs/server_phone69_460h_placement_layer4_stride1_s42_e50.yaml",
+      "baseline_config": "configs/server_phone69_460h_placement_layer5_stride1_s42_e50.yaml",
+      "positions": [4]
+    }
+  ]
+}
