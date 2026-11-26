@@ -18,7 +18,14 @@ Fixed-Stride Stacking for Speech Recognition}
 \maketitle
 
 \begin{abstract}
-Fixed-stride frame stacking shortens the input to a speech encoder, but its grouping boundaries are independent of the acoustic signal. We introduce ExtremaFuse, which places output centers at local peaks and valleys in the cosine distance between adjacent frames and learns a weighted sum of five frames around each center. We apply fusion at the input and within offline Conformer transducers trained on 460 hours of LibriSpeech. With fusion at the input, moving a second fusion stage from after layer~5 to after layer~3 yields nearly the same final length but requires 20.8\% fewer estimated encoder and fusion multiply--accumulates (MACs) for a 30-second input. The earlier placement raises test-clean phone error rate (PER) by 0.332 percentage points. Compared with a four-frame stack at the same encoder width, the two-stage model with fusion after layer~3 uses 14.5\% fewer counted MACs per second of audio when decoding test-clean at beam width 20. Observed PER is 6.02\% for fusion and 6.13\% for stacking, with a paired 95\% interval for the difference that includes zero.
+Fixed-stride frame stacking reduces computation in speech recognition by grouping frames at regular intervals, regardless of how rapidly the signal changes.
+ExtremaFuse selects output positions at local peaks and valleys in the cosine distance between adjacent frames and learns a weighted sum over a five-frame window at each position.
+We vary the number and placement of fusion stages to find the lowest cost at a target error rate and the lowest error within a compute budget.
+We train offline Conformer transducers on 460 hours of LibriSpeech, comparing 128-dimensional fusion encoders with stride-4 encoders of three widths.
+On test-clean with beam width 20, the 512-dimensional baseline yields a corpus phone error rate (PER) of 5.649\%.
+Among the fusion models at or below this observed PER, fusion at the Mel input alone costs the least. It reaches 5.578\% PER with 70.7\% fewer estimated encoder and fusion multiply--accumulates (MACs) for a 30-second reference input.
+Within the same baseline's MAC budget, fusion only after layer~5 gives the lowest observed PER (4.781\%) with 22.8\% fewer MACs.
+For each of the three stride-4 baselines, a fusion model achieves lower observed PER with fewer estimated MACs.
 \end{abstract}
 
 \section{Introduction}
